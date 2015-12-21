@@ -1,0 +1,17 @@
+{
+    "authors": [ "Lukasz Pyrzyk" ],
+    "commands": {
+        "Kronos.Server": "Kronos.Server"
+    },
+    "dependencies": {
+        "Kronos.Shared": "1.0.0-*"
+    },
+    "description": "Kronosd - cache platform server",
+    "frameworks": {
+        "dnx451": { }
+    },
+    "licenseUrl": "",
+    "projectUrl": "https://github.com/lukasz-pyrzyk/Kronos",
+    "tags": [ "cache, distributed, socket, dotnetcore, dnx" ],
+    "version": "1.0.0-*"
+}

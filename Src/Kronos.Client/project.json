@@ -1,0 +1,23 @@
+{
+    "authors": [ "Lukasz Pyrzyk" ],
+    "commands": {
+        "Kronos.Client": "Kronos.Client"
+    },
+    "compilationOptions": {
+        "emitEntryPoint": true
+    },
+    "dependencies": {
+        "Kronos.Shared": "1.0.0-*"
+    },
+    "description": "Kronos - cache platform client",
+    "frameworks": {
+        "dnx451": {
+            "dependencies": {
+            }
+        }
+    },
+    "licenseUrl": "",
+    "projectUrl": "https://github.com/lukasz-pyrzyk/Kronos",
+    "tags": [ "cache, distributed, socket, dotnetcore, dnx" ],
+    "version": "1.0.0-*"
+}
