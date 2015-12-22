@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using Kronos.Shared.Network;
+using Kronos.Shared.Network.Models;
 
 namespace Kronos.Client
 {
@@ -15,7 +15,14 @@ namespace Kronos.Client
         /// <param name="key">Stream identifier</param>
         /// <param name="stream">Stream to save in the Kronos</param>
         /// <param name="expiryDate">Stream Expiration date</param>
-        /// <returns></returns>
+        /// <returns>Request status code</returns>
         RequestStatusCode SaveInCache(string key, Stream stream, DateTime expiryDate);
+
+        /// <summary>
+        /// Write request to Kronos node
+        /// </summary>
+        /// <param name="request">Model of Kronos request</param>
+        /// <returns>Request status code</returns>
+        RequestStatusCode SaveInCache(SocketRequest request);
     }
 }
