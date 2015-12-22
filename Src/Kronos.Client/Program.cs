@@ -1,11 +1,9 @@
 ﻿namespace Kronos.Client
 {
-    public class Program
+    internal class Program
     {
-        public static void Main(string[] args)
+        internal static void Main(string[] args)
         {
-            IKronosClient client = new KronosClient();
-            // TODO
         }
     }
 }
