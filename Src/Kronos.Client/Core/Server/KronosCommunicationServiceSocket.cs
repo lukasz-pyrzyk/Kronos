@@ -1,10 +1,11 @@
-﻿using Kronos.Shared.Network.Models;
+﻿using Kronos.Shared.Network.Codes;
+using Kronos.Shared.Network.Requests;
 
 namespace Kronos.Client.Core.Server
 {
     public class KronosCommunicationServiceSocket : IKronosCommunicationService
     {
-        public RequestStatusCode SendToNode(SocketRequest request)
+        public RequestStatusCode SendToNode(InsertRequest request)
         {
             return RequestStatusCode.Ok;
         }

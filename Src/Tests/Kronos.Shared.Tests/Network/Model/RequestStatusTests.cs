@@ -1,4 +1,4 @@
-﻿using Kronos.Shared.Network.Models;
+﻿using Kronos.Shared.Network.Codes;
 using Xunit;
 
 namespace Kronos.Shared.Tests.Network.Model

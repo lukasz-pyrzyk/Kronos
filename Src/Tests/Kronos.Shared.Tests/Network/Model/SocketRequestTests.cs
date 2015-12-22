@@ -1,6 +1,6 @@
 ﻿using System;
 using System.IO;
-using Kronos.Shared.Network.Models;
+using Kronos.Shared.Network.Requests;
 using Ploeh.AutoFixture;
 using Xunit;
 
@@ -17,7 +17,7 @@ namespace Kronos.Shared.Tests.Network.Model
             Stream stream = new MemoryStream(_fixture.Create<byte[]>());
             DateTime expiryDate = _fixture.Create<DateTime>();
 
-            SocketRequest request = new SocketRequest(key, stream, expiryDate);
+            InsertRequest request = new InsertRequest(key, stream, expiryDate);
 
             Assert.Equal(key, request.Key);
             Assert.Equal(stream, request.Stream);

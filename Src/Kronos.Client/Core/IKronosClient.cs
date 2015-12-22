@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
-using Kronos.Shared.Network.Models;
+using Kronos.Shared.Network.Codes;
+using Kronos.Shared.Network.Requests;
 
 namespace Kronos.Client
 {
@@ -23,6 +24,6 @@ namespace Kronos.Client
         /// </summary>
         /// <param name="request">Model of Kronos request</param>
         /// <returns>Request status code</returns>
-        RequestStatusCode SaveInCache(SocketRequest request);
+        RequestStatusCode SaveInCache(InsertRequest request);
     }
 }

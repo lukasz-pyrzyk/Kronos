@@ -1,16 +1,16 @@
 ﻿using System;
 using System.IO;
 
-namespace Kronos.Shared.Network.Models
+namespace Kronos.Shared.Network.Requests
 {
-    public class SocketRequest
+    public class InsertRequest : Request
     {
         public DateTime ExpiryDate { get; }
         public string Key { get; }
         public Stream Stream { get; }
         public long StreamLength => Stream.Length;
 
-        public SocketRequest(string key, Stream stream, DateTime expiryDate)
+        public InsertRequest(string key, Stream stream, DateTime expiryDate)
         {
             Key = key;
             Stream = stream;

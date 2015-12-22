@@ -1,7 +1,8 @@
 ﻿using System;
 using System.IO;
 using Kronos.Client.Core.Server;
-using Kronos.Shared.Network.Models;
+using Kronos.Shared.Network.Codes;
+using Kronos.Shared.Network.Requests;
 
 namespace Kronos.Client
 {
@@ -20,11 +21,11 @@ namespace Kronos.Client
 
         public RequestStatusCode SaveInCache(string key, Stream stream, DateTime expiryDate)
         {
-            SocketRequest request = new SocketRequest(key, stream, expiryDate);
+            InsertRequest request = new InsertRequest(key, stream, expiryDate);
             return SendToServer(request);
         }
         
-        public RequestStatusCode SaveInCache(SocketRequest request)
+        public RequestStatusCode SaveInCache(InsertRequest request)
         {
             return SendToServer(request);
         }
@@ -34,7 +35,7 @@ namespace Kronos.Client
             // TODO
         }
 
-        private RequestStatusCode SendToServer(SocketRequest request)
+        private RequestStatusCode SendToServer(InsertRequest request)
         {
             RequestStatusCode result = _service.SendToNode(request);
             return result;

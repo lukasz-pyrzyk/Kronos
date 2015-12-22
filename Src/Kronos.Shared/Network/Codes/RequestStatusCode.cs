@@ -1,4 +1,4 @@
-﻿namespace Kronos.Shared.Network.Models
+﻿namespace Kronos.Shared.Network.Codes
 {
     public enum RequestStatusCode
     {

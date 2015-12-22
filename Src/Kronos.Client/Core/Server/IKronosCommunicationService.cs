@@ -1,4 +1,5 @@
-﻿using Kronos.Shared.Network.Models;
+﻿using Kronos.Shared.Network.Codes;
+using Kronos.Shared.Network.Requests;
 
 namespace Kronos.Client.Core.Server
 {
@@ -12,6 +13,6 @@ namespace Kronos.Client.Core.Server
         /// </summary>
         /// <param name="request">Model of the request data to save in server cache</param>
         /// <returns>Status code of request</returns>
-        RequestStatusCode SendToNode(SocketRequest request);
+        RequestStatusCode SendToNode(InsertRequest request);
     }
 }
