@@ -17,7 +17,7 @@ namespace Kronos.Client.Tests.Core
         private readonly Fixture _fixture = new Fixture();
 
         [Fact]
-        public void CanSendRequestByKeyStreamAndExpiryDate()
+        public void CanInsertStreamToServer()
         {
             string key = _fixture.Create<string>();
             Stream stream = new MemoryStream(_fixture.Create<byte[]>());

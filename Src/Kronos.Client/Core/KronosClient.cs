@@ -15,7 +15,7 @@ namespace Kronos.Client
     {
         private readonly ICommunicationService _service;
         private readonly IServerConfiguration _configuration;
-        
+
         public KronosClient(ICommunicationService service, IServerConfiguration configuration)
         {
             _service = service;
@@ -26,18 +26,14 @@ namespace Kronos.Client
         {
             NodeConfiguration nodeConfiguration = _configuration.GetNodeForStream(stream);
             InsertRequest request = new InsertRequest(key, stream, expiryDate, nodeConfiguration.Host, nodeConfiguration.Port);
-            return SendToServer(request);
+            RequestStatusCode result = _service.SendToNode(request);
+
+            return result;
         }
 
         public void Dispose()
         {
             // TODO
-        }
-
-        private RequestStatusCode SendToServer(InsertRequest request)
-        {
-            RequestStatusCode result = _service.SendToNode(request);
-            return result;
         }
     }
 }
