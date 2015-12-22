@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.IO;
 using Kronos.Client.Core.Server;
+using Kronos.Shared.Configuration;
 using Kronos.Shared.Network.Codes;
 using Kronos.Shared.Network.Requests;
+using Kronos.Tests.Helpers;
 using NSubstitute;
 using Ploeh.AutoFixture;
 using Xunit;
@@ -21,30 +24,14 @@ namespace Kronos.Client.Tests.Core
             DateTime expiryDate = _fixture.Create<DateTime>();
             RequestStatusCode expectedStatusCode = RequestStatusCode.Ok;
 
-            IKronosCommunicationService communicationService = Substitute.For<IKronosCommunicationService>();
+            ICommunicationService communicationService = Substitute.For<ICommunicationService>();
             communicationService.SendToNode(Arg.Any<InsertRequest>()).Returns(expectedStatusCode);
 
-            IKronosClient client = new KronosClient(communicationService);
-            RequestStatusCode statusCode = client.SaveInCache(key, stream, expiryDate);
+            IServerConfiguration configuration = Substitute.For<IServerConfiguration>();
+            configuration.GetNodeForStream(Arg.Any<Stream>()).Returns(new NodeConfiguration() {Host = _fixture.CreateIpAddress(), Port = _fixture.Create<int>()});
 
-            Assert.Equal(statusCode, expectedStatusCode);
-        }
-
-        [Fact]
-        public void CanSendRequestByRequestModel()
-        {
-            string key = _fixture.Create<string>();
-            Stream stream = new MemoryStream(_fixture.Create<byte[]>());
-            DateTime expiryDate = _fixture.Create<DateTime>();
-
-            InsertRequest request = new InsertRequest(key, stream, expiryDate);
-            RequestStatusCode expectedStatusCode = RequestStatusCode.Ok;
-
-            IKronosCommunicationService communicationService = Substitute.For<IKronosCommunicationService>();
-            communicationService.SendToNode(Arg.Any<InsertRequest>()).Returns(expectedStatusCode);
-
-            IKronosClient client = new KronosClient(communicationService);
-            RequestStatusCode statusCode = client.SaveInCache(request);
+            IKronosClient client = new KronosClient(communicationService, configuration);
+            RequestStatusCode statusCode = client.InsertToServer(key, stream, expiryDate);
 
             Assert.Equal(statusCode, expectedStatusCode);
         }

@@ -3,7 +3,7 @@ using Kronos.Shared.Network.Requests;
 
 namespace Kronos.Client.Core.Server
 {
-    public class KronosCommunicationServiceSocket : IKronosCommunicationService
+    public class SocketCommunicationService : ICommunicationService
     {
         public RequestStatusCode SendToNode(InsertRequest request)
         {

@@ -6,7 +6,7 @@ namespace Kronos.Client.Core.Server
     /// <summary>
     /// Communication layer between client and server
     /// </summary>
-    public interface IKronosCommunicationService
+    public interface ICommunicationService
     {
         /// <summary>
         /// Send request to the server

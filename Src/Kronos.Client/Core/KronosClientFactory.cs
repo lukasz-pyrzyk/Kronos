@@ -1,4 +1,5 @@
 ﻿using Kronos.Client.Core.Server;
+using Kronos.Shared.Configuration;
 
 namespace Kronos.Client
 {
@@ -6,7 +7,14 @@ namespace Kronos.Client
     {
         public static IKronosClient CreateClient()
         {
-            return new KronosClient(new KronosCommunicationServiceSocket());
+            IServerConfiguration configuration = new ServerConfiguration();
+            configuration.NodesConfiguration.Add(new NodeConfiguration()
+            {
+                Host = "8.8.8.8", 
+                Port = 7
+            });
+
+            return new KronosClient(new SocketCommunicationService(), configuration);
         }
     }
 }

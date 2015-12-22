@@ -1,6 +1,7 @@
 ﻿using System;
 using System.IO;
 using Kronos.Client.Core.Server;
+using Kronos.Shared.Configuration;
 using Kronos.Shared.Network.Codes;
 using Kronos.Shared.Network.Requests;
 
@@ -12,21 +13,19 @@ namespace Kronos.Client
     /// </summary>
     internal class KronosClient : IKronosClient
     {
-        private readonly IKronosCommunicationService _service;
-
-        public KronosClient(IKronosCommunicationService service)
+        private readonly ICommunicationService _service;
+        private readonly IServerConfiguration _configuration;
+        
+        public KronosClient(ICommunicationService service, IServerConfiguration configuration)
         {
             _service = service;
+            _configuration = configuration;
         }
 
-        public RequestStatusCode SaveInCache(string key, Stream stream, DateTime expiryDate)
+        public RequestStatusCode InsertToServer(string key, Stream stream, DateTime expiryDate)
         {
-            InsertRequest request = new InsertRequest(key, stream, expiryDate);
-            return SendToServer(request);
-        }
-        
-        public RequestStatusCode SaveInCache(InsertRequest request)
-        {
+            NodeConfiguration nodeConfiguration = _configuration.GetNodeForStream(stream);
+            InsertRequest request = new InsertRequest(key, stream, expiryDate, nodeConfiguration.Host, nodeConfiguration.Port);
             return SendToServer(request);
         }
 
