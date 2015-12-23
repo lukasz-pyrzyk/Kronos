@@ -8,11 +8,7 @@ namespace Kronos.Client
         public static IKronosClient CreateClient()
         {
             IServerConfiguration configuration = new ServerConfiguration();
-            configuration.NodesConfiguration.Add(new NodeConfiguration()
-            {
-                Host = "8.8.8.8", 
-                Port = 7
-            });
+            configuration.NodesConfiguration.Add(new NodeConfiguration("8.8.8.8", 7));
 
             return new KronosClient(new SocketCommunicationService(), configuration);
         }

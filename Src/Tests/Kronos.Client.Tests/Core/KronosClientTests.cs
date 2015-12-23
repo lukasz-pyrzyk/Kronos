@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
+using System.Net;
 using Kronos.Client.Core.Server;
 using Kronos.Shared.Configuration;
 using Kronos.Shared.Network.Codes;
@@ -25,10 +26,10 @@ namespace Kronos.Client.Tests.Core
             RequestStatusCode expectedStatusCode = RequestStatusCode.Ok;
 
             ICommunicationService communicationService = Substitute.For<ICommunicationService>();
-            communicationService.SendToNode(Arg.Any<InsertRequest>()).Returns(expectedStatusCode);
+            communicationService.SendToNode(Arg.Any<InsertRequest>(), Arg.Any<IPEndPoint>()).Returns(expectedStatusCode);
 
             IServerConfiguration configuration = Substitute.For<IServerConfiguration>();
-            configuration.GetNodeForStream(Arg.Any<Stream>()).Returns(new NodeConfiguration() {Host = _fixture.CreateIpAddress(), Port = _fixture.Create<int>()});
+            configuration.GetNodeForStream(Arg.Any<Stream>()).Returns(new NodeConfiguration(_fixture.CreateIpAddress(), _fixture.Create<int>()));
 
             IKronosClient client = new KronosClient(communicationService, configuration);
             RequestStatusCode statusCode = client.InsertToServer(key, stream, expiryDate);

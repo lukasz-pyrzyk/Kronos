@@ -25,8 +25,8 @@ namespace Kronos.Client
         public RequestStatusCode InsertToServer(string key, Stream stream, DateTime expiryDate)
         {
             NodeConfiguration nodeConfiguration = _configuration.GetNodeForStream(stream);
-            InsertRequest request = new InsertRequest(key, stream, expiryDate, nodeConfiguration.Host, nodeConfiguration.Port);
-            RequestStatusCode result = _service.SendToNode(request);
+            InsertRequest request = new InsertRequest(key, stream, expiryDate);
+            RequestStatusCode result = _service.SendToNode(request, nodeConfiguration.Endpoint);
 
             return result;
         }

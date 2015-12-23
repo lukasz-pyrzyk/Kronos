@@ -10,8 +10,7 @@ namespace Kronos.Shared.Network.Requests
         public Stream Stream { get; }
         public long StreamLength => Stream.Length;
 
-        public InsertRequest(string key, Stream stream, DateTime expiryDate, string host, int port)
-            : base(host, port)
+        public InsertRequest(string key, Stream stream, DateTime expiryDate)
         {
             Key = key;
             Stream = stream;

@@ -18,10 +18,8 @@ namespace Kronos.Shared.Tests.Network.Requests
             string key = _fixture.Create<string>();
             Stream stream = new MemoryStream(_fixture.Create<byte[]>());
             DateTime expiryDate = _fixture.Create<DateTime>();
-            string host = _fixture.CreateIpAddress();
-            int port = _fixture.Create<int>();
 
-            InsertRequest request = new InsertRequest(key, stream, expiryDate, host, port);
+            InsertRequest request = new InsertRequest(key, stream, expiryDate);
 
             Assert.Equal(key, request.Key);
             Assert.Equal(stream, request.Stream);
