@@ -1,19 +1,15 @@
-﻿namespace Kronos.Server
+﻿using Kronos.Server.Exceptions;
+using Kronos.Server.Listener;
+
+namespace Kronos.Server
 {
     public class Program
     {
+        private static readonly ICommunicationListener _listener = new SocketListener();
+
         public static void Main()
         {
-            StartServer();
-        }
-
-        private static void StartServer()
-        {
-            bool workingServer = true;
-            while (workingServer)
-            {
-                // TODO
-            }
+            _listener.StartListening();
         }
     }
 }

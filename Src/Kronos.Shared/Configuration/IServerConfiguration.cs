@@ -16,8 +16,8 @@ namespace Kronos.Shared.Configuration
         /// <summary>
         /// Select node for stream
         /// </summary>
-        /// <param name="stream">Stream to insert into server</param>
+        /// <param name="stream">Package to insert into server</param>
         /// <returns></returns>
-        NodeConfiguration GetNodeForStream(Stream stream);
+        NodeConfiguration GetNodeForStream(byte[] stream);
     }
 }

@@ -1,11 +1,10 @@
 ﻿using System;
-using System.IO;
 using Kronos.Client.Core.Server;
 using Kronos.Shared.Configuration;
 using Kronos.Shared.Network.Codes;
 using Kronos.Shared.Network.Requests;
 
-namespace Kronos.Client
+namespace Kronos.Client.Core
 {
     /// <summary>
     /// Official Kronos client
@@ -22,10 +21,10 @@ namespace Kronos.Client
             _configuration = configuration;
         }
 
-        public RequestStatusCode InsertToServer(string key, Stream stream, DateTime expiryDate)
+        public RequestStatusCode InsertToServer(string key, byte[] package, DateTime expiryDate)
         {
-            NodeConfiguration nodeConfiguration = _configuration.GetNodeForStream(stream);
-            InsertRequest request = new InsertRequest(key, stream, expiryDate);
+            NodeConfiguration nodeConfiguration = _configuration.GetNodeForStream(package);
+            InsertRequest request = new InsertRequest(key, package, expiryDate);
             RequestStatusCode result = _service.SendToNode(request, nodeConfiguration.Endpoint);
 
             return result;

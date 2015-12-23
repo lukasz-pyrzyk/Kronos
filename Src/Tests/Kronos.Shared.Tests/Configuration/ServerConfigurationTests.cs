@@ -18,7 +18,7 @@ namespace Kronos.Shared.Tests.Configuration
             NodeConfiguration nodeConfiguraton = new NodeConfiguration(_fixture.CreateIpAddress(), _fixture.Create<int>());
             ServerConfiguration configuration = _fixture.Build<ServerConfiguration>().With(x => x.NodesConfiguration, new List<NodeConfiguration>() { nodeConfiguraton }).Create();
 
-            NodeConfiguration nodeConfiguration = configuration.GetNodeForStream(Arg.Any<Stream>());
+            NodeConfiguration nodeConfiguration = configuration.GetNodeForStream(Arg.Any<byte[]>());
 
             Assert.NotNull(nodeConfiguration);
         }

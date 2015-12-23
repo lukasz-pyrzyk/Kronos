@@ -8,7 +8,7 @@ namespace Kronos.Shared.Configuration
     {
         public ICollection<NodeConfiguration> NodesConfiguration { get; set; } = new List<NodeConfiguration>();
 
-        public NodeConfiguration GetNodeForStream(Stream stream)
+        public NodeConfiguration GetNodeForStream(byte[] package)
         {
             return NodesConfiguration.FirstOrDefault();
         }

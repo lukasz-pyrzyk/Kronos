@@ -1,5 +1,4 @@
-﻿using System.IO;
-using System.Net;
+﻿using System.Net;
 using System.Net.Sockets;
 using Kronos.Shared.Network.Codes;
 using Kronos.Shared.Network.Requests;
@@ -10,7 +9,6 @@ namespace Kronos.Client.Core.Server
     {
         public RequestStatusCode SendToNode(InsertRequest request, IPEndPoint endPoint)
         {
-            byte[] package = ReadFully(request.Stream);
             Socket socket = null;
 
             try
@@ -18,15 +16,15 @@ namespace Kronos.Client.Core.Server
                 socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IPv4);
                 socket.Connect(endPoint);
 
-                socket.Send(package, 0, package.Length, SocketFlags.None);
+                socket.Send(request.Package, 0, request.Package.Length, SocketFlags.None);
 
                 int receivedPackageLength = 0;
-                while (receivedPackageLength == package.Length)
+                while (receivedPackageLength == request.Package.Length)
                 {
-                    receivedPackageLength = socket.Receive(package, sizeof (long), 0, SocketFlags.None);
+                    receivedPackageLength = socket.Receive(request.Package, sizeof (long), 0, SocketFlags.None);
                 }
             }
-            catch (SocketException ex)
+            catch (SocketException)
             {
                 return RequestStatusCode.Failed;
             }
@@ -36,15 +34,6 @@ namespace Kronos.Client.Core.Server
             }
             
             return RequestStatusCode.Ok;
-        }
-
-        public static byte[] ReadFully(Stream input)
-        {
-            using (MemoryStream ms = new MemoryStream())
-            {
-                input.CopyTo(ms);
-                return ms.ToArray();
-            }
         }
     }
 }

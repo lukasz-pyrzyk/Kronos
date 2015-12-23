@@ -1,8 +1,5 @@
 ﻿using System;
-using System.IO;
-using System.Net;
 using Kronos.Shared.Network.Requests;
-using Kronos.Tests.Helpers;
 using Ploeh.AutoFixture;
 using Xunit;
 
@@ -16,15 +13,15 @@ namespace Kronos.Shared.Tests.Network.Requests
         public void CanAssingPropertiesByConstructor()
         {
             string key = _fixture.Create<string>();
-            Stream stream = new MemoryStream(_fixture.Create<byte[]>());
+            byte[] package = _fixture.Create<byte[]>();
             DateTime expiryDate = _fixture.Create<DateTime>();
 
-            InsertRequest request = new InsertRequest(key, stream, expiryDate);
+            InsertRequest request = new InsertRequest(key, package, expiryDate);
 
             Assert.Equal(key, request.Key);
-            Assert.Equal(stream, request.Stream);
+            Assert.Equal(package, request.Package);
             Assert.Equal(expiryDate, request.ExpiryDate);
-            Assert.Equal(stream.Length, request.Stream.Length);
+            Assert.Equal(package.Length, request.Package.Length);
         }
     }
 }

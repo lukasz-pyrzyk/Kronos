@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 
 namespace Kronos.Shared.Network.Requests
 {
@@ -7,13 +6,13 @@ namespace Kronos.Shared.Network.Requests
     {
         public DateTime ExpiryDate { get; }
         public string Key { get; }
-        public Stream Stream { get; }
-        public long StreamLength => Stream.Length;
+        public byte[] Package { get; }
+        public long StreamLength => Package.Length;
 
-        public InsertRequest(string key, Stream stream, DateTime expiryDate)
+        public InsertRequest(string key, byte[] package, DateTime expiryDate)
         {
             Key = key;
-            Stream = stream;
+            Package = package;
             ExpiryDate = expiryDate;
         }
     }

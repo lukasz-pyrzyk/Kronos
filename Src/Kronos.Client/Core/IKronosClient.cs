@@ -1,9 +1,7 @@
 ﻿using System;
-using System.IO;
 using Kronos.Shared.Network.Codes;
-using Kronos.Shared.Network.Requests;
 
-namespace Kronos.Client
+namespace Kronos.Client.Core
 {
     /// <summary>
     /// DataContract for KronosClient
@@ -13,10 +11,10 @@ namespace Kronos.Client
         /// <summary>
         /// Write stream to Kronos server
         /// </summary>
-        /// <param name="key">Stream identifier</param>
-        /// <param name="stream">Stream to save in the Kronos</param>
-        /// <param name="expiryDate">Stream Expiration date</param>
+        /// <param name="key">Package identifier</param>
+        /// <param name="stream">Package to save in the Kronos</param>
+        /// <param name="expiryDate">Package Expiration date</param>
         /// <returns>Request status code</returns>
-        RequestStatusCode InsertToServer(string key, Stream stream, DateTime expiryDate);
+        RequestStatusCode InsertToServer(string key, byte[] package, DateTime expiryDate);
     }
 }
