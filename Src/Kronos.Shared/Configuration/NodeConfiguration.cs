@@ -27,7 +27,7 @@ namespace Kronos.Shared.Configuration
         /// <summary>
         /// IP endpoint
         /// </summary>
-        public IPEndPoint Endpoint { get; private set; }
+        public IPEndPoint Endpoint { get; }
 
         public override string ToString()
         {
