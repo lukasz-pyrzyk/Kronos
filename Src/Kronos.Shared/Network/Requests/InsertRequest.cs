@@ -1,19 +1,14 @@
-﻿using System;
+﻿using Kronos.Shared.Network.Model;
 
 namespace Kronos.Shared.Network.Requests
 {
     public class InsertRequest : Request
     {
-        public DateTime ExpiryDate { get; }
-        public string Key { get; }
-        public byte[] Package { get; }
-        public long StreamLength => Package.Length;
+        public CachedObject ObjectToCache { get; private set; }
 
-        public InsertRequest(string key, byte[] package, DateTime expiryDate)
+        public InsertRequest(CachedObject objectToCache)
         {
-            Key = key;
-            Package = package;
-            ExpiryDate = expiryDate;
+            ObjectToCache = objectToCache;
         }
     }
 }

@@ -10,18 +10,18 @@ namespace Kronos.Client.Core.Server
         public RequestStatusCode SendToNode(InsertRequest request, IPEndPoint endPoint)
         {
             Socket socket = null;
-
+            byte[] packageToSend = request.ObjectToCache.SerializeNetworkPackage();
             try
             {
                 socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IPv4);
                 socket.Connect(endPoint);
 
-                socket.Send(request.Package, 0, request.Package.Length, SocketFlags.None);
+                socket.Send(packageToSend, 0, packageToSend.Length, SocketFlags.None);
 
                 int receivedPackageLength = 0;
-                while (receivedPackageLength == request.Package.Length)
+                while (receivedPackageLength == packageToSend.Length)
                 {
-                    receivedPackageLength = socket.Receive(request.Package, sizeof (long), 0, SocketFlags.None);
+                    receivedPackageLength = socket.Receive(packageToSend, sizeof (long), 0, SocketFlags.None);
                 }
             }
             catch (SocketException)

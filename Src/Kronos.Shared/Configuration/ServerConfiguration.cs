@@ -1,6 +1,6 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using System.Linq;
+using Kronos.Shared.Network.Model;
 
 namespace Kronos.Shared.Configuration
 {
@@ -8,7 +8,7 @@ namespace Kronos.Shared.Configuration
     {
         public ICollection<NodeConfiguration> NodesConfiguration { get; set; } = new List<NodeConfiguration>();
 
-        public NodeConfiguration GetNodeForStream(byte[] package)
+        public NodeConfiguration GetNodeForStream(CachedObject objectToCache)
         {
             return NodesConfiguration.FirstOrDefault();
         }

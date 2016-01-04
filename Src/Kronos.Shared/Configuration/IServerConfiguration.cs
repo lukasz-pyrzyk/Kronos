@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using System.IO;
+using Kronos.Shared.Network.Model;
 
 namespace Kronos.Shared.Configuration
 {
@@ -16,8 +17,8 @@ namespace Kronos.Shared.Configuration
         /// <summary>
         /// Select node for stream
         /// </summary>
-        /// <param name="stream">Package to insert into server</param>
+        /// <param name="objectToCache">Package to insert into server</param>
         /// <returns></returns>
-        NodeConfiguration GetNodeForStream(byte[] stream);
+        NodeConfiguration GetNodeForStream(CachedObject objectToCache);
     }
 }

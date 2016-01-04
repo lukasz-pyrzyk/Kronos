@@ -1,7 +1,4 @@
-﻿using System.Net;
-using System.Text;
-
-namespace Kronos.Shared.Network.Requests
+﻿namespace Kronos.Shared.Network.Requests
 {
     /// <summary>
     /// Base class for any request to the server

@@ -2,6 +2,7 @@
 using Kronos.Client.Core.Server;
 using Kronos.Shared.Configuration;
 using Kronos.Shared.Network.Codes;
+using Kronos.Shared.Network.Model;
 using Kronos.Shared.Network.Requests;
 
 namespace Kronos.Client.Core
@@ -23,16 +24,27 @@ namespace Kronos.Client.Core
 
         public RequestStatusCode InsertToServer(string key, byte[] package, DateTime expiryDate)
         {
-            NodeConfiguration nodeConfiguration = _configuration.GetNodeForStream(package);
-            InsertRequest request = new InsertRequest(key, package, expiryDate);
-            RequestStatusCode result = _service.SendToNode(request, nodeConfiguration.Endpoint);
+            CachedObject objectToCache = new CachedObject(key, package, expiryDate);
 
-            return result;
+            return InsertToKronosNode(objectToCache);
+        }
+
+        public RequestStatusCode InsertToServer(CachedObject objectToCache)
+        {
+            return InsertToKronosNode(objectToCache);
         }
 
         public void Dispose()
         {
             // TODO
+        }
+
+        private RequestStatusCode InsertToKronosNode(CachedObject objectToCache)
+        {
+            NodeConfiguration nodeConfiguration = _configuration.GetNodeForStream(objectToCache);
+            InsertRequest request = new InsertRequest(objectToCache);
+            RequestStatusCode result = _service.SendToNode(request, nodeConfiguration.Endpoint);
+            return result;
         }
     }
 }

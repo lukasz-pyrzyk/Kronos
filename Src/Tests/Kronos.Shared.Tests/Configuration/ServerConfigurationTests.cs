@@ -1,8 +1,7 @@
 ﻿using System.Collections.Generic;
-using System.IO;
 using Kronos.Shared.Configuration;
+using Kronos.Shared.Network.Model;
 using Kronos.Tests.Helpers;
-using NSubstitute;
 using Ploeh.AutoFixture;
 using Xunit;
 
@@ -17,8 +16,9 @@ namespace Kronos.Shared.Tests.Configuration
         {
             NodeConfiguration nodeConfiguraton = new NodeConfiguration(_fixture.CreateIpAddress(), _fixture.Create<int>());
             ServerConfiguration configuration = _fixture.Build<ServerConfiguration>().With(x => x.NodesConfiguration, new List<NodeConfiguration>() { nodeConfiguraton }).Create();
+            CachedObject cachedObject = _fixture.Create<CachedObject>();
 
-            NodeConfiguration nodeConfiguration = configuration.GetNodeForStream(Arg.Any<byte[]>());
+            NodeConfiguration nodeConfiguration = configuration.GetNodeForStream(cachedObject);
 
             Assert.NotNull(nodeConfiguration);
         }
