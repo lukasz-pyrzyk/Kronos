@@ -20,5 +20,5 @@ else
 # ex: & $env:USERPROFILE\.dnx\bin\dnvm install $dnxVersion -r coreclr
 & $env:USERPROFILE\.dnx\bin\dnvm install $dnxVersion -Persistent
 
- # run dotne restore on all project.json files in the src folder including 2>1 to redirect stderr to stdout for badly behaved tools
-Get-ChildItem -Path $PSScriptRoot\ -Filter project.json -Recurse | ForEach-Object { & dotnet restore $_.FullName 2>1 }
+ # run dotnet restore command
+dotnet restore
