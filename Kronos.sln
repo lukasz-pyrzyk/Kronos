@@ -3,26 +3,26 @@ Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
 VisualStudioVersion = 14.0.23107.0
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Kronos.Client", "Kronos.Client\Kronos.Client.xproj", "{1F0FE4FC-EA2F-4CB3-9509-BF98D53ACFEA}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Kronos.Client", "Src\Kronos.Client\Kronos.Client.xproj", "{1F0FE4FC-EA2F-4CB3-9509-BF98D53ACFEA}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Kronos.Server", "Kronos.Server\Kronos.Server.xproj", "{5CD560DC-9E67-464D-9E56-B0E5914AFAE6}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Kronos.Server", "Src\Kronos.Server\Kronos.Server.xproj", "{5CD560DC-9E67-464D-9E56-B0E5914AFAE6}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Kronos.Shared", "Kronos.Shared\Kronos.Shared.xproj", "{125D4674-A403-45BF-A42C-EBD016A78650}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Kronos.Shared", "Src\Kronos.Shared\Kronos.Shared.xproj", "{125D4674-A403-45BF-A42C-EBD016A78650}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{6A45CC5D-C17F-4F32-AD54-B585E1747D43}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Src\Tests", "{6A45CC5D-C17F-4F32-AD54-B585E1747D43}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Kronos.Shared.Tests", "Tests\Kronos.Shared.Tests\Kronos.Shared.Tests.xproj", "{67E85EA7-31DE-468C-B620-A8B9477818B5}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Kronos.Shared.Tests", "Src\Tests\Kronos.Shared.Tests\Kronos.Shared.Tests.xproj", "{67E85EA7-31DE-468C-B620-A8B9477818B5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A22FEF3F-1A32-44DE-9468-A9121C4BD64B}"
 	ProjectSection(SolutionItems) = preProject
 		global.json = global.json
 	EndProjectSection
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Kronos.Client.Tests", "Tests\Kronos.Client.Tests\Kronos.Client.Tests.xproj", "{960ACF5A-ED8A-4B44-B6AA-90BFB3BD7CF2}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Kronos.Client.Tests", "Src\Tests\Kronos.Client.Tests\Kronos.Client.Tests.xproj", "{960ACF5A-ED8A-4B44-B6AA-90BFB3BD7CF2}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Kronos.Server.Tests", "Tests\Kronos.Server.Tests\Kronos.Server.Tests.xproj", "{275C87FA-03BC-48A5-A7CE-499738E85BA8}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Kronos.Server.Tests", "Src\Tests\Kronos.Server.Tests\Kronos.Server.Tests.xproj", "{275C87FA-03BC-48A5-A7CE-499738E85BA8}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Kronos.Tests.Helpers", "Tests\Kronos.Tests.Helpers\Kronos.Tests.Helpers.xproj", "{43A8FB11-3CF9-4956-9713-256E9BA9C5D1}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Kronos.Tests.Helpers", "Src\Tests\Kronos.Tests.Helpers\Kronos.Tests.Helpers.xproj", "{43A8FB11-3CF9-4956-9713-256E9BA9C5D1}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
