@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Text;
 
 namespace Kronos.Server.Listener
 {
@@ -9,7 +10,7 @@ namespace Kronos.Server.Listener
         public const int QueueSize = 5;
         public const int Port = 7;
         public const int BufferSize = 5555;
-
+        
         public void StartListening()
         {
             Socket server = null;
@@ -18,42 +19,35 @@ namespace Kronos.Server.Listener
                 server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 server.Bind(new IPEndPoint(IPAddress.Any, Port));
                 server.Listen(QueueSize);
-            }
-            catch (SocketException ex)
-            {
-                Environment.Exit(ex.ErrorCode);
-            }
 
-            byte[] rcvBuffer = new byte[BufferSize];
-            int rcvbytes = 0;
-            long totalBytes = 0;
-
-            bool workingServer = true;
-            while (workingServer)
-            {
-                Socket client = null;
-                try
+                while (true)
                 {
-                    client = server.Accept();
-                    client.ReceiveTimeout = 40;
-                    while (client.Poll(40, SelectMode.SelectRead))
+                    Socket handler = server.Accept();
+
+                    byte[] packageSizeBuffer = new byte[sizeof(int)];
+                    handler.Receive(packageSizeBuffer, SocketFlags.None);
+                    int packageSize = BitConverter.ToInt32(packageSizeBuffer, 0);
+
+                    byte[] data = new byte[packageSize];
+                    int readedBytes = sizeof(int);
+                    while (readedBytes != packageSize)
                     {
-                        rcvbytes = client.Receive(rcvBuffer, 0, BufferSize, SocketFlags.None);
-                        totalBytes += rcvbytes;
-                        Console.WriteLine("Received {0} bytes", rcvbytes);
+                        byte[] package = new byte[1024];
+                        int received = handler.Receive(package, SocketFlags.None);
+                        // TODO join all packages
+                        readedBytes += received;
                     }
-                    byte[] packageToResentToTheClient = BitConverter.GetBytes(IPAddress.HostToNetworkOrder(totalBytes));
-                    client.Send(packageToResentToTheClient, 0, packageToResentToTheClient.Length, SocketFlags.None);
+                    handler.Send(BitConverter.GetBytes(readedBytes));
+                    handler.Dispose();
                 }
-                catch (Exception)
-                {
-                    workingServer = false;
-                }
-                finally
-                {
-                    client?.Dispose();
-                    server?.Dispose();
-                }
+            }
+            catch (SocketException)
+            {
+                // TODO
+            }
+            finally
+            {
+                server?.Dispose();
             }
         }
 

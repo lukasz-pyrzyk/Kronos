@@ -1,7 +1,10 @@
-﻿using System.Net;
+﻿using System;
+using System.Net;
 using System.Net.Sockets;
+using System.Threading;
 using Kronos.Shared.Network.Codes;
 using Kronos.Shared.Network.Requests;
+using Kronos.Shared.Socket;
 
 namespace Kronos.Client.Core.Server
 {
@@ -10,21 +13,23 @@ namespace Kronos.Client.Core.Server
         public RequestStatusCode SendToNode(InsertRequest request, IPEndPoint endPoint)
         {
             Socket socket = null;
-            byte[] packageToSend = request.ObjectToCache.SerializeNetworkPackage();
+            byte[] packageToSend = SocketTransferUtil.GetTotalBytes(request.ObjectToCache);
             try
             {
-                socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.IPv4);
+                socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
                 socket.Connect(endPoint);
+                socket.Send(packageToSend, SocketFlags.None);
 
-                socket.Send(packageToSend, 0, packageToSend.Length, SocketFlags.None);
-
-                int receivedPackageLength = 0;
-                while (receivedPackageLength == packageToSend.Length)
+                int receivedValue = 0;
+                while (receivedValue != packageToSend.Length)
                 {
-                    receivedPackageLength = socket.Receive(packageToSend, sizeof (long), 0, SocketFlags.None);
+                    byte[] response = new byte[sizeof(int)];
+                    socket.Receive(response, SocketFlags.None);
+                    receivedValue = BitConverter.ToInt32(response, 0);
                 }
+                socket.Dispose();
             }
-            catch (SocketException)
+            catch (SocketException ex)
             {
                 return RequestStatusCode.Failed;
             }
@@ -32,7 +37,7 @@ namespace Kronos.Client.Core.Server
             {
                 socket?.Dispose();
             }
-            
+
             return RequestStatusCode.Ok;
         }
     }

@@ -11,13 +11,20 @@
     },
     "description": "Kronos - cache platform client",
     "frameworks": {
-        "dnx451": {
+        "dnx451": { },
+        "dnxcore50": {
             "dependencies": {
+                "Microsoft.CSharp": "4.0.1-beta-23516",
+                "System.Collections": "4.0.11-beta-23516",
+                "System.Linq": "4.0.1-beta-23516",
+                "System.Net.Sockets": "4.1.0-beta-23516",
+                "System.Runtime": "4.0.21-beta-23516",
+                "System.Threading": "4.0.11-beta-23516"
             }
         }
     },
     "licenseUrl": "",
     "projectUrl": "https://github.com/lukasz-pyrzyk/Kronos",
     "tags": [ "cache, distributed, socket, dotnetcore, dnx" ],
-    "version": "1.0.0-*"
+    "version": "1.0.0.0"
 }

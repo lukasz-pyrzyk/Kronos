@@ -8,7 +8,7 @@ namespace Kronos.Client.Core
         public static IKronosClient CreateClient()
         {
             IServerConfiguration configuration = new ServerConfiguration();
-            configuration.NodesConfiguration.Add(new NodeConfiguration("192.168.0.103", 7));
+            configuration.NodesConfiguration.Add(new NodeConfiguration("192.168.43.75", 7));
 
             return new KronosClient(new SocketCommunicationService(), configuration);
         }
