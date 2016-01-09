@@ -1,7 +1,7 @@
 ﻿
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 14
-VisualStudioVersion = 14.0.23107.0
+VisualStudioVersion = 14.0.24720.0
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Kronos.Client", "Src\Kronos.Client\Kronos.Client.xproj", "{1F0FE4FC-EA2F-4CB3-9509-BF98D53ACFEA}"
 EndProject
@@ -9,7 +9,7 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Kronos.Server", "Src\Kronos
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Kronos.Shared", "Src\Kronos.Shared\Kronos.Shared.xproj", "{125D4674-A403-45BF-A42C-EBD016A78650}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Src\Tests", "{6A45CC5D-C17F-4F32-AD54-B585E1747D43}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{6A45CC5D-C17F-4F32-AD54-B585E1747D43}"
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Kronos.Shared.Tests", "Src\Tests\Kronos.Shared.Tests\Kronos.Shared.Tests.xproj", "{67E85EA7-31DE-468C-B620-A8B9477818B5}"
 EndProject
