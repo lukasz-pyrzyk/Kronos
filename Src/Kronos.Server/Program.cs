@@ -1,4 +1,5 @@
-﻿using Kronos.Server.Listener;
+﻿using System;
+using Kronos.Server.Listener;
 
 namespace Kronos.Server
 {
@@ -8,7 +9,11 @@ namespace Kronos.Server
 
         public static void Main()
         {
+            Console.WriteLine("Starting server");
+
             _listener.StartListening();
+
+            Console.WriteLine("Stopping server");
         }
     }
 }
