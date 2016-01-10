@@ -1,4 +1,5 @@
 ﻿using System.Net;
+using System.Text;
 
 namespace Kronos.Shared.Configuration
 {
@@ -11,7 +12,7 @@ namespace Kronos.Shared.Configuration
         {
             Host = host;
             Port = port;
-            Endpoint = new IPEndPoint(IPAddress.Parse(Host), Port);
+            Endpoint = new IPEndPoint(new IPAddress(Encoding.UTF8.GetBytes(host)), Port);
         }
 
         /// <summary>
