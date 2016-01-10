@@ -12,7 +12,7 @@ namespace Kronos.Shared.Configuration
         {
             Host = host;
             Port = port;
-            Endpoint = new IPEndPoint(new IPAddress(Encoding.UTF8.GetBytes(host)), Port);
+            Endpoint = new IPEndPoint(IPAddress.Parse(Host), Port);
         }
 
         /// <summary>
