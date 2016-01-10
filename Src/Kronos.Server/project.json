@@ -11,7 +11,6 @@
     },
     "description": "Kronosd - cache platform server",
     "frameworks": {
-        "dnx451": { },
         "dnxcore50": {
             "dependencies": {
                 "System.Collections": "4.0.11-beta-23516",
