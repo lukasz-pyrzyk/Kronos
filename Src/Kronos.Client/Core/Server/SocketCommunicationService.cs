@@ -38,7 +38,7 @@ namespace Kronos.Client.Core.Server
             }
             catch (SocketException ex)
             {
-                _logger.Error($"During package transfer an error occurred {ex}");
+                _logger.Fatal($"During package transfer an error occurred {ex}");
                 _logger.Debug("Returning information about exception");
                 return RequestStatusCode.Failed;
             }
