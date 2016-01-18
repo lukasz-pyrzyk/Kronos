@@ -7,10 +7,13 @@
         "emitEntryPoint": true
     },
     "dependencies": {
-        "Kronos.Shared": "1.0.0-*"
+        "Kronos.Shared": "1.0.0-*",
+        "NLog": "4.4.0-alpha1",
+        "NLog.Config": "4.2.3"
     },
     "description": "Kronos - cache platform client",
     "frameworks": {
+        "dnx451": { },
         "dnxcore50": {
             "dependencies": {
                 "Microsoft.CSharp": "4.0.1-beta-23516",

@@ -4,6 +4,7 @@ using Kronos.Shared.Configuration;
 using Kronos.Shared.Network.Codes;
 using Kronos.Shared.Network.Model;
 using Kronos.Shared.Network.Requests;
+using NLog;
 
 namespace Kronos.Client.Core
 {
@@ -13,6 +14,7 @@ namespace Kronos.Client.Core
     /// </summary>
     internal class KronosClient : IKronosClient
     {
+        private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
         private readonly ICommunicationService _service;
         private readonly IServerConfiguration _configuration;
 
@@ -25,7 +27,7 @@ namespace Kronos.Client.Core
         public RequestStatusCode InsertToServer(string key, byte[] package, DateTime expiryDate)
         {
             CachedObject objectToCache = new CachedObject(key, package, expiryDate);
-
+            
             return InsertToKronosNode(objectToCache);
         }
 
@@ -41,8 +43,14 @@ namespace Kronos.Client.Core
 
         private RequestStatusCode InsertToKronosNode(CachedObject objectToCache)
         {
+            _logger.Info("New request");
+
             NodeConfiguration nodeConfiguration = _configuration.GetNodeForStream(objectToCache);
+            _logger.Info($"Chosen node: {nodeConfiguration}");
+
             InsertRequest request = new InsertRequest(objectToCache);
+
+            _logger.Info($"Sending request to communication service");
             RequestStatusCode result = _service.SendToNode(request, nodeConfiguration.Endpoint);
             return result;
         }
