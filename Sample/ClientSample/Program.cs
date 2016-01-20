@@ -1,38 +1,37 @@
 ﻿using System;
 using System.IO;
-using System.Text;
 using System.Xml;
-using Kronos.Client.Core;
+using Kronos.Client;
 using NLog;
 using NLog.Config;
-using NLog.Targets;
 
-namespace Kronos.Client
+namespace ClientSample
 {
     public class Program
     {
-        private static ILogger logger;
+        private static ILogger _logger;
         public static void LoggerSetup()
         {
             var reader = XmlReader.Create("NLog.config");
             var config = new XmlLoggingConfiguration(reader, null); //filename is not required.
             LogManager.Configuration = config;
-            logger = LogManager.GetCurrentClassLogger();
+            _logger = LogManager.GetCurrentClassLogger();
         }
 
         public static void Main(string[] args)
         {
             LoggerSetup();
-            logger.Info("Starting program");
+
+            _logger.Info("Starting program");
 
             IKronosClient client = KronosClientFactory.CreateClient();
             string key = "key";
-            byte[] package = Encoding.UTF8.GetBytes($"content of file");
+            byte[] package = File.ReadAllBytes(@"D:\iso\WIndows\WXPVOL_EN.iso");
             DateTime expiryDate = new DateTime();
 
             client.InsertToServer(key, package, expiryDate);
 
-            logger.Info("Closing program");
+            _logger.Info("Closing program");
         }
     }
 }
