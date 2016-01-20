@@ -1,19 +1,33 @@
 ﻿using System;
+using System.Xml;
 using Kronos.Server.Listener;
+using NLog;
+using NLog.Config;
 
 namespace Kronos.Server
 {
     public class Program
     {
+        private static ILogger _logger;
         private static readonly ICommunicationListener _listener = new SocketListener();
+
+        public static void LoggerSetup()
+        {
+            var reader = XmlReader.Create("NLog.config");
+            var config = new XmlLoggingConfiguration(reader, null); //filename is not required.
+            LogManager.Configuration = config;
+            _logger = LogManager.GetCurrentClassLogger();
+        }
 
         public static void Main()
         {
-            Console.WriteLine("Starting server");
+            LoggerSetup();
+
+            _logger.Info("Starting server");
 
             _listener.StartListening();
 
-            Console.WriteLine("Stopping server");
+            _logger.Info("Stopping server");
         }
     }
 }

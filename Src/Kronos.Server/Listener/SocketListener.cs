@@ -1,16 +1,20 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net;
 using System.Net.Sockets;
-using System.Text;
+using NLog;
 
 namespace Kronos.Server.Listener
 {
     public class SocketListener : ICommunicationListener
     {
+        private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+
         public const int QueueSize = 5;
         public const int Port = 7;
         public const int BufferSize = 5555;
-        
+        private const int packageSize = 1024 * 1024;
+
         public void StartListening()
         {
             Socket server = null;
@@ -20,33 +24,48 @@ namespace Kronos.Server.Listener
                 server.Bind(new IPEndPoint(IPAddress.Any, Port));
                 server.Listen(QueueSize);
 
+                _logger.Info($"Listening on port {Port}, queue size is {QueueSize} and the buffer is {BufferSize}");
+
                 while (true)
                 {
-                    Socket handler = server.Accept();
+                    Socket connectionRequest = server.Accept();
+                    var timer = Stopwatch.StartNew();
+                    _logger.Info("Accepting request");
 
                     byte[] packageSizeBuffer = new byte[sizeof(int)];
-                    handler.Receive(packageSizeBuffer, SocketFlags.None);
-                    int packageSize = BitConverter.ToInt32(packageSizeBuffer, 0);
+                    _logger.Info("Receiving information about request size");
+                    connectionRequest.Receive(packageSizeBuffer, SocketFlags.None);
+                    int requestSize = BitConverter.ToInt32(packageSizeBuffer, 0);
+                    _logger.Info($"Request contains {requestSize} bytes");
 
-                    byte[] data = new byte[packageSize];
                     int readedBytes = sizeof(int);
-                    while (readedBytes != packageSize)
+                    while (readedBytes != requestSize)
                     {
-                        byte[] package = new byte[1024];
-                        int received = handler.Receive(package, SocketFlags.None);
-                        // TODO join all packages
+                        byte[] package = new byte[packageSize];
+
+                        _logger.Info($"Receiving {packageSize} bytes");
+                        int received = connectionRequest.Receive(package, SocketFlags.None);
                         readedBytes += received;
+                        _logger.Info($"Total received bytes: {(float)readedBytes * 100 / requestSize}%");
                     }
-                    handler.Send(BitConverter.GetBytes(readedBytes));
-                    handler.Dispose();
+
+                    timer.Stop();
+                    _logger.Info($"Finished receiving package in {timer.ElapsedMilliseconds}ms");
+
+                    _logger.Info("Sending response to the client");
+                    connectionRequest.Send(BitConverter.GetBytes(readedBytes));
+
+                    _logger.Info("Disposing request");
+                    connectionRequest.Dispose();
                 }
             }
-            catch (SocketException)
+            catch (SocketException ex)
             {
-                // TODO
+                _logger.Fatal(ex);
             }
             finally
             {
+                _logger.Info("Disposing server");
                 server?.Dispose();
             }
         }
