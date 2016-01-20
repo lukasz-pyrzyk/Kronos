@@ -26,10 +26,10 @@ namespace ClientSample
 
             IKronosClient client = KronosClientFactory.CreateClient();
             string key = "key";
-            byte[] package = File.ReadAllBytes(@"D:\iso\WIndows\WXPVOL_EN.iso");
+            string fileToSend = "C:\\Temp\\file.bin";
             DateTime expiryDate = new DateTime();
 
-            client.InsertToServer(key, package, expiryDate);
+            client.InsertToServer(key, File.ReadAllBytes(fileToSend), expiryDate);
 
             _logger.Info("Closing program");
         }
