@@ -2,7 +2,7 @@
 using Kronos.Shared.Network.Codes;
 using Kronos.Shared.Network.Model;
 
-namespace Kronos.Client.Core
+namespace Kronos.Client
 {
     /// <summary>
     /// DataContract for KronosClient

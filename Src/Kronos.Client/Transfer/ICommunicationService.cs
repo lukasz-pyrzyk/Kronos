@@ -2,7 +2,7 @@
 using Kronos.Shared.Network.Codes;
 using Kronos.Shared.Network.Requests;
 
-namespace Kronos.Client.Core.Server
+namespace Kronos.Client.Transfer
 {
     /// <summary>
     /// Communication layer between client and server

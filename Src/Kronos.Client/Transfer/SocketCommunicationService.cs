@@ -6,7 +6,7 @@ using Kronos.Shared.Network.Requests;
 using Kronos.Shared.Socket;
 using NLog;
 
-namespace Kronos.Client.Core.Server
+namespace Kronos.Client.Transfer
 {
     public class SocketCommunicationService : ICommunicationService
     {
@@ -36,7 +36,7 @@ namespace Kronos.Client.Core.Server
 
                 _logger.Debug($"Server has received {receivedValue} bytes");
             }
-            catch (SocketException ex)
+            catch (Exception ex)
             {
                 _logger.Fatal($"During package transfer an error occurred {ex}");
                 _logger.Debug("Returning information about exception");

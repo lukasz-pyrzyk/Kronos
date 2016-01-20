@@ -1,12 +1,12 @@
 ﻿using System;
-using Kronos.Client.Core.Server;
+using Kronos.Client.Transfer;
 using Kronos.Shared.Configuration;
 using Kronos.Shared.Network.Codes;
 using Kronos.Shared.Network.Model;
 using Kronos.Shared.Network.Requests;
 using NLog;
 
-namespace Kronos.Client.Core
+namespace Kronos.Client
 {
     /// <summary>
     /// Official Kronos client

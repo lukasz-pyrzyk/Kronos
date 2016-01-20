@@ -1,11 +1,5 @@
 {
     "authors": [ "Lukasz Pyrzyk" ],
-    "commands": {
-        "Kronos.Client": "Kronos.Client"
-    },
-    "compilationOptions": {
-        "emitEntryPoint": true
-    },
     "dependencies": {
         "Kronos.Shared": "1.0.0-*",
         "NLog": "4.4.0-alpha1",
