@@ -1,6 +1,6 @@
 ﻿using System.Net;
-using Kronos.Shared.Network.Codes;
-using Kronos.Shared.Network.Requests;
+using Kronos.Shared.Requests;
+using Kronos.Shared.StatusCodes;
 
 namespace Kronos.Client.Transfer
 {

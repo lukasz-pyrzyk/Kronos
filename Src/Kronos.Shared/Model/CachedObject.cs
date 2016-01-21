@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Kronos.Shared.Network.Model
+namespace Kronos.Shared.Model
 {
     public class CachedObject
     {

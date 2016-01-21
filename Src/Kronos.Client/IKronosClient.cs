@@ -1,6 +1,6 @@
 ﻿using System;
-using Kronos.Shared.Network.Codes;
-using Kronos.Shared.Network.Model;
+using Kronos.Shared.Model;
+using Kronos.Shared.StatusCodes;
 
 namespace Kronos.Client
 {

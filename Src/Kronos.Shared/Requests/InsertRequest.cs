@@ -1,6 +1,6 @@
-﻿using Kronos.Shared.Network.Model;
+﻿using Kronos.Shared.Model;
 
-namespace Kronos.Shared.Network.Requests
+namespace Kronos.Shared.Requests
 {
     public class InsertRequest : Request
     {

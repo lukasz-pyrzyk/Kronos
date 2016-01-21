@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Linq;
 using System.Text;
-using Kronos.Shared.Network.Model;
+using Kronos.Shared.Model;
 
 namespace Kronos.Shared.Socket
 {

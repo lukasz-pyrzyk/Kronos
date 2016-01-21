@@ -1,4 +1,4 @@
-﻿namespace Kronos.Shared.Network.Codes
+﻿namespace Kronos.Shared.StatusCodes
 {
     public enum RequestStatusCode
     {

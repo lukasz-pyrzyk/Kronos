@@ -1,9 +1,9 @@
 ﻿using System;
 using Kronos.Client.Transfer;
 using Kronos.Shared.Configuration;
-using Kronos.Shared.Network.Codes;
-using Kronos.Shared.Network.Model;
-using Kronos.Shared.Network.Requests;
+using Kronos.Shared.Model;
+using Kronos.Shared.Requests;
+using Kronos.Shared.StatusCodes;
 using NLog;
 
 namespace Kronos.Client

@@ -1,6 +1,5 @@
 ﻿using System.Collections.Generic;
-using System.IO;
-using Kronos.Shared.Network.Model;
+using Kronos.Shared.Model;
 
 namespace Kronos.Shared.Configuration
 {

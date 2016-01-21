@@ -1,4 +1,4 @@
-﻿namespace Kronos.Shared.Network.Requests
+﻿namespace Kronos.Shared.Requests
 {
     /// <summary>
     /// Base class for any request to the server
