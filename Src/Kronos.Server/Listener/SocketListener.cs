@@ -28,35 +28,50 @@ namespace Kronos.Server.Listener
 
                 while (true)
                 {
-                    Socket connectionRequest = server.Accept();
-                    var timer = Stopwatch.StartNew();
-                    _logger.Info("Accepting request");
-
-                    byte[] packageSizeBuffer = new byte[sizeof(int)];
-                    _logger.Info("Receiving information about request size");
-                    connectionRequest.Receive(packageSizeBuffer, SocketFlags.None);
-                    int requestSize = BitConverter.ToInt32(packageSizeBuffer, 0);
-                    _logger.Info($"Request contains {requestSize} bytes");
-
-                    int readedBytes = sizeof(int);
-                    while (readedBytes != requestSize)
+                    Socket connectionRequest = null;
+                    try
                     {
-                        byte[] package = new byte[packageSize];
+                        connectionRequest = server.Accept();
+                        var timer = Stopwatch.StartNew();
+                        _logger.Info("Accepting request");
 
-                        _logger.Info($"Receiving {packageSize} bytes");
-                        int received = connectionRequest.Receive(package, SocketFlags.None);
-                        readedBytes += received;
-                        _logger.Info($"Total received bytes: {(float)readedBytes * 100 / requestSize}%");
+                        byte[] packageSizeBuffer = new byte[sizeof (int)];
+                        _logger.Info("Receiving information about request size");
+                        connectionRequest.Receive(packageSizeBuffer, SocketFlags.None);
+                        int requestSize = BitConverter.ToInt32(packageSizeBuffer, 0);
+                        _logger.Info($"Request contains {requestSize} bytes");
+
+                        int readedBytes = sizeof (int);
+                        while (readedBytes != requestSize)
+                        {
+                            byte[] package = new byte[packageSize];
+
+                            _logger.Info($"Receiving {packageSize} bytes");
+                            int received = connectionRequest.Receive(package, SocketFlags.None);
+                            readedBytes += received;
+                            _logger.Info($"Total received bytes: {(float) readedBytes*100/requestSize}%");
+                        }
+
+                        timer.Stop();
+                        _logger.Info($"Finished receiving package in {timer.ElapsedMilliseconds}ms");
+
+                        _logger.Info("Sending response to the client");
+                        connectionRequest.Send(BitConverter.GetBytes(readedBytes));
+
+                        _logger.Info("Disposing request");
+                        connectionRequest.Dispose();
                     }
-
-                    timer.Stop();
-                    _logger.Info($"Finished receiving package in {timer.ElapsedMilliseconds}ms");
-
-                    _logger.Info("Sending response to the client");
-                    connectionRequest.Send(BitConverter.GetBytes(readedBytes));
-
-                    _logger.Info("Disposing request");
-                    connectionRequest.Dispose();
+                    catch (SocketException ex)
+                    {
+                        _logger.Error(
+                            $"Exception during receiving request from client {connectionRequest?.RemoteEndPoint}");
+                        _logger.Fatal(ex);
+                    }
+                    finally
+                    {
+                        connectionRequest?.Shutdown(SocketShutdown.Both);
+                        connectionRequest?.Dispose();
+                    }
                 }
             }
             catch (SocketException ex)
@@ -66,6 +81,7 @@ namespace Kronos.Server.Listener
             finally
             {
                 _logger.Info("Disposing server");
+                server?.Shutdown(SocketShutdown.Both);
                 server?.Dispose();
             }
         }
