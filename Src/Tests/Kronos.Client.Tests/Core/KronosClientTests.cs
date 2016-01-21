@@ -1,37 +1,34 @@
 ﻿using System;
 using System.Net;
-using Kronos.Client.Core;
-using Kronos.Client.Core.Server;
+using System.Text;
+using Kronos.Client.Transfer;
 using Kronos.Shared.Configuration;
-using Kronos.Shared.Network.Codes;
-using Kronos.Shared.Network.Model;
-using Kronos.Shared.Network.Requests;
-using Kronos.Tests.Helpers;
-using NSubstitute;
-using Ploeh.AutoFixture;
+using Kronos.Shared.Model;
+using Kronos.Shared.Requests;
+using Kronos.Shared.StatusCodes;
+using Moq;
 using Xunit;
 
 namespace Kronos.Client.Tests.Core
 {
     public class KronosClientTests
     {
-        private readonly Fixture _fixture = new Fixture();
 
         [Fact]
         public void CanInsertObjectByKeyPackageAndExpiryDateToServer()
         {
-            string key = _fixture.Create<string>();
-            byte[] package =_fixture.Create<byte[]>();
-            DateTime expiryDate = _fixture.Create<DateTime>();
+            string key = "key";
+            byte[] package = Encoding.UTF8.GetBytes("package");
+            DateTime expiryDate = DateTime.Today.AddDays(1);
             RequestStatusCode expectedStatusCode = RequestStatusCode.Ok;
 
-            ICommunicationService communicationService = Substitute.For<ICommunicationService>();
-            communicationService.SendToNode(Arg.Any<InsertRequest>(), Arg.Any<IPEndPoint>()).Returns(expectedStatusCode);
+            var communicationServiceMock = new Mock<ICommunicationService>();
+            communicationServiceMock.Setup(x => x.SendToNode(It.IsAny<InsertRequest>(), It.IsAny<IPEndPoint>())).Returns(expectedStatusCode);
 
-            IServerConfiguration configuration = Substitute.For<IServerConfiguration>();
-            configuration.GetNodeForStream(Arg.Any<CachedObject>()).Returns(new NodeConfiguration(_fixture.CreateIpAddress(), _fixture.Create<int>()));
+            var configurationMock = new Mock<IServerConfiguration>();
+            configurationMock.Setup(x => x.GetNodeForStream(It.IsAny<CachedObject>())).Returns(new NodeConfiguration("10.10.10.10", 5000));
 
-            IKronosClient client = new KronosClient(communicationService, configuration);
+            IKronosClient client = new KronosClient(communicationServiceMock.Object, configurationMock.Object);
             RequestStatusCode statusCode = client.InsertToServer(key, package, expiryDate);
 
             Assert.Equal(statusCode, expectedStatusCode);
@@ -40,16 +37,16 @@ namespace Kronos.Client.Tests.Core
         [Fact]
         public void CanInsertCachedObjectToServer()
         {
-            CachedObject objectToCache = new CachedObject(_fixture.Create<string>(), _fixture.Create<byte[]>(), _fixture.Create<DateTime>());
+            CachedObject objectToCache = new CachedObject("key", Encoding.UTF8.GetBytes("package"), DateTime.Today.AddDays(1));
             RequestStatusCode expectedStatusCode = RequestStatusCode.Ok;
 
-            ICommunicationService communicationService = Substitute.For<ICommunicationService>();
-            communicationService.SendToNode(Arg.Any<InsertRequest>(), Arg.Any<IPEndPoint>()).Returns(expectedStatusCode);
+            var communicationServiceMock = new Mock<ICommunicationService>();
+            communicationServiceMock.Setup(x => x.SendToNode(It.IsAny<InsertRequest>(), It.IsAny<IPEndPoint>())).Returns(expectedStatusCode);
 
-            IServerConfiguration configuration = Substitute.For<IServerConfiguration>();
-            configuration.GetNodeForStream(Arg.Any<CachedObject>()).Returns(new NodeConfiguration(_fixture.CreateIpAddress(), _fixture.Create<int>()));
+            var configurationMock = new Mock<IServerConfiguration>();
+            configurationMock.Setup(x => x.GetNodeForStream(It.IsAny<CachedObject>())).Returns(new NodeConfiguration("10.10.10.10", 5000));
 
-            IKronosClient client = new KronosClient(communicationService, configuration);
+            IKronosClient client = new KronosClient(communicationServiceMock.Object, configurationMock.Object);
             RequestStatusCode statusCode = client.InsertToServer(objectToCache);
 
             Assert.Equal(statusCode, expectedStatusCode);

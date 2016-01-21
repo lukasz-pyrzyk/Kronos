@@ -1,5 +1,4 @@
-﻿using Kronos.Client.Core;
-using Xunit;
+﻿using Xunit;
 
 namespace Kronos.Client.Tests.Core
 {
