@@ -1,5 +1,5 @@
 ﻿using Kronos.Client.Transfer;
-using Kronos.Shared.Configuration;
+using Kronos.Core.Configuration;
 
 namespace Kronos.Client
 {

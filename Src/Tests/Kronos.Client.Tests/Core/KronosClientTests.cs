@@ -2,10 +2,10 @@
 using System.Net;
 using System.Text;
 using Kronos.Client.Transfer;
-using Kronos.Shared.Configuration;
-using Kronos.Shared.Model;
-using Kronos.Shared.Requests;
-using Kronos.Shared.StatusCodes;
+using Kronos.Core.Configuration;
+using Kronos.Core.Model;
+using Kronos.Core.Requests;
+using Kronos.Core.StatusCodes;
 using Moq;
 using Xunit;
 

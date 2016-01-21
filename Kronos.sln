@@ -7,11 +7,11 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Kronos.Client", "Src\Kronos
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Kronos.Server", "Src\Kronos.Server\Kronos.Server.xproj", "{5CD560DC-9E67-464D-9E56-B0E5914AFAE6}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Kronos.Shared", "Src\Kronos.Shared\Kronos.Shared.xproj", "{125D4674-A403-45BF-A42C-EBD016A78650}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Kronos.Core", "Src\Kronos.Core\Kronos.Core.xproj", "{125D4674-A403-45BF-A42C-EBD016A78650}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{6A45CC5D-C17F-4F32-AD54-B585E1747D43}"
 EndProject
-Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Kronos.Shared.Tests", "Src\Tests\Kronos.Shared.Tests\Kronos.Shared.Tests.xproj", "{67E85EA7-31DE-468C-B620-A8B9477818B5}"
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Kronos.Core.Tests", "Src\Tests\Kronos.Core.Tests\Kronos.Core.Tests.xproj", "{67E85EA7-31DE-468C-B620-A8B9477818B5}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{A22FEF3F-1A32-44DE-9468-A9121C4BD64B}"
 	ProjectSection(SolutionItems) = preProject
