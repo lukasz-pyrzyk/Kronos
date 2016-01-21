@@ -1,19 +1,15 @@
 ﻿using Kronos.Shared.Configuration;
-using Kronos.Tests.Helpers;
-using Ploeh.AutoFixture;
 using Xunit;
 
 namespace Kronos.Shared.Tests.Configuration
 {
     public class NodeConfigurationTests
     {
-        private readonly Fixture _fixture = new Fixture();
-
         [Fact]
         public void CanAssingPropertiesByConstructor()
         {
-            string host = _fixture.CreateIpAddress();
-            int port = _fixture.Create<int>();
+            string host = "10.10.10.10";
+            int port = 11;
 
             NodeConfiguration configuration = new NodeConfiguration(host, port);
 
@@ -25,8 +21,8 @@ namespace Kronos.Shared.Tests.Configuration
         [Fact]
         public void ReturnsCorrectToStringMessage()
         {
-            string host = _fixture.CreateIpAddress();
-            int port = _fixture.Create<int>();
+            string host = "10.10.10.10";
+            int port = 11;
 
             NodeConfiguration configuration = new NodeConfiguration(host, port);
             string message = configuration.ToString();

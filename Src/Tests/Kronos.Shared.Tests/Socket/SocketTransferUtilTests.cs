@@ -1,32 +1,37 @@
-﻿using System.Linq;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
 using Kronos.Shared.Socket;
-using Ploeh.AutoFixture;
 using Xunit;
 
 namespace Kronos.Shared.Tests.Socket
 {
     public class SocketTransferUtilTests
     {
-        private readonly Fixture _fixture = new Fixture();
-
         [Fact]
         public void CanAddTwoByteArrays()
         {
-            byte[][] arrays = _fixture.Create<byte[][]>();
+            ICollection<byte[]> arrays = new List<byte[]>
+            {
+                Encoding.UTF8.GetBytes("key"),
+                new byte[5],
+                BitConverter.GetBytes(DateTime.MaxValue.Ticks)
+            };
 
-            byte[] splited = SocketTransferUtil.Split(arrays);
+            byte[] total = SocketTransferUtil.Join(arrays.ToArray());
 
-            Assert.Equal(splited.Length, arrays.Sum(x => x.Length));
+            Assert.Equal(total.Length, arrays.Sum(x => x.Length));
 
-            int lastPointer = 0;
+            int offset = 0;
             foreach (byte[] array in arrays)
             {
                 for (int j = 0; j < array.Length; j++)
                 {
-                    Assert.Equal(splited[lastPointer + j], array[j]);
+                    Assert.Equal(total[offset + j], array[j]);
                 }
 
-                lastPointer += array.Length;
+                offset += array.Length;
             }
         }
     }

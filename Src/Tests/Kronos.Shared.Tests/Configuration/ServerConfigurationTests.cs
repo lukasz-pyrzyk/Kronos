@@ -1,22 +1,18 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using Kronos.Shared.Configuration;
-using Kronos.Shared.Network.Model;
-using Kronos.Tests.Helpers;
-using Ploeh.AutoFixture;
+using Kronos.Shared.Model;
 using Xunit;
 
 namespace Kronos.Shared.Tests.Configuration
 {
     public class ServerConfigurationTests
     {
-        private readonly Fixture _fixture = new Fixture();
-
         [Fact]
         public void CanGetNodesConfiguration()
         {
-            NodeConfiguration nodeConfiguraton = new NodeConfiguration(_fixture.CreateIpAddress(), _fixture.Create<int>());
-            ServerConfiguration configuration = _fixture.Build<ServerConfiguration>().With(x => x.NodesConfiguration, new List<NodeConfiguration>() { nodeConfiguraton }).Create();
-            CachedObject cachedObject = _fixture.Create<CachedObject>();
+            NodeConfiguration nodeConfiguraton = new NodeConfiguration("10.10.10.10", 80);
+            ServerConfiguration configuration = new ServerConfiguration() { NodesConfiguration = new[] { nodeConfiguraton } };
+            CachedObject cachedObject = new CachedObject("key", new byte[5], DateTime.MaxValue);
 
             NodeConfiguration nodeConfiguration = configuration.GetNodeForStream(cachedObject);
 

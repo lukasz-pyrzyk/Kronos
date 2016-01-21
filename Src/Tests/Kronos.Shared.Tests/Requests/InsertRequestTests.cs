@@ -1,19 +1,16 @@
 ﻿using System;
-using Kronos.Shared.Network.Model;
-using Kronos.Shared.Network.Requests;
-using Ploeh.AutoFixture;
+using Kronos.Shared.Model;
+using Kronos.Shared.Requests;
 using Xunit;
 
-namespace Kronos.Shared.Tests.Network.Requests
+namespace Kronos.Shared.Tests.Requests
 {
     public class InsertRequestTests
     {
-        private readonly Fixture _fixture = new Fixture();
-
         [Fact]
         public void CanAssingPropertiesByConstructor()
         {
-            CachedObject cachedObject = _fixture.Create<CachedObject>();
+            CachedObject cachedObject = new CachedObject("key", new byte[5], DateTime.MaxValue);
 
             InsertRequest request = new InsertRequest(cachedObject);
             

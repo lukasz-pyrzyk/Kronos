@@ -1,7 +1,7 @@
-﻿using Kronos.Shared.Network.Codes;
+﻿using Kronos.Shared.StatusCodes;
 using Xunit;
 
-namespace Kronos.Shared.Tests.Network.Codes
+namespace Kronos.Shared.Tests.StatusCodes
 {
     public class RequestStatusTests
     {

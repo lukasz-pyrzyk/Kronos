@@ -4,17 +4,22 @@
         "test": "xunit.runner.dnx"
     },
     "dependencies": {
-        "AutoFixture": "3.37.3",
         "Kronos.Shared": "1.0.0-*",
         "Kronos.Tests.Helpers": "1.0.0-*",
-        "NSubstitute": "1.9.2",
         "xunit": "2.2.0-beta1-build3239",
-        "xunit.runner.dnx": "2.1.0-rc1-build204",
         "xunit.runner.visualstudio": "2.2.0-beta1-build1144"
     },
     "description": "Kronos - shared dll tests",
     "frameworks": {
-        "dnx451": { }
+        "dnxcore50": {
+            "dependencies": {
+                "Microsoft.CSharp": "4.0.1-beta-23516",
+                "System.Collections": "4.0.11-beta-23516",
+                "System.Linq": "4.0.1-beta-23516",
+                "System.Runtime": "4.0.21-beta-23516",
+                "System.Threading": "4.0.11-beta-23516"
+            }
+        }
     },
     "licenseUrl": "",
     "projectUrl": "https://github.com/lukasz-pyrzyk/Kronos",
