@@ -2,7 +2,6 @@
 using System.Net;
 using System.Net.Sockets;
 using Kronos.Core.Requests;
-using Kronos.Core.Socket;
 using Kronos.Core.StatusCodes;
 using NLog;
 
@@ -15,7 +14,7 @@ namespace Kronos.Client.Transfer
         public RequestStatusCode SendToNode(InsertRequest request, IPEndPoint endPoint)
         {
             Socket socket = null;
-            byte[] packageToSend = SocketTransferUtil.GetTotalBytes(request.ObjectToCache);
+            byte[] packageToSend = request.Serialize();
             try
             {
                 socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
