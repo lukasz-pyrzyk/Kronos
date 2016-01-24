@@ -23,13 +23,19 @@ namespace Kronos.Core.Tests.Requests
         {
             string key = "key";
             byte[] objectToStore = Encoding.UTF8.GetBytes("object");
-            DateTime date = new DateTime();
+            DateTime date = DateTime.Now;
 
             InsertRequest request = new InsertRequest(new CachedObject(key, objectToStore, date));
 
             byte[] array = request.Serialize();
-            
-            // TODO deserialize and compare
+
+            InsertRequest requestFromBytes = InsertRequest.Deserialize(array);
+
+            Assert.NotNull(requestFromBytes);
+            Assert.NotNull(requestFromBytes.ObjectToCache);
+            Assert.Equal(requestFromBytes.ObjectToCache.Key, key);
+            Assert.Equal(requestFromBytes.ObjectToCache.Object, objectToStore);
+            Assert.Equal(requestFromBytes.ObjectToCache.ExpiryDate.Ticks, date.Ticks);
         }
     }
 }

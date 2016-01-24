@@ -11,17 +11,17 @@ namespace Kronos.Core.Requests
     {
         public abstract byte[] Serialize();
 
-        protected byte[] GetTotalSize(params int[] values)
+        protected byte[] JoinWithTotalSize(params byte[][] arrays)
         {
-            int totalSize = values.Sum() + sizeof(int);
-            return BitConverter.GetBytes(totalSize);
-        }
+            int packagesSize = arrays.Sum(x => x.Length);
+            byte[] packageSizeBytes = Serialize(packagesSize);
 
-        protected byte[] Join(params byte[][] arrays)
-        {
-            byte[] finalArray = new byte[arrays.Sum(x => x.Length)];
+            int intSize = sizeof(int);
+            byte[] finalArray = new byte[intSize + packagesSize];
 
-            int offset = 0;
+            Buffer.BlockCopy(packageSizeBytes, 0, finalArray, 0, packageSizeBytes.Length);
+
+            int offset = intSize;
             foreach (byte[] data in arrays)
             {
                 Buffer.BlockCopy(data, 0, finalArray, offset, data.Length);
@@ -31,14 +31,19 @@ namespace Kronos.Core.Requests
             return finalArray;
         }
 
-        protected byte[] Serialize(string word)
+        protected byte[] Serialize(int value)
         {
-            return Encoding.UTF8.GetBytes(word);
+            return BitConverter.GetBytes(value);
         }
 
-        protected byte[] Serialize(DateTime datetime)
+        protected byte[] Serialize(string value)
         {
-            return BitConverter.GetBytes(datetime.Ticks);
+            return Encoding.UTF8.GetBytes(value);
+        }
+
+        protected byte[] Serialize(DateTime value)
+        {
+            return BitConverter.GetBytes(value.Ticks);
         }
     }
 }

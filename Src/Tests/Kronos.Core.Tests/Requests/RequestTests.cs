@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Linq;
 using System.Text;
 using Kronos.Core.Requests;
 using Xunit;
@@ -49,7 +50,7 @@ namespace Kronos.Core.Tests.Requests
                 bytesOne[i] = Byte.MinValue;
             }
 
-            byte[] joined = new FakeRequest().Join(bytesOne, bytesTwo);
+            byte[] joined = new FakeRequest().Join(bytesOne, bytesTwo).Skip(sizeof(int)).ToArray();
 
             Assert.Equal(joined.Length, first + second);
 
@@ -84,7 +85,7 @@ namespace Kronos.Core.Tests.Requests
 
             public new byte[] Join(params byte[][] bytes)
             {
-                return base.Join(bytes);
+                return base.JoinWithTotalSize(bytes);
             }
         }
     }
