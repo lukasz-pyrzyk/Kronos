@@ -66,10 +66,9 @@ namespace Kronos.Server.Listener
                         _logger.Info($"Finished receiving package in {timer.ElapsedMilliseconds}ms");
 
                         _logger.Info("Sending response to the client");
+                        
+                        connectionRequest.Shutdown(SocketShutdown.Send);
                         connectionRequest.Send(BitConverter.GetBytes(offset));
-
-                        _logger.Info("Disposing request");
-                        connectionRequest.Dispose();
 
                         InsertRequest request = InsertRequest.Deserialize(requestPackage);
                     }
