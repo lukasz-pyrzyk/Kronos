@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Linq;
-using System.Text;
 using Kronos.Core.Requests;
 using Xunit;
 
@@ -8,29 +7,54 @@ namespace Kronos.Core.Tests.Requests
 {
     public class RequestTests
     {
-        
         [Fact]
-        public void CanGetCorrectByteArrayFromString()
+        public void CanSerializeAndDeserializeString()
         {
             string lorem = "Lorem ipsum dolor sit amet, consectetur adipiscing elit, sed do eiusmod";
 
-            byte[] array = new FakeRequest().GetBytes(lorem);
-            string loremFromArray = Encoding.UTF8.GetString(array);
+            var request = new FakeRequest();
+            byte[] array = request.GetBytes(lorem);
+            string loremFromArray = request.GetString(array);
 
             Assert.Equal(lorem, loremFromArray);
         }
 
         [Fact]
-        public void CanGetCorrectByteArrayFromDatetime()
+        public void CanSerializeAndDeserializeInt()
         {
-            DateTime now = DateTime.Now;
+            int value = int.MaxValue;
 
-            byte[] array = new FakeRequest().GetBytes(now);
-            long ticks = BitConverter.ToInt64(array, 0);
+            var request = new FakeRequest();
+            byte[] array = request.GetBytes(value);
+            int valueFromArray = request.GetInt(array);
 
-            DateTime nowFromArray = DateTime.FromBinary(ticks);
+            Assert.Equal(value, valueFromArray);
+        }
 
-            Assert.Equal(now, nowFromArray);
+
+        [Fact]
+        public void CanSerializeAndDeserializeLong()
+        {
+            long value = long.MaxValue;
+
+            var request = new FakeRequest();
+            byte[] array = request.GetBytes(value);
+            long valueFromArray = request.GetLong(array);
+
+            Assert.Equal(value, valueFromArray);
+        }
+
+
+        [Fact]
+        public void CanSerializeAndDeserializeDatetime()
+        {
+            DateTime date = DateTime.Now;
+
+            var request = new FakeRequest();
+            byte[] array = request.GetBytes(date);
+            DateTime dateFromArray = request.GetDatetime(array);
+
+            Assert.Equal(date, dateFromArray);
         }
 
         [Theory]
@@ -73,19 +97,44 @@ namespace Kronos.Core.Tests.Requests
                 return new byte[0];
             }
 
-            public new byte[] GetBytes(string word)
+            public byte[] GetBytes(long value)
             {
-                return base.Serialize(word);
+                return Serialize(value);
             }
 
-            public new byte[] GetBytes(DateTime datetime)
+            public byte[] GetBytes(string word)
             {
-                return base.Serialize(datetime);
+                return Serialize(word);
             }
 
-            public new byte[] Join(params byte[][] bytes)
+            public byte[] GetBytes(DateTime datetime)
             {
-                return base.JoinWithTotalSize(bytes);
+                return Serialize(datetime);
+            }
+
+            public int GetInt(byte[] stream)
+            {
+                return DeserializeInt(stream);
+            }
+
+            public long GetLong(byte[] stream)
+            {
+                return DeserializeLong(stream);
+            }
+
+            public string GetString(byte[] stream)
+            {
+                return DeserializeString(stream);
+            }
+
+            public DateTime GetDatetime(byte[] stream)
+            {
+                return DeseriazeDatetime(stream);
+            }
+
+            public byte[] Join(params byte[][] bytes)
+            {
+                return JoinWithTotalSize(bytes);
             }
         }
     }

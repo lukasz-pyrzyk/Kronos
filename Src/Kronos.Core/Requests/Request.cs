@@ -12,7 +12,7 @@ namespace Kronos.Core.Requests
     {
         public abstract byte[] Serialize();
 
-        protected byte[] JoinWithTotalSize(params byte[][] arrays)
+        protected static byte[] JoinWithTotalSize(params byte[][] arrays)
         {
             int packagesSize = arrays.Sum(x => x.Length);
             byte[] packageSizeBytes = Serialize(packagesSize);
@@ -32,17 +32,22 @@ namespace Kronos.Core.Requests
             return finalArray;
         }
 
-        protected byte[] Serialize(int value)
+        protected static byte[] Serialize(int value)
         {
             return BitConverter.GetBytes(value);
         }
 
-        protected byte[] Serialize(string value)
+        protected static byte[] Serialize(long value)
+        {
+            return BitConverter.GetBytes(value);
+        }
+
+        protected static byte[] Serialize(string value)
         {
             return Encoding.UTF8.GetBytes(value);
         }
 
-        protected byte[] Serialize(DateTime value)
+        protected static byte[] Serialize(DateTime value)
         {
             return BitConverter.GetBytes(value.Ticks);
         }
@@ -62,7 +67,7 @@ namespace Kronos.Core.Requests
             return BitConverter.ToInt64(stream, 0);
         }
 
-        protected static string DeserializeString(byte[] stream)
+        public static string DeserializeString(byte[] stream)
         {
             return Encoding.UTF8.GetString(stream);
         }

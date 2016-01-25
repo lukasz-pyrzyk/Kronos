@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Runtime.InteropServices;
-using System.Text;
 using Kronos.Core.Model;
 
 namespace Kronos.Core.Requests
