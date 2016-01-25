@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Kronos.Core.Requests
@@ -44,6 +45,41 @@ namespace Kronos.Core.Requests
         protected byte[] Serialize(DateTime value)
         {
             return BitConverter.GetBytes(value.Ticks);
+        }
+
+        protected static int DeserializeInt(byte[] stream)
+        {
+            return BitConverter.ToInt32(stream, 0);
+        }
+
+        protected static DateTime DeseriazeDatetime(byte[] stream)
+        {
+            return DateTime.FromBinary(DeserializeLong(stream));
+        }
+
+        protected static long DeserializeLong(byte[] stream)
+        {
+            return BitConverter.ToInt64(stream, 0);
+        }
+
+        protected static string DeserializeString(byte[] stream)
+        {
+            return Encoding.UTF8.GetString(stream);
+        }
+
+        protected static byte[] GetPartOfStream<T>(byte[] stream, ref int offset)
+            where T : struct, IComparable, IComparable<T>, IConvertible, IEquatable<T>, IFormattable
+        {
+            int partSize = Marshal.SizeOf(typeof(T));
+            return GetPartOfStream(stream, ref offset, partSize);
+        }
+
+        protected static byte[] GetPartOfStream(byte[] stream, ref int offset, int partSize)
+        {
+            byte[] keyPackageSizeBytes = new byte[partSize];
+            Array.ConstrainedCopy(stream, offset, keyPackageSizeBytes, 0, keyPackageSizeBytes.Length);
+            offset += partSize;
+            return keyPackageSizeBytes;
         }
     }
 }
