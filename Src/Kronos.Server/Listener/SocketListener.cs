@@ -67,7 +67,6 @@ namespace Kronos.Server.Listener
 
                         _logger.Info("Sending response to the client");
                         
-                        connectionRequest.Shutdown(SocketShutdown.Send);
                         connectionRequest.Send(BitConverter.GetBytes(offset));
 
                         InsertRequest request = InsertRequest.Deserialize(requestPackage);
