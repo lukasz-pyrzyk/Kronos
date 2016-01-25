@@ -41,7 +41,7 @@ namespace Kronos.Server.Listener
                         _logger.Info("Receiving information about request size");
                         connectionRequest.Receive(packageSizeBuffer, SocketFlags.None);
 
-                        int requestSize = BitConverter.ToInt32(packageSizeBuffer, 0) + sizeof(int);
+                        int requestSize = BitConverter.ToInt32(packageSizeBuffer, 0) + sizeof (int);
                         _logger.Info($"Request contains {requestSize} bytes");
 
                         byte[] requestPackage = new byte[requestSize];
@@ -87,6 +87,10 @@ namespace Kronos.Server.Listener
                 }
             }
             catch (SocketException ex)
+            {
+                _logger.Fatal(ex);
+            }
+            catch (Exception ex)
             {
                 _logger.Fatal(ex);
             }
