@@ -1,5 +1,6 @@
 {
     "authors": [ "Lukasz Pyrzyk" ],
+    "content": [ "./Nlog.config" ],
     "dependencies": {
         "Kronos.Core": "1.0.0-*",
         "NLog": "4.4.0-alpha1",

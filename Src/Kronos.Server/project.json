@@ -1,5 +1,6 @@
 {
     "authors": [ "Lukasz Pyrzyk" ],
+    "content": [ "./Nlog.config" ],
     "commands": {
         "Kronos.Server": "Kronos.Server"
     },

@@ -1,5 +1,9 @@
 {
     "authors": [ "Lukasz Pyrzyk" ],
+    "content": [ "./Nlog.config" ],
+    "dependencies": {
+        "NLog": "4.4.0-alpha1"
+    },
     "description": "Kronos.Client - cache platform",
     "frameworks": {
         "dnx451": { },
@@ -15,9 +19,6 @@
     },
     "licenseUrl": "",
     "projectUrl": "https://github.com/lukasz-pyrzyk/Kronos",
-    "dependencies": {
-        "NLog": "4.4.0-alpha1"
-    },
     "tags": [ "cache, distributed, socket, dotnetcore, dnx" ],
     "version": "1.0.0-*"
 }
