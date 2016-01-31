@@ -71,7 +71,7 @@ namespace Kronos.Server.Listener
                         
                         connectionRequest.Send(BitConverter.GetBytes(offset));
 
-                        InsertRequest request = _converter.Deserialize<InsertRequest>(requestPackage);
+                        InsertRequest request = _converter.Deserialize<InsertRequest>(requestPackage.Skip(sizeof(int)).ToArray());
                     }
                     catch (SocketException ex)
                     {

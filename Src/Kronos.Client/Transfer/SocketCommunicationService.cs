@@ -57,7 +57,7 @@ namespace Kronos.Client.Transfer
             byte[] packageToSend = _converter.Serialize(request);
             byte[] packageSize = BitConverter.GetBytes(packageToSend.Length);
 
-            byte[] packageToSendWithSize = new byte[sizeof(int) + packageSize.Length];
+            byte[] packageToSendWithSize = new byte[packageSize.Length + packageToSend.Length];
             Buffer.BlockCopy(packageSize, 0, packageToSendWithSize, 0, packageSize.Length);
             Buffer.BlockCopy(packageToSend, 0, packageToSendWithSize, packageSize.Length, packageToSend.Length);
 
