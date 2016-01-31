@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
+using BinaryFormatter;
 using Kronos.Core.Requests;
 using Kronos.Core.StatusCodes;
 using NLog;
@@ -10,11 +11,12 @@ namespace Kronos.Client.Transfer
     public class SocketCommunicationService : ICommunicationService
     {
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+        private readonly BinaryConverter _converter = new BinaryConverter();
 
         public RequestStatusCode SendToNode(InsertRequest request, IPEndPoint endPoint)
         {
             Socket socket = null;
-            byte[] packageToSend = request.Serialize();
+            byte[] packageToSend = GeneratePackageWithTotalSize(request);
             try
             {
                 socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
@@ -48,6 +50,18 @@ namespace Kronos.Client.Transfer
             }
 
             return RequestStatusCode.Ok;
+        }
+
+        private byte[] GeneratePackageWithTotalSize(InsertRequest request)
+        {
+            byte[] packageToSend = _converter.Serialize(request);
+            byte[] packageSize = BitConverter.GetBytes(packageToSend.Length);
+
+            byte[] packageToSendWithSize = new byte[sizeof(int) + packageSize.Length];
+            Buffer.BlockCopy(packageSize, 0, packageToSendWithSize, 0, packageSize.Length);
+            Buffer.BlockCopy(packageToSend, 0, packageToSendWithSize, packageSize.Length, packageToSend.Length);
+
+            return packageToSendWithSize;
         }
     }
 }

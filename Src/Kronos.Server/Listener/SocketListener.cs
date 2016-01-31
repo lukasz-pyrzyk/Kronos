@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
+using BinaryFormatter;
 using Kronos.Core.Requests;
 using NLog;
 
@@ -11,6 +12,7 @@ namespace Kronos.Server.Listener
     public class SocketListener : ICommunicationListener
     {
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+        private readonly BinaryConverter _converter = new BinaryConverter();
 
         public const int QueueSize = 5;
         public const int Port = 7;
@@ -69,7 +71,7 @@ namespace Kronos.Server.Listener
                         
                         connectionRequest.Send(BitConverter.GetBytes(offset));
 
-                        InsertRequest request = InsertRequest.Deserialize(requestPackage);
+                        InsertRequest request = _converter.Deserialize<InsertRequest>(requestPackage);
                     }
                     catch (SocketException ex)
                     {

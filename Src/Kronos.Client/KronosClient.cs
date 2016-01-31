@@ -49,7 +49,7 @@ namespace Kronos.Client
             _logger.Info($"Chosen node: {nodeConfiguration}");
 
             InsertRequest request = new InsertRequest(objectToCache);
-
+            
             _logger.Info($"Sending request to communication service");
             RequestStatusCode result = _service.SendToNode(request, nodeConfiguration.Endpoint);
             return result;

@@ -4,6 +4,11 @@ namespace Kronos.Core.Model
 {
     public class CachedObject
     {
+        // used by reflection
+        public CachedObject()
+        {
+        }
+
         public CachedObject(string key, byte[] objectToCache, DateTime expiryDate)
         {
             Key = key;
@@ -11,8 +16,8 @@ namespace Kronos.Core.Model
             ExpiryDate = expiryDate;
         }
 
-        public string Key { get; private set; }
-        public byte[] Object { get; private set; }
-        public DateTime ExpiryDate { get; private set; }
+        public string Key { get; set; }
+        public byte[] Object { get; set; }
+        public DateTime ExpiryDate { get; set; }
     }
 }
