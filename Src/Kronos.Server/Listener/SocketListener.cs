@@ -1,18 +1,18 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using BinaryFormatter;
 using Kronos.Core.Requests;
 using NLog;
+using ProtoBuf;
 
 namespace Kronos.Server.Listener
 {
     public class SocketListener : ICommunicationListener
     {
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
-        private readonly BinaryConverter _converter = new BinaryConverter();
 
         public const int QueueSize = 5;
         public const int Port = 7;
@@ -39,11 +39,11 @@ namespace Kronos.Server.Listener
                         var timer = Stopwatch.StartNew();
                         _logger.Info("Accepting new request");
 
-                        byte[] packageSizeBuffer = new byte[sizeof (int)];
+                        byte[] packageSizeBuffer = new byte[sizeof(int)];
                         _logger.Info("Receiving information about request size");
                         connectionRequest.Receive(packageSizeBuffer, SocketFlags.None);
 
-                        int requestSize = BitConverter.ToInt32(packageSizeBuffer, 0) + sizeof (int);
+                        int requestSize = BitConverter.ToInt32(packageSizeBuffer, 0) + sizeof(int);
                         _logger.Info($"Request contains {requestSize} bytes");
 
                         byte[] requestPackage = new byte[requestSize];
@@ -61,17 +61,17 @@ namespace Kronos.Server.Listener
                             }
                             Buffer.BlockCopy(package, 0, requestPackage, offset, package.Length);
                             offset += received;
-                            _logger.Info($"Total received bytes: {(float) offset*100/requestSize}%");
+                            _logger.Info($"Total received bytes: {(float)offset * 100 / requestSize}%");
                         }
 
                         timer.Stop();
                         _logger.Info($"Finished receiving package in {timer.ElapsedMilliseconds}ms");
 
                         _logger.Info("Sending response to the client");
-                        
+
                         connectionRequest.Send(BitConverter.GetBytes(offset));
 
-                        InsertRequest request = _converter.Deserialize<InsertRequest>(requestPackage.Skip(sizeof(int)).ToArray());
+                        ProcessRequest(requestPackage);
                     }
                     catch (SocketException ex)
                     {
@@ -100,6 +100,17 @@ namespace Kronos.Server.Listener
                 server?.Shutdown(SocketShutdown.Both);
                 server?.Dispose();
             }
+        }
+
+        private void ProcessRequest(byte[] requestPackage)
+        {
+            InsertRequest request;
+            using (MemoryStream ms = new MemoryStream(requestPackage))
+            {
+                request = Serializer.DeserializeWithLengthPrefix<InsertRequest>(ms, PrefixStyle.Fixed32);
+            }
+
+            // TODO
         }
 
         public void Dispose()

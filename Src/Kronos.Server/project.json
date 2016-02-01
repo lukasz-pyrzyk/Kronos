@@ -8,9 +8,9 @@
         "emitEntryPoint": true
     },
     "dependencies": {
-        "BinaryFormatter": "1.0.0.1",
         "Kronos.Core": "1.0.0-*",
-        "NLog": "4.4.0-alpha1"
+        "NLog": "4.4.0-alpha1",
+        "protobuf-net": "2.1.0-alpha-1"
     },
     "description": "Kronosd - cache platform server",
     "frameworks": {

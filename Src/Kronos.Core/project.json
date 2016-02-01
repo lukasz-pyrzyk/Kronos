@@ -2,8 +2,8 @@
     "authors": [ "Lukasz Pyrzyk" ],
     "content": [ "./Nlog.config" ],
     "dependencies": {
-        "BinaryFormatter": "1.0.0.1",
-        "NLog": "4.4.0-alpha1"
+        "NLog": "4.4.0-alpha1",
+        "protobuf-net": "2.1.0-alpha-1"
     },
     "description": "Kronos.Client - cache platform",
     "frameworks": {

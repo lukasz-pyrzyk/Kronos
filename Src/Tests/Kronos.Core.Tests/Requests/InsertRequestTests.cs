@@ -1,8 +1,9 @@
 ﻿using System;
+using System.IO;
 using System.Text;
-using BinaryFormatter;
 using Kronos.Core.Model;
 using Kronos.Core.Requests;
+using ProtoBuf;
 using Xunit;
 
 namespace Kronos.Core.Tests.Requests
@@ -22,10 +23,18 @@ namespace Kronos.Core.Tests.Requests
                 }
             };
 
-            BinaryConverter converter = new BinaryConverter();
-            byte[] package = converter.Serialize(request);
+            byte[] package;
+            using (MemoryStream ms = new MemoryStream())
+            {
+                Serializer.SerializeWithLengthPrefix(ms, request, PrefixStyle.Fixed32);
+                package = ms.ToArray();
+            }
 
-            InsertRequest requestFromBytes = converter.Deserialize<InsertRequest>(package);
+            InsertRequest requestFromBytes;
+            using (MemoryStream ms = new MemoryStream(package))
+            {
+                requestFromBytes = Serializer.DeserializeWithLengthPrefix<InsertRequest>(ms, PrefixStyle.Fixed32);
+            }
 
             Assert.Equal(requestFromBytes.ObjectToCache.Object, requestFromBytes.ObjectToCache.Object);
             Assert.Equal(requestFromBytes.ObjectToCache.ExpiryDate, requestFromBytes.ObjectToCache.ExpiryDate);
