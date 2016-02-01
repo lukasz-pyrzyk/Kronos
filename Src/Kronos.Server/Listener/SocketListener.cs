@@ -82,8 +82,20 @@ namespace Kronos.Server.Listener
                     }
                     finally
                     {
-                        connectionRequest?.Shutdown(SocketShutdown.Both);
-                        connectionRequest?.Dispose();
+                        try
+                        {
+                            connectionRequest?.Shutdown(SocketShutdown.Both);
+                        }
+                        catch (SocketException)
+                        {
+                        }
+                        try
+                        {
+                            connectionRequest?.Dispose();
+                        }
+                        catch (SocketException)
+                        {
+                        }
                     }
                 }
             }
