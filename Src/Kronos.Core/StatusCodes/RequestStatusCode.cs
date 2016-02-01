@@ -1,8 +1,9 @@
 ﻿namespace Kronos.Core.StatusCodes
 {
-    public enum RequestStatusCode
+    public enum RequestStatusCode : short
     {
-        Ok = 0,
-        Failed = 1
+        Processing = 0,
+        Ok = 1,
+        Failed = 2
     }
 }

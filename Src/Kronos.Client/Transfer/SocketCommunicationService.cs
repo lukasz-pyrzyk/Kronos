@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using Kronos.Core.Requests;
 using Kronos.Core.StatusCodes;
 using NLog;
@@ -26,15 +27,15 @@ namespace Kronos.Client.Transfer
                 _logger.Debug($"Sending package of {packageToSend.Length} bytes");
                 socket.Send(packageToSend, SocketFlags.None);
 
-                int receivedValue = 0;
-                while (receivedValue != packageToSend.Length)
+                RequestStatusCode requestStatus = RequestStatusCode.Processing;
+                while (requestStatus == RequestStatusCode.Processing)
                 {
-                    byte[] response = new byte[sizeof(int)];
+                    byte[] response = new byte[sizeof(short)];
                     socket.Receive(response, SocketFlags.None);
-                    receivedValue = BitConverter.ToInt32(response, 0);
+                    requestStatus = (RequestStatusCode)BitConverter.ToInt16(response, 0);
                 }
 
-                _logger.Debug($"Server has received {receivedValue} bytes");
+                _logger.Debug($"Server has received {requestStatus} status");
             }
             catch (Exception ex)
             {
