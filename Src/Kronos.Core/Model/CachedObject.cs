@@ -1,9 +1,20 @@
 ﻿using System;
+using ProtoBuf;
 
 namespace Kronos.Core.Model
 {
+    [ProtoContract]
     public class CachedObject
     {
+        [ProtoMember(1)]
+        public string Key { get; set; }
+
+        [ProtoMember(2)]
+        public byte[] Object { get; set; }
+
+        [ProtoMember(3)]
+        public DateTime ExpiryDate { get; set; }
+
         // used by reflection
         public CachedObject()
         {
@@ -15,9 +26,5 @@ namespace Kronos.Core.Model
             Object = objectToCache;
             ExpiryDate = expiryDate;
         }
-
-        public string Key { get; set; }
-        public byte[] Object { get; set; }
-        public DateTime ExpiryDate { get; set; }
     }
 }
