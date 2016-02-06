@@ -6,8 +6,9 @@ namespace Kronos.Core.Tests.StatusCodes
     public class RequestStatusTests
     {
         [Theory]
-        [InlineData(RequestStatusCode.Ok, 0)]
-        [InlineData(RequestStatusCode.Failed, 1)]
+        [InlineData(RequestStatusCode.Processing, 0)]
+        [InlineData(RequestStatusCode.Ok, 1)]
+        [InlineData(RequestStatusCode.Failed, 2)]
         public void RequestStatusContainsGoodStatusCodes(RequestStatusCode status, int expectedValue)
         {   
             int statusCode = (int) status;

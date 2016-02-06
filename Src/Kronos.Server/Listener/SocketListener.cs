@@ -6,6 +6,8 @@ using System.Net;
 using System.Net.Sockets;
 using Kronos.Core.Requests;
 using Kronos.Core.StatusCodes;
+using Kronos.Server.RequestProcessing;
+using Kronos.Server.Storage;
 using NLog;
 using ProtoBuf;
 
@@ -14,6 +16,7 @@ namespace Kronos.Server.Listener
     public class SocketListener : ICommunicationListener
     {
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+        private readonly IRequestProcessor _processor = new RequestProcessor();
 
         public const int QueueSize = 5;
         public const int Port = 7;
@@ -72,7 +75,7 @@ namespace Kronos.Server.Listener
 
                         connectionRequest.Send(BitConverter.GetBytes((short)RequestStatusCode.Ok));
 
-                        ProcessRequest(requestPackage);
+                        _processor.ProcessRequest(requestPackage);
                     }
                     catch (SocketException ex)
                     {
@@ -115,20 +118,9 @@ namespace Kronos.Server.Listener
             }
         }
 
-        private void ProcessRequest(byte[] requestPackage)
-        {
-            InsertRequest request;
-            using (MemoryStream ms = new MemoryStream(requestPackage))
-            {
-                request = Serializer.Deserialize<InsertRequest>(ms);
-            }
-
-            // TODO
-        }
-
         public void Dispose()
         {
-            // TODO
+            InMemoryStorage.Clear();
         }
     }
 }
