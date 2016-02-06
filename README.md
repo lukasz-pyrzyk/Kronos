@@ -1,1 +1,2 @@
-# Kronos - Open Source distributed cache system
+# Kronos - Socket client-server in-memory caching service
+[![Build status](https://ci.appveyor.com/api/projects/status/vrkm5pcbg0dv6n6w/branch/master?svg=true)](https://ci.appveyor.com/project/LukaszPyrzyk/kronos/branch/master)
