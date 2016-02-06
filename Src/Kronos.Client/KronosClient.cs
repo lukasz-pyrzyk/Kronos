@@ -1,6 +1,6 @@
 ﻿using System;
+using System.Net;
 using Kronos.Client.Transfer;
-using Kronos.Core.Configuration;
 using Kronos.Core.Model;
 using Kronos.Core.Requests;
 using Kronos.Core.StatusCodes;
@@ -16,12 +16,12 @@ namespace Kronos.Client
     {
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
         private readonly ICommunicationService _service;
-        private readonly IServerConfiguration _configuration;
+        private readonly IPEndPoint _host;
 
-        public KronosClient(ICommunicationService service, IServerConfiguration configuration)
+        public KronosClient(ICommunicationService service, IPEndPoint host)
         {
             _service = service;
-            _configuration = configuration;
+            _host = host;
         }
 
         public RequestStatusCode InsertToServer(string key, byte[] package, DateTime expiryDate)
@@ -51,14 +51,11 @@ namespace Kronos.Client
         private RequestStatusCode InsertToKronosNode(CachedObject objectToCache)
         {
             _logger.Info("New request");
-
-            NodeConfiguration nodeConfiguration = _configuration.GetNodeForStream(objectToCache);
-            _logger.Info($"Chosen node: {nodeConfiguration}");
-
+            
             InsertRequest request = new InsertRequest(objectToCache);
             
             _logger.Info($"Sending request to communication service");
-            RequestStatusCode result = _service.SendToNode(request, nodeConfiguration.Endpoint);
+            RequestStatusCode result = _service.SendToNode(request, _host);
             return result;
         }
     }

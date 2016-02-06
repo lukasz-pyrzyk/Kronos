@@ -1,6 +1,5 @@
 ﻿using System.Net;
 using Kronos.Client.Transfer;
-using Kronos.Core.Configuration;
 
 namespace Kronos.Client
 {
@@ -8,10 +7,7 @@ namespace Kronos.Client
     {
         public static IKronosClient CreateClient(IPAddress host, int port)
         {
-            IServerConfiguration configuration = new ServerConfiguration();
-            configuration.NodesConfiguration.Add(new NodeConfiguration(host, port));
-
-            return new KronosClient(new SocketCommunicationService(), configuration);
+            return new KronosClient(new SocketCommunicationService(), new IPEndPoint(host, port));
         }
     }
 }
