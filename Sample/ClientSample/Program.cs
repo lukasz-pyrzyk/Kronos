@@ -25,8 +25,8 @@ namespace ClientSample
 
             _logger.Info("Starting program");
 
-            IPAddress host = IPAddress.Parse("192.168.0.0");
-            int port = 500;
+            IPAddress host = IPAddress.Parse("192.168.0.10");
+            int port = 5000;
             IKronosClient client = KronosClientFactory.CreateClient(host, port);
 
             string key = "key";
