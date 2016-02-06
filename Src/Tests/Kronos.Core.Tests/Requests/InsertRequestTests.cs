@@ -11,6 +11,14 @@ namespace Kronos.Core.Tests.Requests
     public class InsertRequestTests
     {
         [Fact]
+        public void ContainsCorrectRequestType()
+        {
+            InsertRequest request = new InsertRequest();
+            
+            Assert.Equal(request.RequestType, RequestType.InsertRequest);
+        }
+
+        [Fact]
         public void CanSerializeAndDeserialize()
         {
             InsertRequest request = new InsertRequest
