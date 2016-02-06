@@ -26,7 +26,7 @@ namespace Kronos.Client.Tests.Core
             communicationServiceMock.Setup(x => x.SendToNode(It.IsAny<InsertRequest>(), It.IsAny<IPEndPoint>())).Returns(expectedStatusCode);
 
             var configurationMock = new Mock<IServerConfiguration>();
-            configurationMock.Setup(x => x.GetNodeForStream(It.IsAny<CachedObject>())).Returns(new NodeConfiguration("10.10.10.10", 5000));
+            configurationMock.Setup(x => x.GetNodeForStream(It.IsAny<CachedObject>())).Returns(new NodeConfiguration(IPAddress.Any, 5000));
 
             IKronosClient client = new KronosClient(communicationServiceMock.Object, configurationMock.Object);
             RequestStatusCode statusCode = client.InsertToServer(key, package, expiryDate);
@@ -44,7 +44,7 @@ namespace Kronos.Client.Tests.Core
             communicationServiceMock.Setup(x => x.SendToNode(It.IsAny<InsertRequest>(), It.IsAny<IPEndPoint>())).Returns(expectedStatusCode);
 
             var configurationMock = new Mock<IServerConfiguration>();
-            configurationMock.Setup(x => x.GetNodeForStream(It.IsAny<CachedObject>())).Returns(new NodeConfiguration("10.10.10.10", 5000));
+            configurationMock.Setup(x => x.GetNodeForStream(It.IsAny<CachedObject>())).Returns(new NodeConfiguration(IPAddress.Any, 5000));
 
             IKronosClient client = new KronosClient(communicationServiceMock.Object, configurationMock.Object);
             RequestStatusCode statusCode = client.InsertToServer(objectToCache);

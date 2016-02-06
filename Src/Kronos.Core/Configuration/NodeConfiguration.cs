@@ -8,17 +8,17 @@ namespace Kronos.Core.Configuration
     /// </summary>
     public class NodeConfiguration
     {
-        public NodeConfiguration(string host, int port)
+        public NodeConfiguration(IPAddress host, int port)
         {
             Host = host;
             Port = port;
-            Endpoint = new IPEndPoint(IPAddress.Parse(Host), Port);
+            Endpoint = new IPEndPoint(host, Port);
         }
 
         /// <summary>
         /// Host of node
         /// </summary>
-        public string Host { get; set; }
+        public IPAddress Host { get; set; }
 
         /// <summary>
         /// Opened port

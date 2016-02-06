@@ -1,4 +1,5 @@
-﻿using Kronos.Core.Configuration;
+﻿using System.Net;
+using Kronos.Core.Configuration;
 using Xunit;
 
 namespace Kronos.Core.Tests.Configuration
@@ -8,7 +9,7 @@ namespace Kronos.Core.Tests.Configuration
         [Fact]
         public void CanAssingPropertiesByConstructor()
         {
-            string host = "10.10.10.10";
+            IPAddress host = IPAddress.Parse("10.10.10.10");
             int port = 11;
 
             NodeConfiguration configuration = new NodeConfiguration(host, port);
@@ -21,7 +22,7 @@ namespace Kronos.Core.Tests.Configuration
         [Fact]
         public void ReturnsCorrectToStringMessage()
         {
-            string host = "10.10.10.10";
+            IPAddress host = IPAddress.Parse("10.10.10.10");
             int port = 11;
 
             NodeConfiguration configuration = new NodeConfiguration(host, port);

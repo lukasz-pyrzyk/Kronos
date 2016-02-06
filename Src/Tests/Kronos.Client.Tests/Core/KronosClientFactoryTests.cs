@@ -1,4 +1,5 @@
-﻿using Xunit;
+﻿using System.Net;
+using Xunit;
 
 namespace Kronos.Client.Tests.Core
 {
@@ -7,7 +8,7 @@ namespace Kronos.Client.Tests.Core
         [Fact]
         public void CanCreateIKronosClient()
         {
-            IKronosClient client = KronosClientFactory.CreateClient();
+            IKronosClient client = KronosClientFactory.CreateClient(IPAddress.Any, 5000);
 
             Assert.NotNull(client);
         }
