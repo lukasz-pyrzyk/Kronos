@@ -2,7 +2,6 @@
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Runtime.InteropServices;
 using Kronos.Core.Requests;
 using Kronos.Core.StatusCodes;
 using NLog;
@@ -14,7 +13,7 @@ namespace Kronos.Client.Transfer
     {
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
-        public RequestStatusCode SendToNode(InsertRequest request, IPEndPoint endPoint)
+        public RequestStatusCode SendToNode(Request request, IPEndPoint endPoint)
         {
             byte[] packageToSend = GeneratePackageWithTotalSize(request);
             try
@@ -47,7 +46,7 @@ namespace Kronos.Client.Transfer
             return RequestStatusCode.Ok;
         }
 
-        private byte[] GeneratePackageWithTotalSize(InsertRequest request)
+        private byte[] GeneratePackageWithTotalSize(Request request)
         {
             using (MemoryStream ms = new MemoryStream())
             {

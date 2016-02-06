@@ -36,6 +36,13 @@ namespace Kronos.Client
             return InsertToKronosNode(objectToCache);
         }
 
+        public byte[] TryGetValue(string key)
+        {
+            GetRequest request = new GetRequest(key);
+            _service.SendToNode(request, null); // which node? how to process on all nodes?
+            return new byte[0];
+        }
+        
         public void Dispose()
         {
             // TODO

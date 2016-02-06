@@ -13,7 +13,6 @@ namespace Kronos.Client.Tests.Core
 {
     public class KronosClientTests
     {
-
         [Fact]
         public void CanInsertObjectByKeyPackageAndExpiryDateToServer()
         {
@@ -51,5 +50,21 @@ namespace Kronos.Client.Tests.Core
 
             Assert.Equal(statusCode, expectedStatusCode);
         }
+
+        [Fact]
+        public void CanReadValueFromCache()
+        {
+            var communicationServiceMock = new Mock<ICommunicationService>();
+            communicationServiceMock.Setup(x => x.SendToNode(It.IsAny<InsertRequest>(), It.IsAny<IPEndPoint>())).Returns(RequestStatusCode.Ok);
+
+            var configurationMock = new Mock<IServerConfiguration>();
+            configurationMock.Setup(x => x.GetNodeForStream(It.IsAny<CachedObject>())).Returns(new NodeConfiguration(IPAddress.Any, 5000));
+            
+            IKronosClient client = new KronosClient(communicationServiceMock.Object, configurationMock.Object);
+            byte[] obj = client.TryGetValue(It.IsAny<string>());
+
+            Assert.NotNull(obj);
+        }
+
     }
 }
