@@ -1,6 +1,6 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using Kronos.Core.Requests;
-using Kronos.Server.Storage;
 using ProtoBuf;
 
 namespace Kronos.Server.RequestProcessing
@@ -9,13 +9,25 @@ namespace Kronos.Server.RequestProcessing
     {
         public void ProcessRequest(byte[] request)
         {
-            InsertRequest insertRequest;
+            RequestType type = (RequestType)BitConverter.ToInt16(request, 0);
+
+            switch (type)
+            {
+                case RequestType.InsertRequest:
+                    InsertRequest deserializedRequest = Deserialize<InsertRequest>(request);
+                    break;
+                case RequestType.GetRequest:
+                    // TODO;
+                    break;
+            }
+        }
+
+        private T Deserialize<T>(byte[] request)
+        {
             using (MemoryStream ms = new MemoryStream(request))
             {
-                insertRequest = Serializer.Deserialize<InsertRequest>(ms);
+                return Serializer.Deserialize<T>(ms);
             }
-
-            InMemoryStorage.AddOrUpdate(insertRequest.ObjectToCache.Key, insertRequest.ObjectToCache.Object);
         }
     }
 }
