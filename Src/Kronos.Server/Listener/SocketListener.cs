@@ -19,7 +19,7 @@ namespace Kronos.Server.Listener
         private readonly IRequestProcessor _processor = new RequestProcessor();
 
         public const int QueueSize = 5;
-        public const int Port = 7;
+        public const int Port = 5000;
         public const int BufferSize = 5555;
         private const int packageSize = 1024 * 1024;
 
