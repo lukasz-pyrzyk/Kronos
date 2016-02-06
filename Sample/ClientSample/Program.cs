@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Net;
 using System.Xml;
 using Kronos.Client;
 using NLog;
@@ -24,7 +25,10 @@ namespace ClientSample
 
             _logger.Info("Starting program");
 
-            IKronosClient client = KronosClientFactory.CreateClient();
+            IPAddress host = IPAddress.Parse("192.168.0.0");
+            int port = 500;
+            IKronosClient client = KronosClientFactory.CreateClient(host, port);
+
             string key = "key";
             string fileToSend = "C:\\Temp\\file.bin";
             DateTime expiryDate = new DateTime();
