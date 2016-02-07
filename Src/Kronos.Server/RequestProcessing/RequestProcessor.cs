@@ -1,24 +1,39 @@
 ﻿using System;
 using System.IO;
 using System.Linq;
+using System.Net.Sockets;
 using Kronos.Core.Requests;
+using NLog;
 using ProtoBuf;
 
 namespace Kronos.Server.RequestProcessing
 {
     internal class RequestProcessor : IRequestProcessor
     {
-        public void ProcessRequest(byte[] request)
+        private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+        
+        public void ProcessRequest(Socket client, byte[] requestBytes)
         {
-            RequestType type = Deserialize<RequestType>(request.Skip(sizeof (short)).ToArray());
+            _logger.Info($"Processing request of size {requestBytes.Length}");
+
+            RequestType type;
+            try
+            {
+                type = Deserialize<RequestType>(requestBytes.Take(sizeof(short)).ToArray());
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Cannot find request type, exception: {ex}");
+                throw new InvalidOperationException("Cannot find request type", ex);
+            }
 
             switch (type)
             {
                 case RequestType.InsertRequest:
-                    InsertRequest deserializedRequest = Deserialize<InsertRequest>(request);
+                    InsertRequest insertRequest = Deserialize<InsertRequest>(requestBytes);
                     break;
                 case RequestType.GetRequest:
-                    // TODO;
+                    GetRequest getRequest = Deserialize<GetRequest>(requestBytes);
                     break;
             }
         }

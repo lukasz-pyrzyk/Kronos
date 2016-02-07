@@ -1,15 +1,12 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Net.Sockets;
-using Kronos.Core.Requests;
 using Kronos.Core.StatusCodes;
 using Kronos.Server.RequestProcessing;
 using Kronos.Server.Storage;
 using NLog;
-using ProtoBuf;
 
 namespace Kronos.Server.Listener
 {
@@ -21,7 +18,7 @@ namespace Kronos.Server.Listener
         public const int QueueSize = 5;
         public const int Port = 5000;
         public const int BufferSize = 5555;
-        private const int packageSize = 1024 * 1024;
+        private const int bufferSize = 1024 * 8;
 
         public void StartListening()
         {
@@ -36,65 +33,52 @@ namespace Kronos.Server.Listener
 
                 while (true)
                 {
-                    Socket connectionRequest = null;
+                    Socket client = null;
                     try
                     {
-                        connectionRequest = server.Accept();
-                        var timer = Stopwatch.StartNew();
+                        client = server.Accept();
                         _logger.Info("Accepting new request");
+                        var timer = Stopwatch.StartNew();
 
-                        byte[] packageSizeBuffer = new byte[sizeof(int)];
-                        _logger.Info("Receiving information about request size");
-                        connectionRequest.Receive(packageSizeBuffer, SocketFlags.None);
-
-                        int requestSize = BitConverter.ToInt32(packageSizeBuffer, 0);
-                        _logger.Info($"Request contains {requestSize} bytes");
-
-                        byte[] requestPackage = new byte[requestSize];
-                        int offset = 0;
-                        while (offset != requestSize)
+                        byte[] requestBytes;
+                        using (MemoryStream ms = new MemoryStream())
                         {
-                            byte[] package = new byte[packageSize];
-
-                            int received = connectionRequest.Receive(package, SocketFlags.None);
-                            _logger.Info($"Received {received} bytes");
-
-                            if (package.Length != received)
+                            byte[] buffer = new byte[bufferSize];
+                            using (NetworkStream stream = new NetworkStream(client))
                             {
-                                package = package.Take(received).ToArray();
+                                do
+                                {
+                                    int received = stream.Read(buffer, 0, buffer.Length);
+                                    ms.Write(buffer, 0, received);
+                                } while (stream.DataAvailable);
                             }
-                            Buffer.BlockCopy(package, 0, requestPackage, 0, package.Length);
-                            offset += received;
-                            _logger.Info($"Total received bytes: {(float)offset * 100 / requestSize}%");
+                            requestBytes = ms.ToArray();
                         }
 
                         timer.Stop();
                         _logger.Info($"Finished receiving package in {timer.ElapsedMilliseconds}ms");
-
-                        _logger.Info("Sending response to the client");
-
-                        connectionRequest.Send(BitConverter.GetBytes((short)RequestStatusCode.Ok));
-
-                        _processor.ProcessRequest(requestPackage);
+                        
+                        _logger.Info("Processing request");
+                        _processor.ProcessRequest(client, requestBytes);
                     }
                     catch (SocketException ex)
                     {
                         _logger.Error(
-                            $"Exception during receiving request from client {connectionRequest?.RemoteEndPoint}");
+                            $"Exception during receiving request from client {client?.RemoteEndPoint}");
                         _logger.Fatal(ex);
                     }
                     finally
                     {
                         try
                         {
-                            connectionRequest?.Shutdown(SocketShutdown.Both);
+                            client?.Shutdown(SocketShutdown.Both);
                         }
                         catch (SocketException)
                         {
                         }
                         try
                         {
-                            connectionRequest?.Dispose();
+                            client?.Dispose();
                         }
                         catch (SocketException)
                         {

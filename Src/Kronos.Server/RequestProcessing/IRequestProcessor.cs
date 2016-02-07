@@ -1,7 +1,9 @@
-﻿namespace Kronos.Server.RequestProcessing
+﻿using System.Net.Sockets;
+
+namespace Kronos.Server.RequestProcessing
 {
     internal interface IRequestProcessor
     {
-        void ProcessRequest(byte[] request);
+        void ProcessRequest(Socket client, byte[] requestBytes);
     }
 }

@@ -39,7 +39,7 @@ namespace Kronos.Client
         public byte[] TryGetValue(string key)
         {
             GetRequest request = new GetRequest(key);
-            _service.SendToNode(request, null); // which node? how to process on all nodes?
+            _service.SendToNode(request, _host);
             return new byte[0];
         }
         

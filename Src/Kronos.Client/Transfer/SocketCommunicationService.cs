@@ -16,31 +16,32 @@ namespace Kronos.Client.Transfer
         public RequestStatusCode SendToNode(Request request, IPEndPoint endPoint)
         {
             byte[] packageToSend = GeneratePackageWithTotalSize(request);
+            Socket socket = null;
             try
             {
-                Socket socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
                 _logger.Debug("Connecting to the server socket");
                 socket.Connect(endPoint);
 
                 _logger.Debug($"Sending package of {packageToSend.Length} bytes");
                 socket.Send(packageToSend, SocketFlags.None);
-
-                RequestStatusCode requestStatus = RequestStatusCode.Processing;
-                while (requestStatus == RequestStatusCode.Processing)
-                {
-                    byte[] response = new byte[sizeof(short)];
-                    socket.Receive(response, SocketFlags.None);
-                    requestStatus = (RequestStatusCode)BitConverter.ToInt16(response, 0);
-                }
-
-                _logger.Debug($"Server has received {requestStatus} status");
             }
             catch (Exception ex)
             {
                 _logger.Fatal($"During package transfer an error occurred {ex}");
                 _logger.Debug("Returning information about exception");
                 return RequestStatusCode.Failed;
+            }
+            finally
+            {
+                try
+                {
+                    socket?.Dispose();
+                }
+                catch (SocketException)
+                {
+                }
             }
 
             return RequestStatusCode.Ok;
@@ -50,7 +51,7 @@ namespace Kronos.Client.Transfer
         {
             using (MemoryStream ms = new MemoryStream())
             {
-                Serializer.SerializeWithLengthPrefix(ms, request, PrefixStyle.Fixed32);
+                Serializer.Serialize(ms, request);
                 return ms.ToArray();
             }
         }
