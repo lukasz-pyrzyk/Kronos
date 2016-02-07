@@ -15,6 +15,6 @@ namespace Kronos.Client.Transfer
         /// <param name="request">Model of the request model</param>
         /// <param name="endPoint">Endpoint of the server node</param>
         /// <returns>Status code of request</returns>
-        RequestStatusCode SendToNode(Request request, IPEndPoint endPoint);
+        byte[] SendToNode(Request request, IPEndPoint endPoint);
     }
 }

@@ -76,13 +76,6 @@ namespace Kronos.Server.Listener
                         catch (SocketException)
                         {
                         }
-                        try
-                        {
-                            client?.Dispose();
-                        }
-                        catch (SocketException)
-                        {
-                        }
                     }
                 }
             }

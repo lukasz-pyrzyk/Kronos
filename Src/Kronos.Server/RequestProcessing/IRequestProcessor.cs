@@ -4,6 +4,6 @@ namespace Kronos.Server.RequestProcessing
 {
     internal interface IRequestProcessor
     {
-        void ProcessRequest(Socket client, byte[] requestBytes);
+        void ProcessRequest(Socket clientSocket, byte[] requestBytes);
     }
 }

@@ -18,44 +18,23 @@ namespace Kronos.Client.Tests.Core
             string key = "key";
             byte[] package = Encoding.UTF8.GetBytes("package");
             DateTime expiryDate = DateTime.Today.AddDays(1);
-            RequestStatusCode expectedStatusCode = RequestStatusCode.Ok;
 
             var communicationServiceMock = new Mock<ICommunicationService>();
-            communicationServiceMock.Setup(x => x.SendToNode(It.IsAny<InsertRequest>(), It.IsAny<IPEndPoint>())).Returns(expectedStatusCode);
-            
+
             IKronosClient client = new KronosClient(communicationServiceMock.Object, It.IsAny<IPEndPoint>());
-            RequestStatusCode statusCode = client.InsertToServer(key, package, expiryDate);
+            client.InsertToServer(key, package, expiryDate);
 
-            Assert.Equal(statusCode, expectedStatusCode);
+            communicationServiceMock.Verify(x => x.SendToNode(It.IsAny<InsertRequest>(), It.IsAny<IPEndPoint>()), Times.Exactly(1));
         }
-
-        [Fact]
-        public void CanInsertCachedObjectToServer()
-        {
-            CachedObject objectToCache = new CachedObject("key", Encoding.UTF8.GetBytes("package"), DateTime.Today.AddDays(1));
-            RequestStatusCode expectedStatusCode = RequestStatusCode.Ok;
-
-            var communicationServiceMock = new Mock<ICommunicationService>();
-            communicationServiceMock.Setup(x => x.SendToNode(It.IsAny<InsertRequest>(), It.IsAny<IPEndPoint>())).Returns(expectedStatusCode);
-            
-            IKronosClient client = new KronosClient(communicationServiceMock.Object, It.IsAny<IPEndPoint>());
-            RequestStatusCode statusCode = client.InsertToServer(objectToCache);
-
-            Assert.Equal(statusCode, expectedStatusCode);
-        }
-
         [Fact]
         public void CanReadValueFromCache()
         {
             var communicationServiceMock = new Mock<ICommunicationService>();
-            communicationServiceMock.Setup(x => x.SendToNode(It.IsAny<InsertRequest>(), It.IsAny<IPEndPoint>())).Returns(RequestStatusCode.Ok);
-            
-            
+
             IKronosClient client = new KronosClient(communicationServiceMock.Object, It.IsAny<IPEndPoint>());
-            byte[] obj = client.TryGetValue(It.IsAny<string>());
+            client.TryGetValue(It.IsAny<string>());
 
-            Assert.NotNull(obj);
+            communicationServiceMock.Verify(x => x.SendToNode(It.IsAny<GetRequest>(), It.IsAny<IPEndPoint>()), Times.Exactly(1));
         }
-
     }
 }

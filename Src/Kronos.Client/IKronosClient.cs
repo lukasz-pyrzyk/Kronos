@@ -15,16 +15,8 @@ namespace Kronos.Client
         /// <param name="key">Package identifier</param>
         /// <param name="package">Package to save in the Kronos</param>
         /// <param name="expiryDate">Package Expiration date</param>
-        /// <returns>Request status code</returns>
-        RequestStatusCode InsertToServer(string key, byte[] package, DateTime expiryDate);
-
-        /// <summary>
-        /// Writes object to Kronos server
-        /// </summary>
-        /// <param name="objectToCache">Object to serialize and save</param>
-        /// <returns>Request status code</returns>
-        RequestStatusCode InsertToServer(CachedObject objectToCache);
-
+        void InsertToServer(string key, byte[] package, DateTime expiryDate);
+        
         /// <summary>
         /// Gets object from Kronos server
         /// </summary>

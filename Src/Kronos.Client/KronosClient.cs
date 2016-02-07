@@ -3,7 +3,6 @@ using System.Net;
 using Kronos.Client.Transfer;
 using Kronos.Core.Model;
 using Kronos.Core.Requests;
-using Kronos.Core.StatusCodes;
 using NLog;
 
 namespace Kronos.Client
@@ -24,31 +23,20 @@ namespace Kronos.Client
             _host = host;
         }
 
-        public RequestStatusCode InsertToServer(string key, byte[] package, DateTime expiryDate)
+        public void InsertToServer(string key, byte[] package, DateTime expiryDate)
         {
+            _logger.Debug("New insert request");
             CachedObject objectToCache = new CachedObject(key, package, expiryDate);
-            
-            return InsertToServer(objectToCache);
-        }
-
-        public RequestStatusCode InsertToServer(CachedObject objectToCache)
-        {
-            _logger.Info("New insert request");
             InsertRequest request = new InsertRequest(objectToCache);
-
-            return SendToNode(request);
+            
+            _service.SendToNode(request, _host);
         }
 
         public byte[] TryGetValue(string key)
         {
+            _logger.Debug("New get request");
             GetRequest request = new GetRequest(key);
-            SendToNode(request);
-            return new byte[0]; // TODO get real value from server
-        }
 
-        private RequestStatusCode SendToNode(Request request)
-        {
-            _logger.Info($"Sending request to communication service");
             return _service.SendToNode(request, _host);
         }
     }
