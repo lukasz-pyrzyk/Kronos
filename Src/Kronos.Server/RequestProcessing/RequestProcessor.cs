@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using Kronos.Core.Requests;
 using ProtoBuf;
 
@@ -9,7 +10,7 @@ namespace Kronos.Server.RequestProcessing
     {
         public void ProcessRequest(byte[] request)
         {
-            RequestType type = (RequestType)BitConverter.ToInt16(request, 0);
+            RequestType type = Deserialize<RequestType>(request.Skip(sizeof (short)).ToArray());
 
             switch (type)
             {
