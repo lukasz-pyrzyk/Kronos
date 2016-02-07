@@ -3,11 +3,11 @@
 namespace Kronos.Core.Requests
 {
     [ProtoContract]
-    public enum RequestType
+    public enum RequestType : short
     {
         [ProtoEnum]
-        InsertRequest = 0,
+        InsertRequest = 1,
         [ProtoEnum]
-        GetRequest = 1,
+        GetRequest = 2,
     }
 }

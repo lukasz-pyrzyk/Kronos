@@ -49,11 +49,9 @@ namespace Kronos.Client.Tests.Core
         {
             var communicationServiceMock = new Mock<ICommunicationService>();
             communicationServiceMock.Setup(x => x.SendToNode(It.IsAny<InsertRequest>(), It.IsAny<IPEndPoint>())).Returns(RequestStatusCode.Ok);
-
-            var configurationMock = new Mock<IServerConfiguration>();
-            configurationMock.Setup(x => x.GetNodeForStream(It.IsAny<CachedObject>())).Returns(new NodeConfiguration(IPAddress.Any, 5000));
             
-            IKronosClient client = new KronosClient(communicationServiceMock.Object, configurationMock.Object);
+            
+            IKronosClient client = new KronosClient(communicationServiceMock.Object, It.IsAny<IPEndPoint>());
             byte[] obj = client.TryGetValue(It.IsAny<string>());
 
             Assert.NotNull(obj);
