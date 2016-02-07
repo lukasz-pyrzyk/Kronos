@@ -7,7 +7,7 @@ namespace Kronos.Client
     /// <summary>
     /// DataContract for KronosClient
     /// </summary>
-    public interface IKronosClient : IDisposable
+    public interface IKronosClient
     {
         /// <summary>
         /// Writes object to Kronos server

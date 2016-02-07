@@ -28,35 +28,28 @@ namespace Kronos.Client
         {
             CachedObject objectToCache = new CachedObject(key, package, expiryDate);
             
-            return InsertToKronosNode(objectToCache);
+            return InsertToServer(objectToCache);
         }
 
         public RequestStatusCode InsertToServer(CachedObject objectToCache)
         {
-            return InsertToKronosNode(objectToCache);
+            _logger.Info("New insert request");
+            InsertRequest request = new InsertRequest(objectToCache);
+
+            return SendToNode(request);
         }
 
         public byte[] TryGetValue(string key)
         {
             GetRequest request = new GetRequest(key);
-            _service.SendToNode(request, _host);
-            return new byte[0];
-        }
-        
-        public void Dispose()
-        {
-            // TODO
+            SendToNode(request);
+            return new byte[0]; // TODO get real value from server
         }
 
-        private RequestStatusCode InsertToKronosNode(CachedObject objectToCache)
+        private RequestStatusCode SendToNode(Request request)
         {
-            _logger.Info("New request");
-            
-            InsertRequest request = new InsertRequest(objectToCache);
-            
             _logger.Info($"Sending request to communication service");
-            RequestStatusCode result = _service.SendToNode(request, _host);
-            return result;
+            return _service.SendToNode(request, _host);
         }
     }
 }
