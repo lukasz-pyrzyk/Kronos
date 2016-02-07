@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Linq;
 using System.Text;
 using Kronos.Core.Model;
 using Kronos.Core.Requests;
@@ -11,10 +12,31 @@ namespace Kronos.Core.Tests.Requests
     public class InsertRequestTests
     {
         [Fact]
+        public void CanSerializeWithRequestType()
+        {
+            InsertRequest request = new InsertRequest(new CachedObject("key", new byte[0], DateTime.Now));
+
+            byte[] packageBytes;
+            using (MemoryStream ms = new MemoryStream())
+            {
+                Serializer.Serialize(ms, request);
+                packageBytes = ms.ToArray();
+            }
+
+            RequestType type;
+            using (MemoryStream ms = new MemoryStream(packageBytes.Take(sizeof(short)).ToArray()))
+            {
+                type = Serializer.Deserialize<RequestType>(ms);
+            }
+
+            Assert.Equal(type, request.RequestType);
+        }
+
+        [Fact]
         public void ContainsCorrectRequestType()
         {
             InsertRequest request = new InsertRequest();
-            
+
             Assert.Equal(request.RequestType, RequestType.InsertRequest);
         }
 
@@ -56,7 +78,7 @@ namespace Kronos.Core.Tests.Requests
             CachedObject cachedObject = new CachedObject("key", new byte[5], DateTime.MaxValue);
 
             InsertRequest request = new InsertRequest(cachedObject);
-            
+
             Assert.NotNull(request);
         }
     }

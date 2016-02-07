@@ -43,5 +43,19 @@ namespace Kronos.Client.Tests.Core
 
             Assert.Equal(statusCode, expectedStatusCode);
         }
+
+        [Fact]
+        public void CanReadValueFromCache()
+        {
+            var communicationServiceMock = new Mock<ICommunicationService>();
+            communicationServiceMock.Setup(x => x.SendToNode(It.IsAny<InsertRequest>(), It.IsAny<IPEndPoint>())).Returns(RequestStatusCode.Ok);
+            
+            
+            IKronosClient client = new KronosClient(communicationServiceMock.Object, It.IsAny<IPEndPoint>());
+            byte[] obj = client.TryGetValue(It.IsAny<string>());
+
+            Assert.NotNull(obj);
+        }
+
     }
 }

@@ -7,7 +7,7 @@ namespace Kronos.Core.Requests
     public class InsertRequest : Request
     {
         [ProtoMember(1, IsRequired = true)]
-        public override RequestType RequestType { get; set; }
+        public override RequestType RequestType { get; set; } = RequestType.InsertRequest;
 
         [ProtoMember(2)]
         public CachedObject ObjectToCache { get; set; }

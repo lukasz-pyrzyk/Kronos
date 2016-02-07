@@ -10,7 +10,7 @@ namespace Kronos.Client
     public interface IKronosClient : IDisposable
     {
         /// <summary>
-        /// Write object to Kronos server
+        /// Writes object to Kronos server
         /// </summary>
         /// <param name="key">Package identifier</param>
         /// <param name="package">Package to save in the Kronos</param>
@@ -19,10 +19,17 @@ namespace Kronos.Client
         RequestStatusCode InsertToServer(string key, byte[] package, DateTime expiryDate);
 
         /// <summary>
-        /// Write object to Kronos server
+        /// Writes object to Kronos server
         /// </summary>
         /// <param name="objectToCache">Object to serialize and save</param>
         /// <returns>Request status code</returns>
         RequestStatusCode InsertToServer(CachedObject objectToCache);
+
+        /// <summary>
+        /// Gets object from Kronos server
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        byte[] TryGetValue(string key);
     }
 }

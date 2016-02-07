@@ -12,9 +12,9 @@ namespace Kronos.Client.Transfer
         /// <summary>
         /// Send request to the server
         /// </summary>
-        /// <param name="request">Model of the request data to save in server cache</param>
+        /// <param name="request">Model of the request model</param>
         /// <param name="endPoint">Endpoint of the server node</param>
         /// <returns>Status code of request</returns>
-        RequestStatusCode SendToNode(InsertRequest request, IPEndPoint endPoint);
+        RequestStatusCode SendToNode(Request request, IPEndPoint endPoint);
     }
 }
