@@ -1,6 +1,6 @@
 ﻿namespace Kronos.Server.Listener
 {
-    public interface ICommunicationListener
+    public interface IServer
     {
         void StartListening();
     }

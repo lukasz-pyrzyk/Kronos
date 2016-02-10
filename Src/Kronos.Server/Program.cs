@@ -9,7 +9,7 @@ namespace Kronos.Server
     public class Program
     {
         private static ILogger _logger;
-        private static readonly ICommunicationListener _listener = new SocketListener();
+        private static readonly IServer _listener = new SocketServer();
 
         public static void LoggerSetup()
         {
