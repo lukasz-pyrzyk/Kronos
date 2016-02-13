@@ -44,8 +44,7 @@ namespace Kronos.Server.RequestProcessing
         private void Process(InsertRequest request, Socket clientSocket)
         {
             InMemoryStorage.AddOrUpdate(request.ObjectToCache.Key, request.ObjectToCache.Object);
-            RequestStatusCode code = RequestStatusCode.Ok;
-            SendToSocket(clientSocket, BitConverter.GetBytes((short)code));
+            SendToSocket(clientSocket, SerializationUtils.Serialize(RequestStatusCode.Ok));
         }
 
         private void Process(GetRequest request, Socket clientSocket)
