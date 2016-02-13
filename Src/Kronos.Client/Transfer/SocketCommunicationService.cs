@@ -11,10 +11,16 @@ namespace Kronos.Client.Transfer
 {
     public class SocketCommunicationService : ICommunicationService
     {
+        private readonly IPEndPoint _nodeEndPoint;
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
         private const int bufferSize = 1024 * 8;
 
-        public byte[] SendToNode(Request request, IPEndPoint endPoint)
+        public SocketCommunicationService(IPEndPoint host)
+        {
+            _nodeEndPoint = host;
+        }
+
+        public byte[] SendToNode(Request request)
         {
             byte[] packageToSend = SerializationUtils.Serialize(request);
             Socket socket = null;
@@ -23,7 +29,7 @@ namespace Kronos.Client.Transfer
                 socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
                 _logger.Debug("Connecting to the server socket");
-                socket.Connect(endPoint);
+                socket.Connect(_nodeEndPoint);
 
                 _logger.Debug($"Sending package of {packageToSend.Length} bytes");
                 socket.Send(packageToSend, SocketFlags.None);

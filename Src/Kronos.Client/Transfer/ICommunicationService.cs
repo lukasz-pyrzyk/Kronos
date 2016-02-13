@@ -1,6 +1,4 @@
-﻿using System.Net;
-using Kronos.Core.Requests;
-using Kronos.Core.StatusCodes;
+﻿using Kronos.Core.Requests;
 
 namespace Kronos.Client.Transfer
 {
@@ -13,8 +11,7 @@ namespace Kronos.Client.Transfer
         /// Send request to the server
         /// </summary>
         /// <param name="request">Model of the request model</param>
-        /// <param name="endPoint">Endpoint of the server node</param>
         /// <returns>Status code of request</returns>
-        byte[] SendToNode(Request request, IPEndPoint endPoint);
+        byte[] SendToNode(Request request);
     }
 }
