@@ -1,35 +1,12 @@
-﻿using System.IO;
-using Kronos.Core.Requests;
-using ProtoBuf;
+﻿using Kronos.Core.Requests;
 using Xunit;
 using System.Linq;
+using Kronos.Core.Serialization;
 
 namespace Kronos.Core.Tests.Requests
 {
     public class GetRequestTests
     {
-        [Fact]
-        public void CanSerializeWithRequestType()
-        {
-            GetRequest request = new GetRequest("key");
-
-            byte[] packageBytes;
-            using (MemoryStream ms = new MemoryStream())
-            {
-                Serializer.Serialize(ms, request);
-                packageBytes = ms.ToArray();
-            }
-
-            RequestType type;
-            using (MemoryStream ms = new MemoryStream(packageBytes.Take(sizeof(short)).ToArray()))
-            {
-                type = Serializer.Deserialize<RequestType>(ms);
-            }
-
-            Assert.Equal(type, request.RequestType);
-        }
-
-
         [Fact]
         public void ContainsCorrectRequestType()
         {
@@ -45,6 +22,30 @@ namespace Kronos.Core.Tests.Requests
             GetRequest request = new GetRequest(key);
 
             Assert.Equal(request.Key, key);
+        }
+
+        [Fact]
+        public void CanSerializeWithRequestType()
+        {
+            GetRequest request = new GetRequest("key");
+
+            byte[] packageBytes = SerializationUtils.Serialize(request);
+            RequestType type = SerializationUtils.Deserialize<RequestType>(packageBytes.Take(sizeof(short)).ToArray());
+
+            Assert.Equal(type, request.RequestType);
+        }
+
+        [Fact]
+        public void CanSerializeAndDeserialize()
+        {
+            GetRequest request = new GetRequest("key");
+
+            byte[] packageBytes = SerializationUtils.Serialize(request);
+
+            GetRequest requestFromBytes = SerializationUtils.Deserialize<GetRequest>(packageBytes);
+
+            Assert.Equal(requestFromBytes.RequestType, requestFromBytes.RequestType);
+            Assert.Equal(requestFromBytes.Key, requestFromBytes.Key);
         }
     }
 }

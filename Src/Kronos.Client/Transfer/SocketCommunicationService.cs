@@ -4,9 +4,8 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using Kronos.Core.Requests;
-using Kronos.Core.StatusCodes;
+using Kronos.Core.Serialization;
 using NLog;
-using ProtoBuf;
 
 namespace Kronos.Client.Transfer
 {
@@ -17,7 +16,7 @@ namespace Kronos.Client.Transfer
 
         public byte[] SendToNode(Request request, IPEndPoint endPoint)
         {
-            byte[] packageToSend = GeneratePackageWithTotalSize(request);
+            byte[] packageToSend = SerializationUtils.Serialize(request);
             Socket socket = null;
             try
             {
@@ -68,15 +67,6 @@ namespace Kronos.Client.Transfer
             }
 
             return null;
-        }
-
-        private byte[] GeneratePackageWithTotalSize(Request request)
-        {
-            using (MemoryStream ms = new MemoryStream())
-            {
-                Serializer.Serialize(ms, request);
-                return ms.ToArray();
-            }
         }
     }
 }

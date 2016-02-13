@@ -1,6 +1,4 @@
-﻿using ProtoBuf;
-
-namespace Kronos.Core.Requests
+﻿namespace Kronos.Core.Requests
 {
     /// <summary>
     /// Base class for any request to the server
