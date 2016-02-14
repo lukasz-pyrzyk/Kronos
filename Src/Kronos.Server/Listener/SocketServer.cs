@@ -3,14 +3,13 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using Kronos.Core.StatusCodes;
 using Kronos.Server.RequestProcessing;
 using Kronos.Server.Storage;
 using NLog;
 
 namespace Kronos.Server.Listener
 {
-    public class SocketListener : ICommunicationListener
+    public class SocketServer : IServer
     {
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
         private readonly IRequestProcessor _processor = new RequestProcessor();
