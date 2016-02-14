@@ -1,11 +1,13 @@
 {
     "authors": [ "Lukasz Pyrzyk" ],
+    "copyright": "Lukasz Pyrzyk",
     "content": [ "./Nlog.config" ],
+    "summary": "Kronoc.Core is a main library for Kronos cache platform (Kronos.Server)",
     "dependencies": {
         "NLog": "4.4.0-alpha1",
         "protobuf-net": "2.1.0-alpha-1"
     },
-    "description": "Kronos.Client - cache platform",
+    "description": "Kronoc.Core is a main library for Kronos cache platform (Kronos.Server)",
     "frameworks": {
         "dnx451": { },
         "dnxcore50": {
@@ -18,8 +20,9 @@
             }
         }
     },
-    "licenseUrl": "",
+    "iconUrl": "https://raw.githubusercontent.com/lukasz-pyrzyk/Kronos/master/SolutionItems/nugetIcon.png",
+    "licenseUrl": "https://github.com/lukasz-pyrzyk/Kronos/blob/master/license.txt",
     "projectUrl": "https://github.com/lukasz-pyrzyk/Kronos",
     "tags": [ "cache, distributed, socket, dotnetcore, dnx" ],
-    "version": "1.0.0-alpha-1"
+    "version": "1.0.0-alpha-2"
 }

@@ -1,9 +1,11 @@
 {
     "authors": [ "Lukasz Pyrzyk" ],
+    "copyright": "Lukasz Pyrzyk",
     "content": [ "./Nlog.config" ],
     "commands": {
         "Kronos.Server": "Kronos.Server"
     },
+    "summary": "Kronoc.Server - the cache platform",
     "compilationOptions": {
         "emitEntryPoint": true
     },
@@ -12,7 +14,7 @@
         "NLog": "4.4.0-alpha1",
         "protobuf-net": "2.1.0-alpha-1"
     },
-    "description": "Kronosd - cache platform server",
+    "description": "Kronos - the cache platform",
     "frameworks": {
         "dnx451": { },
         "dnxcore50": {
@@ -26,8 +28,9 @@
             }
         }
     },
-    "licenseUrl": "",
+    "iconUrl": "https://raw.githubusercontent.com/lukasz-pyrzyk/Kronos/master/SolutionItems/nugetIcon.png",
+    "licenseUrl": "https://github.com/lukasz-pyrzyk/Kronos/blob/master/license.txt",
     "projectUrl": "https://github.com/lukasz-pyrzyk/Kronos",
     "tags": [ "cache, distributed, socket, dotnetcore, dnx" ],
-    "version": "1.0.0-alpha-1"
+    "version": "1.0.0-alpha-2"
 }
