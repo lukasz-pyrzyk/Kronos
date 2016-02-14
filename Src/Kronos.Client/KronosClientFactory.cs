@@ -7,7 +7,7 @@ namespace Kronos.Client
     {
         public static IKronosClient CreateClient(IPAddress host, int port)
         {
-            return new KronosClient(new SocketCommunicationService(), new IPEndPoint(host, port));
+            return new KronosClient(new SocketCommunicationService(new IPEndPoint(host, port)));
         }
     }
 }

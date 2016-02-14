@@ -1,7 +1,5 @@
-﻿using System;
-using System.IO;
-using Kronos.Core.Requests;
-using ProtoBuf;
+﻿using Kronos.Core.Requests;
+using Kronos.Core.Serialization;
 using Xunit;
 
 namespace Kronos.Core.Tests.Requests
@@ -13,19 +11,9 @@ namespace Kronos.Core.Tests.Requests
         [InlineData(RequestType.GetRequest)]
         public void CanSerializeAndDeserialize(RequestType type)
         {
-            byte[] package;
-            using (MemoryStream ms = new MemoryStream())
-            {
-                Serializer.Serialize(ms, type);
-                package = ms.ToArray();
-            }
+            byte[] package = SerializationUtils.Serialize(type);
 
-            RequestType typeFromBytes;
-
-            using (MemoryStream ms = new MemoryStream(package))
-            {
-                typeFromBytes = Serializer.Deserialize<RequestType>(ms);
-            }
+            RequestType typeFromBytes = SerializationUtils.Deserialize<RequestType>(package);
 
             Assert.Equal(type, typeFromBytes);
         }

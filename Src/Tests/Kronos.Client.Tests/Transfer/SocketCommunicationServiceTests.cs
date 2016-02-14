@@ -1,6 +1,7 @@
-﻿namespace Kronos.Client.Tests.Core.Server
+﻿namespace Kronos.Client.Tests.Transfer
 {
     public class SocketCommunicationServiceTests
     {
+
     }
 }

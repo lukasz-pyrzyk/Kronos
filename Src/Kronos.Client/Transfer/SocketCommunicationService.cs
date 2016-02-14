@@ -4,27 +4,32 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using Kronos.Core.Requests;
-using Kronos.Core.StatusCodes;
+using Kronos.Core.Serialization;
 using NLog;
-using ProtoBuf;
 
 namespace Kronos.Client.Transfer
 {
     public class SocketCommunicationService : ICommunicationService
     {
+        private readonly IPEndPoint _nodeEndPoint;
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
         private const int bufferSize = 1024 * 8;
 
-        public byte[] SendToNode(Request request, IPEndPoint endPoint)
+        public SocketCommunicationService(IPEndPoint host)
         {
-            byte[] packageToSend = GeneratePackageWithTotalSize(request);
+            _nodeEndPoint = host;
+        }
+
+        public byte[] SendToNode(Request request)
+        {
+            byte[] packageToSend = SerializationUtils.Serialize(request);
             Socket socket = null;
             try
             {
                 socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
                 _logger.Debug("Connecting to the server socket");
-                socket.Connect(endPoint);
+                socket.Connect(_nodeEndPoint);
 
                 _logger.Debug($"Sending package of {packageToSend.Length} bytes");
                 socket.Send(packageToSend, SocketFlags.None);
@@ -68,15 +73,6 @@ namespace Kronos.Client.Transfer
             }
 
             return null;
-        }
-
-        private byte[] GeneratePackageWithTotalSize(Request request)
-        {
-            using (MemoryStream ms = new MemoryStream())
-            {
-                Serializer.Serialize(ms, request);
-                return ms.ToArray();
-            }
         }
     }
 }

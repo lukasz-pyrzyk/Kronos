@@ -1,8 +1,9 @@
 ﻿using System;
-using System.Net;
+using Kronos.Client.Command;
 using Kronos.Client.Transfer;
 using Kronos.Core.Model;
 using Kronos.Core.Requests;
+using Kronos.Core.StatusCodes;
 using NLog;
 
 namespace Kronos.Client
@@ -15,12 +16,10 @@ namespace Kronos.Client
     {
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
         private readonly ICommunicationService _service;
-        private readonly IPEndPoint _host;
 
-        public KronosClient(ICommunicationService service, IPEndPoint host)
+        public KronosClient(ICommunicationService service)
         {
             _service = service;
-            _host = host;
         }
 
         public void InsertToServer(string key, byte[] package, DateTime expiryDate)
@@ -28,16 +27,24 @@ namespace Kronos.Client
             _logger.Debug("New insert request");
             CachedObject objectToCache = new CachedObject(key, package, expiryDate);
             InsertRequest request = new InsertRequest(objectToCache);
-            
-            _service.SendToNode(request, _host);
+            InsertCommand command = new InsertCommand(_service, request);
+
+            RequestStatusCode status = command.Execute();
+           
+            _logger.Debug($"InsertRequest status: {status}");
         }
 
         public byte[] TryGetValue(string key)
         {
             _logger.Debug("New get request");
             GetRequest request = new GetRequest(key);
+            GetCommand command = new GetCommand(_service, request);
 
-            return _service.SendToNode(request, _host);
+            byte[] valueFromCache = command.Execute();
+
+            _logger.Debug($"GetRequest status returned object with {valueFromCache.Length} bytes");
+
+            return valueFromCache;
         }
     }
 }

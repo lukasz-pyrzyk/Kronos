@@ -1,12 +1,11 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
 using System.Net.Sockets;
 using Kronos.Core.Requests;
+using Kronos.Core.Serialization;
 using Kronos.Core.StatusCodes;
 using Kronos.Server.Storage;
 using NLog;
-using ProtoBuf;
 
 namespace Kronos.Server.RequestProcessing
 {
@@ -21,7 +20,7 @@ namespace Kronos.Server.RequestProcessing
             RequestType type;
             try
             {
-                type = Deserialize<RequestType>(requestBytes.Take(sizeof(short)).ToArray());
+                type = SerializationUtils.Deserialize<RequestType>(requestBytes.Take(sizeof(short)).ToArray());
             }
             catch (Exception ex)
             {
@@ -32,11 +31,11 @@ namespace Kronos.Server.RequestProcessing
             switch (type)
             {
                 case RequestType.InsertRequest:
-                    InsertRequest insertRequest = Deserialize<InsertRequest>(requestBytes);
+                    InsertRequest insertRequest = SerializationUtils.Deserialize<InsertRequest>(requestBytes);
                     Process(insertRequest, clientSocket);
                     break;
                 case RequestType.GetRequest:
-                    GetRequest getRequest = Deserialize<GetRequest>(requestBytes);
+                    GetRequest getRequest = SerializationUtils.Deserialize<GetRequest>(requestBytes);
                     Process(getRequest, clientSocket);
                     break;
             }
@@ -45,8 +44,7 @@ namespace Kronos.Server.RequestProcessing
         private void Process(InsertRequest request, Socket clientSocket)
         {
             InMemoryStorage.AddOrUpdate(request.ObjectToCache.Key, request.ObjectToCache.Object);
-            RequestStatusCode code = RequestStatusCode.Ok;
-            SendToSocket(clientSocket, BitConverter.GetBytes((short)code));
+            SendToSocket(clientSocket, SerializationUtils.Serialize(RequestStatusCode.Ok));
         }
 
         private void Process(GetRequest request, Socket clientSocket)
@@ -58,14 +56,6 @@ namespace Kronos.Server.RequestProcessing
         private void SendToSocket(Socket clientSocket, byte[] buffer)
         {
             clientSocket.Send(buffer, buffer.Length, SocketFlags.None);
-        }
-        
-        private T Deserialize<T>(byte[] request)
-        {
-            using (MemoryStream ms = new MemoryStream(request))
-            {
-                return Serializer.Deserialize<T>(ms);
-            }
         }
     }
 }
