@@ -30,5 +30,5 @@
     "licenseUrl": "https://github.com/lukasz-pyrzyk/Kronos/blob/master/license.txt",
     "projectUrl": "https://github.com/lukasz-pyrzyk/Kronos",
     "tags": [ "cache, distributed, socket, dotnetcore, dnx" ],
-    "version": "1.0.0-alpha-2"
+    "version": "1.0.0-alpha-*"
 }
