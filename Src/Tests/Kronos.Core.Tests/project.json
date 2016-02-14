@@ -11,7 +11,7 @@
     },
     "description": "Kronos - core dll tests",
     "frameworks": {
-        "dnx451": {
+        "dnx46": {
             "dependencies": {
                 "Moq": "4.2.1312.1622"
             }
