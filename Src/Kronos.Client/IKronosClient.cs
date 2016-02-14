@@ -1,6 +1,4 @@
 ﻿using System;
-using Kronos.Core.Model;
-using Kronos.Core.StatusCodes;
 
 namespace Kronos.Client
 {

@@ -1,18 +1,17 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
-using NLog;
 
 namespace Kronos.Client.Transfer
 {
     public class SocketCommunicationService : ICommunicationService
     {
         private readonly IPEndPoint _nodeEndPoint;
-        private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
         private const int bufferSize = 1024 * 8;
 
         public SocketCommunicationService(IPEndPoint host)
@@ -28,13 +27,13 @@ namespace Kronos.Client.Transfer
             {
                 socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
 
-                _logger.Debug("Connecting to the server socket");
+                Trace.WriteLine("Connecting to the server socket");
                 socket.Connect(_nodeEndPoint);
 
-                _logger.Debug($"Sending package of {packageToSend.Length} bytes");
+                Trace.WriteLine($"Sending package of {packageToSend.Length} bytes");
                 socket.Send(packageToSend, SocketFlags.None);
 
-                _logger.Debug("Waiting for response");
+                Trace.WriteLine("Waiting for response");
                 byte[] requestBytes;
                 using (MemoryStream ms = new MemoryStream())
                 {
@@ -58,8 +57,8 @@ namespace Kronos.Client.Transfer
             }
             catch (Exception ex)
             {
-                _logger.Fatal($"During package transfer an error occurred {ex}");
-                _logger.Debug("Returning information about exception");
+                Trace.TraceError($"During package transfer an error occurred {ex}");
+                Trace.WriteLine("Returning information about exception");
             }
             finally
             {
