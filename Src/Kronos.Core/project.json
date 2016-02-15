@@ -1,7 +1,6 @@
 {
     "authors": [ "Lukasz Pyrzyk" ],
     "copyright": "Lukasz Pyrzyk",
-    "content": [ "./Nlog.config" ],
     "summary": "Kronoc.Core is a main library for Kronos cache platform (Kronos.Server)",
     "dependencies": {
         "NLog": "4.4.0-alpha1",
