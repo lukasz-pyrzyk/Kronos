@@ -1,6 +1,5 @@
 {
     "authors": [ "Lukasz Pyrzyk" ],
-    "content": [ "./Nlog.config" ],
     "commands": {
         "ClientSample": "ClientSample"
     },
@@ -8,7 +7,7 @@
         "emitEntryPoint": true
     },
     "dependencies": {
-        "Kronos.Client": "1.0.0.0",
+        "Kronos.Client": "1.0.0-*",
         "Kronos.Core": "1.0.0-*"
     },
     "description": "Console Kronos client",
@@ -20,8 +19,7 @@
                 "System.Collections": "4.0.11-beta-23516",
                 "System.Console": "4.0.0-beta-23516",
                 "System.Linq": "4.0.1-beta-23516",
-                "System.Threading": "4.0.11-beta-23516",
-                "NLog": "4.4.0-alpha1"
+                "System.Threading": "4.0.11-beta-23516"
             }
         }
     },

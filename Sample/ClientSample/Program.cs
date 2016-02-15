@@ -1,29 +1,16 @@
 ﻿using System;
 using System.IO;
 using System.Net;
-using System.Xml;
 using Kronos.Client;
-using NLog;
-using NLog.Config;
 
 namespace ClientSample
 {
     public class Program
     {
-        private static ILogger _logger;
-        public static void LoggerSetup()
-        {
-            var reader = XmlReader.Create("NLog.config");
-            var config = new XmlLoggingConfiguration(reader, null); //filename is not required.
-            LogManager.Configuration = config;
-            _logger = LogManager.GetCurrentClassLogger();
-        }
-
         public static void Main(string[] args)
         {
-            LoggerSetup();
 
-            _logger.Info("Starting program");
+            Console.WriteLine("Starting program");
 
             IPAddress host = IPAddress.Parse("192.168.0.10");
             int port = 5000;
@@ -35,7 +22,7 @@ namespace ClientSample
 
             client.InsertToServer(key, File.ReadAllBytes(fileToSend), expiryDate);
 
-            _logger.Info("Closing program");
+            Console.WriteLine("Closing program");
         }
     }
 }
