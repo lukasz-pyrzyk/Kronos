@@ -12,7 +12,7 @@
     },
     "description": "Kronos - client tests",
     "frameworks": {
-        "dnx46": {
+        "dnx451": {
             "dependencies": {
                 "Moq": "4.2.1312.1622"
             }

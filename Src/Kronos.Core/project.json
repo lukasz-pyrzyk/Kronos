@@ -9,8 +9,7 @@
     },
     "description": "Kronoc.Core is a main library for Kronos cache platform (Kronos.Server)",
     "frameworks": {
-        "net451": { },
-        "dnx46": { },
+        "dnx451": { },
         "dnxcore50": {
             "dependencies": {
                 "System.Collections": "4.0.11-beta-23516",
@@ -25,5 +24,5 @@
     "licenseUrl": "https://github.com/lukasz-pyrzyk/Kronos/blob/master/license.txt",
     "projectUrl": "https://github.com/lukasz-pyrzyk/Kronos",
     "tags": [ "cache, distributed, socket, dotnetcore, dnx" ],
-    "version": "1.0.0-alpha-*"
+    "version": "1.0.0-beta-*"
 }

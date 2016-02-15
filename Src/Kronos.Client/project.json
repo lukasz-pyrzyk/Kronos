@@ -8,8 +8,7 @@
     },
     "description": "Kronoc.Client is a library which allows you integrate project with Kronos cache platform (Kronos.Server)",
     "frameworks": {
-        "net451": { },
-        "dnx46": { },
+        "dnx451": { },
         "dnxcore50": {
             "dependencies": {
                 "Microsoft.CSharp": "4.0.1-beta-23516",
@@ -27,5 +26,5 @@
     "licenseUrl": "https://github.com/lukasz-pyrzyk/Kronos/blob/master/license.txt",
     "projectUrl": "https://github.com/lukasz-pyrzyk/Kronos",
     "tags": [ "cache, distributed, socket, dotnetcore, dnx" ],
-    "version": "1.0.0-alpha-*"
+    "version": "1.0.0-beta-*"
 }

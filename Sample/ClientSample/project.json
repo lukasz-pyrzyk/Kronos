@@ -12,7 +12,7 @@
     },
     "description": "Console Kronos client",
     "frameworks": {
-        "dnx46": { },
+        "dnx451": { },
         "dnxcore50": {
             "dependencies": {
                 "Microsoft.CSharp": "4.0.1-beta-23516",
