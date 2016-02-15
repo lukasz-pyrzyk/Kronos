@@ -1,6 +1,6 @@
 ﻿using System;
-using System.IO;
 using System.Net;
+using System.Text;
 using Kronos.Client;
 
 namespace ClientSample
@@ -9,20 +9,21 @@ namespace ClientSample
     {
         public static void Main(string[] args)
         {
+            string host = "23.101.135.101"; // IP of the Kronos.Server node
+            int port = 5001;  // Opened port in the node
 
-            Console.WriteLine("Starting program");
+            IKronosClient client = KronosClientFactory.CreateClient(IPAddress.Parse(host), port);
 
-            IPAddress host = IPAddress.Parse("192.168.0.10");
-            int port = 5000;
-            IKronosClient client = KronosClientFactory.CreateClient(host, port);
+            string key = Guid.NewGuid().ToString();
+            byte[] package = Encoding.UTF8.GetBytes("lorem ipsum");
+            DateTime expiryDate = DateTime.Now.AddDays(1);
 
-            string key = "key";
-            string fileToSend = "C:\\Temp\\file.bin";
-            DateTime expiryDate = new DateTime();
+            client.InsertToServer(key, package, expiryDate);
 
-            client.InsertToServer(key, File.ReadAllBytes(fileToSend), expiryDate);
+            byte[] fromServer = client.TryGetValue(key);
 
-            Console.WriteLine("Closing program");
+            Console.WriteLine(Encoding.UTF8.GetString(fromServer));
+            Console.ReadKey();
         }
     }
 }
