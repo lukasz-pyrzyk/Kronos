@@ -6,17 +6,26 @@
     "dependencies": {
         "Kronos.Client": "1.0.0-*",
         "Kronos.Core": "1.0.0-*",
-        "NETStandard.Library": "1.0.0-*",
-        "moq.netcore": "4.4.0-beta8",
         "protobuf-net": "2.1.0-alpha-1",
-        "xunit": "2.1.0",
-        "xunit.netcore.extensions": "1.0.0-prerelease-*",
-        "dotnet-test-xunit": "1.0.0-*"
+        "xunit": "2.2.0-beta1-build3239",
+        "xunit.runner.dnx": "2.1.0-rc1-build204"
     },
     "description": "Kronos - client tests",
     "frameworks": {
+        "dnx451": {
+            "dependencies": {
+                "Moq": "4.2.1312.1622"
+            }
+        },
         "dnxcore50": {
-            "imports": "portable-net45+win8"
+            "dependencies": {
+                "Microsoft.CSharp": "4.0.1-*",
+                "moq.netcore": "4.4.0-beta8",
+                "System.Collections": "4.0.11-*",
+                "System.Linq": "4.1.0-*",
+                "System.Runtime": "4.1.0-*",
+                "System.Threading": "4.0.11-*"
+            }
         }
     },
     "testRunner": "xunit",

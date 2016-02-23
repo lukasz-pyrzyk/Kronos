@@ -4,12 +4,25 @@
     "summary": "Kronoc.Core is a main library for Kronos cache platform (Kronos.Server)",
     "dependencies": {
         "NLog": "4.4.0-alpha1",
-        "protobuf-net": "2.1.0-alpha-1",
-        "NETStandard.Library": "1.0.0-*"
+        "protobuf-net": "2.1.0-alpha-1"
     },
     "description": "Kronoc.Core is a main library for Kronos cache platform (Kronos.Server)",
     "frameworks": {
-        "dnxcore50": { }
+        "dnx451": {
+            "frameworkAssemblies": {
+                "System": "4.0.0.0",
+                "System.Net": "4.0.0.0"
+            }
+        },
+        "dnxcore50": {
+            "dependencies": {
+                "System.Collections": "4.0.11-*",
+                "System.Linq": "4.1.0-*",
+                "System.Net.Sockets": "4.1.0-*",
+                "System.Runtime": "4.1.0-*",
+                "System.Threading": "4.0.11-*"
+            }
+        }
     },
     "iconUrl": "https://raw.githubusercontent.com/lukasz-pyrzyk/Kronos/master/SolutionItems/nugetIcon.png",
     "licenseUrl": "https://github.com/lukasz-pyrzyk/Kronos/blob/master/license.txt",
