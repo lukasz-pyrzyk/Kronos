@@ -5,7 +5,7 @@
     "dependencies": {
         "Kronos.Core": "1.0.0-*",
         "protobuf-net": "2.1.0-alpha-1",
-        "NETStandard.Library": "1.0.0-*"
+        "NETStandard.Library": "1.0.0-rc2-23811"
     },
     "description": "Kronoc.Client is a library which allows you integrate project with Kronos cache platform (Kronos.Server)",
     "frameworks": {

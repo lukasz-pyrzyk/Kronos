@@ -5,7 +5,7 @@
     "dependencies": {
         "NLog": "4.4.0-alpha1",
         "protobuf-net": "2.1.0-alpha-1",
-        "NETStandard.Library": "1.0.0-*"
+        "NETStandard.Library": "1.0.0-rc2-23811"
     },
     "description": "Kronoc.Core is a main library for Kronos cache platform (Kronos.Server)",
     "frameworks": {

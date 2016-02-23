@@ -5,7 +5,7 @@
     },
     "dependencies": {
         "Kronos.Core": "1.0.0-*",
-        "NETStandard.Library": "1.0.0-*",
+        "NETStandard.Library": "1.0.0-rc2-23811",
         "protobuf-net": "2.1.0-alpha-1",
         "moq.netcore": "4.4.0-beta8",
         "xunit": "2.1.0",
