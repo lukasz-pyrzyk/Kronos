@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using Kronos.Core.Model.Exceptions;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 
@@ -59,6 +60,7 @@ namespace Kronos.Client.Transfer
             {
                 Trace.TraceError($"During package transfer an error occurred {ex}");
                 Trace.WriteLine("Returning information about exception");
+                throw new KronosCommunicationException(ex.Message, ex);
             }
             finally
             {
@@ -70,8 +72,6 @@ namespace Kronos.Client.Transfer
                 {
                 }
             }
-
-            return null;
         }
     }
 }
