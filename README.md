@@ -19,8 +19,8 @@ $ Install-Package Kronos.Client -Pre
 
 ### Kronos.Client - Usage
 ```csharp
-    using (IKronosClient client = KronosClientFactory.CreateClient(IPAddress.Parse("192.168.0.2"), 5000))
-    {
+using (IKronosClient client = KronosClientFactory.CreateClient(IPAddress.Parse("192.168.0.2"), 5000))
+{
     string key = "key";
     byte[] value = Encoding.UTF8.GetBytes("Lorem ipsum");
     DateTime expiryDate = DateTime.Now;
