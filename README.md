@@ -1,6 +1,6 @@
 # Kronos  [![Build status](https://ci.appveyor.com/api/projects/status/26qj17kq09btkkql?svg=true)](https://ci.appveyor.com/project/LukaszPyrzyk/binaryformatter) [![codecov.io](https://codecov.io/github/lukasz-pyrzyk/Kronos/coverage.svg?branch=master)](https://codecov.io/github/lukasz-pyrzyk/Kronos?branch=master) [![NuGet version](https://badge.fury.io/nu/Kronos.Client.svg)](https://badge.fury.io/nu/Kronos.Client)
 ### Description
-Kronos is a byte in-memory cache system, based on .NET Core. Client library is available in [Nuget](https://www.nuget.org/packages/Kronos.Client/).
+Kronos is an in-memory cache system, based on .NET Core. Client library is available in [Nuget](https://www.nuget.org/packages/Kronos.Client/).
 
 ### University
 I am a student of Opole University Of technology and this is my Engineering Thesis.
