@@ -8,13 +8,23 @@ using NLog;
 
 namespace Kronos.Server.Listener
 {
-    public class SocketServerWorker : IServerWorker
+    internal class SocketServerWorker : IServerWorker
     {
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
-        private readonly IRequestProcessor _processor = new RequestProcessor();
-        private readonly IStorage _storage = new InMemoryStorage();
-        
+        private readonly IRequestProcessor _processor;
+        private readonly IStorage _storage;
+
         private const int bufferSize = 1024 * 8;
+
+        internal SocketServerWorker(IRequestProcessor processor, IStorage storage)
+        {
+            _processor = processor;
+            _storage = storage;
+        }
+
+        public SocketServerWorker() : this(new RequestProcessor(), new InMemoryStorage())
+        {
+        }
 
         public void StartListening(Socket server)
         {
@@ -46,7 +56,7 @@ namespace Kronos.Server.Listener
 
                         timer.Stop();
                         _logger.Info($"Finished receiving package in {timer.ElapsedMilliseconds}ms");
-                        
+
                         _logger.Info("Processing request");
                         _processor.ProcessRequest(client, requestBytes, _storage);
                     }
