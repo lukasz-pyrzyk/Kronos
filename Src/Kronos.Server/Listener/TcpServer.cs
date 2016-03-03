@@ -9,6 +9,7 @@ namespace Kronos.Server.Listener
     public class TcpServer : IDisposable
     {
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+        private readonly IServerWorker _worker;
         private Socket _server;
         private bool _disposed;
 
@@ -28,10 +29,15 @@ namespace Kronos.Server.Listener
             };
 
             _server.Bind(new IPEndPoint(IPAddress.Any, Port));
+            _worker = worker;
+        }
+
+        public void Start()
+        {
             _server.Listen(QueueSize);
             _logger.Info($"Tcp server is started on port {Port}, buffer is {BufferSize}");
 
-            worker.StartListening(_server);
+            _worker.StartListening(_server);
         }
 
         ~TcpServer()
