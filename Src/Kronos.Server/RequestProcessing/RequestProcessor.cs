@@ -13,7 +13,7 @@ namespace Kronos.Server.RequestProcessing
     {
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
         
-        public void ProcessRequest(Socket clientSocket, byte[] requestBytes)
+        public void ProcessRequest(Socket clientSocket, byte[] requestBytes, IStorage storage)
         {
             _logger.Info($"Processing request of size {requestBytes.Length}");
 
@@ -32,24 +32,24 @@ namespace Kronos.Server.RequestProcessing
             {
                 case RequestType.InsertRequest:
                     InsertRequest insertRequest = SerializationUtils.Deserialize<InsertRequest>(requestBytes);
-                    Process(insertRequest, clientSocket);
+                    Process(insertRequest, clientSocket, storage);
                     break;
                 case RequestType.GetRequest:
                     GetRequest getRequest = SerializationUtils.Deserialize<GetRequest>(requestBytes);
-                    Process(getRequest, clientSocket);
+                    Process(getRequest, clientSocket, storage);
                     break;
             }
         }
 
-        private void Process(InsertRequest request, Socket clientSocket)
+        private void Process(InsertRequest request, Socket clientSocket, IStorage storage)
         {
-            InMemoryStorage.AddOrUpdate(request.ObjectToCache.Key, request.ObjectToCache.Object);
+            storage.AddOrUpdate(request.ObjectToCache.Key, request.ObjectToCache.Object);
             SendToSocket(clientSocket, SerializationUtils.Serialize(RequestStatusCode.Ok));
         }
 
-        private void Process(GetRequest request, Socket clientSocket)
+        private void Process(GetRequest request, Socket clientSocket, IStorage storage)
         {
-            byte[] requestedObject = InMemoryStorage.TryGet(request.Key);
+            byte[] requestedObject = storage.TryGet(request.Key);
             SendToSocket(clientSocket, requestedObject);
         }
 

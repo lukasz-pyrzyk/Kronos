@@ -12,6 +12,7 @@ namespace Kronos.Server.Listener
     {
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
         private readonly IRequestProcessor _processor = new RequestProcessor();
+        private readonly IStorage _storage = new InMemoryStorage();
         
         private const int bufferSize = 1024 * 8;
 
@@ -47,7 +48,7 @@ namespace Kronos.Server.Listener
                         _logger.Info($"Finished receiving package in {timer.ElapsedMilliseconds}ms");
                         
                         _logger.Info("Processing request");
-                        _processor.ProcessRequest(client, requestBytes);
+                        _processor.ProcessRequest(client, requestBytes, _storage);
                     }
                     catch (SocketException ex)
                     {
@@ -85,7 +86,7 @@ namespace Kronos.Server.Listener
 
         public void Dispose()
         {
-            InMemoryStorage.Clear();
+            _storage.Clear();
         }
     }
 }

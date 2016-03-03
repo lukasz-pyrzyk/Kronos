@@ -2,6 +2,8 @@
 using System.Net.Sockets;
 using System.Text;
 using Kronos.Server.RequestProcessing;
+using Kronos.Server.Storage;
+using Moq;
 using Xunit;
 
 namespace Kronos.Server.Tests.RequestProcessing
@@ -16,7 +18,7 @@ namespace Kronos.Server.Tests.RequestProcessing
 
             Socket socket = new Socket(SocketType.Stream, ProtocolType.Tcp);
 
-            Assert.ThrowsAny<InvalidOperationException>(() => processor.ProcessRequest(socket, bytes));
+            Assert.ThrowsAny<InvalidOperationException>(() => processor.ProcessRequest(socket, bytes, Mock.Of<IStorage>()));
         }
     }
 }

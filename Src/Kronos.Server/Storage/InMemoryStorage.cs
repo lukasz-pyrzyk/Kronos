@@ -3,21 +3,20 @@ using NLog;
 
 namespace Kronos.Server.Storage
 {
-    public class InMemoryStorage
+    public class InMemoryStorage : IStorage
     {
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly ConcurrentDictionary<string, byte[]> _storage = new ConcurrentDictionary<string, byte[]>();
 
-        private static readonly ConcurrentDictionary<string, byte[]> _storage = new ConcurrentDictionary<string, byte[]>();
+        public int Count => _storage.Count;
 
-        public static int Count => _storage.Count;
-
-        public static void AddOrUpdate(string key, byte[] obj)
+        public void AddOrUpdate(string key, byte[] obj)
         {
             _logger.Debug($"Inserting key {key} to MemoryStorage");
             _storage.AddOrUpdate(key, obj, (s, bytes) => obj);
         }
 
-        public static byte[] TryGet(string key)
+        public byte[] TryGet(string key)
         {
             _logger.Debug($"Getting package for key {key}");
             byte[] obj;
@@ -31,7 +30,7 @@ namespace Kronos.Server.Storage
             return null;
         }
 
-        public static void Clear()
+        public void Clear()
         {
             _logger.Debug("Clearing InMemoryCache");
             _storage.Clear();

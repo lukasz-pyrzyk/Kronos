@@ -11,14 +11,13 @@ namespace Kronos.Server.Tests.Storage
         {
             string key = "key";
             string objectWord = "lorem ipsum";
-            InMemoryStorage.AddOrUpdate(key, Encoding.UTF8.GetBytes(objectWord));
+            IStorage storage = new InMemoryStorage();
+            storage.AddOrUpdate(key, Encoding.UTF8.GetBytes(objectWord));
 
-            byte[] objFromBytes = InMemoryStorage.TryGet(key);
+            byte[] objFromBytes = storage.TryGet(key);
             string stringFromBytes = Encoding.UTF8.GetString(objFromBytes);
 
             Assert.Equal(objectWord, stringFromBytes);
-
-            InMemoryStorage.Clear();
         }
 
         [Fact]
@@ -27,40 +26,40 @@ namespace Kronos.Server.Tests.Storage
             string key = "key";
             string first = "first";
             string second = "second";
+            IStorage storage = new InMemoryStorage();
 
             byte[] firstObject = Encoding.UTF8.GetBytes(first);
             byte[] secondObject = Encoding.UTF8.GetBytes(second);
 
-            InMemoryStorage.AddOrUpdate(key, firstObject);
-            InMemoryStorage.AddOrUpdate(key, secondObject);
+            storage.AddOrUpdate(key, firstObject);
+            storage.AddOrUpdate(key, secondObject);
 
-            byte[] objFromBytes = InMemoryStorage.TryGet(key);
+            byte[] objFromBytes = storage.TryGet(key);
             string stringFromBytes = Encoding.UTF8.GetString(objFromBytes);
 
             Assert.Equal(stringFromBytes, second);
-
-            InMemoryStorage.Clear();
         }
 
         [Fact]
         public void CanClear()
         {
-            InMemoryStorage.AddOrUpdate("first", new byte[0]);
-            InMemoryStorage.AddOrUpdate("second", new byte[0]);
+            IStorage storage = new InMemoryStorage();
 
-            InMemoryStorage.Clear();
+            storage.AddOrUpdate("first", new byte[0]);
+            storage.AddOrUpdate("second", new byte[0]);
 
-            Assert.Equal(InMemoryStorage.Count, 0);
+            storage.Clear();
+
+            Assert.Equal(storage.Count, 0);
         }
 
         [Fact]
         public void ReturnsNullWhenObjectDoesNotExist()
         {
-            byte[] objFromBytes = InMemoryStorage.TryGet(string.Empty);
+            IStorage storage = new InMemoryStorage();
+            byte[] objFromBytes = storage.TryGet(string.Empty);
 
             Assert.Null(objFromBytes);
-
-            InMemoryStorage.Clear();
         }
     }
 }
