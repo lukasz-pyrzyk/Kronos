@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.IO;
-using System.Net;
 using System.Net.Sockets;
 using Kronos.Server.RequestProcessing;
 using Kronos.Server.Storage;
@@ -9,27 +8,17 @@ using NLog;
 
 namespace Kronos.Server.Listener
 {
-    public class SocketServer : IServer
+    public class SocketServerWorker : IServerWorker
     {
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
         private readonly IRequestProcessor _processor = new RequestProcessor();
-
-        public const int QueueSize = 5;
-        public const int Port = 5000;
-        public const int BufferSize = 5555;
+        
         private const int bufferSize = 1024 * 8;
 
-        public void StartListening()
+        public void StartListening(Socket server)
         {
-            Socket server = null;
             try
             {
-                server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
-                server.Bind(new IPEndPoint(IPAddress.Any, Port));
-                server.Listen(QueueSize);
-
-                _logger.Info($"Listening on port {Port}, queue size is {QueueSize} and the buffer is {BufferSize}");
-
                 while (true)
                 {
                     Socket client = null;

@@ -9,7 +9,7 @@ namespace Kronos.Server
     public class Program
     {
         private static ILogger _logger;
-        private static readonly IServer _listener = new SocketServer();
+        private static TcpServer _server;
 
         public static void LoggerSetup()
         {
@@ -24,9 +24,7 @@ namespace Kronos.Server
             LoggerSetup();
 
             _logger.Info("Starting server");
-
-            _listener.StartListening();
-
+            _server = new TcpServer(new SocketServerWorker());
             _logger.Info("Stopping server");
         }
     }
