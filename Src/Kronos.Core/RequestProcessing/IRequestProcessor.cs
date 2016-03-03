@@ -1,9 +1,9 @@
 ﻿using System.Net.Sockets;
-using Kronos.Server.Storage;
+using Kronos.Core.Storage;
 
 namespace Kronos.Server.RequestProcessing
 {
-    internal interface IRequestProcessor
+    public interface IRequestProcessor
     {
         void ProcessRequest(Socket clientSocket, byte[] requestBytes, IStorage storage);
     }

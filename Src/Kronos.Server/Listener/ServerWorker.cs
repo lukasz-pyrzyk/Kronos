@@ -2,8 +2,9 @@
 using System.Diagnostics;
 using System.IO;
 using System.Net.Sockets;
+using Kronos.Core.Communication;
+using Kronos.Core.Storage;
 using Kronos.Server.RequestProcessing;
-using Kronos.Server.Storage;
 using NLog;
 
 namespace Kronos.Server.Listener
@@ -12,14 +13,14 @@ namespace Kronos.Server.Listener
     {
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
         private readonly IRequestProcessor _processor;
-        private readonly IStorage _storage;
+        public IStorage Storage { get; }
 
         private const int bufferSize = 1024 * 8;
 
         internal SocketServerWorker(IRequestProcessor processor, IStorage storage)
         {
             _processor = processor;
-            _storage = storage;
+            Storage = storage;
         }
 
         public SocketServerWorker() : this(new RequestProcessor(), new InMemoryStorage())
@@ -58,7 +59,7 @@ namespace Kronos.Server.Listener
                         _logger.Info($"Finished receiving package in {timer.ElapsedMilliseconds}ms");
 
                         _logger.Info("Processing request");
-                        _processor.ProcessRequest(client, requestBytes, _storage);
+                        _processor.ProcessRequest(client, requestBytes, Storage);
                     }
                     catch (SocketException ex)
                     {
@@ -96,7 +97,7 @@ namespace Kronos.Server.Listener
 
         public void Dispose()
         {
-            _storage.Clear();
+            Storage.Clear();
         }
     }
 }

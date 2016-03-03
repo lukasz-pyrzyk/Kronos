@@ -4,12 +4,12 @@ using System.Net.Sockets;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Kronos.Core.StatusCodes;
-using Kronos.Server.Storage;
+using Kronos.Core.Storage;
 using NLog;
 
 namespace Kronos.Server.RequestProcessing
 {
-    internal class RequestProcessor : IRequestProcessor
+    public class RequestProcessor : IRequestProcessor
     {
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
         

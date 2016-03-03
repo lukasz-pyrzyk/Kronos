@@ -1,7 +1,7 @@
 ﻿using System.Collections.Concurrent;
 using NLog;
 
-namespace Kronos.Server.Storage
+namespace Kronos.Core.Storage
 {
     public class InMemoryStorage : IStorage
     {

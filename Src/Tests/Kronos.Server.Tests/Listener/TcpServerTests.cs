@@ -1,4 +1,5 @@
 ﻿using System.Net.Sockets;
+using Kronos.Core.Communication;
 using Kronos.Server.Listener;
 using Moq;
 using Xunit;

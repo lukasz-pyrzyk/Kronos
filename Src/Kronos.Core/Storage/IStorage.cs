@@ -1,6 +1,6 @@
-﻿namespace Kronos.Server.Storage
+﻿namespace Kronos.Core.Storage
 {
-    internal interface IStorage
+    public interface IStorage
     {
         int Count { get; }
         void AddOrUpdate(string key, byte[] obj);

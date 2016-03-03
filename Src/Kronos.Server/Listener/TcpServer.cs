@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
+using Kronos.Core.Communication;
 using NLog;
 
 namespace Kronos.Server.Listener

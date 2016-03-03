@@ -1,8 +1,8 @@
 ﻿using System.Text;
-using Kronos.Server.Storage;
+using Kronos.Core.Storage;
 using Xunit;
 
-namespace Kronos.Server.Tests.Storage
+namespace Kronos.Core.Tests.Storage
 {
     public class InMemoryStorageTests
     {

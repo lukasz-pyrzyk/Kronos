@@ -1,12 +1,12 @@
 ﻿using System;
 using System.Net.Sockets;
 using System.Text;
+using Kronos.Core.Storage;
 using Kronos.Server.RequestProcessing;
-using Kronos.Server.Storage;
 using Moq;
 using Xunit;
 
-namespace Kronos.Server.Tests.RequestProcessing
+namespace Kronos.Core.Tests.RequestProcessing
 {
     public class RequestProcessorTests
     {
