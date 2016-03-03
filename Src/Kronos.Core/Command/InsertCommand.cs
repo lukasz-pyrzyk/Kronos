@@ -29,7 +29,7 @@ namespace Kronos.Core.Command
         public override void ProcessRequest(Socket socket, byte[] requestBytes, IStorage storage)
         {
             InsertRequest insertRequest = SerializationUtils.Deserialize<InsertRequest>(requestBytes);
-            storage.AddOrUpdate(insertRequest.ObjectToCache.Key, insertRequest.ObjectToCache.Object);
+            storage.AddOrUpdate(insertRequest.Key, insertRequest.Object);
 
             SendToClient(socket, SerializationUtils.Serialize(RequestStatusCode.Ok));
         }

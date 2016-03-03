@@ -1,4 +1,5 @@
-﻿using Kronos.Core.Model;
+﻿using System;
+using Kronos.Core.Model;
 using ProtoBuf;
 
 namespace Kronos.Core.Requests
@@ -10,16 +11,24 @@ namespace Kronos.Core.Requests
         public override RequestType RequestType { get; set; } = RequestType.InsertRequest;
 
         [ProtoMember(2)]
-        public CachedObject ObjectToCache { get; set; }
+        public string Key { get; set; }
+
+        [ProtoMember(3)]
+        public byte[] Object { get; set; }
+
+        [ProtoMember(4)]
+        public DateTime ExpiryDate { get; set; }
 
         // used by reflection
         public InsertRequest()
         {
         }
 
-        public InsertRequest(CachedObject objectToCache)
+        public InsertRequest(string key, byte[] serializedObject, DateTime expiryDate)
         {
-            ObjectToCache = objectToCache;
+            Key = key;
+            Object = serializedObject;
+            ExpiryDate = expiryDate;
         }
     }
 }

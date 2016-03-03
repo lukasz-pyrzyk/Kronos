@@ -12,15 +12,15 @@ namespace Kronos.Core.Tests.Serialization
         [Fact]
         public void CanSerializeAndDeserialize()
         {
-            InsertRequest request = new InsertRequest(new CachedObject("key", Encoding.UTF8.GetBytes("key"), DateTime.Now));
+            InsertRequest request = new InsertRequest("key", Encoding.UTF8.GetBytes("key"), DateTime.Now);
 
             byte[] array = SerializationUtils.Serialize(request);
             InsertRequest requestFromBytes = SerializationUtils.Deserialize<InsertRequest>(array);
 
             Assert.Equal(requestFromBytes.RequestType, request.RequestType);
-            Assert.Equal(requestFromBytes.ObjectToCache.Key, requestFromBytes.ObjectToCache.Key);
-            Assert.Equal(requestFromBytes.ObjectToCache.ExpiryDate, requestFromBytes.ObjectToCache.ExpiryDate);
-            Assert.Equal(requestFromBytes.ObjectToCache.Object, requestFromBytes.ObjectToCache.Object);
+            Assert.Equal(requestFromBytes.Key, requestFromBytes.Key);
+            Assert.Equal(requestFromBytes.ExpiryDate, requestFromBytes.ExpiryDate);
+            Assert.Equal(requestFromBytes.Object, requestFromBytes.Object);
         }
     }
 }

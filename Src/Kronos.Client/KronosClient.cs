@@ -24,8 +24,7 @@ namespace Kronos.Client
         public void InsertToServer(string key, byte[] package, DateTime expiryDate)
         {
             Trace.WriteLine("New insert request");
-            CachedObject objectToCache = new CachedObject(key, package, expiryDate);
-            InsertRequest request = new InsertRequest(objectToCache);
+            InsertRequest request = new InsertRequest(key, package, expiryDate);
             InsertCommand command = new InsertCommand(_service, request);
 
             RequestStatusCode status = command.Execute();
