@@ -13,19 +13,13 @@ namespace Kronos.Core.Tests.Command
         [Fact]
         public void CanCreateInstanceOfFakeCommand()
         {
-            var communicationServiceMock = new Mock<IClientServerConnection>();
-
-            FakeCommand command = new FakeCommand(communicationServiceMock.Object, null);
+            FakeCommand command = new FakeCommand();
 
             Assert.NotNull(command);
         }
 
         internal class FakeCommand : BaseCommand
         {
-            public FakeCommand(IClientServerConnection service, Request request) : base(service, request)
-            {
-            }
-
             public override void ProcessRequest(Socket socket, byte[] requestBytes, IStorage storage)
             {
             }

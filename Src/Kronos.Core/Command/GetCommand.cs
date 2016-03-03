@@ -8,17 +8,9 @@ namespace Kronos.Core.Command
 {
     public class GetCommand : BaseCommand
     {
-        public GetCommand()
+        public byte[] Execute(IClientServerConnection service, GetRequest request)
         {
-        }
-
-        public GetCommand(IClientServerConnection service, GetRequest request) : base(service, request)
-        {
-        }
-
-        public byte[] Execute()
-        {
-            byte[] response = SendToServer();
+            byte[] response = service.SendToServer(request);
 
             return response;
         }

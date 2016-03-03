@@ -20,9 +20,8 @@ namespace Kronos.Core.Tests.Command
             var communicationServiceMock = new Mock<IClientServerConnection>();
             communicationServiceMock.Setup(x => x.SendToServer(request)).Returns(SerializationUtils.Serialize(status));
 
-            InsertCommand command = new InsertCommand(communicationServiceMock.Object, request);
-
-            RequestStatusCode response = command.Execute();
+            InsertCommand command = new InsertCommand();
+            RequestStatusCode response = command.Execute(communicationServiceMock.Object, request);
 
             Assert.Equal(response, status);
             communicationServiceMock.Verify(x => x.SendToServer(It.IsAny<InsertRequest>()), Times.Exactly(1));

@@ -9,17 +9,9 @@ namespace Kronos.Core.Command
 {
     public class InsertCommand : BaseCommand
     {
-        public InsertCommand()
+        public RequestStatusCode Execute(IClientServerConnection service, InsertRequest request)
         {
-        }
-
-        public InsertCommand(IClientServerConnection service, InsertRequest request) : base(service, request)
-        {
-        }
-
-        public RequestStatusCode Execute()
-        {
-            byte[] response = SendToServer();
+            byte[] response = service.SendToServer(request);
 
             RequestStatusCode statusCode = SerializationUtils.Deserialize<RequestStatusCode>(response);
 

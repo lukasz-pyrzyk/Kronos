@@ -18,9 +18,9 @@ namespace Kronos.Core.Tests.Command
             var communicationServiceMock = new Mock<IClientServerConnection>();
             communicationServiceMock.Setup(x => x.SendToServer(request)).Returns(value);
 
-            GetCommand command = new GetCommand(communicationServiceMock.Object, request);
+            GetCommand command = new GetCommand();
 
-            byte[] response = command.Execute();
+            byte[] response = command.Execute(communicationServiceMock.Object, request);
 
             Assert.Equal(response, value);
             communicationServiceMock.Verify(x => x.SendToServer(It.IsAny<GetRequest>()), Times.Exactly(1));
