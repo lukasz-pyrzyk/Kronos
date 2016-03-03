@@ -17,5 +17,16 @@ namespace Kronos.Server.Tests.Listener
             worker.Verify(x => x.StartListening(It.IsAny<Socket>()), Times.Exactly(1));
             Assert.NotNull(server);
         }
+
+        [Fact]
+        public void Dispose_CanDisposeElement()
+        {
+            var worker = new Mock<IServerWorker>();
+            TcpServer server = new TcpServer(worker.Object);
+
+            server.Dispose();
+
+            Assert.True(server.IsDisposed);
+        }
     }
 }

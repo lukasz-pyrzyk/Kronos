@@ -9,10 +9,13 @@ namespace Kronos.Server.Listener
     {
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
         private Socket _server;
+        private bool _disposed;
 
         private const int QueueSize = 1000;
         private const int Port = 5000;
         private const int BufferSize = 1024 * 8;
+
+        public bool IsDisposed => _disposed;
 
         public TcpServer(IServerWorker worker)
         {
@@ -30,6 +33,11 @@ namespace Kronos.Server.Listener
             worker.StartListening(_server);
         }
 
+        ~TcpServer()
+        {
+            Dispose(false);
+        }
+
         public void Dispose()
         {
             Dispose(true);
@@ -38,35 +46,35 @@ namespace Kronos.Server.Listener
 
         protected void Dispose(bool disposing)
         {
-            if (!disposing) return;
-            try
+            if (!_disposed)
             {
-                _logger.Trace("Disposing TCP server");
                 try
                 {
-                    if (_server.Connected)
+                    if (disposing)
                     {
-                        try
+                        _logger.Trace("Disposing TCP server");
+                        if (_server.Connected)
                         {
-                            _server.Shutdown(SocketShutdown.Both);
+                            try
+                            {
+                                _server.Shutdown(SocketShutdown.Both);
+                            }
+                            catch (Exception)
+                            {
+                            }
                         }
-                        catch (Exception)
-                        {
-                        }
+                        _server.Dispose();
                     }
-                    _server.Dispose();
                 }
-                catch (Exception)
+                catch (Exception ex)
                 {
+                    _logger.Warn($"Exception during server disposing {ex}");
                 }
-            }
-            catch (Exception ex)
-            {
-                _logger.Warn($"Exception during server disposing {ex}");
-            }
-            finally
-            {
-                _server = null;
+                finally
+                {
+                    _server = null;
+                    _disposed = true;
+                }
             }
         }
     }
