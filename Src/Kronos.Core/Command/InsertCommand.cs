@@ -1,19 +1,19 @@
-﻿using Kronos.Client.Transfer;
+﻿using Kronos.Core.Communication;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Kronos.Core.StatusCodes;
 
-namespace Kronos.Client.Command
+namespace Kronos.Core.Command
 {
     public class InsertCommand : BaseCommand
     {
-        public InsertCommand(ICommunicationService service, InsertRequest request) : base(service, request)
+        public InsertCommand(IClientServerConnection service, InsertRequest request) : base(service, request)
         {
         }
 
         public RequestStatusCode Execute()
         {
-            byte[] response = ExecuteCommand();
+            byte[] response = SendToServer();
 
             RequestStatusCode statusCode = SerializationUtils.Deserialize<RequestStatusCode>(response);
 

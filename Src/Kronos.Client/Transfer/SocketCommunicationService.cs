@@ -4,13 +4,14 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using Kronos.Core.Communication;
 using Kronos.Core.Model.Exceptions;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 
 namespace Kronos.Client.Transfer
 {
-    public class SocketCommunicationService : ICommunicationService
+    public class SocketCommunicationService : IClientServerConnection
     {
         private readonly IPEndPoint _nodeEndPoint;
         private const int bufferSize = 1024 * 8;
@@ -20,7 +21,7 @@ namespace Kronos.Client.Transfer
             _nodeEndPoint = host;
         }
 
-        public byte[] SendToNode(Request request)
+        public byte[] SendToServer(Request request)
         {
             byte[] packageToSend = SerializationUtils.Serialize(request);
             Socket socket = null;

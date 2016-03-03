@@ -1,12 +1,12 @@
-﻿using Kronos.Client.Command;
-using Kronos.Client.Transfer;
+﻿using Kronos.Core.Command;
+using Kronos.Core.Communication;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Kronos.Core.StatusCodes;
 using Moq;
 using Xunit;
 
-namespace Kronos.Client.Tests.Command
+namespace Kronos.Core.Tests.Command
 {
     public class InsertCommandTests
     {
@@ -17,15 +17,15 @@ namespace Kronos.Client.Tests.Command
         {
             var request = new InsertRequest();
 
-            var communicationServiceMock = new Mock<ICommunicationService>();
-            communicationServiceMock.Setup(x => x.SendToNode(request)).Returns(SerializationUtils.Serialize(status));
+            var communicationServiceMock = new Mock<IClientServerConnection>();
+            communicationServiceMock.Setup(x => x.SendToServer(request)).Returns(SerializationUtils.Serialize(status));
 
             InsertCommand command = new InsertCommand(communicationServiceMock.Object, request);
 
             RequestStatusCode response = command.Execute();
 
             Assert.Equal(response, status);
-            communicationServiceMock.Verify(x => x.SendToNode(It.IsAny<InsertRequest>()), Times.Exactly(1));
+            communicationServiceMock.Verify(x => x.SendToServer(It.IsAny<InsertRequest>()), Times.Exactly(1));
         }
     }
 }

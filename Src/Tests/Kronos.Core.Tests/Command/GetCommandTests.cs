@@ -1,11 +1,11 @@
-﻿using Kronos.Client.Command;
-using Kronos.Client.Transfer;
+﻿using Kronos.Core.Command;
+using Kronos.Core.Communication;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Moq;
 using Xunit;
 
-namespace Kronos.Client.Tests.Command
+namespace Kronos.Core.Tests.Command
 {
     public class GetCommandTests
     {
@@ -15,15 +15,15 @@ namespace Kronos.Client.Tests.Command
             byte[] value = SerializationUtils.Serialize("lorem ipsum");
             var request = new GetRequest("masterKey");
 
-            var communicationServiceMock = new Mock<ICommunicationService>();
-            communicationServiceMock.Setup(x => x.SendToNode(request)).Returns(value);
+            var communicationServiceMock = new Mock<IClientServerConnection>();
+            communicationServiceMock.Setup(x => x.SendToServer(request)).Returns(value);
 
             GetCommand command = new GetCommand(communicationServiceMock.Object, request);
 
             byte[] response = command.Execute();
 
             Assert.Equal(response, value);
-            communicationServiceMock.Verify(x => x.SendToNode(It.IsAny<GetRequest>()), Times.Exactly(1));
+            communicationServiceMock.Verify(x => x.SendToServer(It.IsAny<GetRequest>()), Times.Exactly(1));
         }
     }
 }

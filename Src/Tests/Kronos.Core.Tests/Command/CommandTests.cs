@@ -1,17 +1,17 @@
-﻿using Kronos.Client.Command;
-using Kronos.Client.Transfer;
+﻿using Kronos.Core.Command;
+using Kronos.Core.Communication;
 using Kronos.Core.Requests;
 using Moq;
 using Xunit;
 
-namespace Kronos.Client.Tests.Command
+namespace Kronos.Core.Tests.Command
 {
     public class CommandTests
     {
         [Fact]
         public void CanCreateInstanceOfFakeCommand()
         {
-            var communicationServiceMock = new Mock<ICommunicationService>();
+            var communicationServiceMock = new Mock<IClientServerConnection>();
 
             FakeCommand command = new FakeCommand(communicationServiceMock.Object, null);
 
@@ -20,7 +20,7 @@ namespace Kronos.Client.Tests.Command
 
         internal class FakeCommand : BaseCommand
         {
-            public FakeCommand(ICommunicationService service, Request request) : base(service, request)
+            public FakeCommand(IClientServerConnection service, Request request) : base(service, request)
             {
             }
         }

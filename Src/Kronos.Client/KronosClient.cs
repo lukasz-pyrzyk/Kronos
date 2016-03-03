@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
-using Kronos.Client.Command;
-using Kronos.Client.Transfer;
+using Kronos.Core.Command;
+using Kronos.Core.Communication;
 using Kronos.Core.Model;
 using Kronos.Core.Requests;
 using Kronos.Core.StatusCodes;
@@ -14,9 +14,9 @@ namespace Kronos.Client
     /// </summary>
     internal class KronosClient : IKronosClient
     {
-        private readonly ICommunicationService _service;
+        private readonly IClientServerConnection _service;
 
-        public KronosClient(ICommunicationService service)
+        public KronosClient(IClientServerConnection service)
         {
             _service = service;
         }
