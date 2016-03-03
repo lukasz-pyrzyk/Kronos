@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Linq;
 using System.Net.Sockets;
+using Kronos.Core.Command;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
-using Kronos.Core.StatusCodes;
 using Kronos.Core.Storage;
 using NLog;
 
@@ -31,31 +31,14 @@ namespace Kronos.Server.RequestProcessing
             switch (type)
             {
                 case RequestType.InsertRequest:
-                    InsertRequest insertRequest = SerializationUtils.Deserialize<InsertRequest>(requestBytes);
-                    Process(insertRequest, clientSocket, storage);
+                    InsertCommand insertCommand = new InsertCommand();
+                    insertCommand.ProcessRequest(clientSocket, requestBytes, storage);
                     break;
                 case RequestType.GetRequest:
-                    GetRequest getRequest = SerializationUtils.Deserialize<GetRequest>(requestBytes);
-                    Process(getRequest, clientSocket, storage);
+                    GetCommand getCommand = new GetCommand();
+                    getCommand.ProcessRequest(clientSocket, requestBytes, storage);
                     break;
             }
-        }
-
-        private void Process(InsertRequest request, Socket clientSocket, IStorage storage)
-        {
-            storage.AddOrUpdate(request.ObjectToCache.Key, request.ObjectToCache.Object);
-            SendToSocket(clientSocket, SerializationUtils.Serialize(RequestStatusCode.Ok));
-        }
-
-        private void Process(GetRequest request, Socket clientSocket, IStorage storage)
-        {
-            byte[] requestedObject = storage.TryGet(request.Key);
-            SendToSocket(clientSocket, requestedObject);
-        }
-
-        private void SendToSocket(Socket clientSocket, byte[] buffer)
-        {
-            clientSocket.Send(buffer, buffer.Length, SocketFlags.None);
         }
     }
 }
