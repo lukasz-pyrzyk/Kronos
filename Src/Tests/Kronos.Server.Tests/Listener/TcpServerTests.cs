@@ -1,0 +1,21 @@
+﻿using System.Net.Sockets;
+using Kronos.Server.Listener;
+using Moq;
+using Xunit;
+
+namespace Kronos.Server.Tests.Listener
+{
+    public class TcpServerTests
+    {
+        [Fact]
+        public void Ctor_ContainsBufferSizeDifferentThanZero()
+        {
+            var worker = new Mock<IServerWorker>();
+
+            TcpServer server = new TcpServer(worker.Object);
+
+            worker.Verify(x => x.StartListening(It.IsAny<Socket>()), Times.Exactly(1));
+            Assert.NotNull(server);
+        }
+    }
+}
