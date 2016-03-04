@@ -33,8 +33,9 @@ namespace Kronos.Client.Transfer
                 socket.Connect(_nodeEndPoint);
 
                 Trace.WriteLine($"Sending package of {packageToSend.Length} bytes");
-                socket.Send(packageToSend, SocketFlags.None);
-
+                
+                int sended = socket.Send(packageToSend, SocketFlags.None);
+                
                 Trace.WriteLine("Waiting for response");
                 byte[] requestBytes;
                 using (MemoryStream ms = new MemoryStream())

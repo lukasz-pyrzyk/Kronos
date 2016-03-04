@@ -1,11 +1,14 @@
 ﻿using System;
+using System.Linq;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Sockets;
 using Kronos.Core.Communication;
+using Kronos.Core.Serialization;
 using Kronos.Core.Storage;
 using Kronos.Server.RequestProcessing;
 using NLog;
+using ProtoBuf;
 
 namespace Kronos.Server.Listener
 {
@@ -40,26 +43,37 @@ namespace Kronos.Server.Listener
                         _logger.Info("Accepting new request");
                         var timer = Stopwatch.StartNew();
 
-                        byte[] requestBytes;
+                        byte[] packageSizeBuffer = new byte[sizeof(int)];
+                        _logger.Info("Receiving information about request size");
+                        client.Receive(packageSizeBuffer, SocketFlags.None);
+
+                        int requestSize = SerializationUtils.GetLengthOfPackage(packageSizeBuffer);
+                        _logger.Info($"Request contains {requestSize} bytes");
+
+                        byte[] r;
                         using (MemoryStream ms = new MemoryStream())
                         {
-                            byte[] buffer = new byte[bufferSize];
-                            using (NetworkStream stream = new NetworkStream(client))
+                            ms.Write(packageSizeBuffer, 0, packageSizeBuffer.Length);
+                            int totalReceived = 0;
+                            while (totalReceived != requestSize)
                             {
-                                do
-                                {
-                                    int received = stream.Read(buffer, 0, buffer.Length);
-                                    ms.Write(buffer, 0, received);
-                                } while (stream.DataAvailable);
+                                byte[] package = new byte[bufferSize];
+
+                                int received = client.Receive(package, SocketFlags.None);
+                                _logger.Info($"Received {received} bytes");
+
+                                ms.Write(package, 0, received);
+                                totalReceived += received;
+                                _logger.Info($"Total received bytes: {(float)totalReceived * 100 / requestSize}%");
                             }
-                            requestBytes = ms.ToArray();
+                            r = ms.ToArray();
                         }
 
                         timer.Stop();
                         _logger.Info($"Finished receiving package in {timer.ElapsedMilliseconds}ms");
 
                         _logger.Info("Processing request");
-                        _processor.ProcessRequest(client, requestBytes, Storage);
+                        _processor.ProcessRequest(client, r, Storage);
                     }
                     catch (SocketException ex)
                     {
@@ -71,7 +85,10 @@ namespace Kronos.Server.Listener
                     {
                         try
                         {
-                            client?.Shutdown(SocketShutdown.Both);
+                            if (client != null && client.Connected)
+                            {
+                                client.Shutdown(SocketShutdown.Both);
+                            }
                         }
                         catch (SocketException)
                         {

@@ -5,20 +5,29 @@ namespace Kronos.Core.Serialization
 {
     public static class SerializationUtils
     {
+        private const PrefixStyle PrefixStyle = ProtoBuf.PrefixStyle.Base128;
+
+        public static int GetLengthOfPackage(byte[] buffer)
+        {
+            int size;
+            Serializer.TryReadLengthPrefix(buffer, 0, buffer.Length, PrefixStyle, out size);
+            return size;
+        }
+
         public static byte[] Serialize(object obj)
         {
             using (MemoryStream ms = new MemoryStream())
             {
-                Serializer.Serialize(ms, obj);
+                Serializer.SerializeWithLengthPrefix(ms, obj, PrefixStyle);
                 return ms.ToArray();
             }
         }
 
-        public static T Deserialize<T>(byte[] stream)
+        public static T Deserialize<T>(byte[] buffer)
         {
-            using (MemoryStream ms = new MemoryStream(stream))
+            using (MemoryStream ms = new MemoryStream(buffer))
             {
-                return Serializer.Deserialize<T>(ms);
+                return Serializer.DeserializeWithLengthPrefix<T>(ms, PrefixStyle);
             }
         }
     }
