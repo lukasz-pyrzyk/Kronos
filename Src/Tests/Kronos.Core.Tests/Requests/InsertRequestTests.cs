@@ -34,17 +34,6 @@ namespace Kronos.Core.Tests.Requests
         }
 
         [Fact]
-        public void CanSerializeWithRequestType()
-        {
-            InsertRequest request = new InsertRequest("key", new byte[0], DateTime.Now);
-
-            byte[] packageBytes = SerializationUtils.Serialize(request);
-            RequestType type = SerializationUtils.Deserialize<RequestType>(packageBytes.Take(sizeof(short)).ToArray());
-
-            Assert.Equal(type, request.RequestType);
-        }
-
-        [Fact]
         public void CanSerializeAndDeserialize()
         {
             InsertRequest request = new InsertRequest

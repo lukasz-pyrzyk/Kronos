@@ -7,16 +7,15 @@ namespace Kronos.Core.Requests
     [ProtoContract]
     public class InsertRequest : Request
     {
-        [ProtoMember(1, IsRequired = true)]
         public override RequestType RequestType { get; set; } = RequestType.InsertRequest;
 
-        [ProtoMember(2)]
+        [ProtoMember(1)]
         public string Key { get; set; }
 
-        [ProtoMember(3)]
+        [ProtoMember(2)]
         public byte[] Object { get; set; }
 
-        [ProtoMember(4)]
+        [ProtoMember(3)]
         public DateTime ExpiryDate { get; set; }
 
         // used by reflection

@@ -20,6 +20,8 @@ namespace Kronos.Client.Tests
             DateTime expiryDate = DateTime.Today.AddDays(1);
             
             var communicationServiceMock = new Mock<IClientServerConnection>();
+            communicationServiceMock.Setup(x => x.SendToServer(It.IsAny<Request>()))
+                .Returns(SerializationUtils.Serialize(RequestStatusCode.Ok));
 
             IKronosClient client = new KronosClient(communicationServiceMock.Object);
             client.InsertToServer(key, package, expiryDate);

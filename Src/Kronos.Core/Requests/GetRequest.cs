@@ -5,10 +5,9 @@ namespace Kronos.Core.Requests
     [ProtoContract]
     public class GetRequest : Request
     {
-        [ProtoMember(1, IsRequired = true)]
         public override RequestType RequestType { get; set; } = RequestType.GetRequest;
 
-        [ProtoMember(2)]
+        [ProtoMember(1)]
         public string Key { get; set; }
 
         // used by reflection

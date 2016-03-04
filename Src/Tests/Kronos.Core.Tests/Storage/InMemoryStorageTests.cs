@@ -59,7 +59,7 @@ namespace Kronos.Core.Tests.Storage
             IStorage storage = new InMemoryStorage();
             byte[] objFromBytes = storage.TryGet(string.Empty);
 
-            Assert.Null(objFromBytes);
+            Assert.Empty(objFromBytes);
         }
     }
 }

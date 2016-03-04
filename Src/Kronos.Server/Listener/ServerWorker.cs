@@ -1,14 +1,13 @@
 ﻿using System;
-using System.Linq;
-using System.Diagnostics;
 using System.IO;
 using System.Net.Sockets;
 using Kronos.Core.Communication;
+using Kronos.Core.RequestProcessing;
+using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
+using Kronos.Core.StatusCodes;
 using Kronos.Core.Storage;
-using Kronos.Server.RequestProcessing;
 using NLog;
-using ProtoBuf;
 
 namespace Kronos.Server.Listener
 {
@@ -41,39 +40,14 @@ namespace Kronos.Server.Listener
                     {
                         client = server.Accept();
                         _logger.Info("Accepting new request");
-                        var timer = Stopwatch.StartNew();
 
-                        byte[] packageSizeBuffer = new byte[sizeof(int)];
-                        _logger.Info("Receiving information about request size");
-                        client.Receive(packageSizeBuffer, SocketFlags.None);
+                        byte[] typeBuffer = ReceiveAndSendConfirmation(client);
+                        byte[] requestBuffer = ReceiveAndSendConfirmation(client);
 
-                        int requestSize = SerializationUtils.GetLengthOfPackage(packageSizeBuffer);
-                        _logger.Info($"Request contains {requestSize} bytes");
+                        RequestType type = SerializationUtils.Deserialize<RequestType>(typeBuffer);
 
-                        byte[] r;
-                        using (MemoryStream ms = new MemoryStream())
-                        {
-                            ms.Write(packageSizeBuffer, 0, packageSizeBuffer.Length);
-                            int totalReceived = 0;
-                            while (totalReceived != requestSize)
-                            {
-                                byte[] package = new byte[bufferSize];
-
-                                int received = client.Receive(package, SocketFlags.None);
-                                _logger.Info($"Received {received} bytes");
-
-                                ms.Write(package, 0, received);
-                                totalReceived += received;
-                                _logger.Info($"Total received bytes: {(float)totalReceived * 100 / requestSize}%");
-                            }
-                            r = ms.ToArray();
-                        }
-
-                        timer.Stop();
-                        _logger.Info($"Finished receiving package in {timer.ElapsedMilliseconds}ms");
-
-                        _logger.Info("Processing request");
-                        _processor.ProcessRequest(client, r, Storage);
+                        _logger.Info($"Processing {type} request");
+                        _processor.ProcessRequest(client, requestBuffer, type, Storage);
                     }
                     catch (SocketException ex)
                     {
@@ -109,6 +83,39 @@ namespace Kronos.Server.Listener
                 _logger.Info("Disposing server");
                 server?.Shutdown(SocketShutdown.Both);
                 server?.Dispose();
+            }
+        }
+
+        private byte[] ReceiveAndSendConfirmation(Socket socket)
+        {
+            byte[] packageSizeBuffer = new byte[sizeof(int)];
+            _logger.Info("Receiving information about request size");
+            socket.Receive(packageSizeBuffer, SocketFlags.None);
+
+            int requestSize = SerializationUtils.GetLengthOfPackage(packageSizeBuffer);
+            _logger.Info($"Request contains {requestSize} bytes");
+
+            using (MemoryStream ms = new MemoryStream())
+            {
+                ms.Write(packageSizeBuffer, 0, packageSizeBuffer.Length);
+                int totalReceived = 0;
+                while (totalReceived != requestSize)
+                {
+                    byte[] package = new byte[bufferSize];
+
+                    int received = socket.Receive(package, SocketFlags.None);
+                    _logger.Info($"Received {received} bytes");
+
+                    ms.Write(package, 0, received);
+                    totalReceived += received;
+                    _logger.Info($"Total received bytes: {(float)totalReceived * 100 / requestSize}%");
+                }
+
+                // send confirmation
+                byte[] statusBuffer = SerializationUtils.Serialize(RequestStatusCode.Ok);
+                socket.Send(SerializationUtils.Serialize(statusBuffer));
+
+                return ms.ToArray();
             }
         }
 

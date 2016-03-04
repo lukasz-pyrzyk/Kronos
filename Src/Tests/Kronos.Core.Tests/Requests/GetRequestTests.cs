@@ -25,17 +25,6 @@ namespace Kronos.Core.Tests.Requests
         }
 
         [Fact]
-        public void CanSerializeWithRequestType()
-        {
-            GetRequest request = new GetRequest("key");
-
-            byte[] packageBytes = SerializationUtils.Serialize(request);
-            RequestType type = SerializationUtils.Deserialize<RequestType>(packageBytes.Take(sizeof(short)).ToArray());
-
-            Assert.Equal(type, request.RequestType);
-        }
-
-        [Fact]
         public void CanSerializeAndDeserialize()
         {
             GetRequest request = new GetRequest("key");

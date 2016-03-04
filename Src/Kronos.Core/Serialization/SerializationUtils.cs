@@ -5,7 +5,7 @@ namespace Kronos.Core.Serialization
 {
     public static class SerializationUtils
     {
-        private const PrefixStyle PrefixStyle = ProtoBuf.PrefixStyle.Base128;
+        private const PrefixStyle PrefixStyle = ProtoBuf.PrefixStyle.Fixed32;
 
         public static int GetLengthOfPackage(byte[] buffer)
         {

@@ -4,10 +4,12 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Tasks;
 using Kronos.Core.Communication;
 using Kronos.Core.Model.Exceptions;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
+using Kronos.Core.StatusCodes;
 
 namespace Kronos.Client.Transfer
 {
@@ -23,7 +25,6 @@ namespace Kronos.Client.Transfer
 
         public byte[] SendToServer(Request request)
         {
-            byte[] packageToSend = SerializationUtils.Serialize(request);
             Socket socket = null;
             try
             {
@@ -32,10 +33,12 @@ namespace Kronos.Client.Transfer
                 Trace.WriteLine("Connecting to the server socket");
                 socket.Connect(_nodeEndPoint);
 
-                Trace.WriteLine($"Sending package of {packageToSend.Length} bytes");
-                
-                int sended = socket.Send(packageToSend, SocketFlags.None);
-                
+                Trace.WriteLine("Sending request type");
+                SentToClientAndWaitForConfirmation(socket, request.RequestType);
+
+                Trace.WriteLine("Sending request");
+                SentToClientAndWaitForConfirmation(socket, request);
+
                 Trace.WriteLine("Waiting for response");
                 byte[] requestBytes;
                 using (MemoryStream ms = new MemoryStream())
@@ -74,6 +77,18 @@ namespace Kronos.Client.Transfer
                 {
                 }
             }
+        }
+
+        private static void SentToClientAndWaitForConfirmation(Socket socket, object obj)
+        {
+            byte[] buffer = SerializationUtils.Serialize(obj);
+            socket.Send(buffer, SocketFlags.None);
+
+            // wait for confirmation
+            byte[] confirmationBuffer = new byte[sizeof(RequestStatusCode)];
+            int count;
+            while ((count = socket.Receive(confirmationBuffer, SocketFlags.None)) == 0)
+                Thread.Sleep(100);
         }
     }
 }

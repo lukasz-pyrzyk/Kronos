@@ -9,7 +9,7 @@ namespace Kronos.Server.Tests.Listener
     public class TcpServerTests
     {
         [Fact]
-        public void Ctor_ContainsBufferSizeDifferentThanZero()
+        public void Ctor_InisializeServer()
         {
             var worker = new Mock<IServerWorker>();
 
