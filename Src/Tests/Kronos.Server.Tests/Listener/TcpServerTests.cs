@@ -15,6 +15,17 @@ namespace Kronos.Server.Tests.Listener
 
             TcpServer server = new TcpServer(worker.Object);
 
+            Assert.NotNull(server);
+        }
+
+        [Fact]
+        public void Start_StartsListening()
+        {
+            var worker = new Mock<IServerWorker>();
+
+            TcpServer server = new TcpServer(worker.Object);
+            server.Start();
+
             worker.Verify(x => x.StartListening(It.IsAny<Socket>()), Times.Exactly(1));
             Assert.NotNull(server);
         }
