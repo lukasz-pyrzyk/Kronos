@@ -2,8 +2,9 @@
 {
     public enum RequestStatusCode : short
     {
-        Processing = 0,
+        Unknown = 0,
         Ok = 1,
-        Failed = 2
+        Failed = 2,
+        NotFound = 3
     }
 }

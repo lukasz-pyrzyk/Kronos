@@ -1,7 +1,5 @@
 ﻿using System;
-using System.Linq;
 using System.Text;
-using Kronos.Core.Model;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Xunit;
@@ -47,9 +45,9 @@ namespace Kronos.Core.Tests.Requests
 
             InsertRequest requestFromBytes = SerializationUtils.Deserialize<InsertRequest>(packageBytes);
 
-            Assert.Equal(requestFromBytes.Object, requestFromBytes.Object);
-            Assert.Equal(requestFromBytes.ExpiryDate, requestFromBytes.ExpiryDate);
-            Assert.Equal(requestFromBytes.Key, requestFromBytes.Key);
+            Assert.Equal(requestFromBytes.Object, request.Object);
+            Assert.Equal(requestFromBytes.ExpiryDate, request.ExpiryDate);
+            Assert.Equal(requestFromBytes.Key, request.Key);
         }
     }
 }

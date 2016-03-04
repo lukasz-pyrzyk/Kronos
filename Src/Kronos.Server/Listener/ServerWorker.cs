@@ -113,7 +113,7 @@ namespace Kronos.Server.Listener
 
                 // send confirmation
                 byte[] statusBuffer = SerializationUtils.Serialize(RequestStatusCode.Ok);
-                socket.Send(SerializationUtils.Serialize(statusBuffer));
+                socket.Send(statusBuffer);
 
                 return ms.ToArray();
             }

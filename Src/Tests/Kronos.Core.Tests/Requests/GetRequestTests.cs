@@ -1,6 +1,5 @@
 ﻿using Kronos.Core.Requests;
 using Xunit;
-using System.Linq;
 using Kronos.Core.Serialization;
 
 namespace Kronos.Core.Tests.Requests
@@ -33,8 +32,8 @@ namespace Kronos.Core.Tests.Requests
 
             GetRequest requestFromBytes = SerializationUtils.Deserialize<GetRequest>(packageBytes);
 
-            Assert.Equal(requestFromBytes.RequestType, requestFromBytes.RequestType);
-            Assert.Equal(requestFromBytes.Key, requestFromBytes.Key);
+            Assert.Equal(requestFromBytes.RequestType, request.RequestType);
+            Assert.Equal(requestFromBytes.Key, request.Key);
         }
     }
 }

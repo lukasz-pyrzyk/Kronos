@@ -27,7 +27,7 @@ namespace Kronos.Core.Storage
             }
 
             _logger.Debug($"Key {key} not found. Returning null");
-            return new byte[0];
+            return null;
         }
 
         public void Clear()
