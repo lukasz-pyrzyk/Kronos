@@ -14,12 +14,11 @@ namespace Kronos.Server.Listener
         private bool _disposed;
 
         private const int QueueSize = 1000;
-        private const int Port = 5000;
         private const int BufferSize = 1024 * 8;
 
         public bool IsDisposed => _disposed;
 
-        public TcpServer(IServerWorker worker)
+        public TcpServer(IServerWorker worker, int port = 5000)
         {
             _server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
             {
@@ -28,14 +27,14 @@ namespace Kronos.Server.Listener
                 NoDelay = true // Nagle algorithm
             };
 
-            _server.Bind(new IPEndPoint(IPAddress.Any, Port));
+            _server.Bind(new IPEndPoint(IPAddress.Any, port));
             _worker = worker;
         }
 
         public void Start()
         {
             _server.Listen(QueueSize);
-            _logger.Info($"Tcp server is started on port {Port}, buffer is {BufferSize}");
+            _logger.Info($"Tcp server is started {_server.LocalEndPoint}, buffer is {BufferSize}");
 
             _worker.StartListening(_server);
         }

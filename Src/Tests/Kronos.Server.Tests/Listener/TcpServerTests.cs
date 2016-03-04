@@ -13,7 +13,7 @@ namespace Kronos.Server.Tests.Listener
         {
             var worker = new Mock<IServerWorker>();
 
-            TcpServer server = new TcpServer(worker.Object);
+            TcpServer server = new TcpServer(worker.Object, 5000);
 
             Assert.NotNull(server);
         }
@@ -23,7 +23,7 @@ namespace Kronos.Server.Tests.Listener
         {
             var worker = new Mock<IServerWorker>();
 
-            TcpServer server = new TcpServer(worker.Object);
+            TcpServer server = new TcpServer(worker.Object, 6000);
             server.Start();
 
             worker.Verify(x => x.StartListening(It.IsAny<Socket>()), Times.Exactly(1));
@@ -34,7 +34,7 @@ namespace Kronos.Server.Tests.Listener
         public void Dispose_CanDisposeElement()
         {
             var worker = new Mock<IServerWorker>();
-            TcpServer server = new TcpServer(worker.Object);
+            TcpServer server = new TcpServer(worker.Object, 7000);
 
             server.Dispose();
 
