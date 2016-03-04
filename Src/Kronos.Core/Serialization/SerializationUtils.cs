@@ -25,23 +25,12 @@ namespace Kronos.Core.Serialization
             return buffer;
         }
 
-        public byte[] SerializeZ(object obj)
-        {
-            byte[] buffer;
-            using (MemoryStream ms = new MemoryStream())
-            {
-                Serializer.SerializeWithLengthPrefix(ms, obj, Style);
-                buffer = ms.ToArray();
-            }
-            return buffer;
-        }
-
 
         public static T Deserialize<T>(byte[] buffer)
         {
             using (MemoryStream ms = new MemoryStream(buffer))
             {
-                return Serializer.DeserializeWithLengthPrefix<T>(ms, PrefixStyle.Fixed32);
+                return Serializer.DeserializeWithLengthPrefix<T>(ms, Style);
             }
         }
     }
