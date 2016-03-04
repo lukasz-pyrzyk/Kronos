@@ -7,7 +7,7 @@ namespace Kronos.Core.Requests
     /// </summary>
     [ProtoContract]
     [ProtoInclude(500, typeof(InsertRequest))]
-    [ProtoInclude(100, typeof(GetRequest))]
+    [ProtoInclude(1000, typeof(GetRequest))]
     public class Request
     {
         public virtual RequestType RequestType { get; set; }

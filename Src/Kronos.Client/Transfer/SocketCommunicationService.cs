@@ -79,7 +79,7 @@ namespace Kronos.Client.Transfer
             }
         }
 
-        private static void SentToClientAndWaitForConfirmation(Socket socket, object obj)
+        private static void SentToClientAndWaitForConfirmation<T>(Socket socket, T obj)
         {
             byte[] buffer = SerializationUtils.Serialize(obj);
             socket.Send(buffer, SocketFlags.None);
