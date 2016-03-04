@@ -40,7 +40,14 @@ namespace Kronos.Client
             GetCommand command = new GetCommand();
             byte[] valueFromCache = command.Execute(_service, request);
 
-            Trace.WriteLine($"GetRequest status returned object with {valueFromCache.Length} bytes");
+            if (valueFromCache != null)
+            {
+                Trace.WriteLine($"GetRequest status returned object with {valueFromCache.Length} bytes");
+            }
+            else
+            {
+                Trace.WriteLine($"GetRequest status returned null");
+            }
 
             return valueFromCache;
         }
