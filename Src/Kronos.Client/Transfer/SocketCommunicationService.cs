@@ -16,7 +16,7 @@ namespace Kronos.Client.Transfer
     public class SocketCommunicationService : IClientServerConnection
     {
         private readonly IPEndPoint _nodeEndPoint;
-        private const int bufferSize = 1024 * 8;
+        private const int BufferSize = 65535;
 
         public SocketCommunicationService(IPEndPoint host)
         {
@@ -43,7 +43,7 @@ namespace Kronos.Client.Transfer
                 byte[] requestBytes;
                 using (MemoryStream ms = new MemoryStream())
                 {
-                    byte[] buffer = new byte[bufferSize];
+                    byte[] buffer = new byte[BufferSize];
                     using (NetworkStream stream = new NetworkStream(socket))
                     {
                         while (!stream.DataAvailable)

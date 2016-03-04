@@ -14,7 +14,7 @@ namespace Kronos.Server.Listener
         private bool _disposed;
 
         private const int QueueSize = 1000;
-        private const int BufferSize = 1024 * 8;
+        private const int BufferSize = 65535;
 
         public bool IsDisposed => _disposed;
 
