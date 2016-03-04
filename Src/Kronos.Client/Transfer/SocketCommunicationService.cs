@@ -85,7 +85,7 @@ namespace Kronos.Client.Transfer
             socket.Send(buffer, SocketFlags.None);
 
             // wait for confirmation
-            byte[] confirmationBuffer = new byte[sizeof(RequestStatusCode)];
+            byte[] confirmationBuffer = new byte[SerializationUtils.Serialize(RequestStatusCode.Ok).Length];
             int count;
             while ((count = socket.Receive(confirmationBuffer, SocketFlags.None)) == 0)
                 Thread.Sleep(100);
