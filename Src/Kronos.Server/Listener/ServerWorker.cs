@@ -17,7 +17,7 @@ namespace Kronos.Server.Listener
         private readonly IRequestProcessor _processor;
         public IStorage Storage { get; }
 
-        private const int bufferSize = 1024 * 8;
+        private const int BufferSize = 65535;
 
         internal SocketServerWorker(IRequestProcessor processor, IStorage storage)
         {
@@ -101,7 +101,7 @@ namespace Kronos.Server.Listener
                 int totalReceived = 0;
                 while (totalReceived != requestSize)
                 {
-                    byte[] package = new byte[bufferSize];
+                    byte[] package = new byte[BufferSize];
 
                     int received = socket.Receive(package);
                     _logger.Info($"Received {received} bytes");

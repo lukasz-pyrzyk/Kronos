@@ -15,7 +15,7 @@ namespace Kronos.Client.Transfer
     public class SocketCommunicationService : IClientServerConnection
     {
         private readonly IPEndPoint _nodeEndPoint;
-        private const int bufferSize = 1024 * 1024 * 1024;
+        private const int BufferSize = 65535;
 
         public SocketCommunicationService(IPEndPoint host)
         {
@@ -24,10 +24,10 @@ namespace Kronos.Client.Transfer
 
         public byte[] SendToServer(Request request)
         {
-            Socket socket = null;
+            ISocket socket = null;
             try
             {
-                socket = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp);
+                socket = new KronosSocket(AddressFamily.InterNetwork);
 
                 Trace.WriteLine("Connecting to the server socket");
                 socket.Connect(_nodeEndPoint);
@@ -42,8 +42,8 @@ namespace Kronos.Client.Transfer
                 byte[] requestBytes;
                 using (MemoryStream ms = new MemoryStream())
                 {
-                    byte[] buffer = new byte[bufferSize];
-                    using (NetworkStream stream = new NetworkStream(socket))
+                    byte[] buffer = new byte[BufferSize];
+                    using (NetworkStream stream = new NetworkStream(socket.InternalSocket))
                     {
                         while (!stream.DataAvailable)
                         {
@@ -78,15 +78,15 @@ namespace Kronos.Client.Transfer
             }
         }
 
-        private static void SentToClientAndWaitForConfirmation<T>(Socket socket, T obj)
+        private static void SentToClientAndWaitForConfirmation<T>(ISocket socket, T obj)
         {
             byte[] buffer = SerializationUtils.Serialize(obj);
-            socket.Send(buffer, SocketFlags.None);
+            socket.Send(buffer);
 
             // wait for confirmation
             byte[] confirmationBuffer = new byte[SerializationUtils.Serialize(RequestStatusCode.Ok).Length];
             int count;
-            while ((count = socket.Receive(confirmationBuffer, SocketFlags.None)) == 0)
+            while ((count = socket.Receive(confirmationBuffer)) == 0)
                 Thread.Sleep(100);
         }
     }

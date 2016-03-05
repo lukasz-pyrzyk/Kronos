@@ -30,6 +30,7 @@ namespace Kronos.Core.Communication
         public EndPoint LocalEndPoint => _socket.LocalEndPoint;
         public EndPoint RemoteEndPoint => _socket.RemoteEndPoint;
         public bool Connected => _socket.Connected;
+        public Socket InternalSocket => _socket;
 
         public ISocket Accept()
         {
@@ -40,6 +41,11 @@ namespace Kronos.Core.Communication
         public void Bind(IPEndPoint localEndPoint)
         {
             _socket.Bind(localEndPoint);
+        }
+
+        public void Connect(IPEndPoint remoteEndPoint)
+        {
+            _socket.Connect(remoteEndPoint);
         }
 
         public void Listen(int backlog)

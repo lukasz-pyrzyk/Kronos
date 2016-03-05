@@ -9,7 +9,7 @@ namespace Kronos.Core.Tests.Communication
         [Fact]
         public void Ctor_CanInitialize()
         {
-            ISocket socket = new KronosSocket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp, 0, true);
+            ISocket socket = new KronosSocket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp, 0, false);
 
             Assert.NotNull(socket);
         }

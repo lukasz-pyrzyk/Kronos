@@ -9,8 +9,10 @@ namespace Kronos.Core.Communication
         EndPoint LocalEndPoint { get; }
         EndPoint RemoteEndPoint { get; }
         bool Connected { get; }
+        Socket InternalSocket { get; }
         ISocket Accept();
         void Bind(IPEndPoint localEndPoint);
+        void Connect(IPEndPoint remoteEndPoint);
         void Listen(int backlog);
         void Shutdown(SocketShutdown how);
         int Receive(byte[] buffer);
