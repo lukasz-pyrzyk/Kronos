@@ -1,11 +1,9 @@
 ﻿using System;
-using System.Net.Sockets;
 using Kronos.Core.Communication;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Kronos.Core.StatusCodes;
 using Kronos.Core.Storage;
-using ProtoBuf;
 
 namespace Kronos.Core.Command
 {
@@ -31,7 +29,7 @@ namespace Kronos.Core.Command
             return response;
         }
 
-        public override void ProcessRequest(Socket socket, byte[] requestBytes, IStorage storage)
+        public override void ProcessRequest(ISocket socket, byte[] requestBytes, IStorage storage)
         {
             GetRequest getRequest = SerializationUtils.Deserialize<GetRequest>(requestBytes);
             byte[] requestedObject = storage.TryGet(getRequest.Key) ?? SerializationUtils.Serialize(RequestStatusCode.NotFound);

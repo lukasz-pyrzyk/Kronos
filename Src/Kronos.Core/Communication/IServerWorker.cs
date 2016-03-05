@@ -6,6 +6,6 @@ namespace Kronos.Core.Communication
     public interface IServerWorker
     {
         IStorage Storage { get; }
-        void StartListening(Socket server);
+        void StartListening(ISocket server);
     }
 }

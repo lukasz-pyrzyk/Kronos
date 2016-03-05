@@ -1,5 +1,4 @@
-﻿using System.Net.Sockets;
-using Kronos.Core.Communication;
+﻿using Kronos.Core.Communication;
 using Kronos.Server.Listener;
 using Moq;
 using Xunit;
@@ -26,7 +25,7 @@ namespace Kronos.Server.Tests.Listener
             TcpServer server = new TcpServer(worker.Object, 6000);
             server.Start();
 
-            worker.Verify(x => x.StartListening(It.IsAny<Socket>()), Times.Exactly(1));
+            worker.Verify(x => x.StartListening(It.IsAny<ISocket>()), Times.Exactly(1));
             Assert.NotNull(server);
         }
 

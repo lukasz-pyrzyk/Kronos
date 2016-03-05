@@ -1,5 +1,5 @@
-﻿using System.Net.Sockets;
-using Kronos.Core.Command;
+﻿using Kronos.Core.Command;
+using Kronos.Core.Communication;
 using Kronos.Core.Requests;
 using Kronos.Core.Storage;
 using NLog;
@@ -10,7 +10,7 @@ namespace Kronos.Core.RequestProcessing
     {
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
         
-        public void ProcessRequest(Socket clientSocket, byte[] requestBytes, RequestType type, IStorage storage)
+        public void ProcessRequest(ISocket clientSocket, byte[] requestBytes, RequestType type, IStorage storage)
         {
             switch (type)
             {

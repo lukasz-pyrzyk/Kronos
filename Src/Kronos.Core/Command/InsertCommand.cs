@@ -1,5 +1,4 @@
-﻿using System.Net.Sockets;
-using Kronos.Core.Communication;
+﻿using Kronos.Core.Communication;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Kronos.Core.StatusCodes;
@@ -18,7 +17,7 @@ namespace Kronos.Core.Command
             return statusCode;
         }
 
-        public override void ProcessRequest(Socket socket, byte[] requestBytes, IStorage storage)
+        public override void ProcessRequest(ISocket socket, byte[] requestBytes, IStorage storage)
         {
             InsertRequest insertRequest = SerializationUtils.Deserialize<InsertRequest>(requestBytes);
             storage.AddOrUpdate(insertRequest.Key, insertRequest.Object);

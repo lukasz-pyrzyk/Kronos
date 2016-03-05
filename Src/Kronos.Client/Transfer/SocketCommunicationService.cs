@@ -4,7 +4,6 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
-using System.Threading.Tasks;
 using Kronos.Core.Communication;
 using Kronos.Core.Model.Exceptions;
 using Kronos.Core.Requests;
@@ -16,7 +15,7 @@ namespace Kronos.Client.Transfer
     public class SocketCommunicationService : IClientServerConnection
     {
         private readonly IPEndPoint _nodeEndPoint;
-        private const int bufferSize = 1024 * 8;
+        private const int bufferSize = 1024 * 1024 * 1024;
 
         public SocketCommunicationService(IPEndPoint host)
         {

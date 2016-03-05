@@ -10,7 +10,7 @@ namespace Kronos.Server.Listener
     {
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
         private readonly IServerWorker _worker;
-        private Socket _server;
+        private ISocket _server;
         private bool _disposed;
 
         private const int QueueSize = 1000;
@@ -20,12 +20,7 @@ namespace Kronos.Server.Listener
 
         public TcpServer(IServerWorker worker, int port = 5000)
         {
-            _server = new Socket(AddressFamily.InterNetwork, SocketType.Stream, ProtocolType.Tcp)
-            {
-                ReceiveBufferSize = BufferSize,
-                SendBufferSize = BufferSize,
-                NoDelay = true // Nagle algorithm
-            };
+            _server = new KronosSocket(AddressFamily.InterNetwork);
 
             _server.Bind(new IPEndPoint(IPAddress.Any, port));
             _worker = worker;

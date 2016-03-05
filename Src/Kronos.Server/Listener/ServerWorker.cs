@@ -29,13 +29,13 @@ namespace Kronos.Server.Listener
         {
         }
 
-        public void StartListening(Socket server)
+        public void StartListening(ISocket server)
         {
             try
             {
                 while (true)
                 {
-                    Socket client = null;
+                    ISocket client = null;
                     try
                     {
                         client = server.Accept();
@@ -86,11 +86,11 @@ namespace Kronos.Server.Listener
             }
         }
 
-        private byte[] ReceiveAndSendConfirmation(Socket socket)
+        private byte[] ReceiveAndSendConfirmation(ISocket socket)
         {
             byte[] packageSizeBuffer = new byte[sizeof(int)];
             _logger.Info("Receiving information about request size");
-            socket.Receive(packageSizeBuffer, SocketFlags.None);
+            socket.Receive(packageSizeBuffer);
 
             int requestSize = SerializationUtils.GetLengthOfPackage(packageSizeBuffer);
             _logger.Info($"Request contains {requestSize} bytes");
@@ -103,7 +103,7 @@ namespace Kronos.Server.Listener
                 {
                     byte[] package = new byte[bufferSize];
 
-                    int received = socket.Receive(package, SocketFlags.None);
+                    int received = socket.Receive(package);
                     _logger.Info($"Received {received} bytes");
 
                     ms.Write(package, 0, received);
