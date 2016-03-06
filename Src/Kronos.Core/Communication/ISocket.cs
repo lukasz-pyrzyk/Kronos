@@ -6,6 +6,7 @@ namespace Kronos.Core.Communication
 {
     public interface ISocket : IDisposable
     {
+        int BufferSize { get;}
         EndPoint LocalEndPoint { get; }
         EndPoint RemoteEndPoint { get; }
         bool Connected { get; }

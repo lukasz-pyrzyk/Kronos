@@ -5,19 +5,21 @@ namespace Kronos.Core.Communication
 {
     public class KronosSocket : ISocket
     {
+        public int BufferSize => 65535;
+
         private readonly Socket _socket;
 
         public KronosSocket(
             AddressFamily addressFamily, 
             SocketType socketType = SocketType.Stream, 
             ProtocolType protocolType = ProtocolType.Tcp,
-            int buffer = 65535,
-            bool noDelay = true)
+            bool noDelay = true,
+            int? buffer = null)
         {
             _socket = new Socket(addressFamily, socketType, protocolType)
             {
-                SendBufferSize = buffer,
-                ReceiveBufferSize = buffer,
+                SendBufferSize = buffer ?? BufferSize,
+                ReceiveBufferSize = buffer ?? BufferSize,
                 NoDelay = noDelay
             };
         }
