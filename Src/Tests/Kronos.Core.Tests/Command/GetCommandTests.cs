@@ -15,7 +15,7 @@ namespace Kronos.Core.Tests.Command
         [Fact]
         public void Execute_ReturnsCorrectValue()
         {
-            byte[] value = Encoding.UTF8.GetBytes("lorem ipsum");
+            byte[] value = SerializationUtils.Serialize("lorem ipsum");
             var request = new GetRequest("masterKey");
 
             var communicationServiceMock = new Mock<IClientServerConnection>();
@@ -50,7 +50,7 @@ namespace Kronos.Core.Tests.Command
         public void ProcessRequest_ReturnsCachedObjectToClient()
         {
             string key = "lorem ipsum";
-            byte[] cachedObject = SerializationUtils.Serialize("object");
+            byte[] cachedObject = Encoding.UTF8.GetBytes("object");
 
             var storageMock = new Mock<IStorage>();
             storageMock.Setup(x => x.TryGet(key)).Returns(cachedObject);
@@ -59,15 +59,16 @@ namespace Kronos.Core.Tests.Command
             GetCommand command = new GetCommand();
             byte[] requtestBytes = SerializationUtils.Serialize(new GetRequest(key));
             command.ProcessRequest(socketMock.Object, requtestBytes, storageMock.Object);
-            
-            socketMock.Verify(x => x.Send(cachedObject), Times.Once);
+
+            byte[] expectedPackage = SerializationUtils.Serialize(cachedObject);
+            socketMock.Verify(x => x.Send(expectedPackage), Times.Once);
         }
 
         [Fact]
         public void ProcessRequest_ReturnsNotFoundToClient()
         {
             string key = "lorem ipsum";
-            byte[] notFoundBytes = SerializationUtils.Serialize(RequestStatusCode.NotFound);
+            byte[] notFoundBytes = SerializationUtils.Serialize(SerializationUtils.Serialize(RequestStatusCode.NotFound));
 
             var storageMock = new Mock<IStorage>();
             storageMock.Setup(x => x.TryGet(key)).Returns((byte[])null);

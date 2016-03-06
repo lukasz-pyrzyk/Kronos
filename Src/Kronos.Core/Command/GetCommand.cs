@@ -32,8 +32,9 @@ namespace Kronos.Core.Command
         public override void ProcessRequest(ISocket socket, byte[] requestBytes, IStorage storage)
         {
             GetRequest getRequest = SerializationUtils.Deserialize<GetRequest>(requestBytes);
-            byte[] requestedObject = storage.TryGet(getRequest.Key) ?? SerializationUtils.Serialize(RequestStatusCode.NotFound);
-            SendToClient(socket, requestedObject);
+            byte[] requestedObject = storage.TryGet(getRequest.Key) ?? 
+                SerializationUtils.Serialize(RequestStatusCode.NotFound);
+            SendToClient(socket, SerializationUtils.Serialize(requestedObject));
         }
     }
 }
