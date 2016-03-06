@@ -6,8 +6,12 @@ namespace Kronos.Core.Communication
     public class KronosSocket : ISocket
     {
         public int BufferSize => 65535;
+        public bool Connected => _socket.Connected;
+        public Socket InternalSocket => _socket;
+        public EndPoint LocalEndPoint => _socket.LocalEndPoint;
+        public EndPoint RemoteEndPoint => _socket.RemoteEndPoint;
 
-        private Socket _socket;
+        private readonly Socket _socket;
 
         public KronosSocket(
             AddressFamily addressFamily, 
@@ -24,17 +28,12 @@ namespace Kronos.Core.Communication
             };
         }
 
-        public KronosSocket(Socket socket)
+        internal KronosSocket(Socket socket)
         {
             _socket = socket;
         }
 
-        public EndPoint LocalEndPoint => _socket.LocalEndPoint;
-        public EndPoint RemoteEndPoint => _socket.RemoteEndPoint;
-        public bool Connected => _socket.Connected;
-        public Socket InternalSocket => _socket;
-
-        public ISocket Accept()
+        public ISocket Accept() // TODO
         {
             Socket client = _socket.Accept();
             return new KronosSocket(client);
@@ -55,11 +54,6 @@ namespace Kronos.Core.Communication
             _socket.Listen(backlog);
         }
 
-        public void Shutdown(SocketShutdown how)
-        {
-            _socket.Shutdown(how);
-        }
-
         public int Receive(byte[] buffer)
         {
             return _socket.Receive(buffer);
@@ -68,6 +62,11 @@ namespace Kronos.Core.Communication
         public int Send(byte[] buffer)
         {
             return _socket.Send(buffer);
+        }
+
+        public void Shutdown(SocketShutdown how)
+        {
+            _socket.Shutdown(how);
         }
 
         public void Dispose()
