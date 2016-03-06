@@ -11,19 +11,19 @@ using NLog;
 
 namespace Kronos.Server.Listener
 {
-    internal class SocketServerWorker : IServerWorker
+    internal class ServerWorker : IServerWorker
     {
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
         private readonly IRequestProcessor _processor;
         public IStorage Storage { get; }
 
-        internal SocketServerWorker(IRequestProcessor processor, IStorage storage)
+        internal ServerWorker(IRequestProcessor processor, IStorage storage)
         {
             _processor = processor;
             Storage = storage;
         }
 
-        public SocketServerWorker() : this(new RequestProcessor(), new InMemoryStorage())
+        public ServerWorker() : this(new RequestProcessor(), new InMemoryStorage())
         {
         }
 
