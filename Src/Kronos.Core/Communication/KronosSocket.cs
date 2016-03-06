@@ -7,7 +7,7 @@ namespace Kronos.Core.Communication
     {
         public int BufferSize => 65535;
 
-        private readonly Socket _socket;
+        private Socket _socket;
 
         public KronosSocket(
             AddressFamily addressFamily, 

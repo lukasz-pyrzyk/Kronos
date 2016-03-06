@@ -14,23 +14,28 @@ namespace Kronos.Client.Transfer
 {
     public class SocketCommunicationService : IClientServerConnection
     {
-        private readonly IPEndPoint _nodeEndPoint;
-        private const int BufferSize = 65535;
+        private readonly IPEndPoint _host;
 
-        public SocketCommunicationService(IPEndPoint host)
+        private readonly Func<ISocket> _newSocketFunc;
+
+        public SocketCommunicationService(IPEndPoint host) : this(host, () => new KronosSocket(AddressFamily.InterNetwork))
         {
-            _nodeEndPoint = host;
+        }
+
+        internal SocketCommunicationService(IPEndPoint host, Func<ISocket> newSocketFunc)
+        {
+            _host = host;
+            _newSocketFunc = newSocketFunc;
         }
 
         public byte[] SendToServer(Request request)
         {
-            ISocket socket = null;
+            ISocket socket = _newSocketFunc();
+
             try
             {
-                socket = new KronosSocket(AddressFamily.InterNetwork);
-
                 Trace.WriteLine("Connecting to the server socket");
-                socket.Connect(_nodeEndPoint);
+                socket.Connect(_host);
 
                 Trace.WriteLine("Sending request type");
                 SentToClientAndWaitForConfirmation(socket, request.RequestType);
@@ -42,20 +47,24 @@ namespace Kronos.Client.Transfer
                 byte[] requestBytes;
                 using (MemoryStream ms = new MemoryStream())
                 {
-                    byte[] buffer = new byte[BufferSize];
-                    using (NetworkStream stream = new NetworkStream(socket.InternalSocket))
-                    {
-                        while (!stream.DataAvailable)
-                        {
-                            Thread.Sleep(300);
-                        }
+                    byte[] requestSizeBytes = new byte[sizeof(int)];
+                    int position = socket.Receive(requestSizeBytes);
+                    int requestSize = SerializationUtils.GetLengthOfPackage(requestSizeBytes);
 
-                        do
-                        {
-                            int received = stream.Read(buffer, 0, buffer.Length);
-                            ms.Write(buffer, 0, received);
-                        } while (stream.DataAvailable);
+                    ms.Write(requestSizeBytes, 0, position);
+                    position = 0;
+                    while (position != requestSize)
+                    {
+                        byte[] package = new byte[socket.BufferSize];
+                        int received = socket.Receive(package);
+                        position += received;
+
+                        ms.Write(package, 0, received);
+
+                        if (position > requestSize)
+                            throw new KronosCommunicationException("Invalid tcp error. Socket has received more bytes than was specified.");
                     }
+
                     requestBytes = ms.ToArray();
                 }
                 return requestBytes;
@@ -70,7 +79,7 @@ namespace Kronos.Client.Transfer
             {
                 try
                 {
-                    socket?.Dispose();
+                    socket.Dispose();
                 }
                 catch (SocketException)
                 {
