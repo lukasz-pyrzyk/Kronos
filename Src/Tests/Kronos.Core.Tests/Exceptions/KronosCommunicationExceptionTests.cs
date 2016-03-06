@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Reflection;
 using Kronos.Core.Model.Exceptions;
 using Xunit;
 
@@ -7,10 +8,18 @@ namespace Kronos.Core.Tests.Exceptions
     public class KronosCommunicationExceptionTests
     {
         [Fact]
+        public void Ctor_CanInitializeException()
+        {
+            Exception ex = new KronosCommunicationException();
+
+            Assert.NotNull(ex);
+        }
+
+        [Fact]
         public void Ctor_CanAssignMessage()
         {
-            string messsage = "lorem ipsum";
-            KronosException ex = new KronosException(messsage);
+            const string messsage = "lorem ipsum";
+            KronosCommunicationException ex = new KronosCommunicationException(messsage);
 
             Assert.Equal(ex.Message, messsage);
         }
@@ -18,9 +27,9 @@ namespace Kronos.Core.Tests.Exceptions
         [Fact]
         public void Ctor_CanAssignMessageAndInnerException()
         {
-            string messsage = "lorem ipsum";
+            const string messsage = "lorem ipsum";
             Exception innerException = new Exception();
-            KronosException ex = new KronosException(messsage, innerException);
+            KronosCommunicationException ex = new KronosCommunicationException(messsage, innerException);
 
             Assert.Equal(ex.Message, messsage);
             Assert.Equal(ex.InnerException, innerException);
