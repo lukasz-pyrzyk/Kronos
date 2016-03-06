@@ -1,5 +1,4 @@
-﻿using System;
-using System.Xml;
+﻿using System.Xml;
 using Kronos.Server.Listener;
 using NLog;
 using NLog.Config;
@@ -9,7 +8,7 @@ namespace Kronos.Server
     public class Program
     {
         private static ILogger _logger;
-        private static TcpServer _server = new TcpServer(new SocketServerWorker());
+        private static TcpServer _server = new TcpServer(new ServerWorker());
 
         public static void LoggerSetup()
         {

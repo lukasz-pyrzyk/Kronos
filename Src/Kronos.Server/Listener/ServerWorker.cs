@@ -11,21 +11,19 @@ using NLog;
 
 namespace Kronos.Server.Listener
 {
-    internal class SocketServerWorker : IServerWorker
+    internal class ServerWorker : IServerWorker
     {
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
         private readonly IRequestProcessor _processor;
         public IStorage Storage { get; }
 
-        private const int BufferSize = 65535;
-
-        internal SocketServerWorker(IRequestProcessor processor, IStorage storage)
+        internal ServerWorker(IRequestProcessor processor, IStorage storage)
         {
             _processor = processor;
             Storage = storage;
         }
 
-        public SocketServerWorker() : this(new RequestProcessor(), new InMemoryStorage())
+        public ServerWorker() : this(new RequestProcessor(), new InMemoryStorage())
         {
         }
 
@@ -70,10 +68,6 @@ namespace Kronos.Server.Listener
                     }
                 }
             }
-            catch (SocketException ex)
-            {
-                _logger.Fatal(ex);
-            }
             catch (Exception ex)
             {
                 _logger.Fatal(ex);
@@ -90,25 +84,25 @@ namespace Kronos.Server.Listener
         {
             byte[] packageSizeBuffer = new byte[sizeof(int)];
             _logger.Info("Receiving information about request size");
-            socket.Receive(packageSizeBuffer);
+            int position = socket.Receive(packageSizeBuffer);
 
             int requestSize = SerializationUtils.GetLengthOfPackage(packageSizeBuffer);
             _logger.Info($"Request contains {requestSize} bytes");
 
             using (MemoryStream ms = new MemoryStream())
             {
-                ms.Write(packageSizeBuffer, 0, packageSizeBuffer.Length);
-                int totalReceived = 0;
-                while (totalReceived != requestSize)
+                ms.Write(packageSizeBuffer, 0, position);
+                position = 0;
+                while (position != requestSize)
                 {
-                    byte[] package = new byte[BufferSize];
+                    byte[] package = new byte[socket.BufferSize];
 
                     int received = socket.Receive(package);
                     _logger.Info($"Received {received} bytes");
 
                     ms.Write(package, 0, received);
-                    totalReceived += received;
-                    _logger.Info($"Total received bytes: {(float)totalReceived * 100 / requestSize}%");
+                    position += received;
+                    _logger.Info($"Total received bytes: {(float)position * 100 / requestSize}%");
                 }
 
                 // send confirmation
