@@ -9,6 +9,8 @@ using Kronos.Core.StatusCodes;
 using Kronos.Core.Storage;
 using Kronos.Server.Listener;
 using Moq;
+using XGain;
+using XGain.Sockets;
 using Xunit;
 
 namespace Kronos.Server.Tests.Listener
@@ -20,8 +22,9 @@ namespace Kronos.Server.Tests.Listener
         {
             var requestProcessorMock = new Mock<IRequestProcessor>();
             var storageMock = new Mock<IStorage>();
+            var serverMock = new Mock<IServer>();
 
-            ServerWorker worker = new ServerWorker(requestProcessorMock.Object, storageMock.Object);
+            ServerWorker worker = new ServerWorker(requestProcessorMock.Object, storageMock.Object, serverMock.Object);
 
             Assert.NotNull(worker);
             Assert.Equal(worker.Storage, storageMock.Object);
@@ -34,6 +37,7 @@ namespace Kronos.Server.Tests.Listener
             var storageMock = new Mock<IStorage>();
             var socketMock = new Mock<ISocket>();
             var clientSocketMock = new Mock<ISocket>();
+            var serverMock = new Mock<IServer>();
 
             socketMock.Setup(x => x.BufferSize).Returns(65535);
             clientSocketMock.Setup(x => x.BufferSize).Returns(65535);
@@ -70,10 +74,10 @@ namespace Kronos.Server.Tests.Listener
                     x.ProcessRequest(It.IsAny<ISocket>(), It.IsAny<byte[]>(), It.IsAny<RequestType>(),
                         It.IsAny<IStorage>())).Throws(new TaskCanceledException());
 
-            ServerWorker worker = new ServerWorker(requestProcessorMock.Object, storageMock.Object);
+            ServerWorker worker = new ServerWorker(requestProcessorMock.Object, storageMock.Object, serverMock.Object);
             try
             {
-                worker.StartListening(socketMock.Object);
+                worker.StartListening();
             }
             catch (TaskCanceledException)
             {
@@ -97,6 +101,8 @@ namespace Kronos.Server.Tests.Listener
             var storageMock = new Mock<IStorage>();
             var socketMock = new Mock<ISocket>();
             var clientSocketMock = new Mock<ISocket>();
+            var serverMock = new Mock<IServer>();
+
 
             socketMock.Setup(x => x.BufferSize).Returns(65535);
             clientSocketMock.Setup(x => x.BufferSize).Returns(65535);
@@ -134,10 +140,10 @@ namespace Kronos.Server.Tests.Listener
                     x.ProcessRequest(It.IsAny<ISocket>(), It.IsAny<byte[]>(), It.IsAny<RequestType>(),
                         It.IsAny<IStorage>())).Throws(new TaskCanceledException());
 
-            ServerWorker worker = new ServerWorker(requestProcessorMock.Object, storageMock.Object);
+            ServerWorker worker = new ServerWorker(requestProcessorMock.Object, storageMock.Object, serverMock.Object);
             try
             {
-                worker.StartListening(socketMock.Object);
+                worker.StartListening();
             }
             catch (TaskCanceledException)
             {
@@ -161,6 +167,8 @@ namespace Kronos.Server.Tests.Listener
             var storageMock = new Mock<IStorage>();
             var socketMock = new Mock<ISocket>();
             var clientSocketMock = new Mock<ISocket>();
+            var serverMock = new Mock<IServer>();
+
 
             socketMock.Setup(x => x.BufferSize).Returns(65535);
             clientSocketMock.Setup(x => x.BufferSize).Returns(65535);
@@ -197,10 +205,10 @@ namespace Kronos.Server.Tests.Listener
                     x.ProcessRequest(It.IsAny<ISocket>(), It.IsAny<byte[]>(), It.IsAny<RequestType>(),
                         It.IsAny<IStorage>())).Throws(new TaskCanceledException());
 
-            ServerWorker worker = new ServerWorker(requestProcessorMock.Object, storageMock.Object);
+            ServerWorker worker = new ServerWorker(requestProcessorMock.Object, storageMock.Object, serverMock.Object);
             try
             {
-                worker.StartListening(socketMock.Object);
+                worker.StartListening();
             }
             catch (TaskCanceledException)
             {
@@ -216,14 +224,16 @@ namespace Kronos.Server.Tests.Listener
             var storageMock = new Mock<IStorage>();
             var socketMock = new Mock<ISocket>();
             var clientSocketMock = new Mock<ISocket>();
+            var serverMock = new Mock<IServer>();
+
 
             clientSocketMock.Setup(x => x.Connected).Returns(true);
             socketMock.Setup(x => x.Accept()).Returns(clientSocketMock.Object);
 
             clientSocketMock.Setup(x => x.Receive(It.IsAny<byte[]>())).Throws(new Exception());
 
-            ServerWorker worker = new ServerWorker(requestProcessorMock.Object, storageMock.Object);
-            worker.StartListening(socketMock.Object);
+            ServerWorker worker = new ServerWorker(requestProcessorMock.Object, storageMock.Object, serverMock.Object);
+            worker.StartListening();
 
             clientSocketMock.Verify(x => x.Shutdown(It.IsAny<SocketShutdown>()), Times.Once);
             socketMock.Verify(x => x.Shutdown(It.IsAny<SocketShutdown>()), Times.Once);
@@ -235,11 +245,13 @@ namespace Kronos.Server.Tests.Listener
         {
             var requestProcessorMock = new Mock<IRequestProcessor>();
             var storageMock = new Mock<IStorage>();
-            
-            ServerWorker worker = new ServerWorker(requestProcessorMock.Object, storageMock.Object);
+            var serverMock = new Mock<IServer>();
+
+            ServerWorker worker = new ServerWorker(requestProcessorMock.Object, storageMock.Object, serverMock.Object);
             worker.Dispose();
             
             storageMock.Verify(x => x.Clear(), Times.Once);
+            serverMock.Verify(x => x.Dispose(), Times.Once);
         }
     }
 }

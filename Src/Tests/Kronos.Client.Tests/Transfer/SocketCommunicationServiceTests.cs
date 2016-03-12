@@ -9,6 +9,7 @@ using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Kronos.Core.StatusCodes;
 using Moq;
+using XGain.Sockets;
 using Xunit;
 
 namespace Kronos.Client.Tests.Transfer

@@ -1,30 +1,40 @@
-﻿using System.Xml;
+﻿using System;
+using System.Net;
+using System.Threading.Tasks;
+using System.Xml;
+using Kronos.Core.Communication;
+using Kronos.Core.RequestProcessing;
+using Kronos.Core.Requests;
+using Kronos.Core.Storage;
 using Kronos.Server.Listener;
 using NLog;
 using NLog.Config;
+using XGain;
+using XGain.Processing;
 
 namespace Kronos.Server
 {
     public class Program
     {
-        private static ILogger _logger;
-        private static TcpServer _server = new TcpServer(new ServerWorker());
+        private static readonly Func<IProcessor> ProcessorResolver = () => new SocketProcessor();
 
         public static void LoggerSetup()
         {
             var reader = XmlReader.Create("NLog.config");
             var config = new XmlLoggingConfiguration(reader, null); //filename is not required.
             LogManager.Configuration = config;
-            _logger = LogManager.GetCurrentClassLogger();
         }
 
         public static void Main()
         {
             LoggerSetup();
 
-            _logger.Info("Starting server");
-            _server.Start();
-            _logger.Info("Stopping server");
+            IRequestProcessor processor = new RequestProcessor();
+            IStorage storage = new InMemoryStorage();
+            IServer server = new XGainServer(IPAddress.Any, 5000, ProcessorResolver);
+            IServerWorker worker = new ServerWorker(processor, storage, server);
+
+            worker.StartListening();
         }
     }
 }

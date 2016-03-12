@@ -1,15 +1,12 @@
 ﻿using Kronos.Core.Command;
-using Kronos.Core.Communication;
 using Kronos.Core.Requests;
 using Kronos.Core.Storage;
-using NLog;
+using XGain.Sockets;
 
 namespace Kronos.Core.RequestProcessing
 {
     public class RequestProcessor : IRequestProcessor
     {
-        private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
-        
         public void ProcessRequest(ISocket clientSocket, byte[] requestBytes, RequestType type, IStorage storage)
         {
             switch (type)

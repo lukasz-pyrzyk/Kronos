@@ -4,6 +4,7 @@ using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Kronos.Core.StatusCodes;
 using Kronos.Core.Storage;
+using XGain.Sockets;
 
 namespace Kronos.Core.Command
 {
