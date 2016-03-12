@@ -22,8 +22,8 @@ namespace Kronos.Server.Tests.Listener
             var socketMock = new Mock<ISocket>();
             socketMock.SetupSequence(x => x.BufferSize).Returns(requestSize.Length);
 
-            socketMock.Setup(x => x.ReceiveAsync(sizeBuffor))
-                .Returns(Task.FromResult(sizeBuffor.Length))
+            socketMock.Setup(x => x.Receive(sizeBuffor))
+                .Returns(sizeBuffor.Length)
                 .Callback<byte[]>(x =>
                 {
                     for (int i = 0; i < sizeBuffor.Length; i++)
@@ -32,8 +32,8 @@ namespace Kronos.Server.Tests.Listener
                     }
                 });
 
-            socketMock.Setup(x => x.ReceiveAsync(requestSize))
-                .Returns(Task.FromResult(requestSize.Length))
+            socketMock.Setup(x => x.Receive(requestSize))
+                .Returns(requestSize.Length)
                 .Callback<byte[]>(x =>
                 {
                     for (int i = 0; i < requestSize.Length; i++)
@@ -46,8 +46,8 @@ namespace Kronos.Server.Tests.Listener
             IProcessor proc = new SocketProcessor();
             await proc.ProcessSocketConnection(socketMock.Object, msg);
 
-            socketMock.Verify(x => x.ReceiveAsync(It.IsAny<byte[]>()), Times.Exactly(4));
-            socketMock.Verify(x => x.SendAsync(It.IsAny<byte[]>()), Times.Exactly(2));
+            socketMock.Verify(x => x.Receive(It.IsAny<byte[]>()), Times.Exactly(4));
+            socketMock.Verify(x => x.Send(It.IsAny<byte[]>()), Times.Exactly(2));
         }
     }
 }
