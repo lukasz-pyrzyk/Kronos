@@ -42,7 +42,7 @@ namespace Kronos.Server.Listener
         {
             byte[] packageSizeBuffer = new byte[sizeof(int)];
             _logger.Info("Receiving information about request size");
-            int position = await socket.ReceiveAsync(packageSizeBuffer);
+            int position = socket.Receive(packageSizeBuffer);
 
             int requestSize = SerializationUtils.GetLengthOfPackage(packageSizeBuffer);
             _logger.Info($"Request contains {requestSize} bytes");
@@ -55,7 +55,7 @@ namespace Kronos.Server.Listener
                 {
                     byte[] package = new byte[socket.BufferSize];
 
-                    int received = await socket.ReceiveAsync(package);
+                    int received = socket.Receive(package);
                     _logger.Info($"Received {received} bytes");
 
                     await ms.WriteAsync(package, 0, received);
@@ -65,7 +65,7 @@ namespace Kronos.Server.Listener
 
                 // send confirmation
                 byte[] statusBuffer = SerializationUtils.Serialize(RequestStatusCode.Ok);
-                await socket.SendAsync(statusBuffer);
+                socket.Send(statusBuffer);
 
                 return ms.ToArray();
             }
