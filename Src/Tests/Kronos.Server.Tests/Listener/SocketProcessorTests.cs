@@ -1,10 +1,11 @@
 ﻿using System.Threading.Tasks;
+using Kronos.Core.RequestProcessing;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
+using Kronos.Core.Storage;
 using Kronos.Server.Listener;
 using Moq;
 using XGain;
-using XGain.Processing;
 using XGain.Sockets;
 using Xunit;
 
@@ -15,39 +16,47 @@ namespace Kronos.Server.Tests.Listener
         [Fact]
         public async Task ProcessSocketConnection_ReceivesCorrectValue()
         {
-            var request = new GetRequest("key");
-            byte[] package = SerializationUtils.Serialize(request.RequestType);
-            byte[] sizeBuffor = new byte[sizeof(int)];
-            byte[] requestSize = new byte[package.Length - sizeBuffor.Length];
-            var socketMock = new Mock<ISocket>();
-            socketMock.SetupSequence(x => x.BufferSize).Returns(requestSize.Length);
+            var requestProcessorMock = new Mock<IRequestProcessor>();
+            var clientSocketMock = new Mock<ISocket>();
 
-            socketMock.Setup(x => x.Receive(sizeBuffor))
-                .Returns(sizeBuffor.Length)
-                .Callback<byte[]>(x =>
+            clientSocketMock.Setup(x => x.BufferSize).Returns(65535);
+            clientSocketMock.Setup(x => x.Connected).Returns(true);
+            byte[] packageBytes = new byte[clientSocketMock.Object.BufferSize];
+            byte[] sizeBytes = new byte[sizeof(int)];
+            
+            byte[] requestTypeBytes = SerializationUtils.Serialize(RequestType.GetRequest);
+            clientSocketMock.Setup(x => x.Receive(sizeBytes))
+                .Callback<byte[]>(package =>
                 {
-                    for (int i = 0; i < sizeBuffor.Length; i++)
+                    for (int i = 0; i < sizeof(int); i++)
                     {
-                        x[i] = package[i];
+                        package[i] = requestTypeBytes[i];
                     }
-                });
+                })
+                .Returns(sizeof(int));
 
-            socketMock.Setup(x => x.Receive(requestSize))
-                .Returns(requestSize.Length)
-                .Callback<byte[]>(x =>
+            int requestTypeSize = sizeof(RequestType);
+            clientSocketMock.Setup(x => x.Receive(packageBytes))
+                .Callback<byte[]>(package =>
                 {
-                    for (int i = 0; i < requestSize.Length; i++)
+                    for (int i = 0; i < requestTypeSize; i++)
                     {
-                        x[i] = package[i + sizeBuffor.Length];
+                        package[i] = requestTypeBytes[sizeof(int) + i];
                     }
-                });
+                })
+                .Returns(requestTypeSize);
 
+            requestProcessorMock.Setup(
+                x =>
+                    x.ProcessRequest(It.IsAny<ISocket>(), It.IsAny<byte[]>(), It.IsAny<RequestType>(),
+                        It.IsAny<IStorage>())).Throws(new TaskCanceledException());
+
+            SocketProcessor p = new SocketProcessor();
             Message msg = new Message();
-            IProcessor proc = new SocketProcessor();
-            await proc.ProcessSocketConnection(socketMock.Object, msg);
+            p.ProcessSocketConnection(clientSocketMock.Object, msg);
 
-            socketMock.Verify(x => x.Receive(It.IsAny<byte[]>()), Times.Exactly(4));
-            socketMock.Verify(x => x.Send(It.IsAny<byte[]>()), Times.Exactly(2));
+            clientSocketMock.Verify(x => x.Receive(It.IsAny<byte[]>()), Times.Exactly(4));
+            clientSocketMock.Verify(x => x.Send(It.IsAny<byte[]>()), Times.Exactly(2));
         }
     }
 }

@@ -1,10 +1,8 @@
 ﻿using System;
 using System.Net;
-using System.Threading.Tasks;
 using System.Xml;
 using Kronos.Core.Communication;
 using Kronos.Core.RequestProcessing;
-using Kronos.Core.Requests;
 using Kronos.Core.Storage;
 using Kronos.Server.Listener;
 using NLog;
@@ -16,7 +14,7 @@ namespace Kronos.Server
 {
     public class Program
     {
-        private static readonly Func<IProcessor> ProcessorResolver = () => new SocketProcessor();
+        private static readonly Func<IProcessor<Message>> ProcessorResolver = () => new SocketProcessor();
 
         public static void LoggerSetup()
         {

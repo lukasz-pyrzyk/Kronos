@@ -11,11 +11,11 @@ using XGain.Sockets;
 
 namespace Kronos.Server.Listener
 {
-    public class SocketProcessor : IProcessor
+    public class SocketProcessor : IProcessor<Message>
     {
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
-        public async Task ProcessSocketConnection(ISocket client, Message args)
+        public async void ProcessSocketConnection(ISocket client, Message args)
         {
             try
             {
