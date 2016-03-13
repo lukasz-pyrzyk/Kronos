@@ -4,7 +4,8 @@
     "summary": "Kronoc.Core is a main library for Kronos cache platform (Kronos.Server)",
     "dependencies": {
         "NLog": "4.4.0-alpha1",
-        "protobuf-net": "2.1.0-alpha-1"
+        "protobuf-net": "2.1.0-alpha-1",
+        "XGain": "1.0.0-alpha-43"
     },
     "description": "Kronoc.Core is a main library for Kronos cache platform (Kronos.Server)",
     "frameworks": {

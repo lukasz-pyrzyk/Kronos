@@ -1,5 +1,5 @@
-﻿using Kronos.Core.Communication;
-using Kronos.Core.Storage;
+﻿using Kronos.Core.Storage;
+using XGain.Sockets;
 
 namespace Kronos.Core.Command
 {

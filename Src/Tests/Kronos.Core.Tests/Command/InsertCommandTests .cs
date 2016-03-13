@@ -6,6 +6,7 @@ using Kronos.Core.Serialization;
 using Kronos.Core.StatusCodes;
 using Kronos.Core.Storage;
 using Moq;
+using XGain.Sockets;
 using Xunit;
 
 namespace Kronos.Core.Tests.Command

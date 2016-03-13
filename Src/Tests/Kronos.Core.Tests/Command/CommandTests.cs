@@ -3,6 +3,7 @@ using Kronos.Core.Command;
 using Kronos.Core.Communication;
 using Kronos.Core.Storage;
 using Moq;
+using XGain.Sockets;
 using Xunit;
 
 namespace Kronos.Core.Tests.Command

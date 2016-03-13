@@ -9,6 +9,7 @@ using Kronos.Core.Model.Exceptions;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Kronos.Core.StatusCodes;
+using XGain.Sockets;
 
 namespace Kronos.Client.Transfer
 {
@@ -18,7 +19,7 @@ namespace Kronos.Client.Transfer
 
         private readonly Func<ISocket> _newSocketFunc;
 
-        public SocketCommunicationService(IPEndPoint host) : this(host, () => new KronosSocket(AddressFamily.InterNetwork))
+        public SocketCommunicationService(IPEndPoint host) : this(host, () => new XGainSocket(AddressFamily.InterNetwork))
         {
         }
 

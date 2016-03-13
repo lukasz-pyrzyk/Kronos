@@ -1,6 +1,6 @@
-﻿using Kronos.Core.Communication;
-using Kronos.Core.Requests;
+﻿using Kronos.Core.Requests;
 using Kronos.Core.Storage;
+using XGain.Sockets;
 
 namespace Kronos.Core.RequestProcessing
 {

@@ -1,13 +1,10 @@
-﻿using System;
-using System.IO;
-using System.Net.Sockets;
+﻿using System.Threading.Tasks;
 using Kronos.Core.Communication;
 using Kronos.Core.RequestProcessing;
 using Kronos.Core.Requests;
-using Kronos.Core.Serialization;
-using Kronos.Core.StatusCodes;
 using Kronos.Core.Storage;
 using NLog;
+using XGain;
 
 namespace Kronos.Server.Listener
 {
@@ -15,107 +12,34 @@ namespace Kronos.Server.Listener
     {
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
         private readonly IRequestProcessor _processor;
+        private readonly IServer _server;
         public IStorage Storage { get; }
 
-        internal ServerWorker(IRequestProcessor processor, IStorage storage)
+        public ServerWorker(IRequestProcessor processor, IStorage storage, IServer server)
         {
             _processor = processor;
+            _server = server;
             Storage = storage;
         }
 
-        public ServerWorker() : this(new RequestProcessor(), new InMemoryStorage())
+        public void StartListening()
         {
+            _logger.Info("Starting server");
+
+            _server.OnNewMessage += (sender, message) =>
+            {
+                _processor.ProcessRequest(message.Client, message.RequestBytes, (RequestType)message.UserToken, Storage);
+            };
+
+            Task serverTask = _server.Start();
+            serverTask.Wait();
         }
 
-        public void StartListening(ISocket server)
-        {
-            try
-            {
-                while (true)
-                {
-                    ISocket client = null;
-                    try
-                    {
-                        client = server.Accept();
-                        _logger.Info("Accepting new request");
-
-                        byte[] typeBuffer = ReceiveAndSendConfirmation(client);
-                        byte[] requestBuffer = ReceiveAndSendConfirmation(client);
-
-                        RequestType type = SerializationUtils.Deserialize<RequestType>(typeBuffer);
-
-                        _logger.Info($"Processing {type} request");
-                        _processor.ProcessRequest(client, requestBuffer, type, Storage);
-                    }
-                    catch (SocketException ex)
-                    {
-                        _logger.Error(
-                            $"Exception during receiving request from client {client?.RemoteEndPoint}");
-                        _logger.Fatal(ex);
-                    }
-                    finally
-                    {
-                        try
-                        {
-                            if (client != null && client.Connected)
-                            {
-                                client.Shutdown(SocketShutdown.Both);
-                            }
-                        }
-                        catch (SocketException)
-                        {
-                        }
-                    }
-                }
-            }
-            catch (Exception ex)
-            {
-                _logger.Fatal(ex);
-            }
-            finally
-            {
-                _logger.Info("Disposing server");
-                server?.Shutdown(SocketShutdown.Both);
-                server?.Dispose();
-            }
-        }
-
-        private byte[] ReceiveAndSendConfirmation(ISocket socket)
-        {
-            byte[] packageSizeBuffer = new byte[sizeof(int)];
-            _logger.Info("Receiving information about request size");
-            int position = socket.Receive(packageSizeBuffer);
-
-            int requestSize = SerializationUtils.GetLengthOfPackage(packageSizeBuffer);
-            _logger.Info($"Request contains {requestSize} bytes");
-
-            using (MemoryStream ms = new MemoryStream())
-            {
-                ms.Write(packageSizeBuffer, 0, position);
-                position = 0;
-                while (position != requestSize)
-                {
-                    byte[] package = new byte[socket.BufferSize];
-
-                    int received = socket.Receive(package);
-                    _logger.Info($"Received {received} bytes");
-
-                    ms.Write(package, 0, received);
-                    position += received;
-                    _logger.Info($"Total received bytes: {(float)position * 100 / requestSize}%");
-                }
-
-                // send confirmation
-                byte[] statusBuffer = SerializationUtils.Serialize(RequestStatusCode.Ok);
-                socket.Send(statusBuffer);
-
-                return ms.ToArray();
-            }
-        }
 
         public void Dispose()
         {
             Storage.Clear();
+            _server.Dispose();
         }
     }
 }
