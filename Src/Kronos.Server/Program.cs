@@ -23,13 +23,15 @@ namespace Kronos.Server
             LogManager.Configuration = config;
         }
 
-        public static void Main()
+        public static void Main(string[] args)
         {
+            int port = Convert.ToInt32(args[0]);
+
             LoggerSetup();
 
             IRequestProcessor processor = new RequestProcessor();
             IStorage storage = new InMemoryStorage();
-            IServer server = new XGainServer(IPAddress.Any, 5000, ProcessorResolver);
+            IServer server = new XGainServer(IPAddress.Any, port, ProcessorResolver);
             IServerWorker worker = new ServerWorker(processor, storage, server);
 
             worker.StartListening();

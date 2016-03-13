@@ -31,7 +31,7 @@ namespace Kronos.Server.Listener
                 _processor.ProcessRequest(message.Client, message.RequestBytes, (RequestType)message.UserToken, Storage);
             };
 
-            Task serverTask = _server.Start();
+            Task serverTask = _server.StartParallel();
             serverTask.Wait();
 
             _logger.Info("Shutting down server");
