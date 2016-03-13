@@ -8,7 +8,7 @@
         "Kronos.Server": "1.0.0-*",
         "OpenCover": "4.6.519",
         "protobuf-net": "2.1.0-alpha-1",
-        "XGain": "1.0.0-alpha-46",
+        "XGain": "1.0.0-alpha-50",
         "xunit": "2.1.0",
         "xunit.runner.dnx": "2.1.0-rc1-build204"
     },
