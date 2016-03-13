@@ -33,6 +33,8 @@ namespace Kronos.Server.Listener
 
             Task serverTask = _server.Start();
             serverTask.Wait();
+
+            _logger.Info("Shutting down server");
         }
 
 

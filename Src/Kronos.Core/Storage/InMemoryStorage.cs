@@ -32,7 +32,7 @@ namespace Kronos.Core.Storage
 
         public void Clear()
         {
-            _logger.Debug("Clearing InMemoryCache");
+            _logger.Info("Clearing InMemoryCache");
             _storage.Clear();
         }
     }

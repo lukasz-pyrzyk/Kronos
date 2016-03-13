@@ -19,7 +19,7 @@ namespace Kronos.Server.Listener
         {
             try
             {
-                _logger.Info("Accepting new request");
+                _logger.Debug("Accepting new request");
 
                 byte[] typeBuffer = await ReceiveAndSendConfirmation(client);
                 byte[] requestBuffer = await ReceiveAndSendConfirmation(client);
@@ -33,19 +33,18 @@ namespace Kronos.Server.Listener
             catch (SocketException ex)
             {
                 _logger.Error(
-                    $"Exception during receiving request from client {client?.RemoteEndPoint}");
-                _logger.Fatal(ex);
+                    $"Exception during receiving request from client {client?.RemoteEndPoint} + {ex}");
             }
         }
 
         private async Task<byte[]> ReceiveAndSendConfirmation(ISocket socket)
         {
             byte[] packageSizeBuffer = new byte[sizeof(int)];
-            _logger.Info("Receiving information about request size");
+            _logger.Debug("Receiving information about request size");
             int position = socket.Receive(packageSizeBuffer);
 
             int requestSize = SerializationUtils.GetLengthOfPackage(packageSizeBuffer);
-            _logger.Info($"Request contains {requestSize} bytes");
+            _logger.Debug($"Request contains {requestSize} bytes");
 
             using (MemoryStream ms = new MemoryStream())
             {
@@ -56,11 +55,11 @@ namespace Kronos.Server.Listener
                     byte[] package = new byte[socket.BufferSize];
 
                     int received = socket.Receive(package);
-                    _logger.Info($"Received {received} bytes");
+                    _logger.Debug($"Received {received} bytes");
 
                     await ms.WriteAsync(package, 0, received);
                     position += received;
-                    _logger.Info($"Total received bytes: {(float)position * 100 / requestSize}%");
+                    _logger.Debug($"Total received bytes: {(float)position * 100 / requestSize}%");
                 }
 
                 // send confirmation
