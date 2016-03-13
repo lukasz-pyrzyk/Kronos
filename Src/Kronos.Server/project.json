@@ -13,7 +13,7 @@
         "Kronos.Core": "1.0.0-*",
         "NLog": "4.4.0-alpha1",
         "protobuf-net": "2.1.0-alpha-1",
-        "XGain": "1.0.0-alpha-43"
+        "XGain": "1.0.0-alpha-46"
     },
     "description": "Kronos - the cache platform",
     "frameworks": {
