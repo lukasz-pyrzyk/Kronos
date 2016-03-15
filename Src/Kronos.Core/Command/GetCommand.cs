@@ -27,7 +27,7 @@ namespace Kronos.Core.Command
             {
             }
 
-            return response;
+            return SerializationUtils.Deserialize<byte[]>(response);
         }
 
         public override void ProcessRequest(ISocket socket, byte[] requestBytes, IStorage storage)
