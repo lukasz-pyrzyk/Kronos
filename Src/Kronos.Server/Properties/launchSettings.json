@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "Kronos.Server": {
+      "commandName": "Kronos.Server",
+      "commandLineArgs": "5000"
+    }
+  }
+}

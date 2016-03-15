@@ -52,7 +52,7 @@ namespace Kronos.Server.Tests.Listener
                         It.IsAny<IStorage>())).Throws(new TaskCanceledException());
 
             SocketProcessor p = new SocketProcessor();
-            Message msg = new Message();
+            MessageArgs msg = new MessageArgs();
             p.ProcessSocketConnection(clientSocketMock.Object, msg);
 
             clientSocketMock.Verify(x => x.Receive(It.IsAny<byte[]>()), Times.Exactly(4));

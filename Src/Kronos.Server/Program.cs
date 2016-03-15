@@ -14,7 +14,7 @@ namespace Kronos.Server
 {
     public class Program
     {
-        private static readonly Func<IProcessor<Message>> ProcessorResolver = () => new SocketProcessor();
+        private static readonly Func<IProcessor<MessageArgs>> ProcessorResolver = () => new SocketProcessor();
 
         public static void LoggerSetup()
         {
