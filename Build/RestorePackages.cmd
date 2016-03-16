@@ -1,1 +1,1 @@
-start .. && dnu restore
+cd .. && dnu restore && cd Build
