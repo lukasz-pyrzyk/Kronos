@@ -18,7 +18,7 @@ namespace Kronos.Client.Tests
             string key = "key";
             byte[] package = Encoding.UTF8.GetBytes("package");
             DateTime expiryDate = DateTime.Today.AddDays(1);
-            
+
             var communicationServiceMock = new Mock<IClientServerConnection>();
             communicationServiceMock.Setup(x => x.SendToServer(It.IsAny<Request>()))
                 .Returns(SerializationUtils.Serialize(RequestStatusCode.Ok));
@@ -33,18 +33,17 @@ namespace Kronos.Client.Tests
         public void CanGetObject()
         {
             const string word = "lorem ipsum";
+            byte[] package = SerializationUtils.Serialize(word);
 
             var communicationServiceMock = new Mock<IClientServerConnection>();
-            communicationServiceMock.Setup(x => x.SendToServer(It.IsAny<Request>()))
-                .Returns(SerializationUtils.Serialize(word));
-
+            communicationServiceMock.Setup(x => x.SendToServer(It.IsAny<GetRequest>())).Returns(SerializationUtils.Serialize(package));
             IKronosClient client = new KronosClient(communicationServiceMock.Object);
-            byte[] response = client.TryGetValue(It.IsAny<string>());
+
+            byte[] response = client.TryGetValue("key");
+
             string responseString = SerializationUtils.Deserialize<string>(response);
-
-            communicationServiceMock.Verify(x => x.SendToServer(It.IsAny<GetRequest>()), Times.Exactly(1));
-
             Assert.Equal(responseString, word);
+            communicationServiceMock.Verify(x => x.SendToServer(It.IsAny<GetRequest>()), Times.Exactly(1));
         }
     }
 }
