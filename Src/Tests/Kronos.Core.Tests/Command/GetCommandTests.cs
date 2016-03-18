@@ -20,7 +20,7 @@ namespace Kronos.Core.Tests.Command
             var request = new GetRequest("masterKey");
 
             var communicationServiceMock = new Mock<IClientServerConnection>();
-            communicationServiceMock.Setup(x => x.SendToServer(request)).Returns(value);
+            communicationServiceMock.Setup(x => x.SendToServer(request)).Returns(SerializationUtils.Serialize(value));
 
             GetCommand command = new GetCommand();
 
