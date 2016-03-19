@@ -1,6 +1,11 @@
 ﻿using System;
+using Kronos.Core.Communication;
 using Kronos.Core.Model;
+using Kronos.Core.Serialization;
+using Kronos.Core.StatusCodes;
+using Kronos.Core.Storage;
 using ProtoBuf;
+using XGain.Sockets;
 
 namespace Kronos.Core.Requests
 {
@@ -28,6 +33,20 @@ namespace Kronos.Core.Requests
             Key = key;
             Object = serializedObject;
             ExpiryDate = expiryDate;
+        }
+
+        public RequestStatusCode Execute(IClientServerConnection service, InsertRequest request)
+        {
+            byte[] response = service.SendToServer(request);
+            RequestStatusCode statusCode = SerializationUtils.Deserialize<RequestStatusCode>(response);
+
+            return statusCode;
+        }
+
+        public override void ProcessRequest(ISocket socket, IStorage storage)
+        {
+            storage.AddOrUpdate(Key, Object);
+            socket.Send(SerializationUtils.Serialize(RequestStatusCode.Ok));
         }
     }
 }

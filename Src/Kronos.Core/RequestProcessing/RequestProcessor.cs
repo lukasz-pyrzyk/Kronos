@@ -1,5 +1,6 @@
 ﻿using Kronos.Core.Command;
 using Kronos.Core.Requests;
+using Kronos.Core.Serialization;
 using Kronos.Core.Storage;
 using XGain.Sockets;
 
@@ -12,8 +13,8 @@ namespace Kronos.Core.RequestProcessing
             switch (type)
             {
                 case RequestType.InsertRequest:
-                    InsertCommand insertCommand = new InsertCommand();
-                    insertCommand.ProcessRequest(clientSocket, requestBytes, storage);
+                    InsertRequest insertRequest = SerializationUtils.Deserialize<InsertRequest>(requestBytes);
+                    insertRequest.ProcessRequest(clientSocket, storage);
                     break;
                 case RequestType.GetRequest:
                     GetCommand getCommand = new GetCommand();

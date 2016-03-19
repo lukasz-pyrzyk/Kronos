@@ -1,4 +1,6 @@
-﻿using ProtoBuf;
+﻿using Kronos.Core.Storage;
+using ProtoBuf;
+using XGain.Sockets;
 
 namespace Kronos.Core.Requests
 {
@@ -18,6 +20,11 @@ namespace Kronos.Core.Requests
         public GetRequest(string key)
         {
             Key = key;
+        }
+
+        public override void ProcessRequest(ISocket socket, IStorage storage)
+        {
+            throw new System.NotImplementedException();
         }
     }
 }

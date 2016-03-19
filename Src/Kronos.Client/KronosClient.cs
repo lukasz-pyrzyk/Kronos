@@ -25,9 +25,7 @@ namespace Kronos.Client
         {
             Trace.WriteLine("New insert request");
             InsertRequest request = new InsertRequest(key, package, expiryDate);
-
-            InsertCommand command = new InsertCommand();
-            RequestStatusCode status = command.Execute(_service, request);
+            RequestStatusCode status = request.Execute(_service, request);
 
             Trace.WriteLine($"InsertRequest status: {status}");
         }

@@ -1,4 +1,6 @@
-﻿using ProtoBuf;
+﻿using Kronos.Core.Storage;
+using ProtoBuf;
+using XGain.Sockets;
 
 namespace Kronos.Core.Requests
 {
@@ -11,5 +13,7 @@ namespace Kronos.Core.Requests
     public abstract class Request
     {
         public virtual RequestType RequestType { get; set; }
+
+        public abstract void ProcessRequest(ISocket socket, IStorage storage);
     }
 }
