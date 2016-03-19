@@ -19,6 +19,10 @@ namespace Kronos.Core.RequestProcessing
                     GetRequest getRequest = SerializationUtils.Deserialize<GetRequest>(requestBytes);
                     getRequest.ProcessAndSendResponse(clientSocket, storage);
                     break;
+                case RequestType.Delete:
+                    DeleteRequest deleteRequest = SerializationUtils.Deserialize<DeleteRequest>(requestBytes);
+                    deleteRequest.ProcessAndSendResponse(clientSocket, storage);
+                    break;
             }
         }
     }
