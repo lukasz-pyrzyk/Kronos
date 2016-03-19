@@ -30,6 +30,12 @@ namespace Kronos.Core.Storage
             return null;
         }
 
+        public bool TryRemove(string key)
+        {
+            byte[] obj;
+            return _storage.TryRemove(key, out obj);
+        }
+
         public void Clear()
         {
             _logger.Info("Clearing InMemoryCache");

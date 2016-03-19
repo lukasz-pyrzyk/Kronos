@@ -5,6 +5,7 @@
         Unknown = 0,
         Ok = 1,
         Failed = 2,
-        NotFound = 3
+        NotFound = 3,
+        Deleted = 4
     }
 }
