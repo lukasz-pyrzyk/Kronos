@@ -35,8 +35,7 @@ namespace Kronos.Client
             Trace.WriteLine("New get request");
             GetRequest request = new GetRequest(key);
 
-            GetCommand command = new GetCommand();
-            byte[] valueFromCache = command.Execute(_service, request);
+            byte[] valueFromCache = request.Execute(_service, request);
 
             if (valueFromCache != null)
             {

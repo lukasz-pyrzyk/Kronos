@@ -17,8 +17,8 @@ namespace Kronos.Core.RequestProcessing
                     insertRequest.ProcessRequest(clientSocket, storage);
                     break;
                 case RequestType.GetRequest:
-                    GetCommand getCommand = new GetCommand();
-                    getCommand.ProcessRequest(clientSocket, requestBytes, storage);
+                    GetRequest getRequest = SerializationUtils.Deserialize<GetRequest>(requestBytes);
+                    getRequest.ProcessRequest(clientSocket, storage);
                     break;
             }
         }
