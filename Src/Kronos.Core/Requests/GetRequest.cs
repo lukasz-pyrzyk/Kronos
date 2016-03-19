@@ -11,7 +11,7 @@ namespace Kronos.Core.Requests
     [ProtoContract]
     public class GetRequest : Request
     {
-        public override RequestType RequestType { get; set; } = RequestType.GetRequest;
+        public override RequestType RequestType { get; set; } = RequestType.Get;
 
         [ProtoMember(1)]
         public string Key { get; set; }

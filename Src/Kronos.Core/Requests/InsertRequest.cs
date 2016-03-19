@@ -12,7 +12,7 @@ namespace Kronos.Core.Requests
     [ProtoContract]
     public class InsertRequest : Request
     {
-        public override RequestType RequestType { get; set; } = RequestType.InsertRequest;
+        public override RequestType RequestType { get; set; } = RequestType.Insert;
 
         [ProtoMember(1)]
         public string Key { get; set; }

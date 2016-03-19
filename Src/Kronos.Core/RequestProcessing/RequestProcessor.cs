@@ -11,11 +11,11 @@ namespace Kronos.Core.RequestProcessing
         {
             switch (type)
             {
-                case RequestType.InsertRequest:
+                case RequestType.Insert:
                     InsertRequest insertRequest = SerializationUtils.Deserialize<InsertRequest>(requestBytes);
                     insertRequest.ProcessResponse(clientSocket, storage);
                     break;
-                case RequestType.GetRequest:
+                case RequestType.Get:
                     GetRequest getRequest = SerializationUtils.Deserialize<GetRequest>(requestBytes);
                     getRequest.ProcessResponse(clientSocket, storage);
                     break;
