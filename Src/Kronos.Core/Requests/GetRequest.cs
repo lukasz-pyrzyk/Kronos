@@ -34,18 +34,22 @@ namespace Kronos.Core.Requests
 
         protected override T ProcessFromClientCode<T>(byte[] responseBytes)
         {
-            try
+            if (responseBytes.Length == 6) // if size is equal to serialized RequestStatusCode
             {
-                // if server returned NotFound status code, return null
-                RequestStatusCode notFound = SerializationUtils.Deserialize<RequestStatusCode>(responseBytes);
-                if (notFound == RequestStatusCode.NotFound)
+                try
                 {
-                    return (T)new object();
+                    // if server returned NotFound status code, return null
+                    RequestStatusCode notFound = SerializationUtils.Deserialize<RequestStatusCode>(responseBytes);
+                    if (notFound == RequestStatusCode.NotFound)
+                    {
+                        responseBytes = SerializationUtils.Serialize(new byte[] {0});
+                    }
+                }
+                catch (Exception)
+                {
                 }
             }
-            catch (Exception ex)
-            {
-            }
+
 
             return SerializationUtils.Deserialize<T>(responseBytes);
         }

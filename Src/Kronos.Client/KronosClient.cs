@@ -35,14 +35,8 @@ namespace Kronos.Client
 
             byte[] valueFromCache = request.ProcessRequest<byte[]>(_service);
 
-            if (valueFromCache != null)
-            {
-                Trace.WriteLine($"GetRequest status returned object with {valueFromCache.Length} bytes");
-            }
-            else
-            {
-                Trace.WriteLine($"GetRequest status returned null");
-            }
+            if (valueFromCache != null && valueFromCache.Length == 1 && valueFromCache[0] == 0)
+                return null;
 
             return valueFromCache;
         }

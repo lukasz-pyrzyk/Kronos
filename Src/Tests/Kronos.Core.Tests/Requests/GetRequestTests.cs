@@ -69,8 +69,10 @@ namespace Kronos.Core.Tests.Requests
 
             byte[] response = request.ProcessRequest<byte[]>(communicationServiceMock.Object);
 
-            Assert.Null(response);
-            communicationServiceMock.Verify(x => x.SendToServer(It.IsAny<GetRequest>()), Times.Once);
+            Assert.Equal(response.Length, 1);
+            Assert.Equal(response[0], 0);
+
+            communicationServiceMock.Verify(x => x.SendToServer(request), Times.Once);
         }
 
         [Fact]
