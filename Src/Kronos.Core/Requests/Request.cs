@@ -1,6 +1,5 @@
 ﻿using Kronos.Core.Communication;
 using Kronos.Core.Serialization;
-using Kronos.Core.StatusCodes;
 using Kronos.Core.Storage;
 using ProtoBuf;
 using XGain.Sockets;
@@ -13,6 +12,7 @@ namespace Kronos.Core.Requests
     [ProtoContract]
     [ProtoInclude(500, typeof(InsertRequest))]
     [ProtoInclude(1000, typeof(GetRequest))]
+    [ProtoInclude(1500, typeof(DeleteRequest))]
     public abstract class Request
     {
         public virtual RequestType RequestType { get; set; }
