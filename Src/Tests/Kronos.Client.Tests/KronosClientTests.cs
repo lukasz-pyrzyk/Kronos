@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text;
-using Kronos.Client.Transfer;
 using Kronos.Core.Communication;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
@@ -66,7 +65,7 @@ namespace Kronos.Client.Tests
         }
 
         [Fact]
-        public void TryDelete_()
+        public void TryDelete_CallsSendToServer()
         {
             var communicationServiceMock = new Mock<IClientServerConnection>();
             communicationServiceMock

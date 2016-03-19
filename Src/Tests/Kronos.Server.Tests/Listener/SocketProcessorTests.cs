@@ -48,8 +48,7 @@ namespace Kronos.Server.Tests.Listener
 
             requestProcessorMock.Setup(
                 x =>
-                    x.ProcessRequest(It.IsAny<ISocket>(), It.IsAny<byte[]>(), It.IsAny<RequestType>(),
-                        It.IsAny<IStorage>())).Throws(new TaskCanceledException());
+                    x.ProcessRequest(It.IsAny<byte[]>(), It.IsAny<RequestType>())).Throws(new TaskCanceledException());
 
             SocketProcessor p = new SocketProcessor();
             MessageArgs msg = new MessageArgs();
