@@ -41,6 +41,39 @@ namespace Kronos.Core.Tests.Storage
         }
 
         [Fact]
+        public void TryRemove_RemovesEntryFromStorage()
+        {
+            byte[] package = Encoding.UTF8.GetBytes("lorem ipsum");
+            const string firstKey = "key1";
+            const string secondKey = "key2";
+
+            IStorage storage = new InMemoryStorage();
+            storage.AddOrUpdate(firstKey, package);
+            storage.AddOrUpdate(secondKey, package);
+
+            bool deleted = storage.TryRemove(firstKey);
+
+            Assert.True(deleted);
+            Assert.Equal(storage.Count, 1);
+        }
+
+        [Fact]
+        public void TryRemove_DoestNotRemoveEntryFromStorageWhenKeyDoesNotExist()
+        {
+            byte[] package = Encoding.UTF8.GetBytes("lorem ipsum");
+            const string firstKey = "key1";
+            const string secondKey = "key2";
+
+            IStorage storage = new InMemoryStorage();
+            storage.AddOrUpdate(firstKey, package);
+
+            bool deleted = storage.TryRemove(secondKey);
+
+            Assert.False(deleted);
+            Assert.Equal(storage.Count, 1);
+        }
+
+        [Fact]
         public void CanClear()
         {
             IStorage storage = new InMemoryStorage();

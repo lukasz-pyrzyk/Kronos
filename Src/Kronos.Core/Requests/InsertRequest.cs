@@ -1,13 +1,16 @@
 ﻿using System;
-using Kronos.Core.Model;
+using Kronos.Core.Serialization;
+using Kronos.Core.StatusCodes;
+using Kronos.Core.Storage;
 using ProtoBuf;
+using XGain.Sockets;
 
 namespace Kronos.Core.Requests
 {
     [ProtoContract]
     public class InsertRequest : Request
     {
-        public override RequestType RequestType { get; set; } = RequestType.InsertRequest;
+        public override RequestType RequestType { get; set; } = RequestType.Insert;
 
         [ProtoMember(1)]
         public string Key { get; set; }
@@ -28,6 +31,12 @@ namespace Kronos.Core.Requests
             Key = key;
             Object = serializedObject;
             ExpiryDate = expiryDate;
+        }
+        
+        public override void ProcessAndSendResponse(ISocket socket, IStorage storage)
+        {
+            storage.AddOrUpdate(Key, Object);
+            socket.Send(SerializationUtils.Serialize(RequestStatusCode.Ok));
         }
     }
 }

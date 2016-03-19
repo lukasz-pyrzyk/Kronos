@@ -6,8 +6,15 @@ namespace Kronos.Core.Requests
     public enum RequestType : short
     {
         [ProtoEnum]
-        InsertRequest = 1,
+        Unknown = 0,
+
         [ProtoEnum]
-        GetRequest = 2,
+        Insert = 1,
+
+        [ProtoEnum]
+        Get = 2,
+
+        [ProtoEnum]
+        Delete = 3
     }
 }

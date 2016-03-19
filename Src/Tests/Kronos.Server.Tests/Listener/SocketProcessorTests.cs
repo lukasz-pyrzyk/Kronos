@@ -2,7 +2,6 @@
 using Kronos.Core.RequestProcessing;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
-using Kronos.Core.Storage;
 using Kronos.Server.Listener;
 using Moq;
 using XGain;
@@ -14,9 +13,9 @@ namespace Kronos.Server.Tests.Listener
     public class SocketProcessorTests
     {
         [Fact]
-        public async Task ProcessSocketConnection_ReceivesCorrectValue()
+        public void ProcessSocketConnection_ReceivesCorrectValue()
         {
-            var requestProcessorMock = new Mock<IRequestProcessor>();
+            var requestProcessorMock = new Mock<IRequestMapper>();
             var clientSocketMock = new Mock<ISocket>();
 
             clientSocketMock.Setup(x => x.BufferSize).Returns(65535);
@@ -24,7 +23,7 @@ namespace Kronos.Server.Tests.Listener
             byte[] packageBytes = new byte[clientSocketMock.Object.BufferSize];
             byte[] sizeBytes = new byte[sizeof(int)];
             
-            byte[] requestTypeBytes = SerializationUtils.Serialize(RequestType.GetRequest);
+            byte[] requestTypeBytes = SerializationUtils.Serialize(RequestType.Get);
             clientSocketMock.Setup(x => x.Receive(sizeBytes))
                 .Callback<byte[]>(package =>
                 {
@@ -48,8 +47,7 @@ namespace Kronos.Server.Tests.Listener
 
             requestProcessorMock.Setup(
                 x =>
-                    x.ProcessRequest(It.IsAny<ISocket>(), It.IsAny<byte[]>(), It.IsAny<RequestType>(),
-                        It.IsAny<IStorage>())).Throws(new TaskCanceledException());
+                    x.ProcessRequest(It.IsAny<byte[]>(), It.IsAny<RequestType>())).Throws(new TaskCanceledException());
 
             SocketProcessor p = new SocketProcessor();
             MessageArgs msg = new MessageArgs();

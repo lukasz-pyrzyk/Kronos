@@ -1,8 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
-using Kronos.Core.Command;
+using System.Net;
 using Kronos.Core.Communication;
-using Kronos.Core.Model;
 using Kronos.Core.Requests;
 using Kronos.Core.StatusCodes;
 
@@ -25,9 +24,7 @@ namespace Kronos.Client
         {
             Trace.WriteLine("New insert request");
             InsertRequest request = new InsertRequest(key, package, expiryDate);
-
-            InsertCommand command = new InsertCommand();
-            RequestStatusCode status = command.Execute(_service, request);
+            RequestStatusCode status = request.Execute<RequestStatusCode>(_service);
 
             Trace.WriteLine($"InsertRequest status: {status}");
         }
@@ -37,19 +34,22 @@ namespace Kronos.Client
             Trace.WriteLine("New get request");
             GetRequest request = new GetRequest(key);
 
-            GetCommand command = new GetCommand();
-            byte[] valueFromCache = command.Execute(_service, request);
+            byte[] valueFromCache = request.Execute<byte[]>(_service);
 
-            if (valueFromCache != null)
-            {
-                Trace.WriteLine($"GetRequest status returned object with {valueFromCache.Length} bytes");
-            }
-            else
-            {
-                Trace.WriteLine($"GetRequest status returned null");
-            }
+            if (valueFromCache != null && valueFromCache.Length == 1 && valueFromCache[0] == 0)
+                return null;
 
             return valueFromCache;
+        }
+
+        public void TryDelete(string key)
+        {
+            Trace.WriteLine("New delete request");
+
+            DeleteRequest request = new DeleteRequest(key);
+            RequestStatusCode status = request.Execute<RequestStatusCode>(_service);
+
+            Trace.WriteLine($"InsertRequest status: {status}");
         }
     }
 }

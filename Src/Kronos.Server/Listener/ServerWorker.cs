@@ -12,13 +12,13 @@ namespace Kronos.Server.Listener
     internal class ServerWorker : IServerWorker
     {
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
-        private readonly IRequestProcessor _processor;
+        private readonly IRequestMapper _mapper;
         private readonly IServer _server;
         public IStorage Storage { get; }
 
-        public ServerWorker(IRequestProcessor processor, IStorage storage, IServer server)
+        public ServerWorker(IRequestMapper mapper, IStorage storage, IServer server)
         {
-            _processor = processor;
+            _mapper = mapper;
             _server = server;
             Storage = storage;
 
@@ -45,7 +45,8 @@ namespace Kronos.Server.Listener
 
         private void ServerOnOnNewMessage(object sender, MessageArgs args)
         {
-            _processor.ProcessRequest(args.Client, args.RequestBytes, (RequestType)args.UserToken, Storage);
+            Request request = _mapper.ProcessRequest(args.RequestBytes, (RequestType)args.UserToken);
+            request.ProcessAndSendResponse(args.Client, Storage);
         }
 
         private void ServerOnOnStart(object sender, StartArgs args)

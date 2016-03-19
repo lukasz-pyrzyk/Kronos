@@ -29,10 +29,10 @@ namespace Kronos.Server
 
             LoggerSetup();
 
-            IRequestProcessor processor = new RequestProcessor();
+            IRequestMapper mapper = new RequestMapper();
             IStorage storage = new InMemoryStorage();
             IServer server = new XGainServer(IPAddress.Any, port, ProcessorResolver);
-            IServerWorker worker = new ServerWorker(processor, storage, server);
+            IServerWorker worker = new ServerWorker(mapper, storage, server);
 
             worker.StartListening();
         }
