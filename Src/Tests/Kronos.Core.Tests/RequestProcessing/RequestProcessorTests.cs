@@ -16,7 +16,7 @@ namespace Kronos.Core.Tests.RequestProcessing
             byte[] requestBytes = new byte[0];
             RequestType type = RequestType.Unknown;
 
-            IRequestProcessor processor = new RequestProcessor();
+            IRequestMapper processor = new RequestMapper();
 
             Exception ex =
                 Assert.Throws<InvalidOperationException>(
@@ -31,7 +31,7 @@ namespace Kronos.Core.Tests.RequestProcessing
             var request = new InsertRequest();
             byte[] requestBytes = SerializationUtils.Serialize(request);
 
-            IRequestProcessor processor = new RequestProcessor();
+            IRequestMapper processor = new RequestMapper();
 
             Request mappedRequest = processor.ProcessRequest(requestBytes, request.RequestType);
             Assert.Equal(mappedRequest.GetType(), request.GetType());
@@ -43,7 +43,7 @@ namespace Kronos.Core.Tests.RequestProcessing
             var request = new GetRequest();
             byte[] requestBytes = SerializationUtils.Serialize(request);
 
-            IRequestProcessor processor = new RequestProcessor();
+            IRequestMapper processor = new RequestMapper();
 
             Request mappedRequest = processor.ProcessRequest(requestBytes, request.RequestType);
             Assert.Equal(mappedRequest.GetType(), request.GetType());
@@ -56,7 +56,7 @@ namespace Kronos.Core.Tests.RequestProcessing
             var request = new DeleteRequest();
             byte[] requestBytes = SerializationUtils.Serialize(request);
 
-            IRequestProcessor processor = new RequestProcessor();
+            IRequestMapper processor = new RequestMapper();
 
             Request mappedRequest = processor.ProcessRequest(requestBytes, request.RequestType);
             Assert.Equal(mappedRequest.GetType(), request.GetType());

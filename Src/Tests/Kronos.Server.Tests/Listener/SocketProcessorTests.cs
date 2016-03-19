@@ -2,7 +2,6 @@
 using Kronos.Core.RequestProcessing;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
-using Kronos.Core.Storage;
 using Kronos.Server.Listener;
 using Moq;
 using XGain;
@@ -14,9 +13,9 @@ namespace Kronos.Server.Tests.Listener
     public class SocketProcessorTests
     {
         [Fact]
-        public async Task ProcessSocketConnection_ReceivesCorrectValue()
+        public void ProcessSocketConnection_ReceivesCorrectValue()
         {
-            var requestProcessorMock = new Mock<IRequestProcessor>();
+            var requestProcessorMock = new Mock<IRequestMapper>();
             var clientSocketMock = new Mock<ISocket>();
 
             clientSocketMock.Setup(x => x.BufferSize).Returns(65535);

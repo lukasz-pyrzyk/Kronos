@@ -19,7 +19,7 @@ namespace Kronos.Server.Tests.Listener
         [Fact]
         public void Ctor_AssignsServices()
         {
-            var requestProcessorMock = new Mock<IRequestProcessor>();
+            var requestProcessorMock = new Mock<IRequestMapper>();
             var storageMock = new Mock<IStorage>();
             var serverMock = new Mock<IServer>();
 
@@ -32,7 +32,7 @@ namespace Kronos.Server.Tests.Listener
         [Fact]
         public void Dispose_ClearsStorage()
         {
-            var requestProcessorMock = new Mock<IRequestProcessor>();
+            var requestProcessorMock = new Mock<IRequestMapper>();
             var storageMock = new Mock<IStorage>();
             var serverMock = new Mock<IServer>();
 
