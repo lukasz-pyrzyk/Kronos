@@ -23,7 +23,7 @@ namespace Kronos.Client
         {
             Trace.WriteLine("New insert request");
             InsertRequest request = new InsertRequest(key, package, expiryDate);
-            RequestStatusCode status = request.Execute(_service);
+            RequestStatusCode status = request.ProcessRequest<RequestStatusCode>(_service);
 
             Trace.WriteLine($"InsertRequest status: {status}");
         }
@@ -33,7 +33,7 @@ namespace Kronos.Client
             Trace.WriteLine("New get request");
             GetRequest request = new GetRequest(key);
 
-            byte[] valueFromCache = request.Execute(_service);
+            byte[] valueFromCache = request.ProcessRequest<byte[]>(_service);
 
             if (valueFromCache != null)
             {

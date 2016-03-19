@@ -84,7 +84,7 @@ namespace Kronos.Core.Tests.Requests
             var socketMock = new Mock<ISocket>();
 
             var request = new GetRequest(key);
-            request.ProcessRequest(socketMock.Object, storageMock.Object);
+            request.ProcessResponse(socketMock.Object, storageMock.Object);
 
             byte[] expectedPackage = SerializationUtils.Serialize(cachedObject);
             socketMock.Verify(x => x.Send(expectedPackage), Times.Once);
@@ -102,10 +102,9 @@ namespace Kronos.Core.Tests.Requests
 
             var request = new GetRequest(key);
 
-            request.ProcessRequest(socketMock.Object, storageMock.Object);
+            request.ProcessResponse(socketMock.Object, storageMock.Object);
 
             socketMock.Verify(x => x.Send(notFoundBytes), Times.Once);
         }
-
     }
 }

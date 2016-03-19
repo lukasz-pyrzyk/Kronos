@@ -26,30 +26,28 @@ namespace Kronos.Core.Requests
             Key = key;
         }
 
-        public byte[] Execute(IClientServerConnection service)
+        public override void ProcessResponse(ISocket socket, IStorage storage)
         {
-            byte[] response = service.SendToServer(this);
+            byte[] requestedObject = storage.TryGet(Key) ?? SerializationUtils.Serialize(RequestStatusCode.NotFound);
+            socket.Send(SerializationUtils.Serialize(requestedObject));
+        }
 
+        protected override T ProcessFromClientCode<T>(byte[] responseBytes)
+        {
             try
             {
                 // if server returned NotFound status code, return null
-                RequestStatusCode notFound = SerializationUtils.Deserialize<RequestStatusCode>(response);
+                RequestStatusCode notFound = SerializationUtils.Deserialize<RequestStatusCode>(responseBytes);
                 if (notFound == RequestStatusCode.NotFound)
                 {
-                    return null;
+                    return (T)new object();
                 }
             }
             catch (Exception ex)
             {
             }
 
-            return SerializationUtils.Deserialize<byte[]>(response);
-        }
-
-        public override void ProcessRequest(ISocket socket, IStorage storage)
-        {
-            byte[] requestedObject = storage.TryGet(Key) ?? SerializationUtils.Serialize(RequestStatusCode.NotFound);
-            socket.Send(SerializationUtils.Serialize(requestedObject));
+            return SerializationUtils.Deserialize<T>(responseBytes);
         }
     }
 }

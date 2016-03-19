@@ -34,16 +34,8 @@ namespace Kronos.Core.Requests
             Object = serializedObject;
             ExpiryDate = expiryDate;
         }
-
-        public RequestStatusCode Execute(IClientServerConnection service)
-        {
-            byte[] response = service.SendToServer(this);
-            RequestStatusCode statusCode = SerializationUtils.Deserialize<RequestStatusCode>(response);
-
-            return statusCode;
-        }
-
-        public override void ProcessRequest(ISocket socket, IStorage storage)
+        
+        public override void ProcessResponse(ISocket socket, IStorage storage)
         {
             storage.AddOrUpdate(Key, Object);
             socket.Send(SerializationUtils.Serialize(RequestStatusCode.Ok));

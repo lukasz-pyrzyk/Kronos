@@ -65,7 +65,7 @@ namespace Kronos.Core.Tests.Requests
             var communicationServiceMock = new Mock<IClientServerConnection>();
             communicationServiceMock.Setup(x => x.SendToServer(request)).Returns(SerializationUtils.Serialize(status));
 
-            RequestStatusCode response = request.Execute(communicationServiceMock.Object);
+            RequestStatusCode response = request.ProcessRequest<RequestStatusCode>(communicationServiceMock.Object);
 
             Assert.Equal(response, status);
             communicationServiceMock.Verify(x => x.SendToServer(It.IsAny<InsertRequest>()), Times.Exactly(1));
@@ -82,7 +82,7 @@ namespace Kronos.Core.Tests.Requests
             var socketMock = new Mock<ISocket>();
 
             var request = new InsertRequest(key, cachedObject, expiryDate);
-            request.ProcessRequest(socketMock.Object, storageMock.Object);
+            request.ProcessResponse(socketMock.Object, storageMock.Object);
 
             storageMock.Verify(x => x.AddOrUpdate(key, cachedObject), Times.Once);
             byte[] responseBytes = SerializationUtils.Serialize(RequestStatusCode.Ok);
