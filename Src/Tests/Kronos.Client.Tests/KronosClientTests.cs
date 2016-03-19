@@ -64,5 +64,20 @@ namespace Kronos.Client.Tests
             Assert.Null(response);
             communicationServiceMock.Verify(x => x.SendToServer(It.IsAny<GetRequest>()), Times.Once);
         }
+
+        [Fact]
+        public void TryDelete_()
+        {
+            var communicationServiceMock = new Mock<IClientServerConnection>();
+            communicationServiceMock
+                .Setup(x => x.SendToServer(It.IsAny<DeleteRequest>()))
+                .Returns(SerializationUtils.Serialize(RequestStatusCode.Ok));
+
+            IKronosClient client = new KronosClient(communicationServiceMock.Object);
+
+            client.TryDelete("key");
+
+            communicationServiceMock.Verify(x => x.SendToServer(It.IsAny<DeleteRequest>()), Times.Once);
+        }
     }
 }

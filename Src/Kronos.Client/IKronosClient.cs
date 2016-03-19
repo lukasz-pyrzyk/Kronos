@@ -21,5 +21,12 @@ namespace Kronos.Client
         /// <param name="key"></param>
         /// <returns></returns>
         byte[] TryGetValue(string key);
+
+        /// <summary>
+        /// Removes object from Kronos server
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        void TryDelete(string key);
     }
 }

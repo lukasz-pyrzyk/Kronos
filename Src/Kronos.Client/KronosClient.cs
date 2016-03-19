@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Net;
 using Kronos.Core.Communication;
 using Kronos.Core.Requests;
 using Kronos.Core.StatusCodes;
@@ -39,6 +40,16 @@ namespace Kronos.Client
                 return null;
 
             return valueFromCache;
+        }
+
+        public void TryDelete(string key)
+        {
+            Trace.WriteLine("New delete request");
+
+            DeleteRequest request = new DeleteRequest(key);
+            RequestStatusCode status = request.Execute<RequestStatusCode>(_service);
+
+            Trace.WriteLine($"InsertRequest status: {status}");
         }
     }
 }
