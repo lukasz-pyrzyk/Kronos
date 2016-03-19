@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
-using Kronos.Core.Command;
 using Kronos.Core.Communication;
-using Kronos.Core.Model;
 using Kronos.Core.Requests;
 using Kronos.Core.StatusCodes;
 
@@ -25,7 +23,7 @@ namespace Kronos.Client
         {
             Trace.WriteLine("New insert request");
             InsertRequest request = new InsertRequest(key, package, expiryDate);
-            RequestStatusCode status = request.Execute(_service, request);
+            RequestStatusCode status = request.Execute(_service);
 
             Trace.WriteLine($"InsertRequest status: {status}");
         }
@@ -35,7 +33,7 @@ namespace Kronos.Client
             Trace.WriteLine("New get request");
             GetRequest request = new GetRequest(key);
 
-            byte[] valueFromCache = request.Execute(_service, request);
+            byte[] valueFromCache = request.Execute(_service);
 
             if (valueFromCache != null)
             {

@@ -26,9 +26,9 @@ namespace Kronos.Core.Requests
             Key = key;
         }
 
-        public byte[] Execute(IClientServerConnection service, GetRequest request)
+        public byte[] Execute(IClientServerConnection service)
         {
-            byte[] response = service.SendToServer(request);
+            byte[] response = service.SendToServer(this);
 
             try
             {

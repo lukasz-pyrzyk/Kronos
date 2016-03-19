@@ -35,9 +35,9 @@ namespace Kronos.Core.Requests
             ExpiryDate = expiryDate;
         }
 
-        public RequestStatusCode Execute(IClientServerConnection service, InsertRequest request)
+        public RequestStatusCode Execute(IClientServerConnection service)
         {
-            byte[] response = service.SendToServer(request);
+            byte[] response = service.SendToServer(this);
             RequestStatusCode statusCode = SerializationUtils.Deserialize<RequestStatusCode>(response);
 
             return statusCode;
