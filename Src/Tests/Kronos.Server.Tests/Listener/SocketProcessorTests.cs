@@ -24,7 +24,7 @@ namespace Kronos.Server.Tests.Listener
             byte[] packageBytes = new byte[clientSocketMock.Object.BufferSize];
             byte[] sizeBytes = new byte[sizeof(int)];
             
-            byte[] requestTypeBytes = SerializationUtils.Serialize(RequestType.GetRequest);
+            byte[] requestTypeBytes = SerializationUtils.Serialize(RequestType.Get);
             clientSocketMock.Setup(x => x.Receive(sizeBytes))
                 .Callback<byte[]>(package =>
                 {

@@ -51,11 +51,10 @@ namespace Kronos.Core.Tests.Storage
             storage.AddOrUpdate(firstKey, package);
             storage.AddOrUpdate(secondKey, package);
 
-            Assert.Equal(storage.Count, 2);
             bool deleted = storage.TryRemove(firstKey);
 
             Assert.True(deleted);
-            Assert.NotEqual(storage.Count, 1);
+            Assert.Equal(storage.Count, 1);
         }
 
         [Fact]

@@ -18,7 +18,7 @@ namespace Kronos.Core.Tests.Requests
         {
             InsertRequest request = new InsertRequest();
 
-            Assert.Equal(request.RequestType, RequestType.InsertRequest);
+            Assert.Equal(request.RequestType, RequestType.Insert);
         }
 
         [Fact]
