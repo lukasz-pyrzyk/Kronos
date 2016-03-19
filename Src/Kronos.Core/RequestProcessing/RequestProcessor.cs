@@ -13,11 +13,11 @@ namespace Kronos.Core.RequestProcessing
             {
                 case RequestType.Insert:
                     InsertRequest insertRequest = SerializationUtils.Deserialize<InsertRequest>(requestBytes);
-                    insertRequest.ProcessResponse(clientSocket, storage);
+                    insertRequest.ProcessAndSendResponse(clientSocket, storage);
                     break;
                 case RequestType.Get:
                     GetRequest getRequest = SerializationUtils.Deserialize<GetRequest>(requestBytes);
-                    getRequest.ProcessResponse(clientSocket, storage);
+                    getRequest.ProcessAndSendResponse(clientSocket, storage);
                     break;
             }
         }

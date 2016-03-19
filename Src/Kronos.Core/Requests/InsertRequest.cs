@@ -1,6 +1,4 @@
 ﻿using System;
-using Kronos.Core.Communication;
-using Kronos.Core.Model;
 using Kronos.Core.Serialization;
 using Kronos.Core.StatusCodes;
 using Kronos.Core.Storage;
@@ -35,7 +33,7 @@ namespace Kronos.Core.Requests
             ExpiryDate = expiryDate;
         }
         
-        public override void ProcessResponse(ISocket socket, IStorage storage)
+        public override void ProcessAndSendResponse(ISocket socket, IStorage storage)
         {
             storage.AddOrUpdate(Key, Object);
             socket.Send(SerializationUtils.Serialize(RequestStatusCode.Ok));

@@ -1,5 +1,4 @@
 ﻿using System;
-using Kronos.Core.Communication;
 using Kronos.Core.Serialization;
 using Kronos.Core.StatusCodes;
 using Kronos.Core.Storage;
@@ -26,13 +25,13 @@ namespace Kronos.Core.Requests
             Key = key;
         }
 
-        public override void ProcessResponse(ISocket socket, IStorage storage)
+        public override void ProcessAndSendResponse(ISocket socket, IStorage storage)
         {
             byte[] requestedObject = storage.TryGet(Key) ?? SerializationUtils.Serialize(RequestStatusCode.NotFound);
             socket.Send(SerializationUtils.Serialize(requestedObject));
         }
 
-        protected override T ProcessFromClientCode<T>(byte[] responseBytes)
+        protected override T PrepareResponse<T>(byte[] responseBytes)
         {
             if (responseBytes.Length == 6) // if size is equal to serialized RequestStatusCode
             {

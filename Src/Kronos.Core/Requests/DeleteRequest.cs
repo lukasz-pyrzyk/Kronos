@@ -1,5 +1,4 @@
-﻿using System;
-using Kronos.Core.Serialization;
+﻿using Kronos.Core.Serialization;
 using Kronos.Core.StatusCodes;
 using Kronos.Core.Storage;
 using ProtoBuf;
@@ -25,7 +24,7 @@ namespace Kronos.Core.Requests
             Key = key;
         }
 
-        public override void ProcessResponse(ISocket socket, IStorage storage)
+        public override void ProcessAndSendResponse(ISocket socket, IStorage storage)
         {
             bool deleted = storage.TryRemove(Key);
             RequestStatusCode code = deleted ? RequestStatusCode.Deleted : RequestStatusCode.NotFound;

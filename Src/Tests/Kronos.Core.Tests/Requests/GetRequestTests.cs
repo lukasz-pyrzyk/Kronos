@@ -13,7 +13,7 @@ namespace Kronos.Core.Tests.Requests
     public class GetRequestTests
     {
         [Fact]
-        public void ContainsCorrectRequestType()
+        public void RequestType_ContainsCorrectType()
         {
             GetRequest request = new GetRequest();
 
@@ -21,7 +21,7 @@ namespace Kronos.Core.Tests.Requests
         }
 
         [Fact]
-        public void CanAssignCorrectValuesByConstructor()
+        public void Ctor_CanAssingValues()
         {
             string key = "lorem ipsum";
             GetRequest request = new GetRequest(key);
@@ -49,10 +49,11 @@ namespace Kronos.Core.Tests.Requests
             var request = new GetRequest("masterKey");
 
             var communicationServiceMock = new Mock<IClientServerConnection>();
-            communicationServiceMock.Setup(x => x.SendToServer(request)).Returns(SerializationUtils.Serialize(value));
-
-
-            byte[] response = request.ProcessRequest<byte[]>(communicationServiceMock.Object);
+            communicationServiceMock
+                .Setup(x => x.SendToServer(request))
+                .Returns(SerializationUtils.Serialize(value));
+            
+            byte[] response = request.Execute<byte[]>(communicationServiceMock.Object);
 
             Assert.Equal(response, value);
             communicationServiceMock.Verify(x => x.SendToServer(It.IsAny<GetRequest>()), Times.Once);
@@ -67,7 +68,7 @@ namespace Kronos.Core.Tests.Requests
             var communicationServiceMock = new Mock<IClientServerConnection>();
             communicationServiceMock.Setup(x => x.SendToServer(request)).Returns(value);
 
-            byte[] response = request.ProcessRequest<byte[]>(communicationServiceMock.Object);
+            byte[] response = request.Execute<byte[]>(communicationServiceMock.Object);
 
             Assert.Equal(response.Length, 1);
             Assert.Equal(response[0], 0);
@@ -76,7 +77,7 @@ namespace Kronos.Core.Tests.Requests
         }
 
         [Fact]
-        public void ProcessRequest_ReturnsCachedObjectToClient()
+        public void ProcessAndSendResponse_ReturnsCachedObjectToClient()
         {
             string key = "lorem ipsum";
             byte[] cachedObject = Encoding.UTF8.GetBytes("object");
@@ -86,25 +87,24 @@ namespace Kronos.Core.Tests.Requests
             var socketMock = new Mock<ISocket>();
 
             var request = new GetRequest(key);
-            request.ProcessResponse(socketMock.Object, storageMock.Object);
+            request.ProcessAndSendResponse(socketMock.Object, storageMock.Object);
 
             byte[] expectedPackage = SerializationUtils.Serialize(cachedObject);
             socketMock.Verify(x => x.Send(expectedPackage), Times.Once);
         }
 
         [Fact]
-        public void ProcessRequest_ReturnsNotFoundToClient()
+        public void ProcessAndSendResponse_ReturnsNotFoundToClient()
         {
             string key = "lorem ipsum";
             byte[] notFoundBytes = SerializationUtils.Serialize(SerializationUtils.Serialize(RequestStatusCode.NotFound));
 
+            var socketMock = new Mock<ISocket>();
             var storageMock = new Mock<IStorage>();
             storageMock.Setup(x => x.TryGet(key)).Returns((byte[])null);
-            var socketMock = new Mock<ISocket>();
 
             var request = new GetRequest(key);
-
-            request.ProcessResponse(socketMock.Object, storageMock.Object);
+            request.ProcessAndSendResponse(socketMock.Object, storageMock.Object);
 
             socketMock.Verify(x => x.Send(notFoundBytes), Times.Once);
         }

@@ -17,18 +17,18 @@ namespace Kronos.Core.Requests
     {
         public virtual RequestType RequestType { get; set; }
 
-        public abstract void ProcessResponse(ISocket socket, IStorage storage);
+        public abstract void ProcessAndSendResponse(ISocket socket, IStorage storage);
 
-        public T ProcessRequest<T>(IClientServerConnection service)
+        public T Execute<T>(IClientServerConnection service)
         {
             byte[] response = service.SendToServer(this);
 
-            T results = ProcessFromClientCode<T>(response);
+            T results = PrepareResponse<T>(response);
 
             return results;
         }
 
-        protected virtual T ProcessFromClientCode<T>(byte[] responseBytes)
+        protected virtual T PrepareResponse<T>(byte[] responseBytes)
         {
             T results = SerializationUtils.Deserialize<T>(responseBytes);
             return results;

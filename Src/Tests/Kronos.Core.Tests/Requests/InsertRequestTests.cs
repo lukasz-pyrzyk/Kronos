@@ -14,7 +14,7 @@ namespace Kronos.Core.Tests.Requests
     public class InsertRequestTests
     {
         [Fact]
-        public void ContainsCorrectRequestType()
+        public void RequestType_ContainsCorrectType()
         {
             InsertRequest request = new InsertRequest();
 
@@ -22,7 +22,7 @@ namespace Kronos.Core.Tests.Requests
         }
 
         [Fact]
-        public void CanAssingPropertiesByConstructor()
+        public void Ctor_CanAssingValues()
         {
             string key = "key";
             byte[] serializedObject = Encoding.UTF8.GetBytes("lorem ipsum");
@@ -58,21 +58,23 @@ namespace Kronos.Core.Tests.Requests
         [Theory]
         [InlineData(RequestStatusCode.Ok)]
         [InlineData(RequestStatusCode.Failed)]
-        public void ExecuteReturnsCorrectValue(RequestStatusCode status)
+        public void Execute_ReturnsCorrectValue(RequestStatusCode status)
         {
             var request = new InsertRequest();
 
             var communicationServiceMock = new Mock<IClientServerConnection>();
-            communicationServiceMock.Setup(x => x.SendToServer(request)).Returns(SerializationUtils.Serialize(status));
+            communicationServiceMock
+                .Setup(x => x.SendToServer(request))
+                .Returns(SerializationUtils.Serialize(status));
 
-            RequestStatusCode response = request.ProcessRequest<RequestStatusCode>(communicationServiceMock.Object);
+            RequestStatusCode response = request.Execute<RequestStatusCode>(communicationServiceMock.Object);
 
             Assert.Equal(response, status);
-            communicationServiceMock.Verify(x => x.SendToServer(It.IsAny<InsertRequest>()), Times.Exactly(1));
+            communicationServiceMock.Verify(x => x.SendToServer(It.IsAny<InsertRequest>()), Times.Once);
         }
 
         [Fact]
-        public void ProcessRequest_AddsObjectToStorage()
+        public void ProcessAndSendResponse_AddsObjectToStorage()
         {
             string key = "lorem ipsum";
             byte[] cachedObject = SerializationUtils.Serialize("object");
@@ -82,7 +84,7 @@ namespace Kronos.Core.Tests.Requests
             var socketMock = new Mock<ISocket>();
 
             var request = new InsertRequest(key, cachedObject, expiryDate);
-            request.ProcessResponse(socketMock.Object, storageMock.Object);
+            request.ProcessAndSendResponse(socketMock.Object, storageMock.Object);
 
             storageMock.Verify(x => x.AddOrUpdate(key, cachedObject), Times.Once);
             byte[] responseBytes = SerializationUtils.Serialize(RequestStatusCode.Ok);
