@@ -31,13 +31,12 @@ namespace Kronos.Client.Tests
                 Port = 5001
             };
 
-
             ClusterConfig config = new ClusterConfig
             {
                 Servers = new[] { first, second }
             };
 
-            int rangePerServer = 100/config.Servers.Length;
+            int rangePerServer = 100 / config.Servers.Length;
 
             ServerProvider provider = new ServerProvider(config);
 
@@ -65,7 +64,7 @@ namespace Kronos.Client.Tests
                 Ip = "192.168.0.1",
                 Port = 5002
             };
-            
+
             ClusterConfig config = new ClusterConfig
             {
                 Servers = new[] { first, second, three }
@@ -92,15 +91,14 @@ namespace Kronos.Client.Tests
 
             ClusterConfig config = new ClusterConfig
             {
-                Servers = new[] { first}
+                Servers = new[] { first }
             };
-            
+
 
             ServerProvider provider = new ServerProvider(config);
-            ServerConfig selectedServer =  provider.SelectServer(GetHashCode());
+            ServerConfig selectedServer = provider.SelectServer(GetHashCode());
 
             Assert.Equal(selectedServer, first);
         }
-
     }
 }
