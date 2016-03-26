@@ -15,7 +15,6 @@ namespace Kronos.Client
     /// </summary>
     internal class KronosClient : IKronosClient
     {
-        private readonly KronosConfig _config;
         private readonly ServerProvider _serverProvider;
         private readonly Func<IPEndPoint, IClientServerConnection> _connectionResolver;
 
@@ -25,8 +24,7 @@ namespace Kronos.Client
 
         internal KronosClient(KronosConfig config, Func<IPEndPoint, IClientServerConnection> connectionResolver)
         {
-            _config = config;
-            _serverProvider = new ServerProvider(_config.ClusterConfig);
+            _serverProvider = new ServerProvider(config.ClusterConfig);
             _connectionResolver = connectionResolver;
         }
 
@@ -69,6 +67,7 @@ namespace Kronos.Client
         private IClientServerConnection SelectServerAndCreateConnection(string key)
         {
             ServerConfig server = _serverProvider.SelectServer(key.GetHashCode());
+            Trace.WriteLine($"Selected server {server}");
             IClientServerConnection connection = _connectionResolver(server.EndPoint);
             return connection;
         }
