@@ -1,8 +1,11 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Globalization;
 using System.IO;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Kronos.Client;
 
 namespace ClientSample
@@ -16,19 +19,29 @@ namespace ClientSample
             IKronosClient client = KronosClientFactory.CreateClient(configPath);
 
             var watch = Stopwatch.StartNew();
+            byte[] package = File.ReadAllBytes(@"C:\Users\lpyrz_000\Source\Repos\Kronos\Sample\ClientSample\project.lock.json");
 
-            for (int i = 0; i < 10000; i++)
+            List<Task> workers = new List<Task>();
+
+            for (int i = 0; i < 100; i++)
             {
-                string key = Guid.NewGuid().ToString();
-                byte[] package = Encoding.UTF8.GetBytes("lorem ipsum");
-                DateTime expiryDate = DateTime.Now.AddDays(1);
+                Task worker = Task.Run(() =>
+                {
+                    string key = Guid.NewGuid().ToString();
+                    DateTime expiryDate = DateTime.Now.AddDays(1);
 
-                client.Insert(key, package, expiryDate);
-                byte[] fromServer = client.Get(key);
+                    client.Insert(key, package, expiryDate);
+                    byte[] fromServer = client.Get(key);
 
-                string deserialized = Encoding.UTF8.GetString(fromServer);
-                Console.WriteLine($"{deserialized} - {DateTime.Now.ToString(CultureInfo.InvariantCulture)}");
+                    string deserialized = Encoding.UTF8.GetString(fromServer);
+                    Console.WriteLine($"{deserialized.Length} - {DateTime.Now.ToString(CultureInfo.InvariantCulture)}");
+                });
+
+                workers.Add(worker);
+
+                if (workers.Count > Environment.ProcessorCount) Task.WaitAny(workers.ToArray());
             }
+            Task.WaitAll(workers.ToArray());
             watch.Stop();
             Console.WriteLine(watch.ElapsedMilliseconds);
 
