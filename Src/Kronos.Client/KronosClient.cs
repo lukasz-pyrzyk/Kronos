@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Net;
+using System.Threading.Tasks;
 using Kronos.Client.Transfer;
 using Kronos.Core.Communication;
 using Kronos.Core.Configuration;
@@ -28,7 +29,7 @@ namespace Kronos.Client
             _connectionResolver = connectionResolver;
         }
 
-        public void InsertToServer(string key, byte[] package, DateTime expiryDate)
+        public void Insert(string key, byte[] package, DateTime expiryDate)
         {
             Trace.WriteLine("New insert request");
             InsertRequest request = new InsertRequest(key, package, expiryDate);
@@ -39,7 +40,12 @@ namespace Kronos.Client
             Trace.WriteLine($"InsertRequest status: {status}");
         }
 
-        public byte[] TryGetValue(string key)
+        public Task InsertAsync(string key, byte[] package, DateTime expiryDate)
+        {
+            return Task.Run(() => Insert(key, package, expiryDate));
+        }
+
+        public byte[] Get(string key)
         {
             Trace.WriteLine("New get request");
             GetRequest request = new GetRequest(key);
@@ -53,7 +59,12 @@ namespace Kronos.Client
             return valueFromCache;
         }
 
-        public void TryDelete(string key)
+        public Task<byte[]> GetAsync(string key)
+        {
+            return Task.Run(() => Get(key));
+        }
+
+        public void Delete(string key)
         {
             Trace.WriteLine("New delete request");
             DeleteRequest request = new DeleteRequest(key);
@@ -62,6 +73,11 @@ namespace Kronos.Client
             RequestStatusCode status = request.Execute<RequestStatusCode>(connection);
 
             Trace.WriteLine($"InsertRequest status: {status}");
+        }
+
+        public Task DeleteAsync(string key)
+        {
+            return Task.Run(() => Delete(key));
         }
 
         private IClientServerConnection SelectServerAndCreateConnection(string key)

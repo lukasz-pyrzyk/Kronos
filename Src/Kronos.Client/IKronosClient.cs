@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Threading.Tasks;
 
 namespace Kronos.Client
 {
@@ -13,20 +14,43 @@ namespace Kronos.Client
         /// <param name="key">Package identifier</param>
         /// <param name="package">Package to save in the Kronos</param>
         /// <param name="expiryDate">Package Expiration date</param>
-        void InsertToServer(string key, byte[] package, DateTime expiryDate);
-        
+        void Insert(string key, byte[] package, DateTime expiryDate);
+
+        /// <summary>
+        /// Writes object to Kronos server
+        /// </summary>
+        /// <param name="key">Package identifier</param>
+        /// <param name="package">Package to save in the Kronos</param>
+        /// <param name="expiryDate">Package Expiration date</param>
+        Task InsertAsync(string key, byte[] package, DateTime expiryDate);
+
         /// <summary>
         /// Gets object from Kronos server
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        byte[] TryGetValue(string key);
+        byte[] Get(string key);
+
+        /// <summary>
+        /// Gets object from Kronos server
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        Task<byte[]> GetAsync(string key);
+
 
         /// <summary>
         /// Removes object from Kronos server
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        void TryDelete(string key);
+        void Delete(string key);
+
+        /// <summary>
+        /// Removes object from Kronos server
+        /// </summary>
+        /// <param name="key"></param>
+        /// <returns></returns>
+        Task DeleteAsync(string key);
     }
 }
