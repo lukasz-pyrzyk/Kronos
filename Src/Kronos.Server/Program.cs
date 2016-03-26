@@ -31,10 +31,14 @@ namespace Kronos.Server
 
             IRequestMapper mapper = new RequestMapper();
             IStorage storage = new InMemoryStorage();
-            IServer server = new XGainServer(IPAddress.Any, port, ProcessorResolver);
-            IServerWorker worker = new ServerWorker(mapper, storage, server);
 
-            worker.StartListening();
+            using (IServer server = new XGainServer(IPAddress.Any, port, ProcessorResolver))
+            {
+                using (IServerWorker worker = new ServerWorker(mapper, storage, server))
+                {
+                    worker.StartListening();
+                }
+            }
         }
     }
 }
