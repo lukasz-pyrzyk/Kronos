@@ -4,6 +4,7 @@
     "summary": "Kronoc.Client is a library which allows you integrate project with Kronos cache platform (Kronos.Server)",
     "dependencies": {
         "Kronos.Core": "1.0.0-*",
+        "Newtonsoft.Json": "8.0.3",
         "protobuf-net": "2.1.0-alpha-1"
     },
     "description": "Kronoc.Client is a library which allows you integrate project with Kronos cache platform (Kronos.Server)",

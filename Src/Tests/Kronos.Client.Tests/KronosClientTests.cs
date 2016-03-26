@@ -1,10 +1,14 @@
 ﻿using System;
+using System.IO;
 using System.Text;
 using Kronos.Core.Communication;
+using Kronos.Core.Configuration;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Kronos.Core.StatusCodes;
+using Microsoft.Extensions.PlatformAbstractions;
 using Moq;
+using Newtonsoft.Json;
 using Xunit;
 
 namespace Kronos.Client.Tests
@@ -22,7 +26,8 @@ namespace Kronos.Client.Tests
             communicationServiceMock.Setup(x => x.SendToServer(It.IsAny<Request>()))
                 .Returns(SerializationUtils.Serialize(RequestStatusCode.Ok));
 
-            IKronosClient client = new KronosClient(communicationServiceMock.Object);
+            KronosConfig config = LoadTestConfiguration();
+            IKronosClient client = new KronosClient(config, (endpoint) => communicationServiceMock.Object);
             client.InsertToServer(key, package, expiryDate);
 
             communicationServiceMock.Verify(x => x.SendToServer(It.IsAny<InsertRequest>()), Times.Once);
@@ -39,7 +44,8 @@ namespace Kronos.Client.Tests
                 .Setup(x => x.SendToServer(It.IsAny<GetRequest>()))
                 .Returns(SerializationUtils.Serialize(package));
 
-            IKronosClient client = new KronosClient(communicationServiceMock.Object);
+            KronosConfig config = LoadTestConfiguration();
+            IKronosClient client = new KronosClient(config, (endpoint) => communicationServiceMock.Object);
 
             byte[] response = client.TryGetValue("key");
 
@@ -56,7 +62,8 @@ namespace Kronos.Client.Tests
                 .Setup(x => x.SendToServer(It.IsAny<GetRequest>()))
                 .Returns(SerializationUtils.Serialize(RequestStatusCode.NotFound));
 
-            IKronosClient client = new KronosClient(communicationServiceMock.Object);
+            KronosConfig config = LoadTestConfiguration();
+            IKronosClient client = new KronosClient(config, (endpoint) => communicationServiceMock.Object);
 
             byte[] response = client.TryGetValue("key");
 
@@ -72,11 +79,21 @@ namespace Kronos.Client.Tests
                 .Setup(x => x.SendToServer(It.IsAny<DeleteRequest>()))
                 .Returns(SerializationUtils.Serialize(RequestStatusCode.Ok));
 
-            IKronosClient client = new KronosClient(communicationServiceMock.Object);
+            KronosConfig config = LoadTestConfiguration();
+            IKronosClient client = new KronosClient(config, (endpoint) => communicationServiceMock.Object);
 
             client.TryDelete("key");
 
             communicationServiceMock.Verify(x => x.SendToServer(It.IsAny<DeleteRequest>()), Times.Once);
+        }
+
+        private static KronosConfig LoadTestConfiguration()
+        {
+            string dir = PlatformServices.Default.Application.ApplicationBasePath;
+            string configContent = File.ReadAllText($"{dir}/KronosConfig.json");
+
+            KronosConfig config = JsonConvert.DeserializeObject<KronosConfig>(configContent);
+            return config;
         }
     }
 }

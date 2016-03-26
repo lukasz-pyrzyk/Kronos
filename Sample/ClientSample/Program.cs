@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Globalization;
-using System.Net;
 using System.Text;
 using Kronos.Client;
 using Kronos.Core.Serialization;
@@ -12,10 +11,9 @@ namespace ClientSample
     {
         public static void Main(string[] args)
         {
-            string host = "192.168.56.1"; // IP of the Kronos.Server node
-            int port = 5000;  // Opened port in the node
+            string configPath = "KronosConfig.json";
 
-            IKronosClient client = KronosClientFactory.CreateClient(IPAddress.Parse(host), port);
+            IKronosClient client = KronosClientFactory.CreateClient(configPath);
 
             string key = "key";
             byte[] package = Encoding.UTF8.GetBytes("elo");
@@ -27,7 +25,8 @@ namespace ClientSample
             for (int i = 0; i < 10000; i++)
             {
                 byte[] fromServer = client.TryGetValue(key);
-                Console.WriteLine($"{SerializationUtils.Deserialize<string>(fromServer)} - {DateTime.Now.ToString(CultureInfo.InvariantCulture)}");
+                string deserialized = Encoding.UTF8.GetString(fromServer);
+                Console.WriteLine($"{deserialized} - {DateTime.Now.ToString(CultureInfo.InvariantCulture)}");
             }
             watch.Stop();
             Console.WriteLine(watch.ElapsedMilliseconds);

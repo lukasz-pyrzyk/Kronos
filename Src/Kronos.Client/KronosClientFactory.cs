@@ -1,13 +1,18 @@
-﻿using System.Net;
-using Kronos.Client.Transfer;
+﻿using System.IO;
+using Kronos.Core.Configuration;
+using Newtonsoft.Json;
 
 namespace Kronos.Client
 {
     public static class KronosClientFactory
     {
-        public static IKronosClient CreateClient(IPAddress host, int port)
+        public static IKronosClient CreateClient(string configFilePath)
         {
-            return new KronosClient(new SocketCommunicationService(new IPEndPoint(host, port)));
+            string configContent = File.ReadAllText(configFilePath);
+
+            KronosConfig config = JsonConvert.DeserializeObject<KronosConfig>(configContent);
+
+            return new KronosClient(config);
         }
     }
 }

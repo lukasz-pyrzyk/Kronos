@@ -1,7 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Net;
+using Kronos.Client.Transfer;
 using Kronos.Core.Communication;
+using Kronos.Core.Configuration;
 using Kronos.Core.Requests;
 using Kronos.Core.StatusCodes;
 
@@ -13,18 +15,28 @@ namespace Kronos.Client
     /// </summary>
     internal class KronosClient : IKronosClient
     {
-        private readonly IClientServerConnection _service;
+        private readonly KronosConfig _config;
+        private readonly ServerProvider _serverProvider;
+        private readonly Func<IPEndPoint, IClientServerConnection> _connectionResolver;
 
-        public KronosClient(IClientServerConnection service)
+        public KronosClient(KronosConfig config) : this(config, endpoint => new SocketCommunicationService(endpoint))
         {
-            _service = service;
+        }
+
+        internal KronosClient(KronosConfig config, Func<IPEndPoint, IClientServerConnection> connectionResolver)
+        {
+            _config = config;
+            _serverProvider = new ServerProvider(_config.ClusterConfig);
+            _connectionResolver = connectionResolver;
         }
 
         public void InsertToServer(string key, byte[] package, DateTime expiryDate)
         {
             Trace.WriteLine("New insert request");
             InsertRequest request = new InsertRequest(key, package, expiryDate);
-            RequestStatusCode status = request.Execute<RequestStatusCode>(_service);
+
+            IClientServerConnection connection = SelectServerAndCreateConnection(key);
+            RequestStatusCode status = request.Execute<RequestStatusCode>(connection);
 
             Trace.WriteLine($"InsertRequest status: {status}");
         }
@@ -34,7 +46,8 @@ namespace Kronos.Client
             Trace.WriteLine("New get request");
             GetRequest request = new GetRequest(key);
 
-            byte[] valueFromCache = request.Execute<byte[]>(_service);
+            IClientServerConnection connection = SelectServerAndCreateConnection(key);
+            byte[] valueFromCache = request.Execute<byte[]>(connection);
 
             if (valueFromCache != null && valueFromCache.Length == 1 && valueFromCache[0] == 0)
                 return null;
@@ -45,11 +58,19 @@ namespace Kronos.Client
         public void TryDelete(string key)
         {
             Trace.WriteLine("New delete request");
-
             DeleteRequest request = new DeleteRequest(key);
-            RequestStatusCode status = request.Execute<RequestStatusCode>(_service);
+
+            IClientServerConnection connection = SelectServerAndCreateConnection(key);
+            RequestStatusCode status = request.Execute<RequestStatusCode>(connection);
 
             Trace.WriteLine($"InsertRequest status: {status}");
+        }
+
+        private IClientServerConnection SelectServerAndCreateConnection(string key)
+        {
+            ServerConfig server = _serverProvider.SelectServer(key.GetHashCode());
+            IClientServerConnection connection = _connectionResolver(server.EndPoint);
+            return connection;
         }
     }
 }
