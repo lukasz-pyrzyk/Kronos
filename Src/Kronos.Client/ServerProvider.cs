@@ -8,7 +8,7 @@ namespace Kronos.Client
     internal class ServerProvider
     {
         public int ServersCount => _clusterConfig.Servers.Length;
-        public Dictionary<int, ServerConfig> Mappings;
+        public Dictionary<ushort, ServerConfig> Mappings;
 
         private readonly ClusterConfig _clusterConfig;
 
@@ -21,23 +21,22 @@ namespace Kronos.Client
         public ServerConfig SelectServer(int keyHashcode)
         {
             string stringHashCode = keyHashcode.ToString();
-            int lastTwoDigits = Convert.ToInt32(stringHashCode.Substring(stringHashCode.Length - 2, 2));
+            ushort lastTwoDigits = Convert.ToUInt16(stringHashCode.Substring(stringHashCode.Length - 2, 2));
             return Mappings[lastTwoDigits];
         }
 
         private void InitializeMappings()
         {
-            int hashCodeRange = 100; // maximum combination of two last digits from hashcode.
+            const ushort hashCodeRange = 100; // (0:99).
+            Mappings = new Dictionary<ushort, ServerConfig>(hashCodeRange);
 
-            int modulo = hashCodeRange % ServersCount;
-            int rangePerServer = (int)(hashCodeRange / ServersCount);
+            ushort rangePerServer = (ushort)(hashCodeRange / ServersCount);
+            ushort modulo = (ushort)(hashCodeRange % ServersCount);
 
-            Mappings = new Dictionary<int, ServerConfig>(hashCodeRange);
-
-            int position = 0;
-            for (int i = 0; i < ServersCount; i++)
+            ushort position = 0;
+            for (ushort i = 0; i < ServersCount; i++)
             {
-                for (int j = 0; j < rangePerServer; j++)
+                for (ushort j = 0; j < rangePerServer; j++)
                 {
                     Mappings[position] = _clusterConfig.Servers.ElementAt(i);
                     position++;
