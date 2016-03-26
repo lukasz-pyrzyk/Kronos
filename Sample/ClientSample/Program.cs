@@ -1,9 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Globalization;
+using System.IO;
 using System.Text;
 using Kronos.Client;
-using Kronos.Core.Serialization;
 
 namespace ClientSample
 {
@@ -15,16 +15,17 @@ namespace ClientSample
 
             IKronosClient client = KronosClientFactory.CreateClient(configPath);
 
-            string key = "key";
-            byte[] package = Encoding.UTF8.GetBytes("elo");
-            DateTime expiryDate = DateTime.Now.AddDays(1);
-
-            client.InsertToServer(key, package, expiryDate);
-
             var watch = Stopwatch.StartNew();
+
             for (int i = 0; i < 10000; i++)
             {
-                byte[] fromServer = client.TryGetValue(key);
+                string key = Guid.NewGuid().ToString();
+                byte[] package = Encoding.UTF8.GetBytes("lorem ipsum");
+                DateTime expiryDate = DateTime.Now.AddDays(1);
+
+                client.Insert(key, package, expiryDate);
+                byte[] fromServer = client.Get(key);
+
                 string deserialized = Encoding.UTF8.GetString(fromServer);
                 Console.WriteLine($"{deserialized} - {DateTime.Now.ToString(CultureInfo.InvariantCulture)}");
             }
