@@ -6,6 +6,7 @@ using Kronos.Core.Configuration;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Kronos.Core.StatusCodes;
+using Microsoft.Extensions.PlatformAbstractions;
 using Moq;
 using Newtonsoft.Json;
 using Xunit;
@@ -88,7 +89,8 @@ namespace Kronos.Client.Tests
 
         private static KronosConfig LoadTestConfiguration()
         {
-            string configContent = File.ReadAllText("KronosConfig.json");
+            string dir = PlatformServices.Default.Application.ApplicationBasePath;
+            string configContent = File.ReadAllText($"{dir}/KronosConfig.json");
 
             KronosConfig config = JsonConvert.DeserializeObject<KronosConfig>(configContent);
             return config;
