@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Kronos.Core.Model.Exceptions
+namespace Kronos.Core.Exceptions
 {
     public class KronosCommunicationException : KronosException
     {

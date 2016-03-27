@@ -5,7 +5,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using Kronos.Core.Communication;
-using Kronos.Core.Model.Exceptions;
+using Kronos.Core.Exceptions;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Kronos.Core.StatusCodes;

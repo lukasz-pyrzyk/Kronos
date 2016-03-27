@@ -1,5 +1,5 @@
 ﻿using System;
-using Kronos.Core.Model.Exceptions;
+using Kronos.Core.Exceptions;
 using Xunit;
 
 namespace Kronos.Core.Tests.Exceptions

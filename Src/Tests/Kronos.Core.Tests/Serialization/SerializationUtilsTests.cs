@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Text;
-using Kronos.Core.Model;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using ProtoBuf;
