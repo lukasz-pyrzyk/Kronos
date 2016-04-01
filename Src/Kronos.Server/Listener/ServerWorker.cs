@@ -31,7 +31,7 @@ namespace Kronos.Server.Listener
         {
             CancellationTokenSource tokenSource = new CancellationTokenSource();
 
-            Task serverTask = _server.StartParallel(tokenSource.Token);
+            Task serverTask = _server.StartSynchronously(tokenSource.Token);
             serverTask.Wait(tokenSource.Token);
 
             _logger.Info("Shutting down server");
