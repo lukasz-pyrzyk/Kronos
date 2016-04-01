@@ -97,7 +97,7 @@ namespace Kronos.Core.Storage
                 if (line != null)
                 {
                     RowInfo row = new RowInfo(line);
-                    _indexes[row.Key] = row;Disposable on 
+                    _indexes[row.Key] = row;
                 }
             } while (line != null);
 
