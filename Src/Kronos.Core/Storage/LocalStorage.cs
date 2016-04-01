@@ -13,69 +13,33 @@ namespace Kronos.Core.Storage
         private readonly string _indexFilePath = $"{StorageFolder}\\index.data";
 
         private readonly Dictionary<string, RowInfo> _indexes = new Dictionary<string, RowInfo>();
-        private readonly FileStream _indexStorage;
 
-        private readonly FileStream _storage;
+        private FileStream _indexFile;
+        private FileStream _storageFile;
 
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
-        public int Count { get; }
+        public int Count => _indexes.Count;
 
         public LocalStorage()
         {
             InitializeStorageFolder();
-
-            _indexStorage = OpenOrCreateFile(_indexFilePath);
-            _storage = OpenOrCreateFile(_storageFilePath);
-
-            InitializeIndexes();
-
-            _indexStorage.Seek(_indexStorage.Length, SeekOrigin.Begin);
-            _storage.Seek(_storage.Length, SeekOrigin.Begin);
-        }
-
-        private void InitializeIndexes()
-        {
-            StreamReader reader = new StreamReader(_indexStorage);
-
-            string line;
-            do
-            {
-                line = reader.ReadLine();
-                if (line != null)
-                {
-                    RowInfo row = new RowInfo(line);
-                    _indexes[row.Key] = row;
-                }
-            } while (line != null);
-        }
-
-        private void InitializeStorageFolder()
-        {
-            if (!Directory.Exists(StorageFolder))
-            {
-                _logger.Info("Data directory does not exist. Creating...");
-                Directory.CreateDirectory(StorageFolder);
-            }
-        }
-
-        private static FileStream OpenOrCreateFile(string path)
-        {
-            return File.Open(path, FileMode.OpenOrCreate, FileAccess.ReadWrite); ;
+            InitializeIndex();
+            InitializeStorage();
         }
 
         public void AddOrUpdate(string key, byte[] obj)
         {
-            var index = new RowInfo(key, obj.Length, _storage.Position);
+            var index = new RowInfo(key, obj.Length, _storageFile.Position);
 
             _indexes[key] = index;
 
             byte[] indexBytes = index.GetBytesForFile();
-            _indexStorage.Write(indexBytes, 0, indexBytes.Length);
-            _indexStorage.Flush();
+            _indexFile.Write(indexBytes, 0, indexBytes.Length);
+            _indexFile.Flush();
 
-            _storage.Write(obj, 0, obj.Length);
-            _storage.Flush();
+            _storageFile.Write(obj, 0, obj.Length);
+            _storageFile.Flush();
         }
 
         public byte[] TryGet(string key)
@@ -84,8 +48,8 @@ namespace Kronos.Core.Storage
             if (_indexes.TryGetValue(key, out row))
             {
                 byte[] buffer = new byte[row.Length];
-                _storage.Seek(row.Offset, SeekOrigin.Begin);
-                _storage.Read(buffer, 0, row.Length);
+                _storageFile.Seek(row.Offset, SeekOrigin.Begin);
+                _storageFile.Read(buffer, 0, row.Length);
                 return buffer;
             }
 
@@ -99,7 +63,68 @@ namespace Kronos.Core.Storage
 
         public void Clear()
         {
-            throw new System.NotImplementedException();
+            Dispose();
+
+            _logger.Info($"Deleting index file {_indexFile}");
+            File.Delete(_indexFilePath);
+
+            _logger.Info($"Deleting storage file {_storageFilePath}");
+            File.Delete(_storageFilePath);
+        }
+
+        public void Dispose()
+        {
+            _logger.Info("Disposing storage");
+            _storageFile.Dispose();
+            _indexFile.Dispose();
+
+            _storageFile = null;
+            _indexFile = null;
+
+            _logger.Info("Storage disposed");
+        }
+
+        private void InitializeIndex()
+        {
+            _indexFile = OpenOrCreateFile(_indexFilePath);
+
+            StreamReader reader = new StreamReader(_indexFile);
+
+            string line;
+            do
+            {
+                line = reader.ReadLine();
+                if (line != null)
+                {
+                    RowInfo row = new RowInfo(line);
+                    _indexes[row.Key] = row;Disposable on 
+                }
+            } while (line != null);
+
+            _logger.Info($"Index file has beed initialized. Size: {_indexFile.Length}, Position: {_indexFile.Position}");
+            _logger.Info($"Loaded {_indexes.Count} keys");
+        }
+
+        private void InitializeStorage()
+        {
+            _storageFile = OpenOrCreateFile(_storageFilePath);
+            _storageFile.Seek(_storageFile.Length, SeekOrigin.Begin);
+
+            _logger.Info($"Storage file has beed initialized. Size: {_storageFile.Length}, Position: {_storageFile.Position}");
+        }
+
+        private void InitializeStorageFolder()
+        {
+            if (!Directory.Exists(StorageFolder))
+            {
+                _logger.Info("Data directory does not exist. Creating...");
+                Directory.CreateDirectory(StorageFolder);
+            }
+        }
+
+        private static FileStream OpenOrCreateFile(string path)
+        {
+            return File.Open(path, FileMode.OpenOrCreate, FileAccess.ReadWrite);
         }
 
         internal class RowInfo
@@ -142,3 +167,4 @@ namespace Kronos.Core.Storage
         }
     }
 }
+
