@@ -1,6 +1,8 @@
-﻿namespace Kronos.Core.Storage
+﻿using System;
+
+namespace Kronos.Core.Storage
 {
-    public interface IStorage
+    public interface IStorage : IDisposable
     {
         int Count { get; }
         void AddOrUpdate(string key, byte[] obj);
