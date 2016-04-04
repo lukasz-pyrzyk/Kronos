@@ -1,11 +1,23 @@
-﻿namespace Kronos.Core.StatusCodes
+﻿using ProtoBuf;
+
+namespace Kronos.Core.StatusCodes
 {
-    public enum RequestStatusCode : short
+    [ProtoContract]
+    public enum RequestStatusCode : ushort
     {
+        [ProtoEnum]
         Unknown = 0,
+
+        [ProtoEnum]
         Ok = 1,
+
+        [ProtoEnum]
         Failed = 2,
+
+        [ProtoEnum]
         NotFound = 3,
+
+        [ProtoEnum]
         Deleted = 4
     }
 }
