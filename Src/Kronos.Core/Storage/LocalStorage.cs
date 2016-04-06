@@ -1,16 +1,14 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.IO;
-using System.Text;
 using NLog;
 
 namespace Kronos.Core.Storage
 {
     public class LocalStorage : IStorage
     {
-        public const string StorageFolder = ".\\data";
-        public readonly string StorageFilePath = $"{StorageFolder}\\blob.data";
-        public readonly string IndexFilePath = $"{StorageFolder}\\index.data";
+        public static readonly string StorageFolder = ".\\data";
+        public static readonly string StorageFilePath = $"{StorageFolder}\\blob.data";
+        public static readonly string IndexFilePath = $"{StorageFolder}\\index.data";
 
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
