@@ -3,7 +3,7 @@
 namespace Kronos.Core.Requests
 {
     [ProtoContract]
-    public enum RequestType : short
+    public enum RequestType : ushort
     {
         [ProtoEnum]
         Unknown = 0,
