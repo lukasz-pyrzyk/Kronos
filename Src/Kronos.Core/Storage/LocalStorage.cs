@@ -8,18 +8,16 @@ namespace Kronos.Core.Storage
 {
     public class LocalStorage : IStorage
     {
-        private const string StorageFolder = ".\\data";
-        private readonly string _storageFilePath = $"{StorageFolder}\\blob.data";
-        private readonly string _indexFilePath = $"{StorageFolder}\\index.data";
+        public const string StorageFolder = ".\\data";
+        public readonly string StorageFilePath = $"{StorageFolder}\\blob.data";
+        public readonly string IndexFilePath = $"{StorageFolder}\\index.data";
+
+        private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
         private readonly Dictionary<string, RowInfo> _indexes = new Dictionary<string, RowInfo>();
 
         private FileStream _indexFile;
         private FileStream _storageFile;
-
-        private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
-
-        public int Count => _indexes.Count;
 
         public LocalStorage()
         {
@@ -27,6 +25,8 @@ namespace Kronos.Core.Storage
             InitializeIndex();
             InitializeStorage();
         }
+
+        public int Count => _indexes.Count;
 
         public void AddOrUpdate(string key, byte[] obj)
         {
@@ -66,10 +66,10 @@ namespace Kronos.Core.Storage
             Dispose();
 
             _logger.Info($"Deleting index file {_indexFile}");
-            File.Delete(_indexFilePath);
+            File.Delete(IndexFilePath);
 
-            _logger.Info($"Deleting storage file {_storageFilePath}");
-            File.Delete(_storageFilePath);
+            _logger.Info($"Deleting storage file {StorageFilePath}");
+            File.Delete(StorageFilePath);
         }
 
         public void Dispose()
@@ -86,7 +86,7 @@ namespace Kronos.Core.Storage
 
         private void InitializeIndex()
         {
-            _indexFile = OpenOrCreateFile(_indexFilePath);
+            _indexFile = OpenOrCreateFile(IndexFilePath);
 
             StreamReader reader = new StreamReader(_indexFile);
 
@@ -107,7 +107,7 @@ namespace Kronos.Core.Storage
 
         private void InitializeStorage()
         {
-            _storageFile = OpenOrCreateFile(_storageFilePath);
+            _storageFile = OpenOrCreateFile(StorageFilePath);
             _storageFile.Seek(_storageFile.Length, SeekOrigin.Begin);
 
             _logger.Info($"Storage file has beed initialized. Size: {_storageFile.Length}, Position: {_storageFile.Position}");
@@ -126,45 +126,5 @@ namespace Kronos.Core.Storage
         {
             return File.Open(path, FileMode.OpenOrCreate, FileAccess.ReadWrite);
         }
-
-        internal class RowInfo
-        {
-
-            public RowInfo(string key, int length, long offset)
-            {
-                Key = key;
-                Length = length;
-                Offset = offset;
-            }
-
-            public RowInfo(string line)
-            {
-                string[] splitted = line.Split(';');
-                Key = splitted[0];
-                Length = Convert.ToInt32(splitted[1]);
-                Offset = Convert.ToInt64(splitted[2]);
-            }
-
-            public string Key { get; }
-            public int Length { get; }
-            public long Offset { get; }
-
-            public override int GetHashCode()
-            {
-                return Key.GetHashCode();
-            }
-
-            public override string ToString()
-            {
-                return Key;
-            }
-
-            public byte[] GetBytesForFile()
-            {
-                string line = $"{Key};{Length};{Offset}{Environment.NewLine}";
-                return Encoding.UTF8.GetBytes(line);
-            }
-        }
     }
 }
-
