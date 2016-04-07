@@ -25,7 +25,6 @@ namespace Kronos.Core.Serialization
             return buffer;
         }
 
-
         public static T Deserialize<T>(byte[] buffer)
         {
             using (MemoryStream ms = new MemoryStream(buffer))
