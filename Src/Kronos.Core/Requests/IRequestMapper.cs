@@ -1,6 +1,4 @@
-﻿using Kronos.Core.Requests;
-
-namespace Kronos.Core.RequestProcessing
+﻿namespace Kronos.Core.Requests
 {
     public interface IRequestMapper
     {

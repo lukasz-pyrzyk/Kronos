@@ -2,7 +2,7 @@
 using System.Net;
 using System.Xml;
 using Kronos.Core.Communication;
-using Kronos.Core.RequestProcessing;
+using Kronos.Core.Requests;
 using Kronos.Core.Storage;
 using Kronos.Server.Listener;
 using NLog;

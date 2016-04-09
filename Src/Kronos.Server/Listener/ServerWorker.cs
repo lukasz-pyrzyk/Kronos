@@ -1,7 +1,6 @@
 ﻿using System.Threading;
 using System.Threading.Tasks;
 using Kronos.Core.Communication;
-using Kronos.Core.RequestProcessing;
 using Kronos.Core.Requests;
 using Kronos.Core.Storage;
 using NLog;
