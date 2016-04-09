@@ -1,10 +1,12 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.IO;
+using Kronos.Core.IO;
 using NLog;
 
 namespace Kronos.Core.Storage
 {
-    public class LocalStorage : IStorage
+    public class DiscAndMemoryStorage : IStorage
     {
         public static readonly string StorageFolder = ".\\data";
         public static readonly string StorageFilePath = $"{StorageFolder}\\blob.data";
@@ -14,11 +16,27 @@ namespace Kronos.Core.Storage
 
         private readonly Dictionary<string, RowInfo> _indexes = new Dictionary<string, RowInfo>();
 
-        private FileStream _indexFile;
-        private FileStream _storageFile;
+        private readonly Func<string, IFileStream> _indexFileLoader;
+        private readonly Func<string, IFileStream> _storageFileLoader;
+        private readonly Action<string> _fileCleaner;
+        private IFileStream _indexFile;
+        private IFileStream _storageFile;
 
-        public LocalStorage()
+        public DiscAndMemoryStorage() : this(FileStreamProvider.Open, File.Delete)
         {
+        }
+
+        internal DiscAndMemoryStorage(Func<string, IFileStream> fileLoader, Action<string> fileCleaner) :
+            this(fileLoader, fileLoader, fileCleaner)
+        {
+        }
+
+        internal DiscAndMemoryStorage(Func<string, IFileStream> indexFileLoader, Func<string, IFileStream> storageFileLoader, Action<string> fileCleaner)
+        {
+            _indexFileLoader = indexFileLoader;
+            _storageFileLoader = storageFileLoader;
+            _fileCleaner = fileCleaner;
+
             InitializeStorageFolder();
             InitializeIndex();
             InitializeStorage();
@@ -64,10 +82,10 @@ namespace Kronos.Core.Storage
             Dispose();
 
             _logger.Info($"Deleting index file {_indexFile}");
-            File.Delete(IndexFilePath);
+            _fileCleaner(IndexFilePath);
 
             _logger.Info($"Deleting storage file {StorageFilePath}");
-            File.Delete(StorageFilePath);
+            _fileCleaner(StorageFilePath);
         }
 
         public void Dispose()
@@ -84,20 +102,16 @@ namespace Kronos.Core.Storage
 
         private void InitializeIndex()
         {
-            _indexFile = OpenOrCreateFile(IndexFilePath);
+            _indexFile = _indexFileLoader(IndexFilePath);
 
-            StreamReader reader = new StreamReader(_indexFile);
-
-            string line;
-            do
+            foreach (string line in _indexFile.EnumerateLines())
             {
-                line = reader.ReadLine();
-                if (line != null)
+                if (!string.IsNullOrEmpty(line))
                 {
                     RowInfo row = new RowInfo(line);
                     _indexes[row.Key] = row;
                 }
-            } while (line != null);
+            }
 
             _logger.Info($"Index file has beed initialized. Size: {_indexFile.Length}, Position: {_indexFile.Position}");
             _logger.Info($"Loaded {_indexes.Count} keys");
@@ -105,7 +119,7 @@ namespace Kronos.Core.Storage
 
         private void InitializeStorage()
         {
-            _storageFile = OpenOrCreateFile(StorageFilePath);
+            _storageFile = _storageFileLoader(StorageFilePath);
             _storageFile.Seek(_storageFile.Length, SeekOrigin.Begin);
 
             _logger.Info($"Storage file has beed initialized. Size: {_storageFile.Length}, Position: {_storageFile.Position}");
@@ -118,11 +132,6 @@ namespace Kronos.Core.Storage
                 _logger.Info("Data directory does not exist. Creating...");
                 Directory.CreateDirectory(StorageFolder);
             }
-        }
-
-        private static FileStream OpenOrCreateFile(string path)
-        {
-            return File.Open(path, FileMode.OpenOrCreate, FileAccess.ReadWrite);
         }
     }
 }
