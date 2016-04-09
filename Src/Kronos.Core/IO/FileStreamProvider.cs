@@ -5,9 +5,9 @@ namespace Kronos.Core.IO
 {
     internal class FileStreamProvider : IFileStream
     {
-        private readonly FileStream _stream;
+        private readonly Stream _stream;
 
-        public FileStreamProvider(FileStream stream)
+        public FileStreamProvider(Stream stream)
         {
             this._stream = stream;
         }
