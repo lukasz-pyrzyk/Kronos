@@ -14,7 +14,7 @@ namespace Kronos.Core.Storage
 
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
-        private readonly Dictionary<string, RowInfo> _indexes = new Dictionary<string, RowInfo>();
+        private readonly Dictionary<string, CachedObject> _indexes = new Dictionary<string, CachedObject>();
 
         private readonly Func<string, IFileStream> _indexFileLoader;
         private readonly Func<string, IFileStream> _storageFileLoader;
@@ -46,7 +46,7 @@ namespace Kronos.Core.Storage
 
         public void AddOrUpdate(string key, byte[] obj)
         {
-            var index = new RowInfo(key, obj.Length, _storageFile.Position);
+            var index = new CachedObject(key, obj.Length, _storageFile.Position);
 
             _indexes[key] = index;
 
@@ -60,7 +60,7 @@ namespace Kronos.Core.Storage
 
         public byte[] TryGet(string key)
         {
-            RowInfo row;
+            CachedObject row;
             if (_indexes.TryGetValue(key, out row))
             {
                 byte[] buffer = new byte[row.Length];
@@ -108,7 +108,7 @@ namespace Kronos.Core.Storage
             {
                 if (!string.IsNullOrEmpty(line))
                 {
-                    RowInfo row = new RowInfo(line);
+                    CachedObject row = new CachedObject(line);
                     _indexes[row.Key] = row;
                 }
             }

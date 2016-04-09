@@ -5,7 +5,7 @@ using Xunit;
 
 namespace Kronos.Core.Tests.Storage
 {
-    public class RowInfoTests
+    public class CachedObjectTests
     {
         [Fact]
         public void Ctor_InitializeProperties()
@@ -14,7 +14,7 @@ namespace Kronos.Core.Tests.Storage
             const int length = int.MaxValue;
             const long offset = long.MaxValue;
 
-            RowInfo row = new RowInfo(key, length, offset);
+            CachedObject row = new CachedObject(key, length, offset);
 
             Assert.Equal(row.Key, key);
             Assert.Equal(row.Length, length);
@@ -30,7 +30,7 @@ namespace Kronos.Core.Tests.Storage
 
             string line = $"{key};{length};{offset}{Environment.NewLine}";
 
-            RowInfo row = new RowInfo(line);
+            CachedObject row = new CachedObject(line);
 
             Assert.Equal(row.Key, key);
             Assert.Equal(row.Length, length);
@@ -44,7 +44,7 @@ namespace Kronos.Core.Tests.Storage
             const int length = int.MaxValue;
             const long offset = long.MaxValue;
 
-            RowInfo row = new RowInfo(key, length, offset);
+            CachedObject row = new CachedObject(key, length, offset);
 
             int hashcode = row.GetHashCode();
             Assert.Equal(hashcode, key.GetHashCode());
@@ -57,7 +57,7 @@ namespace Kronos.Core.Tests.Storage
             const int length = int.MaxValue;
             const long offset = long.MaxValue;
 
-            RowInfo row = new RowInfo(key, length, offset);
+            CachedObject row = new CachedObject(key, length, offset);
             
             string toStringValue = row.ToString();
             Assert.Equal(toStringValue, key);
@@ -70,11 +70,11 @@ namespace Kronos.Core.Tests.Storage
             const int length = int.MaxValue;
             const long offset = long.MaxValue;
 
-            RowInfo row = new RowInfo(key, length, offset);
+            CachedObject row = new CachedObject(key, length, offset);
             byte[] lineBytes = row.GetBytesForFile();
             string line = Encoding.UTF8.GetString(lineBytes);
 
-            RowInfo deserializedRow = new RowInfo(line);
+            CachedObject deserializedRow = new CachedObject(line);
 
             Assert.Equal(deserializedRow.Key, key);
             Assert.Equal(deserializedRow.Length, length);
