@@ -1,8 +1,7 @@
 ﻿using System;
-using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 
-namespace Kronos.Core.RequestProcessing
+namespace Kronos.Core.Requests
 {
     public class RequestMapper : IRequestMapper
     {

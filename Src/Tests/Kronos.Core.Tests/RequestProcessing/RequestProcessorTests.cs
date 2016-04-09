@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
-using Kronos.Core.RequestProcessing;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Xunit;
-using Xunit.Extensions;
 
 namespace Kronos.Core.Tests.RequestProcessing
 {
