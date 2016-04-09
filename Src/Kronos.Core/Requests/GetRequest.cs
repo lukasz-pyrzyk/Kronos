@@ -1,5 +1,4 @@
-﻿using System;
-using Kronos.Core.Serialization;
+﻿using Kronos.Core.Serialization;
 using Kronos.Core.StatusCodes;
 using Kronos.Core.Storage;
 using ProtoBuf;
@@ -44,11 +43,10 @@ namespace Kronos.Core.Requests
                         responseBytes = SerializationUtils.Serialize(new byte[] {0});
                     }
                 }
-                catch (Exception)
+                catch
                 {
                 }
             }
-
 
             return SerializationUtils.Deserialize<T>(responseBytes);
         }

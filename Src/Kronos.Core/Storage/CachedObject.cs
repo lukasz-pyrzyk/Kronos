@@ -3,16 +3,16 @@ using System.Text;
 
 namespace Kronos.Core.Storage
 {
-    internal class RowInfo
+    internal class CachedObject
     {
-        public RowInfo(string key, int length, long offset)
+        public CachedObject(string key, int length, long offset)
         {
             Key = key;
             Length = length;
             Offset = offset;
         }
 
-        public RowInfo(string line)
+        public CachedObject(string line)
         {
             string[] splitted = line.Split(';');
             Key = splitted[0];
