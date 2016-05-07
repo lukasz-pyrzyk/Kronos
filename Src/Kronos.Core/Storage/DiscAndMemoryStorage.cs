@@ -1,72 +1,81 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.IO;
-using Kronos.Core.IO;
 using NLog;
 
 namespace Kronos.Core.Storage
 {
     public class DiscAndMemoryStorage : IStorage
     {
+        private const string FileExtension = "dat";
         public static readonly string StorageFolder = ".\\data";
-        public static readonly string StorageFilePath = $"{StorageFolder}\\blob.data";
-        public static readonly string IndexFilePath = $"{StorageFolder}\\index.data";
+        public static readonly string IndexFilePath = $"{StorageFolder}\\index.{FileExtension}";
 
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
-        private readonly Dictionary<string, CachedObject> _indexes = new Dictionary<string, CachedObject>();
+        private readonly Dictionary<string, string> _indexes = new Dictionary<string, string>();
+        private readonly Action<string, byte[]> _createFile;
+        private readonly Func<string, byte[]> _readFile;
+        private readonly Action<string> _deleteFile;
 
-        private readonly Func<string, IFileStream> _indexFileLoader;
-        private readonly Func<string, IFileStream> _storageFileLoader;
-        private readonly Action<string> _fileCleaner;
-        private IFileStream _indexFile;
-        private IFileStream _storageFile;
-
-        public DiscAndMemoryStorage() : this(FileStreamProvider.Open, File.Delete)
+        public DiscAndMemoryStorage() : this(File.WriteAllBytes, File.ReadAllBytes, File.Delete)
         {
         }
-
-        internal DiscAndMemoryStorage(Func<string, IFileStream> fileLoader, Action<string> fileCleaner) :
-            this(fileLoader, fileLoader, fileCleaner)
+        
+        internal DiscAndMemoryStorage(
+            Action<string, byte[]> createFile, 
+            Func<string, byte[]> readFile, 
+            Action<string> deleteFile)
         {
-        }
-
-        internal DiscAndMemoryStorage(Func<string, IFileStream> indexFileLoader, Func<string, IFileStream> storageFileLoader, Action<string> fileCleaner)
-        {
-            _indexFileLoader = indexFileLoader;
-            _storageFileLoader = storageFileLoader;
-            _fileCleaner = fileCleaner;
+            _createFile = createFile;
+            _readFile = readFile;
+            _deleteFile = deleteFile;
 
             InitializeStorageFolder();
-            InitializeIndex();
-            InitializeStorage();
         }
 
         public int Count => _indexes.Count;
 
         public void AddOrUpdate(string key, byte[] obj)
         {
-            var index = new CachedObject(key, obj.Length, _storageFile.Position);
+            _logger.Debug($"Adding key {key} with {obj} bytes");
+            string fileName = Guid.NewGuid().ToString();
 
-            _indexes[key] = index;
+            // add file to index dictionary
+            _indexes[key] = fileName;
 
-            byte[] indexBytes = index.GetBytesForFile();
-            _indexFile.Write(indexBytes, 0, indexBytes.Length);
-            _indexFile.Flush();
+            try
+            {
+                // save file into disc
+                _createFile($@"{StorageFolder}\{fileName}.{FileExtension}", obj);
+            }
+            catch (IOException ex)
+            {
+                _logger.Error(ex);
+                _indexes.Remove(key);
+            }
 
-            _storageFile.Write(obj, 0, obj.Length);
-            _storageFile.Flush();
+            // TODO update index file on disc
         }
 
         public byte[] TryGet(string key)
         {
-            CachedObject row;
-            if (_indexes.TryGetValue(key, out row))
+            _logger.Debug($"Returning key {key}");
+            try
             {
-                byte[] buffer = new byte[row.Length];
-                _storageFile.Seek(row.Offset, SeekOrigin.Begin);
-                _storageFile.Read(buffer, 0, row.Length);
-                return buffer;
+                string fileName;
+                if (_indexes.TryGetValue(key, out fileName))
+                {
+                    byte[] bytes = _readFile($@"{StorageFolder}\{fileName}.{FileExtension}");
+                    _logger.Debug($"File with key {key} found, returning {bytes} bytes");
+                    return bytes;
+                }
+
+                _logger.Debug($"Key {key} not found");
+            }
+            catch (IOException ex)
+            {
+                _logger.Error(ex);
             }
 
             return null;
@@ -74,55 +83,36 @@ namespace Kronos.Core.Storage
 
         public bool TryRemove(string key)
         {
-            throw new System.NotImplementedException();
+            _logger.Debug($"Removing key {key}");
+            try
+            {
+                string fileName;
+                if (_indexes.TryGetValue(key, out fileName))
+                {
+                    _deleteFile($@"{StorageFolder}\{fileName}.{FileExtension}");
+                    _logger.Debug($"Key {key} has been deleted");
+                    return true;
+                }
+            }
+            catch (IOException ex)
+            {
+                _logger.Error(ex);
+            }
+
+            return false;
         }
 
         public void Clear()
         {
+            _indexes.Clear();
             Dispose();
 
-            _logger.Info($"Deleting index file {_indexFile}");
-            _fileCleaner(IndexFilePath);
-
-            _logger.Info($"Deleting storage file {StorageFilePath}");
-            _fileCleaner(StorageFilePath);
+            _deleteFile(IndexFilePath);
         }
 
         public void Dispose()
         {
-            _logger.Info("Disposing storage");
-            _storageFile.Dispose();
-            _indexFile.Dispose();
-
-            _storageFile = null;
-            _indexFile = null;
-
             _logger.Info("Storage disposed");
-        }
-
-        private void InitializeIndex()
-        {
-            _indexFile = _indexFileLoader(IndexFilePath);
-
-            foreach (string line in _indexFile.EnumerateLines())
-            {
-                if (!string.IsNullOrEmpty(line))
-                {
-                    CachedObject row = new CachedObject(line);
-                    _indexes[row.Key] = row;
-                }
-            }
-
-            _logger.Info($"Index file has beed initialized. Size: {_indexFile.Length}, Position: {_indexFile.Position}");
-            _logger.Info($"Loaded {_indexes.Count} keys");
-        }
-
-        private void InitializeStorage()
-        {
-            _storageFile = _storageFileLoader(StorageFilePath);
-            _storageFile.Seek(_storageFile.Length, SeekOrigin.Begin);
-
-            _logger.Info($"Storage file has beed initialized. Size: {_storageFile.Length}, Position: {_storageFile.Position}");
         }
 
         private void InitializeStorageFolder()
