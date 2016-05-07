@@ -1,4 +1,4 @@
-FROM microsoft/aspnet:1.0.0-rc1-final
+FROM lukaszpyrzyk/aspnet-1.0.0-rc1-update2
 
 # copy all files
 COPY . /app/
