@@ -14,22 +14,38 @@ namespace Kronos.Core.Storage
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
         private readonly Dictionary<string, string> _indexes = new Dictionary<string, string>();
-        private readonly Action<string, byte[]> _createFile;
-        private readonly Func<string, byte[]> _readFile;
-        private readonly Action<string> _deleteFile;
 
-        public DiscAndMemoryStorage() : this(File.WriteAllBytes, File.ReadAllBytes, File.Delete)
+        private readonly Action<string, byte[]> _fileCreate;
+        private readonly Func<string, byte[]> _fileRead;
+        private readonly Action<string> _fileDelete;
+        private readonly Func<string, bool> _directoryExists;
+        private readonly Func<string, DirectoryInfo> _directoryCreate;
+        private readonly Action<string> _directoryDelete;
+
+        public DiscAndMemoryStorage() : this(
+            File.WriteAllBytes,
+            File.ReadAllBytes,
+            File.Delete,
+            Directory.Exists,
+            Directory.CreateDirectory,
+            Directory.Delete)
         {
         }
 
         internal DiscAndMemoryStorage(
-            Action<string, byte[]> createFile,
-            Func<string, byte[]> readFile,
-            Action<string> deleteFile)
+            Action<string, byte[]> fileCreate,
+            Func<string, byte[]> fileRead,
+            Action<string> fileDelete,
+            Func<string, bool> directoryExists,
+            Func<string, DirectoryInfo> directoryCreate,
+            Action<string> directoryDelete)
         {
-            _createFile = createFile;
-            _readFile = readFile;
-            _deleteFile = deleteFile;
+            _fileCreate = fileCreate;
+            _fileRead = fileRead;
+            _fileDelete = fileDelete;
+            _directoryExists = directoryExists;
+            _directoryCreate = directoryCreate;
+            _directoryDelete = directoryDelete;
 
             InitializeStorageFolder();
         }
@@ -47,7 +63,7 @@ namespace Kronos.Core.Storage
             try
             {
                 // save file into disc
-                _createFile($@"{StorageFolder}\{fileName}.{FileExtension}", obj);
+                _fileCreate($@"{StorageFolder}\{fileName}.{FileExtension}", obj);
             }
             catch (IOException ex)
             {
@@ -64,7 +80,7 @@ namespace Kronos.Core.Storage
                 string fileName;
                 if (_indexes.TryGetValue(key, out fileName))
                 {
-                    byte[] bytes = _readFile($@"{StorageFolder}\{fileName}.{FileExtension}");
+                    byte[] bytes = _fileRead($@"{StorageFolder}\{fileName}.{FileExtension}");
                     _logger.Debug($"File with key {key} found, returning {bytes} bytes");
                     return bytes;
                 }
@@ -87,7 +103,7 @@ namespace Kronos.Core.Storage
                 string fileName;
                 if (_indexes.TryGetValue(key, out fileName))
                 {
-                    _deleteFile($@"{StorageFolder}\{fileName}.{FileExtension}");
+                    _fileDelete($@"{StorageFolder}\{fileName}.{FileExtension}");
                     _logger.Debug($"Key {key} has been deleted");
                     return true;
                 }
@@ -105,7 +121,7 @@ namespace Kronos.Core.Storage
             _indexes.Clear();
             Dispose();
 
-            _deleteFile(IndexFilePath);
+            _fileDelete(IndexFilePath);
         }
 
         public void Dispose()
@@ -115,14 +131,14 @@ namespace Kronos.Core.Storage
 
         private void InitializeStorageFolder()
         {
-            if (Directory.Exists(StorageFolder))
+            if (_directoryExists(StorageFolder))
             {
                 _logger.Info("Data folder exists. Deleting...");
-                Directory.Delete(StorageFolder);
+                _directoryDelete(StorageFolder);
             }
 
             _logger.Info("Creating empty file for storage");
-            Directory.CreateDirectory(StorageFolder);
+            _directoryCreate(StorageFolder);
         }
     }
 }

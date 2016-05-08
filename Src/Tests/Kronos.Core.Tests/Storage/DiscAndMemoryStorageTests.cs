@@ -12,7 +12,8 @@ namespace Kronos.Core.Tests.Storage
         [Fact]
         public void Ctor_InitializeEmptyIndexCollectionWhenFileIsEmpty()
         {
-            DiscAndMemoryStorage storage = new DiscAndMemoryStorage((s, bytes) => { }, s => new byte[0], s => { });
+            DiscAndMemoryStorage storage = new DiscAndMemoryStorage((s, bytes) => { }, s => new byte[0], s => { }, s => true, s => new DirectoryInfo("folder"),
+                s => { });
 
             Assert.Equal(storage.Count, 0);
         }
@@ -24,8 +25,9 @@ namespace Kronos.Core.Tests.Storage
             byte[] data = Encoding.UTF8.GetBytes("lorem ipsum");
             bool called = false;
 
-            DiscAndMemoryStorage storage = new DiscAndMemoryStorage((s, bytes) => { called = true; }, s => new byte[0], s => { });
-            
+            DiscAndMemoryStorage storage = new DiscAndMemoryStorage((s, bytes) => { called = true; }, s => new byte[0], s => { }, s => true, s => new DirectoryInfo("folder"),
+                s => { });
+
             storage.AddOrUpdate(key, data);
 
             Assert.Equal(storage.Count, 1);
@@ -40,7 +42,8 @@ namespace Kronos.Core.Tests.Storage
             string key = "lorem ipsum";
             byte[] data = Encoding.UTF8.GetBytes("lorem ipsum");
 
-            DiscAndMemoryStorage storage = new DiscAndMemoryStorage((s, bytes) => { called = true; throw new IOException(); }, s => new byte[0], s => { });
+            DiscAndMemoryStorage storage = new DiscAndMemoryStorage((s, bytes) => { called = true; throw new IOException(); }, s => new byte[0], s => { }, s => true, s => new DirectoryInfo("folder"),
+                s => { });
 
             try
             {
@@ -60,7 +63,8 @@ namespace Kronos.Core.Tests.Storage
             string key = "lorem ipsum";
             byte[] data = Encoding.UTF8.GetBytes("lorem ipsum");
 
-            DiscAndMemoryStorage storage = new DiscAndMemoryStorage((s, bytes) => { }, s => data, s => { });
+            DiscAndMemoryStorage storage = new DiscAndMemoryStorage((s, bytes) => { }, s => data, s => { }, s => true, s => new DirectoryInfo("folder"),
+                s => { });
 
             storage.AddOrUpdate(key, data);
 
@@ -75,7 +79,8 @@ namespace Kronos.Core.Tests.Storage
         {
             string key = "lorem ipsum";
 
-            DiscAndMemoryStorage storage = new DiscAndMemoryStorage((s, bytes) => { }, s => new byte[0], s => { });
+            DiscAndMemoryStorage storage = new DiscAndMemoryStorage((s, bytes) => { }, s => new byte[0], s => { }, s => true, s => new DirectoryInfo("folder"),
+                s => { });
 
             byte[] obj = storage.TryGet(key);
 
@@ -88,7 +93,8 @@ namespace Kronos.Core.Tests.Storage
             string key = "lorem ipsum";
             byte[] data = Encoding.UTF8.GetBytes("lorem ipsum");
 
-            DiscAndMemoryStorage storage = new DiscAndMemoryStorage((s, bytes) => { }, s => new byte[0], s => { });
+            DiscAndMemoryStorage storage = new DiscAndMemoryStorage((s, bytes) => { }, s => new byte[0], s => { }, s => true, s => new DirectoryInfo("folder"),
+                s => { });
             storage.AddOrUpdate(key, data);
             bool result = storage.TryRemove(key);
 
@@ -100,7 +106,8 @@ namespace Kronos.Core.Tests.Storage
         {
             string key = "lorem ipsum";
 
-            DiscAndMemoryStorage storage = new DiscAndMemoryStorage((s, bytes) => { }, s => new byte[0], s => { });
+            DiscAndMemoryStorage storage = new DiscAndMemoryStorage((s, bytes) => { }, s => new byte[0], s => { }, s => true, s => new DirectoryInfo("folder"),
+                s => { });
             bool result = storage.TryRemove(key);
 
             Assert.False(result);
@@ -118,7 +125,8 @@ namespace Kronos.Core.Tests.Storage
             {
                 called = true;
                 throw new IOException();
-            });
+            }, s => true, s => new DirectoryInfo("folder"),
+                s => { });
 
             storage.AddOrUpdate(key, data);
             bool result = storage.TryRemove(key);
@@ -134,10 +142,42 @@ namespace Kronos.Core.Tests.Storage
             DiscAndMemoryStorage storage = new DiscAndMemoryStorage((s, bytes) => { }, s => new byte[0], s =>
             {
                 called = true;
-            });
+            }, s => true, s => new DirectoryInfo("folder"),
+                s => { });
 
             storage.Clear();
             Assert.True(called);
+        }
+
+        [Fact]
+        public void InitializeStorageFolder_DeletesStorageFolderIfExists()
+        {
+            bool called = false;
+            DiscAndMemoryStorage storage = new DiscAndMemoryStorage((s, bytes) => { }, s => new byte[0], s => {}, s => true, s => new DirectoryInfo("folder"), s =>
+            {
+                called = true;
+            });
+
+            Assert.True(called);
+        }
+
+        [Fact]
+        public void InitializeStorageFolder_CreatesFolder()
+        {
+            bool folderRemoved = false;
+            bool folderCreated = false;
+            DiscAndMemoryStorage storage = new DiscAndMemoryStorage((s, bytes) => { }, s => new byte[0], s => { },
+                s => false,
+                s =>
+                {
+                    folderCreated = true;
+                    return new DirectoryInfo("folder");
+                }, s => {
+                    folderRemoved = true;
+                });
+
+            Assert.True(folderCreated);
+            Assert.False(folderRemoved);
         }
     }
 }
