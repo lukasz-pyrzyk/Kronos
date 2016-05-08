@@ -1,7 +1,6 @@
 ﻿using System;
 using System.IO;
 using System.Text;
-using Kronos.Core.IO;
 using Kronos.Core.Storage;
 using Moq;
 using Xunit;
@@ -13,141 +12,172 @@ namespace Kronos.Core.Tests.Storage
         [Fact]
         public void Ctor_InitializeEmptyIndexCollectionWhenFileIsEmpty()
         {
-            var storageMock = new Mock<IFileStream>();
-            storageMock.Setup(x => x.EnumerateLines()).Returns(new string[0]);
-
-            var indexMock = new Mock<IFileStream>();
-            indexMock.Setup(x => x.EnumerateLines()).Returns(new string[0]);
-
-            DiscAndMemoryStorage storage = new DiscAndMemoryStorage(p => indexMock.Object, p => storageMock.Object, path => { });
+            DiscAndMemoryStorage storage = new DiscAndMemoryStorage((s, bytes) => { }, s => new byte[0], s => { }, s => true, s => new DirectoryInfo("folder"),
+                (s, p) => { });
 
             Assert.Equal(storage.Count, 0);
         }
 
         [Fact]
-        public void Ctor_LoadsIndexesFromFile()
+        public void TryAdd_AddsObject()
         {
-            var storageMock = new Mock<IFileStream>();
-            storageMock.Setup(x => x.EnumerateLines()).Returns(new string[0]);
+            string key = "lorem ipsum";
+            byte[] data = Encoding.UTF8.GetBytes("lorem ipsum");
+            bool called = false;
 
-            var indexMock = new Mock<IFileStream>();
-            indexMock.Setup(x => x.EnumerateLines()).Returns(new[] { $"key;0;0;{Environment.NewLine}" });
+            DiscAndMemoryStorage storage = new DiscAndMemoryStorage((s, bytes) => { called = true; }, s => new byte[0], s => { }, s => true, s => new DirectoryInfo("folder"),
+                (s, p) => { });
 
-            DiscAndMemoryStorage storage = new DiscAndMemoryStorage(p => indexMock.Object, p => storageMock.Object, path => { });
-            
+            storage.AddOrUpdate(key, data);
+
             Assert.Equal(storage.Count, 1);
-        }
-        
-        [Fact]
-        public void TryGet_ReturnsFileFromStorage()
-        {
-            string key = "key";
-            byte[] package = Encoding.UTF8.GetBytes("lorem ipsum");
-
-            var storageMock = new Mock<IFileStream>();
-            storageMock.Setup(x => x.EnumerateLines()).Returns(new string[0]);
-            storageMock.Setup(x => x.Read(It.IsAny<byte[]>(), It.IsAny<int>(), package.Length))
-                .Callback<byte[], int, int>(
-                    (bytes, offset, length) =>
-                    {
-                        for (int i = 0; i < length; i++)
-                        {
-                            bytes[i] = package[i];
-                        }
-                    });
-
-            var indexMock = new Mock<IFileStream>();
-            indexMock.Setup(x => x.EnumerateLines()).Returns(new[] { $"{key};{package.Length};0;{Environment.NewLine}" });
-
-            DiscAndMemoryStorage storage = new DiscAndMemoryStorage(p => indexMock.Object, p => storageMock.Object, path => { });
-
-            byte[] bytesFromStorage = storage.TryGet(key);
-
-            Assert.NotNull(bytesFromStorage);
-            Assert.Equal(bytesFromStorage, package);
-
-            storageMock.Verify(x => x.Seek(0, It.IsAny<SeekOrigin>()), Times.AtLeastOnce);
-            storageMock.Verify(x => x.Read(It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<int>()), Times.Once);
+            Assert.True(called);
         }
 
         [Fact]
-        public void TryGet_ReturnsNullWhenKeyDoesNotExist()
+        public void TryAdd_DoesNotAddFileWhenExceptionWasThrown()
         {
-            string key = "key";
+            bool called = false;
 
-            var storageMock = new Mock<IFileStream>();
-            storageMock.Setup(x => x.EnumerateLines()).Returns(new string[0]);
-            var indexMock = new Mock<IFileStream>();
-            indexMock.Setup(x => x.EnumerateLines()).Returns(new string[0]);
+            string key = "lorem ipsum";
+            byte[] data = Encoding.UTF8.GetBytes("lorem ipsum");
 
-            DiscAndMemoryStorage storage = new DiscAndMemoryStorage(p => indexMock.Object, p => storageMock.Object, path => { });
+            DiscAndMemoryStorage storage = new DiscAndMemoryStorage((s, bytes) => { called = true; throw new IOException(); }, s => new byte[0], s => { }, s => true, s => new DirectoryInfo("folder"),
+                (s, p) => { });
 
-            byte[] bytesFromStorage = storage.TryGet(key);
+            try
+            {
+                storage.AddOrUpdate(key, data);
+            }
+            catch (Exception)
+            {
+            }
 
-            Assert.Null(bytesFromStorage);
-
-            storageMock.Verify(x => x.Seek(It.IsAny<int>(), It.IsAny<SeekOrigin>()), Times.Never);
-            storageMock.Verify(x => x.Read(It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<int>()), Times.Never);
+            Assert.Equal(storage.Count, 0);
+            Assert.True(called);
         }
 
         [Fact]
-        public void AddOrUpdate_AddsFileToIndexDictionaryAndWritesToFiles()
+        public void TryGet_ReturnsObject()
         {
-            var storageMock = new Mock<IFileStream>();
-            storageMock.Setup(x => x.EnumerateLines()).Returns(new string[0]);
-            var indexMock = new Mock<IFileStream>();
-            indexMock.Setup(x => x.EnumerateLines()).Returns(new string[0]);
+            string key = "lorem ipsum";
+            byte[] data = Encoding.UTF8.GetBytes("lorem ipsum");
 
-            byte[] buffer = Encoding.UTF8.GetBytes("lorem ipsum");
-            string key = "key";
+            DiscAndMemoryStorage storage = new DiscAndMemoryStorage((s, bytes) => { }, s => data, s => { }, s => true, s => new DirectoryInfo("folder"),
+                (s, p) => { });
 
-            DiscAndMemoryStorage storage = new DiscAndMemoryStorage(p => indexMock.Object, p => storageMock.Object, path => { });
+            storage.AddOrUpdate(key, data);
 
-            int count = storage.Count;
+            byte[] obj = storage.TryGet(key);
 
-            storage.AddOrUpdate(key, buffer);
-
-            storageMock.Verify(x => x.Write(buffer, 0, buffer.Length), Times.Once);
-            storageMock.Verify(x => x.Flush(), Times.Once);
-
-            indexMock.Verify(x => x.Write(It.IsAny<byte[]>(), It.IsAny<int>(), It.IsAny<int>()), Times.Once);
-            indexMock.Verify(x => x.Flush(), Times.Once);
-
-            Assert.Equal(storage.Count, count + 1);
+            Assert.NotNull(obj);
+            Assert.Equal(data, obj);
         }
 
+        [Fact]
+        public void TryGet_ReturnsNullWhenObjectIsNotAdded()
+        {
+            string key = "lorem ipsum";
 
+            DiscAndMemoryStorage storage = new DiscAndMemoryStorage((s, bytes) => { }, s => new byte[0], s => { }, s => true, s => new DirectoryInfo("folder"),
+                (s, p) => { });
+
+            byte[] obj = storage.TryGet(key);
+
+            Assert.Null(obj);
+        }
 
         [Fact]
-        public void Clear_DisposesAndDeletesStreams()
+        public void TryRemove_RemovesFile()
         {
-            var storageMock = new Mock<IFileStream>();
-            storageMock.Setup(x => x.EnumerateLines()).Returns(new string[0]);
-            var indexMock = new Mock<IFileStream>();
-            indexMock.Setup(x => x.EnumerateLines()).Returns(new string[0]);
+            string key = "lorem ipsum";
+            byte[] data = Encoding.UTF8.GetBytes("lorem ipsum");
 
-            DiscAndMemoryStorage storage = new DiscAndMemoryStorage(p => indexMock.Object, p => storageMock.Object, path => { });
+            DiscAndMemoryStorage storage = new DiscAndMemoryStorage((s, bytes) => { }, s => new byte[0], s => { }, s => true, s => new DirectoryInfo("folder"),
+                (s, p) => { });
+            storage.AddOrUpdate(key, data);
+            bool result = storage.TryRemove(key);
+
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void TryRemove_DoesNotRemoveFileWhenObjectIsNotAdded()
+        {
+            string key = "lorem ipsum";
+
+            DiscAndMemoryStorage storage = new DiscAndMemoryStorage((s, bytes) => { }, s => new byte[0], s => { }, s => true, s => new DirectoryInfo("folder"),
+                (s, p) => { });
+            bool result = storage.TryRemove(key);
+
+            Assert.False(result);
+        }
+
+        [Fact]
+        public void TryRemove_DoesNotRemoveFileWhenRemoveMethodThrowsException()
+        {
+            string key = "lorem ipsum";
+            byte[] data = Encoding.UTF8.GetBytes("lorem ipsum");
+
+            bool called = false;
+
+            DiscAndMemoryStorage storage = new DiscAndMemoryStorage((s, bytes) => { }, s => new byte[0], s =>
+            {
+                called = true;
+                throw new IOException();
+            }, s => true, s => new DirectoryInfo("folder"),
+                (s, p) => { });
+
+            storage.AddOrUpdate(key, data);
+            bool result = storage.TryRemove(key);
+
+            Assert.False(result);
+            Assert.True(called);
+        }
+
+        [Fact]
+        public void Clear_DeletesIndexFile()
+        {
+            bool called = false;
+            DiscAndMemoryStorage storage = new DiscAndMemoryStorage((s, bytes) => { }, s => new byte[0], s =>
+            {
+                called = true;
+            }, s => true, s => new DirectoryInfo("folder"),
+                (s, p) => { });
 
             storage.Clear();
-
-            storageMock.Verify(x => x.Dispose(), Times.Once);
-            indexMock.Verify(x => x.Dispose(), Times.Once);
+            Assert.True(called);
         }
 
         [Fact]
-        public void Dispose_DisposesStreams()
+        public void InitializeStorageFolder_DeletesStorageFolderIfExists()
         {
-            var storageMock = new Mock<IFileStream>();
-            storageMock.Setup(x => x.EnumerateLines()).Returns(new string[0]);
-            var indexMock = new Mock<IFileStream>();
-            indexMock.Setup(x => x.EnumerateLines()).Returns(new string[0]);
+            bool called = false;
+            DiscAndMemoryStorage storage = new DiscAndMemoryStorage((s, bytes) => { }, s => new byte[0], s => {}, s => true, s => new DirectoryInfo("folder"), (s, p) =>
+            {
+                called = true;
+            });
 
-            DiscAndMemoryStorage storage = new DiscAndMemoryStorage(p => indexMock.Object, p => storageMock.Object, path => { });
+            Assert.True(called);
+        }
 
-            storage.Dispose();
+        [Fact]
+        public void InitializeStorageFolder_CreatesFolder()
+        {
+            bool folderRemoved = false;
+            bool folderCreated = false;
+            DiscAndMemoryStorage storage = new DiscAndMemoryStorage((s, bytes) => { }, s => new byte[0], s => { },
+                s => false,
+                s =>
+                {
+                    folderCreated = true;
+                    return new DirectoryInfo("folder");
+                }, (s, p) => {
+                    folderRemoved = true;
+                });
 
-            storageMock.Verify(x => x.Dispose(), Times.Once);
-            indexMock.Verify(x => x.Dispose(), Times.Once);
+            Assert.True(folderCreated);
+            Assert.False(folderRemoved);
         }
     }
 }
