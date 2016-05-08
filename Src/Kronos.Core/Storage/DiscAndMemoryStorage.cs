@@ -21,10 +21,10 @@ namespace Kronos.Core.Storage
         public DiscAndMemoryStorage() : this(File.WriteAllBytes, File.ReadAllBytes, File.Delete)
         {
         }
-        
+
         internal DiscAndMemoryStorage(
-            Action<string, byte[]> createFile, 
-            Func<string, byte[]> readFile, 
+            Action<string, byte[]> createFile,
+            Func<string, byte[]> readFile,
             Action<string> deleteFile)
         {
             _createFile = createFile;
@@ -54,8 +54,6 @@ namespace Kronos.Core.Storage
                 _logger.Error(ex);
                 _indexes.Remove(key);
             }
-
-            // TODO update index file on disc
         }
 
         public byte[] TryGet(string key)
@@ -117,11 +115,14 @@ namespace Kronos.Core.Storage
 
         private void InitializeStorageFolder()
         {
-            if (!Directory.Exists(StorageFolder))
+            if (Directory.Exists(StorageFolder))
             {
-                _logger.Info("Data directory does not exist. Creating...");
-                Directory.CreateDirectory(StorageFolder);
+                _logger.Info("Data folder exists. Deleting...");
+                Directory.Delete(StorageFolder);
             }
+
+            _logger.Info("Creating empty file for storage");
+            Directory.CreateDirectory(StorageFolder);
         }
     }
 }
