@@ -20,7 +20,7 @@ namespace Kronos.Core.Storage
         private readonly Action<string> _fileDelete;
         private readonly Func<string, bool> _directoryExists;
         private readonly Func<string, DirectoryInfo> _directoryCreate;
-        private readonly Action<string> _directoryDelete;
+        private readonly Action<string, bool> _directoryDelete;
 
         public DiscAndMemoryStorage() : this(
             File.WriteAllBytes,
@@ -38,7 +38,7 @@ namespace Kronos.Core.Storage
             Action<string> fileDelete,
             Func<string, bool> directoryExists,
             Func<string, DirectoryInfo> directoryCreate,
-            Action<string> directoryDelete)
+            Action<string, bool> directoryDelete)
         {
             _fileCreate = fileCreate;
             _fileRead = fileRead;
@@ -134,7 +134,7 @@ namespace Kronos.Core.Storage
             if (_directoryExists(StorageFolder))
             {
                 _logger.Info("Data folder exists. Deleting...");
-                _directoryDelete(StorageFolder);
+                _directoryDelete(StorageFolder, true);
             }
 
             _logger.Info("Creating empty file for storage");

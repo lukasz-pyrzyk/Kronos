@@ -13,7 +13,7 @@ namespace Kronos.Core.Tests.Storage
         public void Ctor_InitializeEmptyIndexCollectionWhenFileIsEmpty()
         {
             DiscAndMemoryStorage storage = new DiscAndMemoryStorage((s, bytes) => { }, s => new byte[0], s => { }, s => true, s => new DirectoryInfo("folder"),
-                s => { });
+                (s, p) => { });
 
             Assert.Equal(storage.Count, 0);
         }
@@ -26,7 +26,7 @@ namespace Kronos.Core.Tests.Storage
             bool called = false;
 
             DiscAndMemoryStorage storage = new DiscAndMemoryStorage((s, bytes) => { called = true; }, s => new byte[0], s => { }, s => true, s => new DirectoryInfo("folder"),
-                s => { });
+                (s, p) => { });
 
             storage.AddOrUpdate(key, data);
 
@@ -43,7 +43,7 @@ namespace Kronos.Core.Tests.Storage
             byte[] data = Encoding.UTF8.GetBytes("lorem ipsum");
 
             DiscAndMemoryStorage storage = new DiscAndMemoryStorage((s, bytes) => { called = true; throw new IOException(); }, s => new byte[0], s => { }, s => true, s => new DirectoryInfo("folder"),
-                s => { });
+                (s, p) => { });
 
             try
             {
@@ -64,7 +64,7 @@ namespace Kronos.Core.Tests.Storage
             byte[] data = Encoding.UTF8.GetBytes("lorem ipsum");
 
             DiscAndMemoryStorage storage = new DiscAndMemoryStorage((s, bytes) => { }, s => data, s => { }, s => true, s => new DirectoryInfo("folder"),
-                s => { });
+                (s, p) => { });
 
             storage.AddOrUpdate(key, data);
 
@@ -80,7 +80,7 @@ namespace Kronos.Core.Tests.Storage
             string key = "lorem ipsum";
 
             DiscAndMemoryStorage storage = new DiscAndMemoryStorage((s, bytes) => { }, s => new byte[0], s => { }, s => true, s => new DirectoryInfo("folder"),
-                s => { });
+                (s, p) => { });
 
             byte[] obj = storage.TryGet(key);
 
@@ -94,7 +94,7 @@ namespace Kronos.Core.Tests.Storage
             byte[] data = Encoding.UTF8.GetBytes("lorem ipsum");
 
             DiscAndMemoryStorage storage = new DiscAndMemoryStorage((s, bytes) => { }, s => new byte[0], s => { }, s => true, s => new DirectoryInfo("folder"),
-                s => { });
+                (s, p) => { });
             storage.AddOrUpdate(key, data);
             bool result = storage.TryRemove(key);
 
@@ -107,7 +107,7 @@ namespace Kronos.Core.Tests.Storage
             string key = "lorem ipsum";
 
             DiscAndMemoryStorage storage = new DiscAndMemoryStorage((s, bytes) => { }, s => new byte[0], s => { }, s => true, s => new DirectoryInfo("folder"),
-                s => { });
+                (s, p) => { });
             bool result = storage.TryRemove(key);
 
             Assert.False(result);
@@ -126,7 +126,7 @@ namespace Kronos.Core.Tests.Storage
                 called = true;
                 throw new IOException();
             }, s => true, s => new DirectoryInfo("folder"),
-                s => { });
+                (s, p) => { });
 
             storage.AddOrUpdate(key, data);
             bool result = storage.TryRemove(key);
@@ -143,7 +143,7 @@ namespace Kronos.Core.Tests.Storage
             {
                 called = true;
             }, s => true, s => new DirectoryInfo("folder"),
-                s => { });
+                (s, p) => { });
 
             storage.Clear();
             Assert.True(called);
@@ -153,7 +153,7 @@ namespace Kronos.Core.Tests.Storage
         public void InitializeStorageFolder_DeletesStorageFolderIfExists()
         {
             bool called = false;
-            DiscAndMemoryStorage storage = new DiscAndMemoryStorage((s, bytes) => { }, s => new byte[0], s => {}, s => true, s => new DirectoryInfo("folder"), s =>
+            DiscAndMemoryStorage storage = new DiscAndMemoryStorage((s, bytes) => { }, s => new byte[0], s => {}, s => true, s => new DirectoryInfo("folder"), (s, p) =>
             {
                 called = true;
             });
@@ -172,7 +172,7 @@ namespace Kronos.Core.Tests.Storage
                 {
                     folderCreated = true;
                     return new DirectoryInfo("folder");
-                }, s => {
+                }, (s, p) => {
                     folderRemoved = true;
                 });
 
