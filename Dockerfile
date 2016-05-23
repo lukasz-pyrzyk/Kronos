@@ -1,4 +1,4 @@
-FROM lukaszpyrzyk/aspnet-1.0.0-rc1-update2
+FROM microsoft/dotnet:1.0.0-preview1
 
 # copy all files
 COPY . /app/
@@ -6,8 +6,8 @@ COPY . /app/
 # set workdir
 WORKDIR /app
 
-RUN ["dnu", "restore"]
+RUN ["dotnet", "restore"]
 
 WORKDIR /app/Src/Kronos.Server
 
-ENTRYPOINT ["dnx", "run"]
+ENTRYPOINT ["dotnet", "run"]
