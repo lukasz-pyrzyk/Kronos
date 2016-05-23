@@ -1,42 +1,38 @@
 {
-    "authors": [ "Lukasz Pyrzyk" ],
-    "copyright": "Lukasz Pyrzyk",
-    "content": [ "./Nlog.config" ],
-    "commands": {
-        "Kronos.Server": "Kronos.Server"
+  "authors": [ "Lukasz Pyrzyk" ],
+  "buildOptions": {
+    "emitEntryPoint": true
+  },
+  "commands": {
+    "Kronos.Server": "Kronos.Server"
+  },
+  "copyToOutput": [ "./Nlog.config" ],
+  "copyright": "Lukasz Pyrzyk",
+  "dependencies": {
+    "Kronos.Core": "1.0.0-*",
+    "Microsoft.NETCore.App": {
+      "type": "platform",
+      "version": "1.0.0-rc2-3002702"
     },
-    "summary": "Kronoc.Server - the cache platform",
-    "compilationOptions": {
-        "emitEntryPoint": true
-    },
-    "dependencies": {
-        "Kronos.Core": "1.0.0-*",
-        "NLog": "4.4.0-alpha1",
-        "protobuf-net": "2.1.0-alpha-1",
-        "XGain": "1.0.0"
-    },
-    "description": "Kronos - the cache platform",
-    "frameworks": {
-        "dnx451": {
-            "frameworkAssemblies": {
-                "System": "4.0.0.0",
-                "System.Net": "4.0.0.0"
-            }
-        },
-        "dnxcore50": {
-            "dependencies": {
-                "System.Console": "4.0.0-beta-23516",
-                "System.Collections": "4.0.11-beta-23516",
-                "System.Linq": "4.0.1-beta-23516",
-                "System.Net.Sockets": "4.1.0-beta-23516",
-                "System.Runtime": "4.0.21-beta-23516",
-                "System.Threading": "4.0.11-beta-23516"
-            }
-        }
-    },
+    "NETStandard.Library": "1.5.0-rc2-24027",
+    "NLog": "4.4.0-beta5",
+    "protobuf-net": "2.1.0-alpha-1",
+    "XGain": "1.0.0"
+  },
+  "description": "Kronos - the cache platform",
+  "frameworks": {
+    "netcoreapp1.0": {
+      "imports": [
+        "dnxcore50"
+      ]
+    }
+  },
+  "packOptions": {
     "iconUrl": "https://raw.githubusercontent.com/lukasz-pyrzyk/Kronos/master/SolutionItems/nugetIcon.png",
     "licenseUrl": "https://github.com/lukasz-pyrzyk/Kronos/blob/master/license.txt",
     "projectUrl": "https://github.com/lukasz-pyrzyk/Kronos",
-    "tags": [ "cache, distributed, socket, dotnetcore, dnx" ],
-    "version": "1.0.0-beta-*"
+    "summary": "Kronoc.Server - the cache platform",
+    "tags": [ "cache, distributed, in-memory, memory, socket, redis" ],
+  },
+  "version": "1.0.0-beta-*"
 }
