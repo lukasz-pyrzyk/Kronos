@@ -20,7 +20,7 @@
     "licenseUrl": "https://github.com/lukasz-pyrzyk/Kronos/blob/master/license.txt",
     "projectUrl": "https://github.com/lukasz-pyrzyk/Kronos",
     "summary": "Kronoc.Core is a main library for Kronos cache platform (Kronos.Server)",
-    "tags": [ "cache, distributed, socket, dotnetcore, dnx" ],
-    "version": "1.0.0-beta-*"
-  }
+    "tags": [ "cache, distributed, socket, dotnetcore, dnx" ]
+  },
+  "version": "1.0.1-alpha-*"
 }
