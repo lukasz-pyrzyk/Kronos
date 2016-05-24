@@ -6,7 +6,6 @@ using Kronos.Core.Configuration;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Kronos.Core.StatusCodes;
-using Microsoft.Extensions.PlatformAbstractions;
 using Moq;
 using Newtonsoft.Json;
 using Xunit;
@@ -89,11 +88,19 @@ namespace Kronos.Client.Tests
 
         private static KronosConfig LoadTestConfiguration()
         {
-            string dir = PlatformServices.Default.Application.ApplicationBasePath;
-            string configContent = File.ReadAllText($"{dir}/KronosConfig.json");
+            var server = new ServerConfig()
+            {
+                Ip = "0.0.0.0",
+                Port = 5000
+            };
 
-            KronosConfig config = JsonConvert.DeserializeObject<KronosConfig>(configContent);
-            return config;
+            return new KronosConfig()
+            {
+                ClusterConfig = new ClusterConfig()
+                {
+                    Servers = new ServerConfig[] { server}
+                }
+            };
         }
     }
 }
