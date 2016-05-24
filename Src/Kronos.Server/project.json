@@ -9,7 +9,7 @@
   "copyToOutput": [ "./Nlog.config" ],
   "copyright": "Lukasz Pyrzyk",
   "dependencies": {
-    "Kronos.Core": "1.0.0-*",
+    "Kronos.Core": "1.1.0-alpha-*",
     "Microsoft.NETCore.App": {
       "type": "platform",
       "version": "1.0.0-rc2-3002702"
@@ -34,5 +34,5 @@
     "summary": "Kronoc.Server - the cache platform",
     "tags": [ "cache, distributed, in-memory, memory, socket, redis" ]
   },
-  "version": "1.0.1-alpha-*"
+  "version": "1.1.0-alpha-*"
 }

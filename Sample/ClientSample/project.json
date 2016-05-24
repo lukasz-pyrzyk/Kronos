@@ -7,8 +7,8 @@
     "emitEntryPoint": true
   },
   "dependencies": {
-    "Kronos.Client": "1.0.0-*",
-    "Kronos.Core": "1.0.0-*",
+    "Kronos.Client": "1.1.0-alpha-*",
+    "Kronos.Core": "1.1.0-alpha-*",
     "NETStandard.Library": "1.5.0-rc2-24027"
   },
   "description": "Console Kronos client",
@@ -26,5 +26,5 @@
       ]
     }
   },
-  "version": "1.0.0-*"
+  "version": "1.1.0-alpha-*"
 }
