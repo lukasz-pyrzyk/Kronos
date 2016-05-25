@@ -1,19 +1,31 @@
-# test projects
-$projects = @(
-    "Src\Tests\Kronos.Core.Tests\"
-    "Src\Tests\Kronos.Client.Tests\"
-    "Src\Tests\Kronos.Server.Tests\"
+param (
+    [Parameter(Mandatory=$true)][string]$fileName = ""
 )
 
-# test runner
-function RunTests($path) {
-    dotnet test $path
+$openCover = Get-ChildItem -Path "C:\Users\$([Environment]::UserName)\.nuget\packages\OpenCover\" -Filter "OpenCover.Console.exe" -Recurse | % { $_.FullName }
+
+# entry folder
+$kronosSrc = ".\Src\"
+
+# test projects to run with OpenCover
+$projects = @(
+    @{Path="Tests\Kronos.Core.Tests"; Filter="+[Kronos.Core]*"}
+    @{Path="Tests\Kronos.Client.Tests"; Filter="+[Kronos.Client]*"}
+    @{Path="Tests\Kronos.Server.Tests"; Filter="+[Kronos.Server]*"}
+)
+
+function RunCodeCoverage($testProject, $filter) {
+    & $openCover -target:dotnet.exe `"-targetargs:test $testProject`" -output:$fileName -register:'user' -filter:$filter -mergeoutput
 }
 
-write-host "Tests started"
-# test each project
-foreach ($project in $projects){
-    write-host "Testing " $project
-    RunTests($project)
+# run unit tests and calculate code coverage for each test project
+foreach ($project in $projects) {
+    RunCodeCoverage $($kronosSrc + $project.Path) $project.Filter
 }
-write-host "Tests finished"
+
+# try to find error
+if($LastExitCode -ne 0)
+{
+   # mark build as failed
+   $host.SetShouldExit($LastExitCode)
+}
