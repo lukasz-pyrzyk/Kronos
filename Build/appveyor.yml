@@ -1,0 +1,39 @@
+version: 1.1.0-alpha-{build}
+image: Visual Studio 2015
+configuration: Debug
+platform: Any CPU
+cache: C:\Users\appveyor\.nuget\
+nuget:
+  account_feed: true
+  project_feed: true
+  disable_publish_on_pr: true
+build_script:
+- ps: >-
+    cd C:\projects\kronos
+
+    .\Scripts\build.ps1 -version $env:appveyor_build_number
+
+    .\scripts\pack.ps1 -version $env:appveyor_build_number
+test_script:
+- ps: >-
+    $coverageFile = "kronosCoverage.xml"
+
+
+    # run tests
+
+    .\Scripts\runTests.ps1 -fileName $coverageFile
+
+
+    # add python folder into Path variable
+
+    $env:Path = $env:Path + "C:\\Python34;C:\\Python34\\Scripts;"
+
+
+    # install codecov plugin
+
+    pip install codecov
+
+
+    # send code coverage to the codecov server
+
+    codecov -f $coverageFile
