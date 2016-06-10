@@ -1,13 +1,14 @@
 {
   "authors": [ "Lukasz Pyrzyk" ],
   "buildOptions": {
-    "emitEntryPoint": true
+    "emitEntryPoint": true,
+    "optimize": true
   },
   "commands": {
     "Kronos.Server": "Kronos.Server"
   },
-  "copyToOutput": [ "./Nlog.config" ],
   "copyright": "Lukasz Pyrzyk",
+  "copyToOutput": [ "./Nlog.config" ],
   "dependencies": {
     "Kronos.Core": "1.1.0",
     "Microsoft.NETCore.App": {
@@ -33,6 +34,11 @@
     "projectUrl": "https://github.com/lukasz-pyrzyk/Kronos",
     "summary": "Kronoc.Server - the cache platform",
     "tags": [ "cache, distributed, in-memory, memory, socket, redis" ]
+  },
+  "runtimeOptions": {
+    "configProperties": {
+      "System.GC.Server": true
+    }
   },
   "version": "1.1.0-*"
 }
