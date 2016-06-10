@@ -36,14 +36,9 @@ namespace Kronos.Core.Storage
             return _storage.TryRemove(key, out obj);
         }
 
-        public void Clear()
-        {
-            Dispose();
-        }
-
         public void Dispose()
         {
-            _logger.Info("Disposing InMemoryCache");
+            _logger.Info("Disposing storage");
             _storage.Clear();
         }
     }
