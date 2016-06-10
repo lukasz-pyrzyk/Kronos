@@ -32,7 +32,6 @@ namespace Kronos.Server.Tests.Listener
             ServerWorker worker = new ServerWorker(requestProcessorMock.Object, storageMock.Object, serverMock.Object);
             worker.Dispose();
 
-            storageMock.Verify(x => x.Clear(), Times.Once);
             serverMock.Verify(x => x.Dispose(), Times.Once);
         }
     }

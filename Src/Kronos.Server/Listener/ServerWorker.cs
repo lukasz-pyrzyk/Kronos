@@ -38,7 +38,6 @@ namespace Kronos.Server.Listener
 
         public void Dispose()
         {
-            Storage.Clear();
             _server.Dispose();
         }
 
