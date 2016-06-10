@@ -9,11 +9,7 @@ namespace Kronos.Benchmark
     {
         public static void Main(string[] args)
         {
-            BenchmarkRunner.Run<Benchmark_StoragePerformance>(DefaultConfig.Instance.RemoveBenchmarkFiles());
+            BenchmarkRunner.Run<InMemoryStorageBenchmark>(DefaultConfig.Instance.RemoveBenchmarkFiles());
         }
-    }
-
-    public class Benchmark_StoragePerformance
-    {
     }
 }
