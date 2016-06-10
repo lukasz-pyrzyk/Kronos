@@ -30,7 +30,7 @@ namespace Kronos.Server
             LoggerSetup();
 
             IRequestMapper mapper = new RequestMapper();
-            IStorage storage = new DiscAndMemoryStorage();
+            IStorage storage = new InMemoryStorage();
 
             using (IServer server = new XGainServer(IPAddress.Any, port, ProcessorResolver))
             {
