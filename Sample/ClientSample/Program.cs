@@ -19,7 +19,8 @@ namespace ClientSample
             IKronosClient client = KronosClientFactory.CreateClient(configPath);
 
             var watch = Stopwatch.StartNew();
-            byte[] package = File.ReadAllBytes(@"C:\Users\lpyrz_000\Source\Repos\Kronos\Sample\ClientSample\project.lock.json");
+            byte[] package = new byte[1024];
+            new Random().NextBytes(package);
 
             List<Task> workers = new List<Task>();
 
