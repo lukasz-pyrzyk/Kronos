@@ -14,8 +14,6 @@ namespace Kronos.Server
 {
     public class Program
     {
-        private static readonly Func<IProcessor<MessageArgs>> ProcessorResolver = () => new SocketProcessor();
-
         public static void LoggerSetup()
         {
             var reader = XmlReader.Create("NLog.config");
@@ -31,8 +29,9 @@ namespace Kronos.Server
 
             IRequestMapper mapper = new RequestMapper();
             IStorage storage = new InMemoryStorage();
+            IProcessor<MessageArgs> processor = new SocketProcessor();
 
-            using (IServer server = new XGainServer(IPAddress.Any, port, ProcessorResolver))
+            using (IServer server = new XGainServer(IPAddress.Any, port, processor))
             {
                 using (IServerWorker worker = new ServerWorker(mapper, storage, server))
                 {

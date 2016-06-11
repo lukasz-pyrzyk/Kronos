@@ -15,26 +15,26 @@ namespace Kronos.Server.Listener
     {
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
-        public async void ProcessSocketConnection(ISocket client, MessageArgs args)
+        public async Task<MessageArgs> ProcessSocketConnectionAsync(ISocket client)
         {
+            _logger.Debug("Accepting new request");
+            MessageArgs args = null;
             try
             {
-                _logger.Debug("Accepting new request");
-
                 byte[] typeBuffer = await ReceiveAndSendConfirmation(client);
                 byte[] requestBuffer = await ReceiveAndSendConfirmation(client);
 
                 RequestType type = SerializationUtils.Deserialize<RequestType>(typeBuffer);
 
-                args.RequestBytes = requestBuffer;
-                args.UserToken = type;
-                args.Client = client;
+                args = new MessageArgs(client, requestBuffer, type);
             }
             catch (SocketException ex)
             {
                 _logger.Error(
                     $"Exception during receiving request from client {client?.RemoteEndPoint} + {ex}");
             }
+
+            return args;
         }
 
         private async Task<byte[]> ReceiveAndSendConfirmation(ISocket socket)

@@ -21,7 +21,7 @@ namespace Kronos.Server.Tests.Listener
             clientSocketMock.Setup(x => x.Connected).Returns(true);
             byte[] packageBytes = new byte[clientSocketMock.Object.BufferSize];
             byte[] sizeBytes = new byte[sizeof(int)];
-            
+
             byte[] requestTypeBytes = SerializationUtils.Serialize(RequestType.Get);
             clientSocketMock.Setup(x => x.Receive(sizeBytes))
                 .Callback<byte[]>(package =>
@@ -49,8 +49,7 @@ namespace Kronos.Server.Tests.Listener
                     x.ProcessRequest(It.IsAny<byte[]>(), It.IsAny<RequestType>())).Throws(new TaskCanceledException());
 
             SocketProcessor p = new SocketProcessor();
-            MessageArgs msg = new MessageArgs();
-            p.ProcessSocketConnection(clientSocketMock.Object, msg);
+            p.ProcessSocketConnectionAsync(clientSocketMock.Object).Wait();
 
             clientSocketMock.Verify(x => x.Receive(It.IsAny<byte[]>()), Times.Exactly(4));
             clientSocketMock.Verify(x => x.Send(It.IsAny<byte[]>()), Times.Exactly(2));

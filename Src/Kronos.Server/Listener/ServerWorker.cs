@@ -30,7 +30,7 @@ namespace Kronos.Server.Listener
         {
             CancellationTokenSource tokenSource = new CancellationTokenSource();
 
-            Task serverTask = _server.StartSynchronously(tokenSource.Token);
+            Task serverTask = _server.Start(tokenSource.Token);
             serverTask.Wait(tokenSource.Token);
 
             _logger.Info("Shutting down server");
@@ -49,7 +49,7 @@ namespace Kronos.Server.Listener
 
         private void ServerOnOnStart(object sender, StartArgs args)
         {
-            _logger.Info($"Kronos server has been started on {args.LocalEndpoint} with {args.ProcessingType} mode");
+            _logger.Info($"Kronos server has been started on {args.LocalEndpoint}");
         }
 
         private void ServerOnOnError(object sender, ErrorArgs args)
