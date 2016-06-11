@@ -81,6 +81,7 @@ namespace Kronos.Core.Tests.Storage
             storage.AddOrUpdate("first", new byte[0]);
             storage.AddOrUpdate("second", new byte[0]);
 
+            storage.Dispose();
             Assert.Equal(storage.Count, 0);
         }
 
