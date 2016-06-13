@@ -11,7 +11,7 @@ $projects = @(
 
 # pack function for project
 function Pack($path) {
-    dotnet pack $path --version-suffix $version
+    dotnet pack $path -c Release --version-suffix $version;
 }
 
 write-host "Packeging started"
@@ -20,4 +20,8 @@ foreach ($project in $projects){
     write-host "Packing " $project "with suffix version " $version
     Pack($project)
 }
+
+# Set build as failed if any error occurred
+if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode )  }
+
 write-host "Packeging finished"
