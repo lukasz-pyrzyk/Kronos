@@ -1,4 +1,5 @@
-﻿using System.Threading;
+﻿using System;
+using System.Threading;
 using System.Threading.Tasks;
 using Kronos.Core.Communication;
 using Kronos.Core.Requests;
@@ -43,8 +44,16 @@ namespace Kronos.Server.Listener
 
         private void ServerOnOnNewMessage(object sender, MessageArgs args)
         {
-            Request request = _mapper.ProcessRequest(args.RequestBytes, (RequestType)args.UserToken);
-            request.ProcessAndSendResponse(args.Client, Storage);
+            try
+            {
+                Request request = _mapper.ProcessRequest(args.RequestBytes, (RequestType)args.UserToken);
+                request.ProcessAndSendResponse(args.Client, Storage);
+            }
+            catch (Exception ex)
+            {
+                _logger.Error(ex);
+            }
+
         }
 
         private void ServerOnOnStart(object sender, StartArgs args)
