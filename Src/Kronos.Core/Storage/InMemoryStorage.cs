@@ -7,18 +7,23 @@ namespace Kronos.Core.Storage
     public class InMemoryStorage : IStorage
     {
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private readonly IExpiryProvider _expiryProvider;
 
         private readonly ConcurrentDictionary<NodeMetatada, byte[]> _storage =
             new ConcurrentDictionary<NodeMetatada, byte[]>(new NodeComparer());
 
-        private readonly CancellationTokenSource _cancel = new CancellationTokenSource();
+        private readonly CancellationTokenSource _cancelToken = new CancellationTokenSource();
 
         public int Count => _storage.Count;
 
-        public InMemoryStorage()
+        public InMemoryStorage() : this(new StorageExpiryProvider())
         {
-            var provider = new StorageExpiryProvider();
-            provider.StartWork(_storage, _cancel);
+        }
+
+        internal InMemoryStorage(IExpiryProvider expiryProvider)
+        {
+            _expiryProvider = expiryProvider;
+            _expiryProvider.Start(_storage, _cancelToken.Token);
         }
 
         public void AddOrUpdate(string key, byte[] obj)
@@ -54,7 +59,7 @@ namespace Kronos.Core.Storage
         {
             _logger.Info("Disposing storage");
 
-            _cancel.Cancel();
+            _cancelToken.Cancel();
             _storage.Clear();
         }
     }
