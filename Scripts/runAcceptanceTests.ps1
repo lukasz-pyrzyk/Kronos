@@ -4,7 +4,7 @@ $projects = @(
 
 # test function for project
 function RunTests($path) {
-    dotnet test $path
+    dotnet test $path -parallel none
 }
 
 function RestorePackages(){
