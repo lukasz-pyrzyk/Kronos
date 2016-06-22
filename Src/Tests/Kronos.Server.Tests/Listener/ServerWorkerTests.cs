@@ -21,18 +21,5 @@ namespace Kronos.Server.Tests.Listener
             Assert.NotNull(worker);
             Assert.Equal(worker.Storage, storageMock.Object);
         }
-
-        [Fact]
-        public void Dispose_ClearsStorage()
-        {
-            var requestProcessorMock = new Mock<IRequestMapper>();
-            var storageMock = new Mock<IStorage>();
-            var serverMock = new Mock<IServer>();
-
-            ServerWorker worker = new ServerWorker(requestProcessorMock.Object, storageMock.Object, serverMock.Object);
-            worker.Dispose();
-
-            serverMock.Verify(x => x.Dispose(), Times.Once);
-        }
     }
 }

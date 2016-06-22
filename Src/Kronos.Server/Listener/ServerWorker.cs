@@ -9,7 +9,7 @@ using XGain;
 
 namespace Kronos.Server.Listener
 {
-    internal class ServerWorker : IServerWorker
+    public class ServerWorker : IServerWorker
     {
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
         private readonly IRequestMapper _mapper;
@@ -37,11 +37,6 @@ namespace Kronos.Server.Listener
             _logger.Info("Shutting down server");
         }
 
-        public void Dispose()
-        {
-            _server.Dispose();
-        }
-
         private void ServerOnOnNewMessage(object sender, MessageArgs args)
         {
             try
@@ -53,7 +48,6 @@ namespace Kronos.Server.Listener
             {
                 _logger.Error(ex);
             }
-
         }
 
         private void ServerOnOnStart(object sender, StartArgs args)

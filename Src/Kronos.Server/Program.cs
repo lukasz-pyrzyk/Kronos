@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Threading.Tasks;
 using System.Xml;
 using Kronos.Core.Communication;
 using Kronos.Core.Requests;
@@ -23,21 +24,28 @@ namespace Kronos.Server
 
         public static void Main(string[] args)
         {
-            int port = Convert.ToInt32(args[0]);
-
             LoggerSetup();
 
-            IRequestMapper mapper = new RequestMapper();
-            IStorage storage = new InMemoryStorage();
-            IProcessor<MessageArgs> processor = new SocketProcessor();
+            int port = Convert.ToInt32(args[0]);
 
-            using (IServer server = new XGainServer(IPAddress.Any, port, processor))
+            Task.WaitAll(StartAsync(port));
+        }
+
+        public static Task StartAsync(int port)
+        {
+            return Task.Run(() =>
             {
-                using (IServerWorker worker = new ServerWorker(mapper, storage, server))
+                using (IStorage storage = new InMemoryStorage())
                 {
-                    worker.StartListening();
+                    IProcessor<MessageArgs> processor = new SocketProcessor();
+                    using (IServer server = new XGainServer(IPAddress.Any, port, processor))
+                    {
+                        IRequestMapper mapper = new RequestMapper();
+                        IServerWorker worker = new ServerWorker(mapper, storage, server);
+                        worker.StartListening();
+                    }
                 }
-            }
+            });
         }
     }
 }
