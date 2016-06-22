@@ -41,5 +41,39 @@ namespace Kronos.AcceptanceTest
 
             Assert.Equal(data, received);
         }
+
+        [Fact]
+        public void Insert_And_Delete_WorksCorrectly()
+        {
+            const int port = 5000;
+            const string key = "key";
+            byte[] data = Encoding.UTF8.GetBytes("lorem ipsum");
+            DateTime expiry = DateTime.MaxValue;
+
+            int sizeBeforeRemoving;
+            int sizeAfterRemoving;
+            using (IStorage storage = new InMemoryStorage())
+            {
+                IProcessor<MessageArgs> processor = new SocketProcessor();
+                using (IServer server = new XGainServer(IPAddress.Any, port, processor))
+                {
+                    IRequestMapper mapper = new RequestMapper();
+                    IServerWorker worker = new ServerWorker(mapper, storage, server);
+                    Task.Run(() => worker.StartListening());
+
+                    IKronosClient client = KronosClientFactory.CreateClient(port);
+                    client.Insert(key, data, expiry);
+
+                    sizeBeforeRemoving = storage.Count;
+
+                    client.Delete(key);
+
+                    sizeAfterRemoving = storage.Count;
+                }
+            }
+
+            Assert.Equal(sizeBeforeRemoving, 1);
+            Assert.Equal(sizeAfterRemoving, 0);
+        }
     }
 }
