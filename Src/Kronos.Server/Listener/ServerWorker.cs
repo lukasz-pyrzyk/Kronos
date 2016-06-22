@@ -27,14 +27,9 @@ namespace Kronos.Server.Listener
             _server.OnError += ServerOnOnError;
         }
 
-        public void StartListening()
+        public Task StartListeningAsync(CancellationToken token)
         {
-            CancellationTokenSource tokenSource = new CancellationTokenSource();
-
-            Task serverTask = _server.Start(tokenSource.Token);
-            serverTask.Wait(tokenSource.Token);
-
-            _logger.Info("Shutting down server");
+            return _server.Start(token);
         }
 
         private void ServerOnOnNewMessage(object sender, MessageArgs args)

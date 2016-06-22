@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using Kronos.Core.Communication;
@@ -15,6 +16,8 @@ namespace Kronos.Server
 {
     public class Program
     {
+        private static readonly CancellationTokenSource tokenSource = new CancellationTokenSource();
+
         public static void LoggerSetup()
         {
             var reader = XmlReader.Create("NLog.config");
@@ -28,7 +31,7 @@ namespace Kronos.Server
 
             int port = Convert.ToInt32(args[0]);
 
-            Task.WaitAll(StartAsync(port));
+            Task.WaitAll(new[] { StartAsync(port) }, tokenSource.Token);
         }
 
         public static Task StartAsync(int port)
@@ -42,7 +45,7 @@ namespace Kronos.Server
                     {
                         IRequestMapper mapper = new RequestMapper();
                         IServerWorker worker = new ServerWorker(mapper, storage, server);
-                        worker.StartListening();
+                        return worker.StartListeningAsync(tokenSource.Token);
                     }
                 }
             });

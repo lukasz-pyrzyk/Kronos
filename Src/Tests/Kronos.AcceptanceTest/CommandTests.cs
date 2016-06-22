@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Text;
+using System.Threading;
 using System.Threading.Tasks;
 using Kronos.Client;
 using Kronos.Core.Communication;
@@ -18,12 +19,13 @@ namespace Kronos.AcceptanceTest
         [Fact]
         public void Insert_And_Get_WorksCorrectly()
         {
-            const int port = 5000;
+            const int port = 9999;
             const string key = "key";
             byte[] data = Encoding.UTF8.GetBytes("lorem ipsum");
             DateTime expiry = DateTime.MaxValue;
 
             byte[] received;
+            var tokenSource = new CancellationTokenSource();
             using (IStorage storage = new InMemoryStorage())
             {
                 IProcessor<MessageArgs> processor = new SocketProcessor();
@@ -31,7 +33,7 @@ namespace Kronos.AcceptanceTest
                 {
                     IRequestMapper mapper = new RequestMapper();
                     IServerWorker worker = new ServerWorker(mapper, storage, server);
-                    Task.Run(() => worker.StartListening());
+                    worker.StartListeningAsync(tokenSource.Token);
 
                     IKronosClient client = KronosClientFactory.CreateClient(port);
                     client.Insert(key, data, expiry);
@@ -39,19 +41,22 @@ namespace Kronos.AcceptanceTest
                 }
             }
 
+            tokenSource.Cancel();
             Assert.Equal(data, received);
         }
 
         [Fact]
         public void Insert_And_Delete_WorksCorrectly()
         {
-            const int port = 5000;
+            const int port = 9998;
             const string key = "key";
             byte[] data = Encoding.UTF8.GetBytes("lorem ipsum");
             DateTime expiry = DateTime.MaxValue;
 
             int sizeBeforeRemoving;
             int sizeAfterRemoving;
+            var tokenSource = new CancellationTokenSource();
+            Task workerTask;
             using (IStorage storage = new InMemoryStorage())
             {
                 IProcessor<MessageArgs> processor = new SocketProcessor();
@@ -59,7 +64,7 @@ namespace Kronos.AcceptanceTest
                 {
                     IRequestMapper mapper = new RequestMapper();
                     IServerWorker worker = new ServerWorker(mapper, storage, server);
-                    Task.Run(() => worker.StartListening());
+                    workerTask = worker.StartListeningAsync(tokenSource.Token);
 
                     IKronosClient client = KronosClientFactory.CreateClient(port);
                     client.Insert(key, data, expiry);
@@ -72,6 +77,7 @@ namespace Kronos.AcceptanceTest
                 }
             }
 
+            tokenSource.Cancel();
             Assert.Equal(sizeBeforeRemoving, 1);
             Assert.Equal(sizeAfterRemoving, 0);
         }
