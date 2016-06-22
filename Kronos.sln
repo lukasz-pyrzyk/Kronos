@@ -28,6 +28,8 @@ Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "ClientSample", "Sample\Clie
 EndProject
 Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Kronos.Benchmark", "Src\Kronos.Benchmark\Kronos.Benchmark.xproj", "{338C398B-0AB9-4763-B046-3590337550E0}"
 EndProject
+Project("{8BB2217D-0F2D-49D1-97BC-3654ED321F3B}") = "Kronos.AcceptanceTest", "Src\Tests\Kronos.AcceptanceTest\Kronos.AcceptanceTest.xproj", "{DA5DE27A-C4F5-4AF9-9DB1-BF2049317AEE}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -66,6 +68,10 @@ Global
 		{338C398B-0AB9-4763-B046-3590337550E0}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{338C398B-0AB9-4763-B046-3590337550E0}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{338C398B-0AB9-4763-B046-3590337550E0}.Release|Any CPU.Build.0 = Release|Any CPU
+		{DA5DE27A-C4F5-4AF9-9DB1-BF2049317AEE}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{DA5DE27A-C4F5-4AF9-9DB1-BF2049317AEE}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{DA5DE27A-C4F5-4AF9-9DB1-BF2049317AEE}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{DA5DE27A-C4F5-4AF9-9DB1-BF2049317AEE}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
@@ -75,5 +81,6 @@ Global
 		{960ACF5A-ED8A-4B44-B6AA-90BFB3BD7CF2} = {6A45CC5D-C17F-4F32-AD54-B585E1747D43}
 		{275C87FA-03BC-48A5-A7CE-499738E85BA8} = {6A45CC5D-C17F-4F32-AD54-B585E1747D43}
 		{217AD1C3-650E-48A7-BF44-95C395EAF167} = {DD99F77D-5451-4051-8F71-432877ACFFB0}
+		{DA5DE27A-C4F5-4AF9-9DB1-BF2049317AEE} = {6A45CC5D-C17F-4F32-AD54-B585E1747D43}
 	EndGlobalSection
 EndGlobal
