@@ -8,7 +8,11 @@
   },
   "dependencies": {
     "Kronos.Client": "1.1.0-*",
-    "Kronos.Core": "1.1.0-*"
+    "Kronos.Core": "1.1.0-*",
+    "Microsoft.NETCore.App": {
+      "type": "platform",
+      "version": "1.0.0"
+    }
   },
   "description": "Console Kronos client",
   "frameworks": {

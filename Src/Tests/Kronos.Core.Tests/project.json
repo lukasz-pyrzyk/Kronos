@@ -10,7 +10,11 @@
     "OpenCover": "4.6.519",
     "protobuf-net": "2.1.0",
     "XGain": "1.2.0",
-    "xunit": "2.2.0-beta2-build3300"
+    "xunit": "2.2.0-beta2-build3300",
+    "Microsoft.NETCore.App": {
+      "type": "platform",
+      "version": "1.0.0"
+    }
   },
   "description": "Kronos - core dll tests",
   "frameworks": {
