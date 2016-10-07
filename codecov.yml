@@ -2,8 +2,8 @@ comment:
   layout: header, changes, diff
 coverage:
   fixes:
-  - Kronos.Client::Src/Kronos.Client
-  - Kronos.Core::Src/Kronos.Core
-  - Kronos.Server::Src/Kronos.Server
+  - "^Kronos.Client::Src/Kronos.Client"
+  - "^Kronos.Core::Src/Kronos.Core"
+  - "^Kronos.Server::Src/Kronos.Server"
   status:
     patch: false
