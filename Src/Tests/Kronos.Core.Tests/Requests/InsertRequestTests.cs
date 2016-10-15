@@ -7,6 +7,7 @@ using Kronos.Core.Serialization;
 using Kronos.Core.StatusCodes;
 using Kronos.Core.Storage;
 using Moq;
+using NSubstitute;
 using XGain.Sockets;
 using Xunit;
 
@@ -63,15 +64,13 @@ namespace Kronos.Core.Tests.Requests
         {
             var request = new InsertRequest();
 
-            var communicationServiceMock = new Mock<IClientServerConnection>();
-            communicationServiceMock
-                .Setup(x => x.SendToServerAsync(request))
-                .Returns(SerializationUtils.Serialize(status));
+            var communicationServiceMock = Substitute.For<IClientServerConnection>();
+            communicationServiceMock.SendToServerAsync(request).Returns(SerializationUtils.Serialize(status));
 
-            RequestStatusCode response = await request.ExecuteAsync<RequestStatusCode>(communicationServiceMock.Object);
+            RequestStatusCode response = await request.ExecuteAsync<RequestStatusCode>(communicationServiceMock);
 
             Assert.Equal(response, status);
-            communicationServiceMock.Verify(x => x.SendToServerAsync(It.IsAny<InsertRequest>()), Times.Once);
+            await communicationServiceMock.Received(1).SendToServerAsync(It.IsAny<InsertRequest>());
         }
 
         [Fact]

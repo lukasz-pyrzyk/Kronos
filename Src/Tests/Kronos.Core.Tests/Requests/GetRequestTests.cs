@@ -7,6 +7,7 @@ using Kronos.Core.Serialization;
 using Kronos.Core.StatusCodes;
 using Kronos.Core.Storage;
 using Moq;
+using NSubstitute;
 using XGain.Sockets;
 
 namespace Kronos.Core.Tests.Requests
@@ -49,15 +50,13 @@ namespace Kronos.Core.Tests.Requests
             byte[] value = SerializationUtils.Serialize("lorem ipsum");
             var request = new GetRequest("masterKey");
 
-            var communicationServiceMock = new Mock<IClientServerConnection>();
-            communicationServiceMock
-                .Setup(x => x.SendToServerAsync(request))
-                .Returns(SerializationUtils.Serialize(value));
+            var communicationServiceMock = Substitute.For<IClientServerConnection>();
+            communicationServiceMock.SendToServerAsync(request).Returns(SerializationUtils.Serialize(value));
 
-            byte[] response = await request.ExecuteAsync<byte[]>(communicationServiceMock.Object);
+            byte[] response = await request.ExecuteAsync<byte[]>(communicationServiceMock);
 
             Assert.Equal(response, value);
-            communicationServiceMock.Verify(x => x.SendToServerAsync(It.IsAny<GetRequest>()), Times.Once);
+            await communicationServiceMock.Received(1).SendToServerAsync(It.IsAny<GetRequest>());
         }
 
         [Fact]
@@ -66,15 +65,15 @@ namespace Kronos.Core.Tests.Requests
             byte[] value = SerializationUtils.Serialize(RequestStatusCode.NotFound);
             var request = new GetRequest("masterKey");
 
-            var communicationServiceMock = new Mock<IClientServerConnection>();
-            communicationServiceMock.Setup(x => x.SendToServerAsync(request)).Returns(value);
+            var communicationServiceMock = Substitute.For<IClientServerConnection>();
+            communicationServiceMock.SendToServerAsync(request).Returns(value);
 
-            byte[] response = await request.ExecuteAsync<byte[]>(communicationServiceMock.Object);
+            byte[] response = await request.ExecuteAsync<byte[]>(communicationServiceMock);
 
             Assert.Equal(response.Length, 1);
             Assert.Equal(response[0], 0);
 
-            communicationServiceMock.Verify(x => x.SendToServerAsync(request), Times.Once);
+            await communicationServiceMock.Received(1).SendToServerAsync(request);
         }
 
         [Fact]
