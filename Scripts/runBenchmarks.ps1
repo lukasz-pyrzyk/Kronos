@@ -23,4 +23,7 @@ foreach ($project in $projects){
     Run($project)
 }
 
+# Set build as failed if any error occurred
+if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode )  }
+
 write-host "Benchmark finished"
