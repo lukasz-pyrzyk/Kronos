@@ -1,4 +1,5 @@
-﻿using Kronos.Core.Communication;
+﻿using System.Threading.Tasks;
+using Kronos.Core.Communication;
 using Kronos.Core.Serialization;
 using Kronos.Core.Storage;
 using ProtoBuf;
@@ -19,9 +20,9 @@ namespace Kronos.Core.Requests
 
         public abstract void ProcessAndSendResponse(ISocket socket, IStorage storage);
 
-        public T Execute<T>(IClientServerConnection service)
+        public async Task<T> ExecuteAsync<T>(IClientServerConnection service)
         {
-            byte[] response = service.SendToServer(this);
+            byte[] response = await service.SendToServerAsync(this);
 
             T results = PrepareResponse<T>(response);
 

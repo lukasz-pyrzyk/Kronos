@@ -1,4 +1,5 @@
-﻿using Kronos.Core.Requests;
+﻿using System.Threading.Tasks;
+using Kronos.Core.Requests;
 
 namespace Kronos.Core.Communication
 {
@@ -12,6 +13,6 @@ namespace Kronos.Core.Communication
         /// </summary>
         /// <param name="request">Model of the request model</param>
         /// <returns>Status code of request</returns>
-        byte[] SendToServer(Request request);
+        Task<byte[]> SendToServerAsync(Request request);
     }
 }

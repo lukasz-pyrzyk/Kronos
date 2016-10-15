@@ -4,6 +4,7 @@ using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading;
+using System.Threading.Tasks;
 using Kronos.Core.Communication;
 using Kronos.Core.Exceptions;
 using Kronos.Core.Requests;
@@ -29,7 +30,7 @@ namespace Kronos.Client.Transfer
             _newSocketFunc = newSocketFunc;
         }
 
-        public byte[] SendToServer(Request request)
+        public async Task<byte[]> SendToServerAsync(Request request)
         {
             ISocket socket = _newSocketFunc();
 
