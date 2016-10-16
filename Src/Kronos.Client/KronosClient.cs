@@ -86,9 +86,22 @@ namespace Kronos.Client
             return tasks.Sum(x => x.Result);
         }
 
-        public Task<bool> ContainsAsync()
+        public async Task<bool> ContainsAsync(string key)
         {
-            throw new NotImplementedException();
+            ServerConfig[] servers = _serverProvider.SelectServers();
+
+            Task<bool>[] tasks = new Task<bool>[servers.Length];
+            for (int i = 0; i < servers.Length; i++)
+            {
+                var server = servers[i];
+                var request = new ContainsRequest(key);
+                IClientServerConnection connection = _connectionResolver(server.EndPoint);
+                tasks[i] = request.ExecuteAsync<bool>(connection);
+            }
+
+            await Task.WhenAll(tasks);
+
+            return tasks.Any(x => x.Result);
         }
 
         private IClientServerConnection SelectServerAndCreateConnection(string key)

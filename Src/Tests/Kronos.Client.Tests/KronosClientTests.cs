@@ -104,6 +104,7 @@ namespace Kronos.Client.Tests
         public async Task Contains_ReturnsTrueIfElementExistsInStorage()
         {
             bool expected = true;
+            string key = "lorem ipsum";
             var communicationServiceMock = Substitute.For<IClientServerConnection>();
             communicationServiceMock.SendToServerAsync(Arg.Any<ContainsRequest>())
                 .Returns(SerializationUtils.Serialize(expected));
@@ -111,7 +112,7 @@ namespace Kronos.Client.Tests
             KronosConfig config = LoadTestConfiguration();
             IKronosClient client = new KronosClient(config, endpoint => communicationServiceMock);
 
-            bool exists = await client.ContainsAsync();
+            bool exists = await client.ContainsAsync(key);
 
             Assert.Equal(expected, exists);
             await communicationServiceMock.Received(1).SendToServerAsync(Arg.Any<ContainsRequest>());

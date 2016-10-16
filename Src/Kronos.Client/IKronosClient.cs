@@ -40,6 +40,6 @@ namespace Kronos.Client
         /// Checks if element exists in the storage
         /// </summary>
         /// <returns></returns>
-        Task<bool> ContainsAsync();
+        Task<bool> ContainsAsync(string key);
     }
 }
