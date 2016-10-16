@@ -88,7 +88,7 @@ namespace Kronos.AcceptanceTest
         [Fact]
         public async Task Insert_And_Count_WorksCorrectly()
         {
-            const int port = 9998;
+            const int port = 9997;
             const string key = "key";
             byte[] data = Encoding.UTF8.GetBytes("lorem ipsum");
             DateTime expiry = DateTime.MaxValue;
@@ -123,7 +123,7 @@ namespace Kronos.AcceptanceTest
         [Fact]
         public async Task Insert_And_Contains_WorksCorrectly()
         {
-            const int port = 9998;
+            const int port = 9996;
             const string key = "key";
             byte[] data = Encoding.UTF8.GetBytes("lorem ipsum");
             DateTime expiry = DateTime.MaxValue;
@@ -158,7 +158,7 @@ namespace Kronos.AcceptanceTest
         [Fact]
         public async Task Contains_WorksCorrectly()
         {
-            const int port = 9998;
+            const int port = 9995;
             const string key = "key";
 
             var tokenSource = new CancellationTokenSource();
