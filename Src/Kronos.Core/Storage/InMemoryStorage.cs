@@ -16,11 +16,7 @@ namespace Kronos.Core.Storage
 
         public int Count => _storage.Count;
 
-        public InMemoryStorage() : this(new StorageExpiryProvider())
-        {
-        }
-
-        internal InMemoryStorage(IExpiryProvider expiryProvider)
+        public InMemoryStorage(IExpiryProvider expiryProvider)
         {
             _expiryProvider = expiryProvider;
             _expiryProvider.Start(_storage, _cancelToken.Token);
