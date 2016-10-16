@@ -100,5 +100,27 @@ namespace Kronos.Client.Tests
 
             Assert.Equal(selectedServer, first);
         }
+
+        [Fact]
+        public void SelectServers_ReturnsCollectionOfServers()
+        {
+            // Arrange
+            ClusterConfig config = new ClusterConfig
+            {
+                Servers = new[] {
+                    new ServerConfig { Ip = "8.8.8.8", Port = 50 },
+                    new ServerConfig { Ip = "8.8.8.8", Port = 60 },
+                    new ServerConfig { Ip = "8.8.8.4", Port = 60 },
+                    new ServerConfig { Ip = "8.8.8.4", Port = 60 }
+                }
+            };
+
+            // Act
+            ServerProvider provider = new ServerProvider(config);
+            ServerConfig[] servers = provider.SelectServers();
+
+            // Assert
+            Assert.Equal(config.Servers, servers);
+        }
     }
 }

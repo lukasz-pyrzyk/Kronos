@@ -15,6 +15,9 @@ namespace Kronos.Core.Requests
         Get = 2,
 
         [ProtoEnum]
-        Delete = 3
+        Delete = 3,
+
+        [ProtoEnum]
+        Count = 4
     }
 }

@@ -29,5 +29,11 @@ namespace Kronos.Client
         /// <param name="key"></param>
         /// <returns></returns>
         Task DeleteAsync(string key);
+
+        /// <summary>
+        /// Counts number of objects in storage
+        /// </summary>
+        /// <returns>Number of objects in storage</returns>
+        Task<int> CountAsync();
     }
 }

@@ -79,24 +79,40 @@ namespace Kronos.Client.Tests
 
             await client.DeleteAsync("key");
 
+            await communicationServiceMock.Received(1).SendToServerAsync(Arg.Any<DeleteRequest>());
+        }
 
-                await communicationServiceMock.Received(1).SendToServerAsync(Arg.Any<DeleteRequest>());
+        [Fact]
+        public async Task Count_ReturnsNumberOfElementsInStorage()
+        {
+            int countPerServer = 5;
+            var communicationServiceMock = Substitute.For<IClientServerConnection>();
+            communicationServiceMock.SendToServerAsync(Arg.Any<CountRequest>())
+                .Returns(SerializationUtils.Serialize(countPerServer));
 
+            KronosConfig config = LoadTestConfiguration();
+            int serverCount = config.ClusterConfig.Servers.Length;
+            IKronosClient client = new KronosClient(config, endpoint => communicationServiceMock);
+
+            int sum = await client.CountAsync();
+
+            Assert.Equal(sum, countPerServer * serverCount);
+            await communicationServiceMock.Received(serverCount).SendToServerAsync(Arg.Any<CountRequest>());
         }
 
         private static KronosConfig LoadTestConfiguration()
         {
-            var server = new ServerConfig()
+            var server = new ServerConfig
             {
                 Ip = "0.0.0.0",
                 Port = 5000
             };
 
-            return new KronosConfig()
+            return new KronosConfig
             {
-                ClusterConfig = new ClusterConfig()
+                ClusterConfig = new ClusterConfig
                 {
-                    Servers = new ServerConfig[] { server}
+                    Servers = new[] { server }
                 }
             };
         }
