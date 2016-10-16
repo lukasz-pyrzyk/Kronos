@@ -79,24 +79,23 @@ namespace Kronos.Client.Tests
 
             await client.DeleteAsync("key");
 
-
-                await communicationServiceMock.Received(1).SendToServerAsync(Arg.Any<DeleteRequest>());
+            await communicationServiceMock.Received(1).SendToServerAsync(Arg.Any<DeleteRequest>());
 
         }
 
         private static KronosConfig LoadTestConfiguration()
         {
-            var server = new ServerConfig()
+            var server = new ServerConfig
             {
                 Ip = "0.0.0.0",
                 Port = 5000
             };
 
-            return new KronosConfig()
+            return new KronosConfig
             {
-                ClusterConfig = new ClusterConfig()
+                ClusterConfig = new ClusterConfig
                 {
-                    Servers = new ServerConfig[] { server}
+                    Servers = new[] { server }
                 }
             };
         }
