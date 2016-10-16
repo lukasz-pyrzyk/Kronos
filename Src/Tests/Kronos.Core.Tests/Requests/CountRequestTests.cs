@@ -37,13 +37,13 @@ namespace Kronos.Core.Tests.Requests
         [Fact]
         public async Task Execute_ReturnsCorrectValue()
         {
-            byte[] value = SerializationUtils.Serialize(5);
+            int value = 5;
             var request = new CountRequest();
 
             var communicationServiceMock = Substitute.For<IClientServerConnection>();
-            communicationServiceMock.SendToServerAsync(request).Returns(value);
+            communicationServiceMock.SendToServerAsync(request).Returns(SerializationUtils.Serialize(value));
 
-            byte[] response = await request.ExecuteAsync<byte[]>(communicationServiceMock);
+            int response = await request.ExecuteAsync<int>(communicationServiceMock);
 
             Assert.Equal(response, value);
             await communicationServiceMock.Received(1).SendToServerAsync(Arg.Any<CountRequest>());

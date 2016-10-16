@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Linq;
 using System.Net;
 using System.Threading.Tasks;
 using Kronos.Client.Transfer;
@@ -65,9 +66,24 @@ namespace Kronos.Client
             Trace.WriteLine($"InsertRequest status: {status}");
         }
 
-        public Task<int> CountAsync()
+        public async Task<int> CountAsync()
         {
-            return Task.FromResult(0);
+            Trace.WriteLine("New count request");
+
+            ServerConfig[] servers = _serverProvider.SelectServers();
+
+            Task<int>[] tasks = new Task<int>[servers.Length];
+            for (int i = 0; i < servers.Length; i++)
+            {
+                var server = servers[i];
+                var request = new CountRequest();
+                IClientServerConnection connection = _connectionResolver(server.EndPoint);
+                tasks[i] = request.ExecuteAsync<int>(connection);
+            }
+
+            await Task.WhenAll(tasks);
+
+            return tasks.Sum(x => x.Result);
         }
 
         private IClientServerConnection SelectServerAndCreateConnection(string key)
@@ -79,3 +95,4 @@ namespace Kronos.Client
         }
     }
 }
+

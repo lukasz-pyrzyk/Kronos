@@ -85,16 +85,19 @@ namespace Kronos.Client.Tests
         [Fact]
         public async Task Count_ReturnsNumberOfElementsInStorage()
         {
+            int countPerServer = 5;
             var communicationServiceMock = Substitute.For<IClientServerConnection>();
             communicationServiceMock.SendToServerAsync(Arg.Any<CountRequest>())
-                .Returns(SerializationUtils.Serialize(RequestStatusCode.Ok));
+                .Returns(SerializationUtils.Serialize(countPerServer));
 
             KronosConfig config = LoadTestConfiguration();
+            int serverCount = config.ClusterConfig.Servers.Length;
             IKronosClient client = new KronosClient(config, endpoint => communicationServiceMock);
 
-            await client.CountAsync();
+            int sum = await client.CountAsync();
 
-            await communicationServiceMock.Received(1).SendToServerAsync(Arg.Any<CountRequest>());
+            Assert.Equal(sum, countPerServer * serverCount);
+            await communicationServiceMock.Received(serverCount).SendToServerAsync(Arg.Any<CountRequest>());
         }
 
         private static KronosConfig LoadTestConfiguration()
