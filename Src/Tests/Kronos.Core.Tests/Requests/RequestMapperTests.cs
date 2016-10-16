@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Xunit;
@@ -22,10 +23,10 @@ namespace Kronos.Core.Tests.Requests
             Assert.Equal(ex.Message, $"Cannot find processor for type {type}");
         }
 
-        [Fact]
-        public void ProcessRequest_DetectsAndDeserializesReqeustType_Insert()
+        [Theory]
+        [MemberData(nameof(TestData))]
+        public void ProcessRequest_DetectsAndDeserializesReqeustType(Request request)
         {
-            var request = new InsertRequest();
             byte[] requestBytes = SerializationUtils.Serialize(request);
 
             IRequestMapper processor = new RequestMapper();
@@ -34,53 +35,13 @@ namespace Kronos.Core.Tests.Requests
             Assert.Equal(mappedRequest.GetType(), request.GetType());
         }
 
-        [Fact]
-        public void ProcessRequest_DetectsAndDeserializesReqeustType_Get()
+        public static IEnumerable<object[]> TestData()
         {
-            var request = new GetRequest();
-            byte[] requestBytes = SerializationUtils.Serialize(request);
-
-            IRequestMapper processor = new RequestMapper();
-
-            Request mappedRequest = processor.ProcessRequest(requestBytes, request.RequestType);
-            Assert.Equal(mappedRequest.GetType(), request.GetType());
-        }
-
-
-        [Fact]
-        public void ProcessRequest_DetectsAndDeserializesReqeustType_Delete()
-        {
-            var request = new DeleteRequest();
-            byte[] requestBytes = SerializationUtils.Serialize(request);
-
-            IRequestMapper processor = new RequestMapper();
-
-            Request mappedRequest = processor.ProcessRequest(requestBytes, request.RequestType);
-            Assert.Equal(mappedRequest.GetType(), request.GetType());
-        }
-
-        [Fact]
-        public void ProcessRequest_DetectsAndDeserializesReqeustType_Contains()
-        {
-            var request = new ContainsRequest();
-            byte[] requestBytes = SerializationUtils.Serialize(request);
-
-            IRequestMapper processor = new RequestMapper();
-
-            Request mappedRequest = processor.ProcessRequest(requestBytes, request.RequestType);
-            Assert.Equal(mappedRequest.GetType(), request.GetType());
-        }
-
-        [Fact]
-        public void ProcessRequest_DetectsAndDeserializesReqeustType_Count()
-        {
-            var request = new CountRequest();
-            byte[] requestBytes = SerializationUtils.Serialize(request);
-
-            IRequestMapper processor = new RequestMapper();
-
-            Request mappedRequest = processor.ProcessRequest(requestBytes, request.RequestType);
-            Assert.Equal(mappedRequest.GetType(), request.GetType());
+            yield return new Request[] { new InsertRequest() };
+            yield return new Request[] { new GetRequest(), };
+            yield return new Request[] { new DeleteRequest() };
+            yield return new Request[] { new CountRequest() };
+            yield return new Request[] { new ContainsRequest() };
         }
     }
 }
