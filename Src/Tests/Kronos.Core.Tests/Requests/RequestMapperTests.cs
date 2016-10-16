@@ -3,9 +3,9 @@ using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Xunit;
 
-namespace Kronos.Core.Tests.RequestProcessing
+namespace Kronos.Core.Tests.Requests
 {
-    public class RequestProcessorTests
+    public class RequestMapperTests
     {
         [Fact]
         public void ProcessRequest_ThrowsWhenProcessorForRequestTypeIsNotDefined()
@@ -59,5 +59,28 @@ namespace Kronos.Core.Tests.RequestProcessing
             Assert.Equal(mappedRequest.GetType(), request.GetType());
         }
 
+        [Fact]
+        public void ProcessRequest_DetectsAndDeserializesReqeustType_Contains()
+        {
+            var request = new ContainsRequest();
+            byte[] requestBytes = SerializationUtils.Serialize(request);
+
+            IRequestMapper processor = new RequestMapper();
+
+            Request mappedRequest = processor.ProcessRequest(requestBytes, request.RequestType);
+            Assert.Equal(mappedRequest.GetType(), request.GetType());
+        }
+
+        [Fact]
+        public void ProcessRequest_DetectsAndDeserializesReqeustType_Count()
+        {
+            var request = new CountRequest();
+            byte[] requestBytes = SerializationUtils.Serialize(request);
+
+            IRequestMapper processor = new RequestMapper();
+
+            Request mappedRequest = processor.ProcessRequest(requestBytes, request.RequestType);
+            Assert.Equal(mappedRequest.GetType(), request.GetType());
+        }
     }
 }

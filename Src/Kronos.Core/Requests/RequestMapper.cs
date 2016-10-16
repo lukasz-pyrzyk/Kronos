@@ -19,6 +19,12 @@ namespace Kronos.Core.Requests
                 case RequestType.Delete:
                     request = SerializationUtils.Deserialize<DeleteRequest>(requestBytes);
                     break;
+                case RequestType.Count:
+                    request = SerializationUtils.Deserialize<CountRequest>(requestBytes);
+                    break;
+                case RequestType.Contains:
+                    request = SerializationUtils.Deserialize<ContainsRequest>(requestBytes);
+                    break;
                 default:
                     throw new InvalidOperationException($"Cannot find processor for type {type}");
             }
