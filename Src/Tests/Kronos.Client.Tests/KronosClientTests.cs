@@ -80,7 +80,21 @@ namespace Kronos.Client.Tests
             await client.DeleteAsync("key");
 
             await communicationServiceMock.Received(1).SendToServerAsync(Arg.Any<DeleteRequest>());
+        }
 
+        [Fact]
+        public async Task Count_ReturnsNumberOfElementsInStorage()
+        {
+            var communicationServiceMock = Substitute.For<IClientServerConnection>();
+            communicationServiceMock.SendToServerAsync(Arg.Any<CountRequest>())
+                .Returns(SerializationUtils.Serialize(RequestStatusCode.Ok));
+
+            KronosConfig config = LoadTestConfiguration();
+            IKronosClient client = new KronosClient(config, endpoint => communicationServiceMock);
+
+            await client.CountAsync();
+
+            await communicationServiceMock.Received(1).SendToServerAsync(Arg.Any<CountRequest>());
         }
 
         private static KronosConfig LoadTestConfiguration()

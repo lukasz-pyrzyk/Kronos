@@ -65,6 +65,11 @@ namespace Kronos.Client
             Trace.WriteLine($"InsertRequest status: {status}");
         }
 
+        public Task<int> CountAsync()
+        {
+            return Task.FromResult(0);
+        }
+
         private IClientServerConnection SelectServerAndCreateConnection(string key)
         {
             ServerConfig server = _serverProvider.SelectServer(key.GetHashCode());
