@@ -19,7 +19,8 @@ namespace Kronos.Benchmark
         {
             string key = Guid.NewGuid().ToString();
 
-            using (IStorage storage = new InMemoryStorage())
+            IExpiryProvider expiryProvider = new StorageExpiryProvider();
+            using (IStorage storage = new InMemoryStorage(expiryProvider))
             {
                 storage.AddOrUpdate(key, sampleData);
             }
@@ -30,7 +31,8 @@ namespace Kronos.Benchmark
         {
             string key = Guid.NewGuid().ToString();
 
-            using (IStorage storage = new InMemoryStorage())
+            IExpiryProvider expiryProvider = new StorageExpiryProvider();
+            using (IStorage storage = new InMemoryStorage(expiryProvider))
             {
                 storage.AddOrUpdate(key, sampleData);
                 storage.AddOrUpdate(key, sampleData); // update
@@ -43,7 +45,8 @@ namespace Kronos.Benchmark
             string key = Guid.NewGuid().ToString();
 
             byte[] result;
-            using (IStorage storage = new InMemoryStorage())
+            IExpiryProvider expiryProvider = new StorageExpiryProvider();
+            using (IStorage storage = new InMemoryStorage(expiryProvider))
             {
                 storage.AddOrUpdate(key, sampleData);
                 result = storage.TryGet(key);
@@ -57,7 +60,8 @@ namespace Kronos.Benchmark
         {
             string key = Guid.NewGuid().ToString();
 
-            using (IStorage storage = new InMemoryStorage())
+            IExpiryProvider expiryProvider = new StorageExpiryProvider();
+            using (IStorage storage = new InMemoryStorage(expiryProvider))
             {
                 storage.AddOrUpdate(key, sampleData);
                 storage.TryRemove(key);
@@ -69,7 +73,8 @@ namespace Kronos.Benchmark
         {
             string key = Guid.NewGuid().ToString();
 
-            using (IStorage storage = new InMemoryStorage())
+            IExpiryProvider expiryProvider = new StorageExpiryProvider();
+            using (IStorage storage = new InMemoryStorage(expiryProvider))
             {
                 storage.TryRemove(key);
             }
