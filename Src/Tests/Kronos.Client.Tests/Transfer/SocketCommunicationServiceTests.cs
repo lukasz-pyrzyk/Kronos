@@ -2,6 +2,7 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading.Tasks;
 using Kronos.Client.Transfer;
 using Kronos.Core.Exceptions;
 using Kronos.Core.Requests;
@@ -16,7 +17,7 @@ namespace Kronos.Client.Tests.Transfer
     public class SocketCommunicationServiceTests
     {
         [Fact]
-        public void SendToServer_WorksCorrect()
+        public async Task SendToServer_WorksCorrect()
         {
             var socketMock = new Mock<ISocket>();
             socketMock.Setup(x => x.BufferSize).Returns(65535);
@@ -63,7 +64,7 @@ namespace Kronos.Client.Tests.Transfer
             IPEndPoint endpoint = new IPEndPoint(IPAddress.Any, 5000);
 
             SocketCommunicationService service = new SocketCommunicationService(endpoint, () => socketMock.Object);
-            byte[] response = service.SendToServer(request);
+            byte[] response = await service.SendToServerAsync(request);
 
             Assert.Equal(SerializationUtils.Deserialize<RequestStatusCode>(response), expectedStatusCode);
 
@@ -74,7 +75,7 @@ namespace Kronos.Client.Tests.Transfer
         }
 
         [Fact]
-        public void SendToServer_ThrowsExceptionWhenIsMismatchInReceiveBytesNumber()
+        public async Task SendToServer_ThrowsExceptionWhenIsMismatchInReceiveBytesNumber()
         {
             var socketMock = new Mock<ISocket>();
             socketMock.Setup(x => x.BufferSize).Returns(65535);
@@ -125,7 +126,7 @@ namespace Kronos.Client.Tests.Transfer
             Exception transferException = null;
             try
             {
-                service.SendToServer(request);
+                await service.SendToServerAsync(request);
             }
             catch (Exception ex)
             {
@@ -144,7 +145,7 @@ namespace Kronos.Client.Tests.Transfer
         }
 
         [Fact]
-        public void SendToServer_ThrowsExceptionDuringDisposing()
+        public async Task SendToServer_ThrowsExceptionDuringDisposing()
         {
             var socketMock = new Mock<ISocket>();
             socketMock.Setup(x => x.BufferSize).Returns(65535);
@@ -197,7 +198,7 @@ namespace Kronos.Client.Tests.Transfer
             Exception transferException = null;
             try
             {
-                service.SendToServer(request);
+                await service.SendToServerAsync(request);
             }
             catch (Exception ex)
             {
@@ -215,7 +216,7 @@ namespace Kronos.Client.Tests.Transfer
         }
 
         [Fact]
-        public void SendToServer_WorksCorrectWithSocketExceptionOnDisposing()
+        public async Task SendToServer_WorksCorrectWithSocketExceptionOnDisposing()
         {
             var socketMock = new Mock<ISocket>();
             socketMock.Setup(x => x.BufferSize).Returns(65535);
@@ -263,7 +264,7 @@ namespace Kronos.Client.Tests.Transfer
             IPEndPoint endpoint = new IPEndPoint(IPAddress.Any, 5000);
 
             SocketCommunicationService service = new SocketCommunicationService(endpoint, () => socketMock.Object);
-            service.SendToServer(request);
+            service.SendToServerAsync(request);
 
             socketMock.Verify(x => x.Send(requestTypeBytes), Times.Once);
             socketMock.Verify(x => x.Send(requestBytes), Times.Once);

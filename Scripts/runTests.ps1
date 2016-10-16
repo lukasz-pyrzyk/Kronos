@@ -14,18 +14,30 @@ $projects = @(
     @{Path="Tests\Kronos.Server.Tests"; Filter="+[Kronos.Server]*"}
 )
 
+$error = 0;
+
 function RunCodeCoverage($testProject, $filter) {
-    & $openCover -target:dotnet.exe `"-targetargs:test $testProject`" -output:$fileName -register:'user' -filter:$filter -mergeoutput -oldStyle
+    & $openCover -target:dotnet.exe `"-targetargs:test $testProject`" -output:$fileName -register:'user' -filter:$filter -mergeoutput -oldStyle -returntargetcode
 }
 
 # run unit tests and calculate code coverage for each test project
 foreach ($project in $projects) {
     RunCodeCoverage $($kronosSrc + $project.Path) $project.Filter
+	
+	write-host "OpenCover exit code:" $LastExitCode
+	# try to find error
+	if($LastExitCode -ne 0)
+	{	   
+	   write-host "Setting error"
+	   # mark build as failed
+	   $error = $LastExitCode
+	}
 }
 
 # try to find error
-if($LastExitCode -ne 0)
-{
+if($error -ne 0)
+{	   
+   write-host "Marking build as failed"
    # mark build as failed
-   $host.SetShouldExit($LastExitCode)
+   $host.SetShouldExit($error)
 }

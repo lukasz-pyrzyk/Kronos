@@ -17,7 +17,7 @@ namespace Kronos.AcceptanceTest
     public class CommandTests
     {
         [Fact]
-        public void Insert_And_Get_WorksCorrectly()
+        public async Task Insert_And_Get_WorksCorrectly()
         {
             const int port = 9999;
             const string key = "key";
@@ -36,8 +36,10 @@ namespace Kronos.AcceptanceTest
                     worker.StartListeningAsync(tokenSource.Token);
 
                     IKronosClient client = KronosClientFactory.CreateClient(port);
-                    client.Insert(key, data, expiry);
-                    received = client.Get(key);
+                    await client.InsertAsync(key, data, expiry);
+                    received = await client.GetAsync(key);
+
+
                 }
             }
 
@@ -46,7 +48,7 @@ namespace Kronos.AcceptanceTest
         }
 
         [Fact]
-        public void Insert_And_Delete_WorksCorrectly()
+        public async Task Insert_And_Delete_WorksCorrectly()
         {
             const int port = 9998;
             const string key = "key";
@@ -67,11 +69,11 @@ namespace Kronos.AcceptanceTest
                     workerTask = worker.StartListeningAsync(tokenSource.Token);
 
                     IKronosClient client = KronosClientFactory.CreateClient(port);
-                    client.Insert(key, data, expiry);
+                    client.InsertAsync(key, data, expiry);
 
                     sizeBeforeRemoving = storage.Count;
 
-                    client.Delete(key);
+                    await client.DeleteAsync(key);
 
                     sizeAfterRemoving = storage.Count;
                 }

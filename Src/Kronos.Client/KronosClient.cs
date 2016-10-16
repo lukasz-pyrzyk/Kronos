@@ -29,29 +29,24 @@ namespace Kronos.Client
             _connectionResolver = connectionResolver;
         }
 
-        public void Insert(string key, byte[] package, DateTime expiryDate)
+        public async Task InsertAsync(string key, byte[] package, DateTime expiryDate)
         {
             Trace.WriteLine("New insert request");
             InsertRequest request = new InsertRequest(key, package, expiryDate);
 
             IClientServerConnection connection = SelectServerAndCreateConnection(key);
-            RequestStatusCode status = request.Execute<RequestStatusCode>(connection);
+            RequestStatusCode status = await request.ExecuteAsync<RequestStatusCode>(connection);
 
             Trace.WriteLine($"InsertRequest status: {status}");
         }
 
-        public Task InsertAsync(string key, byte[] package, DateTime expiryDate)
-        {
-            return Task.Run(() => Insert(key, package, expiryDate));
-        }
-
-        public byte[] Get(string key)
+        public async Task<byte[]> GetAsync(string key)
         {
             Trace.WriteLine("New get request");
             GetRequest request = new GetRequest(key);
 
             IClientServerConnection connection = SelectServerAndCreateConnection(key);
-            byte[] valueFromCache = request.Execute<byte[]>(connection);
+            byte[] valueFromCache = await request.ExecuteAsync<byte[]>(connection);
 
             if (valueFromCache != null && valueFromCache.Length == 1 && valueFromCache[0] == 0)
                 return null;
@@ -59,25 +54,15 @@ namespace Kronos.Client
             return valueFromCache;
         }
 
-        public Task<byte[]> GetAsync(string key)
-        {
-            return Task.Run(() => Get(key));
-        }
-
-        public void Delete(string key)
+        public async Task DeleteAsync(string key)
         {
             Trace.WriteLine("New delete request");
             DeleteRequest request = new DeleteRequest(key);
 
             IClientServerConnection connection = SelectServerAndCreateConnection(key);
-            RequestStatusCode status = request.Execute<RequestStatusCode>(connection);
+            RequestStatusCode status = await request.ExecuteAsync<RequestStatusCode>(connection);
 
             Trace.WriteLine($"InsertRequest status: {status}");
-        }
-
-        public Task DeleteAsync(string key)
-        {
-            return Task.Run(() => Delete(key));
         }
 
         private IClientServerConnection SelectServerAndCreateConnection(string key)

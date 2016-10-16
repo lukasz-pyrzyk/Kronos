@@ -1,11 +1,13 @@
 ﻿using System;
 using System.Text;
+using System.Threading.Tasks;
 using Kronos.Core.Communication;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Kronos.Core.StatusCodes;
 using Kronos.Core.Storage;
 using Moq;
+using NSubstitute;
 using XGain.Sockets;
 using Xunit;
 
@@ -58,19 +60,17 @@ namespace Kronos.Core.Tests.Requests
         [Theory]
         [InlineData(RequestStatusCode.Ok)]
         [InlineData(RequestStatusCode.Failed)]
-        public void Execute_ReturnsCorrectValue(RequestStatusCode status)
+        public async Task Execute_ReturnsCorrectValue(RequestStatusCode status)
         {
             var request = new InsertRequest();
 
-            var communicationServiceMock = new Mock<IClientServerConnection>();
-            communicationServiceMock
-                .Setup(x => x.SendToServer(request))
-                .Returns(SerializationUtils.Serialize(status));
+            var communicationServiceMock = Substitute.For<IClientServerConnection>();
+            communicationServiceMock.SendToServerAsync(request).Returns(SerializationUtils.Serialize(status));
 
-            RequestStatusCode response = request.Execute<RequestStatusCode>(communicationServiceMock.Object);
+            RequestStatusCode response = await request.ExecuteAsync<RequestStatusCode>(communicationServiceMock);
 
             Assert.Equal(response, status);
-            communicationServiceMock.Verify(x => x.SendToServer(It.IsAny<InsertRequest>()), Times.Once);
+            await communicationServiceMock.Received(1).SendToServerAsync(Arg.Any<InsertRequest>());
         }
 
         [Fact]

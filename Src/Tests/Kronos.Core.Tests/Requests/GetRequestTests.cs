@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using System.Threading.Tasks;
 using Kronos.Core.Communication;
 using Kronos.Core.Requests;
 using Xunit;
@@ -6,6 +7,7 @@ using Kronos.Core.Serialization;
 using Kronos.Core.StatusCodes;
 using Kronos.Core.Storage;
 using Moq;
+using NSubstitute;
 using XGain.Sockets;
 
 namespace Kronos.Core.Tests.Requests
@@ -43,37 +45,35 @@ namespace Kronos.Core.Tests.Requests
         }
 
         [Fact]
-        public void Execute_ReturnsCorrectValue()
+        public async Task Execute_ReturnsCorrectValue()
         {
             byte[] value = SerializationUtils.Serialize("lorem ipsum");
             var request = new GetRequest("masterKey");
 
-            var communicationServiceMock = new Mock<IClientServerConnection>();
-            communicationServiceMock
-                .Setup(x => x.SendToServer(request))
-                .Returns(SerializationUtils.Serialize(value));
-            
-            byte[] response = request.Execute<byte[]>(communicationServiceMock.Object);
+            var communicationServiceMock = Substitute.For<IClientServerConnection>();
+            communicationServiceMock.SendToServerAsync(request).Returns(SerializationUtils.Serialize(value));
+
+            byte[] response = await request.ExecuteAsync<byte[]>(communicationServiceMock);
 
             Assert.Equal(response, value);
-            communicationServiceMock.Verify(x => x.SendToServer(It.IsAny<GetRequest>()), Times.Once);
+            await communicationServiceMock.Received(1).SendToServerAsync(Arg.Any<GetRequest>());
         }
 
         [Fact]
-        public void Execute_ReturnsNullWhenServerHasReturnedNotFound()
+        public async Task Execute_ReturnsNullWhenServerHasReturnedNotFound()
         {
             byte[] value = SerializationUtils.Serialize(RequestStatusCode.NotFound);
             var request = new GetRequest("masterKey");
 
-            var communicationServiceMock = new Mock<IClientServerConnection>();
-            communicationServiceMock.Setup(x => x.SendToServer(request)).Returns(value);
+            var communicationServiceMock = Substitute.For<IClientServerConnection>();
+            communicationServiceMock.SendToServerAsync(request).Returns(value);
 
-            byte[] response = request.Execute<byte[]>(communicationServiceMock.Object);
+            byte[] response = await request.ExecuteAsync<byte[]>(communicationServiceMock);
 
             Assert.Equal(response.Length, 1);
             Assert.Equal(response[0], 0);
 
-            communicationServiceMock.Verify(x => x.SendToServer(request), Times.Once);
+            await communicationServiceMock.Received(1).SendToServerAsync(request);
         }
 
         [Fact]

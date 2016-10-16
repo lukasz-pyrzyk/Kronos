@@ -26,13 +26,13 @@ namespace ClientSample
 
             for (int i = 0; i < 100; i++)
             {
-                Task worker = Task.Run(() =>
+                Task worker = Task.Run(async () =>
                 {
                     string key = Guid.NewGuid().ToString();
                     DateTime expiryDate = DateTime.Now.AddDays(1);
 
-                    client.Insert(key, package, expiryDate);
-                    byte[] fromServer = client.Get(key);
+                    await client.InsertAsync(key, package, expiryDate);
+                    byte[] fromServer = await client.GetAsync(key);
 
                     string deserialized = Encoding.UTF8.GetString(fromServer);
                     Console.WriteLine($"{deserialized.Length} - {DateTime.Now.ToString(CultureInfo.InvariantCulture)}");
