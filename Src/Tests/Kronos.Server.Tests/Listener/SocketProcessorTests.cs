@@ -1,10 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Kronos.Core.Requests;
-using Kronos.Core.Serialization;
 using Kronos.Server.Listener;
-using Moq;
 using NSubstitute;
-using XGain;
 using XGain.Sockets;
 using Xunit;
 
