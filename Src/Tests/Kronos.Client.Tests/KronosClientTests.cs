@@ -100,6 +100,23 @@ namespace Kronos.Client.Tests
             await communicationServiceMock.Received(serverCount).SendToServerAsync(Arg.Any<CountRequest>());
         }
 
+        [Fact]
+        public async Task Contains_ReturnsTrueIfElementExistsInStorage()
+        {
+            bool expected = true;
+            var communicationServiceMock = Substitute.For<IClientServerConnection>();
+            communicationServiceMock.SendToServerAsync(Arg.Any<ContainsRequest>())
+                .Returns(SerializationUtils.Serialize(expected));
+
+            KronosConfig config = LoadTestConfiguration();
+            IKronosClient client = new KronosClient(config, endpoint => communicationServiceMock);
+
+            bool exists = await client.ContainsAsync();
+
+            Assert.Equal(expected, exists);
+            await communicationServiceMock.Received(1).SendToServerAsync(Arg.Any<ContainsRequest>());
+        }
+
         private static KronosConfig LoadTestConfiguration()
         {
             var server = new ServerConfig

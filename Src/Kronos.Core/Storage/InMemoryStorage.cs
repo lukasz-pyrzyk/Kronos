@@ -51,6 +51,11 @@ namespace Kronos.Core.Storage
             return _storage.TryRemove(metaData, out obj);
         }
 
+        public bool Contains(string key)
+        {
+            throw new System.NotImplementedException();
+        }
+
         public void Dispose()
         {
             _logger.Info("Disposing storage");

@@ -10,56 +10,59 @@ using Xunit;
 
 namespace Kronos.Core.Tests.Requests
 {
-    public class CountRequestTests
+    public class ContainsRequestTests
     {
         [Fact]
         public void RequestType_ContainsCorrectType()
         {
-            var request = new CountRequest();
+            var request = new ContainsRequest();
 
-            Assert.Equal(request.RequestType, RequestType.Count);
+            Assert.Equal(request.RequestType, RequestType.Contains);
         }
 
         [Fact]
         public void CanSerializeAndDeserialize()
         {
-            var request = new CountRequest();
+            string key = "lorem ipsum";
+            var request = new ContainsRequest(key);
 
             byte[] packageBytes = SerializationUtils.Serialize(request);
 
-            CountRequest requestFromBytes = SerializationUtils.Deserialize<CountRequest>(packageBytes);
+            ContainsRequest requestFromBytes = SerializationUtils.Deserialize<ContainsRequest>(packageBytes);
 
             Assert.NotNull(requestFromBytes);
+            Assert.Equal(requestFromBytes.Key, key);
         }
 
         [Fact]
         public async Task Execute_ReturnsCorrectValue()
         {
-            int value = 5;
-            var request = new CountRequest();
+            bool expected = true;
+            var request = new ContainsRequest();
 
             var communicationServiceMock = Substitute.For<IClientServerConnection>();
-            communicationServiceMock.SendToServerAsync(request).Returns(SerializationUtils.Serialize(value));
+            communicationServiceMock.SendToServerAsync(request).Returns(SerializationUtils.Serialize(expected));
 
-            int response = await request.ExecuteAsync<int>(communicationServiceMock);
+            bool response = await request.ExecuteAsync<bool>(communicationServiceMock);
 
-            Assert.Equal(response, value);
-            await communicationServiceMock.Received(1).SendToServerAsync(Arg.Any<CountRequest>());
+            Assert.Equal(response, expected);
+            await communicationServiceMock.Received(1).SendToServerAsync(Arg.Any<ContainsRequest>());
         }
 
         [Fact]
         public void ProcessAndSendResponse_ReturnsCachedObjectToClient()
         {
-            int expectecCount = 5;
+            bool expected = true;
+            string key = "lorem ipsum";
 
             var storageMock = Substitute.For<IStorage>();
-            storageMock.Count.Returns(expectecCount);
+            storageMock.Contains(key).Returns(true);
             var socketMock = new Mock<ISocket>();
 
-            var request = new CountRequest();
+            var request = new ContainsRequest();
             request.ProcessAndSendResponse(socketMock.Object, storageMock);
 
-            byte[] expectedPackage = SerializationUtils.Serialize(expectecCount);
+            byte[] expectedPackage = SerializationUtils.Serialize(expected);
             socketMock.Verify(x => x.Send(expectedPackage), Times.Once);
         }
     }

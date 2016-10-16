@@ -9,5 +9,6 @@ namespace Kronos.Core.Storage
         void AddOrUpdate(string key, byte[] obj);
         byte[] TryGet(string key);
         bool TryRemove(string key);
+        bool Contains(string key);
     }
 }

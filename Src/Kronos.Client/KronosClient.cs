@@ -86,6 +86,11 @@ namespace Kronos.Client
             return tasks.Sum(x => x.Result);
         }
 
+        public Task<bool> ContainsAsync()
+        {
+            throw new NotImplementedException();
+        }
+
         private IClientServerConnection SelectServerAndCreateConnection(string key)
         {
             ServerConfig server = _serverProvider.SelectServer(key.GetHashCode());

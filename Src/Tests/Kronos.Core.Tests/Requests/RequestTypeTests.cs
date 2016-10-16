@@ -11,6 +11,7 @@ namespace Kronos.Core.Tests.Requests
         [InlineData(RequestType.Get)]
         [InlineData(RequestType.Delete)]
         [InlineData(RequestType.Count)]
+        [InlineData(RequestType.Contains)]
         public void CanSerializeAndDeserialize(RequestType type)
         {
             byte[] package = SerializationUtils.Serialize(type);

@@ -15,6 +15,7 @@ namespace Kronos.Core.Requests
     [ProtoInclude(1000, typeof(GetRequest))]
     [ProtoInclude(1500, typeof(DeleteRequest))]
     [ProtoInclude(2000, typeof(CountRequest))]
+    [ProtoInclude(2500, typeof(ContainsRequest))]
     public abstract class Request
     {
         public virtual RequestType RequestType { get; set; }
