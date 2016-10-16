@@ -97,7 +97,8 @@ namespace Kronos.AcceptanceTest
 
             int countFromClientApi;
             int countFromStorage;
-            using (IStorage storage = new InMemoryStorage())
+            IExpiryProvider expiryProvider = new StorageExpiryProvider();
+            using (IStorage storage = new InMemoryStorage(expiryProvider))
             {
                 IProcessor<MessageArgs> processor = new SocketProcessor();
                 using (IServer server = new XGainServer(IPAddress.Any, port, processor))
