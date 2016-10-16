@@ -12,6 +12,16 @@ namespace Kronos.Core.Tests.Requests
 {
     public class ContainsRequestTests
     {
+
+        [Fact]
+        public void Ctor_AssignsProperties()
+        {
+            string key = "lorem ipsum";
+            var request = new ContainsRequest(key);
+
+            Assert.Equal(key, request.Key);
+        }
+
         [Fact]
         public void RequestType_ContainsCorrectType()
         {
@@ -56,13 +66,16 @@ namespace Kronos.Core.Tests.Requests
             string key = "lorem ipsum";
 
             var storageMock = Substitute.For<IStorage>();
-            storageMock.Contains(key).Returns(true);
+            storageMock.Contains(key).Returns(expected);
             var socketMock = new Mock<ISocket>();
 
-            var request = new ContainsRequest();
+            var request = new ContainsRequest(key);
             request.ProcessAndSendResponse(socketMock.Object, storageMock);
 
             byte[] expectedPackage = SerializationUtils.Serialize(expected);
+            bool result = SerializationUtils.Deserialize<bool>(expectedPackage);
+
+            Assert.Equal(expected, result);
             socketMock.Verify(x => x.Send(expectedPackage), Times.Once);
         }
     }
