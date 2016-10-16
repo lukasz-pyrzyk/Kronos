@@ -53,7 +53,7 @@ namespace Kronos.Core.Storage
 
         public bool Contains(string key)
         {
-            throw new System.NotImplementedException();
+            return _storage.ContainsKey(new NodeMetatada(key));
         }
 
         public void Dispose()
