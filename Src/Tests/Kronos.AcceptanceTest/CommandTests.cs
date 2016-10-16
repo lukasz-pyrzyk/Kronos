@@ -26,7 +26,8 @@ namespace Kronos.AcceptanceTest
 
             byte[] received;
             var tokenSource = new CancellationTokenSource();
-            using (IStorage storage = new InMemoryStorage())
+            IExpiryProvider expiryProvider = new StorageExpiryProvider();
+            using (IStorage storage = new InMemoryStorage(expiryProvider))
             {
                 IProcessor<MessageArgs> processor = new SocketProcessor();
                 using (IServer server = new XGainServer(IPAddress.Any, port, processor))
@@ -56,7 +57,10 @@ namespace Kronos.AcceptanceTest
             int sizeBeforeRemoving;
             int sizeAfterRemoving;
             var tokenSource = new CancellationTokenSource();
-            using (IStorage storage = new InMemoryStorage())
+
+
+            IExpiryProvider expiryProvider = new StorageExpiryProvider();
+            using (IStorage storage = new InMemoryStorage(expiryProvider))
             {
                 IProcessor<MessageArgs> processor = new SocketProcessor();
                 using (IServer server = new XGainServer(IPAddress.Any, port, processor))
