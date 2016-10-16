@@ -119,5 +119,72 @@ namespace Kronos.AcceptanceTest
             Assert.Equal(countFromClientApi, 1);
             Assert.Equal(countFromClientApi, countFromStorage);
         }
+
+        [Fact]
+        public async Task Insert_And_Contains_WorksCorrectly()
+        {
+            const int port = 9998;
+            const string key = "key";
+            byte[] data = Encoding.UTF8.GetBytes("lorem ipsum");
+            DateTime expiry = DateTime.MaxValue;
+
+            var tokenSource = new CancellationTokenSource();
+
+            bool containsFromClientApi;
+            bool containsFromStorage;
+            IExpiryProvider expiryProvider = new StorageExpiryProvider();
+            using (IStorage storage = new InMemoryStorage(expiryProvider))
+            {
+                IProcessor<MessageArgs> processor = new SocketProcessor();
+                using (IServer server = new XGainServer(IPAddress.Any, port, processor))
+                {
+                    IRequestMapper mapper = new RequestMapper();
+                    IServerWorker worker = new ServerWorker(mapper, storage, server);
+                    worker.StartListeningAsync(tokenSource.Token);
+
+                    IKronosClient client = KronosClientFactory.CreateClient(port);
+                    await client.InsertAsync(key, data, expiry);
+
+                    containsFromClientApi = await client.ContainsAsync(key);
+                    containsFromStorage = storage.Contains(key);
+                }
+            }
+
+            tokenSource.Cancel();
+            Assert.True(containsFromClientApi);
+            Assert.Equal(containsFromClientApi, containsFromStorage);
+        }
+
+        [Fact]
+        public async Task Contains_WorksCorrectly()
+        {
+            const int port = 9998;
+            const string key = "key";
+
+            var tokenSource = new CancellationTokenSource();
+
+            bool containsFromClientApi;
+            bool containsFromStorage;
+            IExpiryProvider expiryProvider = new StorageExpiryProvider();
+            using (IStorage storage = new InMemoryStorage(expiryProvider))
+            {
+                IProcessor<MessageArgs> processor = new SocketProcessor();
+                using (IServer server = new XGainServer(IPAddress.Any, port, processor))
+                {
+                    IRequestMapper mapper = new RequestMapper();
+                    IServerWorker worker = new ServerWorker(mapper, storage, server);
+                    worker.StartListeningAsync(tokenSource.Token);
+
+                    IKronosClient client = KronosClientFactory.CreateClient(port);
+
+                    containsFromClientApi = await client.ContainsAsync(key);
+                    containsFromStorage = storage.Contains(key);
+                }
+            }
+
+            tokenSource.Cancel();
+            Assert.False(containsFromClientApi);
+            Assert.Equal(containsFromClientApi, containsFromStorage);
+        }
     }
 }
