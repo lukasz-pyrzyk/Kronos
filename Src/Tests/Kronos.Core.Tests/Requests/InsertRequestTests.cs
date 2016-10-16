@@ -70,7 +70,7 @@ namespace Kronos.Core.Tests.Requests
             RequestStatusCode response = await request.ExecuteAsync<RequestStatusCode>(communicationServiceMock);
 
             Assert.Equal(response, status);
-            await communicationServiceMock.Received(1).SendToServerAsync(It.IsAny<InsertRequest>());
+            await communicationServiceMock.Received(1).SendToServerAsync(Arg.Any<InsertRequest>());
         }
 
         [Fact]

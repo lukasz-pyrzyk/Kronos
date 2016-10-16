@@ -56,7 +56,7 @@ namespace Kronos.Core.Tests.Requests
             byte[] response = await request.ExecuteAsync<byte[]>(communicationServiceMock);
 
             Assert.Equal(response, value);
-            await communicationServiceMock.Received(1).SendToServerAsync(It.IsAny<GetRequest>());
+            await communicationServiceMock.Received(1).SendToServerAsync(Arg.Any<GetRequest>());
         }
 
         [Fact]
