@@ -1,7 +1,6 @@
 ﻿using Kronos.Core.Requests;
 using Kronos.Core.Storage;
 using Kronos.Server.Listener;
-using Moq;
 using NSubstitute;
 using XGain;
 using Xunit;

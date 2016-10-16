@@ -7,7 +7,6 @@
     "dotnet-test-xunit": "2.2.0-preview2-build1029",
     "Kronos.Core": "1.1.0-*",
     "Kronos.Server": "1.1.0-*",
-    "Moq": "4.6.38-alpha",
     "OpenCover": "4.6.519",
     "protobuf-net": "2.1.0",
     "XGain": "1.2.0",
