@@ -38,8 +38,6 @@ namespace Kronos.AcceptanceTest
                     IKronosClient client = KronosClientFactory.CreateClient(port);
                     await client.InsertAsync(key, data, expiry);
                     received = await client.GetAsync(key);
-
-
                 }
             }
 
@@ -58,7 +56,6 @@ namespace Kronos.AcceptanceTest
             int sizeBeforeRemoving;
             int sizeAfterRemoving;
             var tokenSource = new CancellationTokenSource();
-            Task workerTask;
             using (IStorage storage = new InMemoryStorage())
             {
                 IProcessor<MessageArgs> processor = new SocketProcessor();
@@ -66,10 +63,10 @@ namespace Kronos.AcceptanceTest
                 {
                     IRequestMapper mapper = new RequestMapper();
                     IServerWorker worker = new ServerWorker(mapper, storage, server);
-                    workerTask = worker.StartListeningAsync(tokenSource.Token);
+                    worker.StartListeningAsync(tokenSource.Token);
 
                     IKronosClient client = KronosClientFactory.CreateClient(port);
-                    client.InsertAsync(key, data, expiry);
+                    await client.InsertAsync(key, data, expiry);
 
                     sizeBeforeRemoving = storage.Count;
 
@@ -82,6 +79,40 @@ namespace Kronos.AcceptanceTest
             tokenSource.Cancel();
             Assert.Equal(sizeBeforeRemoving, 1);
             Assert.Equal(sizeAfterRemoving, 0);
+        }
+
+        [Fact]
+        public async Task Insert_And_Count_WorksCorrectly()
+        {
+            const int port = 9998;
+            const string key = "key";
+            byte[] data = Encoding.UTF8.GetBytes("lorem ipsum");
+            DateTime expiry = DateTime.MaxValue;
+
+            var tokenSource = new CancellationTokenSource();
+
+            int countFromClientApi;
+            int countFromStorage;
+            using (IStorage storage = new InMemoryStorage())
+            {
+                IProcessor<MessageArgs> processor = new SocketProcessor();
+                using (IServer server = new XGainServer(IPAddress.Any, port, processor))
+                {
+                    IRequestMapper mapper = new RequestMapper();
+                    IServerWorker worker = new ServerWorker(mapper, storage, server);
+                    worker.StartListeningAsync(tokenSource.Token);
+
+                    IKronosClient client = KronosClientFactory.CreateClient(port);
+                    await client.InsertAsync(key, data, expiry);
+
+                    countFromClientApi = await client.CountAsync();
+                    countFromStorage = storage.Count;
+                }
+            }
+
+            tokenSource.Cancel();
+            Assert.Equal(countFromClientApi, 1);
+            Assert.Equal(countFromClientApi, countFromStorage);
         }
     }
 }
