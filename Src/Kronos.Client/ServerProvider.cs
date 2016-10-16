@@ -25,6 +25,11 @@ namespace Kronos.Client
             return Mappings[lastTwoDigits];
         }
 
+        public ServerConfig[] SelectServers()
+        {
+            return Mappings.Select(x => x.Value).Distinct().ToArray();
+        }
+
         private void InitializeMappings()
         {
             const ushort hashCodeRange = 100; // (0:99).
