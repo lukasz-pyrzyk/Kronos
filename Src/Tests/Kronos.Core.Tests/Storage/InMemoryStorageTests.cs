@@ -1,5 +1,6 @@
 ﻿using System.Text;
 using Kronos.Core.Storage;
+using NSubstitute;
 using Xunit;
 
 namespace Kronos.Core.Tests.Storage
@@ -11,8 +12,8 @@ namespace Kronos.Core.Tests.Storage
         {
             string key = "key";
             string objectWord = "lorem ipsum";
-            IStorage storage = new InMemoryStorage();
-            storage.AddOrUpdate(key, Encoding.UTF8.GetBytes(objectWord));
+            IExpiryProvider expiryProvider = Substitute.For<IExpiryProvider>();
+            IStorage storage = new InMemoryStorage(expiryProvider); storage.AddOrUpdate(key, Encoding.UTF8.GetBytes(objectWord));
 
             byte[] objFromBytes = storage.TryGet(key);
             string stringFromBytes = Encoding.UTF8.GetString(objFromBytes);
@@ -26,7 +27,8 @@ namespace Kronos.Core.Tests.Storage
             string key = "key";
             string first = "first";
             string second = "second";
-            IStorage storage = new InMemoryStorage();
+            IExpiryProvider expiryProvider = Substitute.For<IExpiryProvider>();
+            IStorage storage = new InMemoryStorage(expiryProvider);
 
             byte[] firstObject = Encoding.UTF8.GetBytes(first);
             byte[] secondObject = Encoding.UTF8.GetBytes(second);
@@ -47,7 +49,8 @@ namespace Kronos.Core.Tests.Storage
             const string firstKey = "key1";
             const string secondKey = "key2";
 
-            IStorage storage = new InMemoryStorage();
+            IExpiryProvider expiryProvider = Substitute.For<IExpiryProvider>();
+            IStorage storage = new InMemoryStorage(expiryProvider);
             storage.AddOrUpdate(firstKey, package);
             storage.AddOrUpdate(secondKey, package);
 
@@ -64,7 +67,8 @@ namespace Kronos.Core.Tests.Storage
             const string firstKey = "key1";
             const string secondKey = "key2";
 
-            IStorage storage = new InMemoryStorage();
+            IExpiryProvider expiryProvider = Substitute.For<IExpiryProvider>();
+            IStorage storage = new InMemoryStorage(expiryProvider);
             storage.AddOrUpdate(firstKey, package);
 
             bool deleted = storage.TryRemove(secondKey);
@@ -76,7 +80,8 @@ namespace Kronos.Core.Tests.Storage
         [Fact]
         public void CanClear()
         {
-            IStorage storage = new InMemoryStorage();
+            IExpiryProvider expiryProvider = Substitute.For<IExpiryProvider>();
+            IStorage storage = new InMemoryStorage(expiryProvider);
 
             storage.AddOrUpdate("first", new byte[0]);
             storage.AddOrUpdate("second", new byte[0]);
@@ -88,7 +93,8 @@ namespace Kronos.Core.Tests.Storage
         [Fact]
         public void ReturnsNullWhenObjectDoesNotExist()
         {
-            IStorage storage = new InMemoryStorage();
+            IExpiryProvider expiryProvider = Substitute.For<IExpiryProvider>();
+            IStorage storage = new InMemoryStorage(expiryProvider);
             byte[] objFromBytes = storage.TryGet(string.Empty);
 
             Assert.Null(objFromBytes);

@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace Kronos.Core.Storage
 {
-    internal interface IExpiryProvider
+    public interface IExpiryProvider
     {
         void Start(ConcurrentDictionary<NodeMetatada, byte[]> nodes, CancellationToken token);
     }
