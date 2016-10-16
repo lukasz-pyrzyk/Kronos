@@ -33,12 +33,14 @@ namespace Kronos.AcceptanceTest
                 using (IServer server = new XGainServer(IPAddress.Any, port, processor))
                 {
                     IRequestMapper mapper = new RequestMapper();
-                    IServerWorker worker = new ServerWorker(mapper, storage, server);
-                    worker.StartListeningAsync(tokenSource.Token);
+                    using (IServerWorker worker = new ServerWorker(mapper, storage, server))
+                    {
+                        worker.StartListeningAsync(tokenSource.Token);
 
-                    IKronosClient client = KronosClientFactory.CreateClient(port);
-                    await client.InsertAsync(key, data, expiry);
-                    received = await client.GetAsync(key);
+                        IKronosClient client = KronosClientFactory.CreateClient(port);
+                        await client.InsertAsync(key, data, expiry);
+                        received = await client.GetAsync(key);
+                    }
                 }
             }
 
@@ -56,8 +58,6 @@ namespace Kronos.AcceptanceTest
 
             int sizeBeforeRemoving;
             int sizeAfterRemoving;
-            var tokenSource = new CancellationTokenSource();
-
 
             IExpiryProvider expiryProvider = new StorageExpiryProvider();
             using (IStorage storage = new InMemoryStorage(expiryProvider))
@@ -66,21 +66,23 @@ namespace Kronos.AcceptanceTest
                 using (IServer server = new XGainServer(IPAddress.Any, port, processor))
                 {
                     IRequestMapper mapper = new RequestMapper();
-                    IServerWorker worker = new ServerWorker(mapper, storage, server);
-                    worker.StartListeningAsync(tokenSource.Token);
+                    using (IServerWorker worker = new ServerWorker(mapper, storage, server))
+                    {
 
-                    IKronosClient client = KronosClientFactory.CreateClient(port);
-                    await client.InsertAsync(key, data, expiry);
+                        worker.StartListeningAsync(CancellationToken.None);
 
-                    sizeBeforeRemoving = storage.Count;
+                        IKronosClient client = KronosClientFactory.CreateClient(port);
+                        await client.InsertAsync(key, data, expiry);
 
-                    await client.DeleteAsync(key);
+                        sizeBeforeRemoving = storage.Count;
 
-                    sizeAfterRemoving = storage.Count;
+                        await client.DeleteAsync(key);
+
+                        sizeAfterRemoving = storage.Count;
+                    }
                 }
             }
 
-            tokenSource.Cancel();
             Assert.Equal(sizeBeforeRemoving, 1);
             Assert.Equal(sizeAfterRemoving, 0);
         }
@@ -104,14 +106,16 @@ namespace Kronos.AcceptanceTest
                 using (IServer server = new XGainServer(IPAddress.Any, port, processor))
                 {
                     IRequestMapper mapper = new RequestMapper();
-                    IServerWorker worker = new ServerWorker(mapper, storage, server);
-                    worker.StartListeningAsync(tokenSource.Token);
+                    using (IServerWorker worker = new ServerWorker(mapper, storage, server))
+                    {
+                        worker.StartListeningAsync(tokenSource.Token);
 
-                    IKronosClient client = KronosClientFactory.CreateClient(port);
-                    await client.InsertAsync(key, data, expiry);
+                        IKronosClient client = KronosClientFactory.CreateClient(port);
+                        await client.InsertAsync(key, data, expiry);
 
-                    countFromClientApi = await client.CountAsync();
-                    countFromStorage = storage.Count;
+                        countFromClientApi = await client.CountAsync();
+                        countFromStorage = storage.Count;
+                    }
                 }
             }
 
@@ -139,14 +143,16 @@ namespace Kronos.AcceptanceTest
                 using (IServer server = new XGainServer(IPAddress.Any, port, processor))
                 {
                     IRequestMapper mapper = new RequestMapper();
-                    IServerWorker worker = new ServerWorker(mapper, storage, server);
-                    worker.StartListeningAsync(tokenSource.Token);
+                    using (IServerWorker worker = new ServerWorker(mapper, storage, server))
+                    {
+                        worker.StartListeningAsync(tokenSource.Token);
 
-                    IKronosClient client = KronosClientFactory.CreateClient(port);
-                    await client.InsertAsync(key, data, expiry);
+                        IKronosClient client = KronosClientFactory.CreateClient(port);
+                        await client.InsertAsync(key, data, expiry);
 
-                    containsFromClientApi = await client.ContainsAsync(key);
-                    containsFromStorage = storage.Contains(key);
+                        containsFromClientApi = await client.ContainsAsync(key);
+                        containsFromStorage = storage.Contains(key);
+                    }
                 }
             }
 
@@ -172,13 +178,15 @@ namespace Kronos.AcceptanceTest
                 using (IServer server = new XGainServer(IPAddress.Any, port, processor))
                 {
                     IRequestMapper mapper = new RequestMapper();
-                    IServerWorker worker = new ServerWorker(mapper, storage, server);
-                    worker.StartListeningAsync(tokenSource.Token);
+                    using (IServerWorker worker = new ServerWorker(mapper, storage, server))
+                    {
+                        worker.StartListeningAsync(tokenSource.Token);
 
-                    IKronosClient client = KronosClientFactory.CreateClient(port);
+                        IKronosClient client = KronosClientFactory.CreateClient(port);
 
-                    containsFromClientApi = await client.ContainsAsync(key);
-                    containsFromStorage = storage.Contains(key);
+                        containsFromClientApi = await client.ContainsAsync(key);
+                        containsFromStorage = storage.Contains(key);
+                    }
                 }
             }
 

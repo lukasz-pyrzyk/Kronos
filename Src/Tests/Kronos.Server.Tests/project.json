@@ -15,7 +15,8 @@
     "Microsoft.NETCore.App": {
       "type": "platform",
       "version": "1.0.0"
-    }
+    },
+    "NSubstitute": "2.0.0-rc"
   },
   "description": "Kronos - server tests",
   "frameworks": {
