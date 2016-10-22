@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading;
 using System.Threading.Tasks;
 using Kronos.Core.Communication;
 using Kronos.Core.Exceptions;
@@ -18,9 +16,15 @@ namespace Kronos.Client.Transfer
 {
     public class SocketCommunicationService : IClientServerConnection
     {
+        public static int RetryCount => _timeSpans.Length;
+
         private readonly IPEndPoint _host;
 
         private readonly Func<ISocket> _newSocketFunc;
+
+        private static readonly TimeSpan[] _timeSpans = { TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(3) };
+        private readonly Policy _policy = Policy.Handle<Exception>()
+                    .WaitAndRetryAsync(_timeSpans);
 
         public SocketCommunicationService(IPEndPoint host) : this(host, () => new XGainSocket(AddressFamily.InterNetwork))
         {
@@ -36,12 +40,8 @@ namespace Kronos.Client.Transfer
         {
             ISocket socket = _newSocketFunc();
 
-            Policy policy =
-                Policy.Handle<Exception>()
-                    .WaitAndRetry(new List<TimeSpan>() { TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(3) });
-
             byte[] requestBytes = null;
-            await policy.ExecuteAsync(async () =>
+            await _policy.ExecuteAsync(async () =>
             {
                 try
                 {

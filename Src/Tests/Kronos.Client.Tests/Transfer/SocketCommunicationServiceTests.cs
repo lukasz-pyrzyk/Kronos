@@ -68,10 +68,10 @@ namespace Kronos.Client.Tests.Transfer
 
             Assert.Equal(SerializationUtils.Deserialize<RequestStatusCode>(response), expectedStatusCode);
 
-            socketMock.Verify(x => x.Send(requestTypeBytes), Times.Once);
-            socketMock.Verify(x => x.Send(requestBytes), Times.Once);
-            socketMock.Verify(x => x.Receive(statusCodeBytes), Times.Exactly(2));
-            socketMock.Verify(x => x.Dispose(), Times.Once);
+            socketMock.Verify(x => x.Send(requestTypeBytes), Times.AtLeastOnce);
+            socketMock.Verify(x => x.Send(requestBytes), Times.AtLeastOnce);
+            socketMock.Verify(x => x.Receive(statusCodeBytes), Times.AtLeast(2));
+            socketMock.Verify(x => x.Dispose(), Times.AtLeastOnce);
         }
 
         [Fact]
@@ -138,10 +138,10 @@ namespace Kronos.Client.Tests.Transfer
             Assert.IsType<KronosCommunicationException>(transferException.InnerException);
             Assert.Equal(transferException.Message, "Invalid tcp error. Socket has received more bytes than was specified.");
 
-            socketMock.Verify(x => x.Send(requestTypeBytes), Times.Once);
-            socketMock.Verify(x => x.Send(requestBytes), Times.Once);
-            socketMock.Verify(x => x.Receive(statusCodeBytes), Times.Exactly(2));
-            socketMock.Verify(x => x.Dispose(), Times.Once);
+            socketMock.Verify(x => x.Send(requestTypeBytes), Times.Exactly(SocketCommunicationService.RetryCount + 1));
+            socketMock.Verify(x => x.Send(requestBytes), Times.Exactly(SocketCommunicationService.RetryCount + 1));
+            socketMock.Verify(x => x.Receive(statusCodeBytes), Times.Exactly((SocketCommunicationService.RetryCount + 1) * 2));
+            socketMock.Verify(x => x.Dispose(), Times.Exactly(SocketCommunicationService.RetryCount + 1));
         }
 
         [Fact]
@@ -209,10 +209,10 @@ namespace Kronos.Client.Tests.Transfer
             Assert.IsType<Exception>(transferException);
             Assert.Equal(transferException.Message, exceptionMessage);
 
-            socketMock.Verify(x => x.Send(requestTypeBytes), Times.Once);
-            socketMock.Verify(x => x.Send(requestBytes), Times.Once);
-            socketMock.Verify(x => x.Receive(statusCodeBytes), Times.Exactly(2));
-            socketMock.Verify(x => x.Dispose(), Times.Once);
+            socketMock.Verify(x => x.Send(requestTypeBytes), Times.Exactly(SocketCommunicationService.RetryCount + 1));
+            socketMock.Verify(x => x.Send(requestBytes), Times.Exactly(SocketCommunicationService.RetryCount + 1));
+            socketMock.Verify(x => x.Receive(statusCodeBytes), Times.Exactly((SocketCommunicationService.RetryCount + 1) * 2));
+            socketMock.Verify(x => x.Dispose(), Times.Exactly(SocketCommunicationService.RetryCount + 1));
         }
 
         [Fact]
