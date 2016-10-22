@@ -54,5 +54,10 @@ namespace Kronos.Server.Listener
         {
             _logger.Error(args.Exception);
         }
+
+        public void Dispose()
+        {
+            _server.Dispose();
+        }
     }
 }

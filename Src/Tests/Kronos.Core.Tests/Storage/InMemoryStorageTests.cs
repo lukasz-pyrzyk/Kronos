@@ -78,6 +78,34 @@ namespace Kronos.Core.Tests.Storage
         }
 
         [Fact]
+        public void Contains_ReturnsTrueWhenDataExists()
+        {
+            IExpiryProvider expiryProvider = Substitute.For<IExpiryProvider>();
+            IStorage storage = new InMemoryStorage(expiryProvider);
+
+            string key = "lorem ipsum";
+            storage.AddOrUpdate(key, new byte[0]);
+            storage.AddOrUpdate("second", new byte[0]);
+
+            bool result = storage.Contains(key);
+
+            Assert.True(result);
+        }
+
+        [Fact]
+        public void Contains_ReturnsTrueWhenDataDoesNotExist()
+        {
+            IExpiryProvider expiryProvider = Substitute.For<IExpiryProvider>();
+            IStorage storage = new InMemoryStorage(expiryProvider);
+
+            string key = "lorem ipsum";
+
+            bool result = storage.Contains(key);
+
+            Assert.False(result);
+        }
+
+        [Fact]
         public void CanClear()
         {
             IExpiryProvider expiryProvider = Substitute.For<IExpiryProvider>();

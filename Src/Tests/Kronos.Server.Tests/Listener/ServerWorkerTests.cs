@@ -1,7 +1,7 @@
 ﻿using Kronos.Core.Requests;
 using Kronos.Core.Storage;
 using Kronos.Server.Listener;
-using Moq;
+using NSubstitute;
 using XGain;
 using Xunit;
 
@@ -12,14 +12,27 @@ namespace Kronos.Server.Tests.Listener
         [Fact]
         public void Ctor_AssignsServices()
         {
-            var requestProcessorMock = new Mock<IRequestMapper>();
-            var storageMock = new Mock<IStorage>();
-            var serverMock = new Mock<IServer>();
+            var requestProcessorMock = Substitute.For<IRequestMapper>();
+            var storageMock = Substitute.For<IStorage>();
+            var serverMock = Substitute.For<IServer>();
 
-            ServerWorker worker = new ServerWorker(requestProcessorMock.Object, storageMock.Object, serverMock.Object);
+            ServerWorker worker = new ServerWorker(requestProcessorMock, storageMock, serverMock);
 
             Assert.NotNull(worker);
-            Assert.Equal(worker.Storage, storageMock.Object);
+            Assert.Equal(worker.Storage, storageMock);
+        }
+
+        [Fact]
+        public void Dispose_StopsServer()
+        {
+            var requestProcessorMock = Substitute.For<IRequestMapper>();
+            var storageMock = Substitute.For<IStorage>();
+            var serverMock = Substitute.For<IServer>();
+
+            ServerWorker worker = new ServerWorker(requestProcessorMock, storageMock, serverMock);
+            worker.Dispose();
+
+            serverMock.Received(1).Dispose();
         }
     }
 }
