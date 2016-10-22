@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.IO;
 using System.Net;
@@ -10,6 +11,7 @@ using Kronos.Core.Exceptions;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Kronos.Core.StatusCodes;
+using Polly;
 using XGain.Sockets;
 
 namespace Kronos.Client.Transfer
@@ -34,62 +36,71 @@ namespace Kronos.Client.Transfer
         {
             ISocket socket = _newSocketFunc();
 
-            try
-            {
-                Trace.WriteLine("Connecting to the server socket");
-                socket.Connect(_host);
+            Policy policy =
+                Policy.Handle<Exception>()
+                    .WaitAndRetry(new List<TimeSpan>() { TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(3) });
 
-                Trace.WriteLine("Sending request type");
-                SentToClientAndWaitForConfirmation(socket, request.RequestType);
-
-                Trace.WriteLine("Sending request");
-                SentToClientAndWaitForConfirmation(socket, request);
-
-                Trace.WriteLine("Waiting for response");
-                byte[] requestBytes;
-                using (MemoryStream ms = new MemoryStream())
-                {
-                    byte[] requestSizeBytes = new byte[sizeof(int)];
-                    int position = socket.Receive(requestSizeBytes);
-                    int requestSize = SerializationUtils.GetLengthOfPackage(requestSizeBytes);
-
-                    ms.Write(requestSizeBytes, 0, position);
-                    position = 0;
-                    while (position != requestSize)
-                    {
-                        byte[] package = new byte[socket.BufferSize];
-                        int received = socket.Receive(package);
-                        position += received;
-
-                        ms.Write(package, 0, received);
-
-                        if (position > requestSize)
-                            throw new KronosCommunicationException("Invalid tcp error. Socket has received more bytes than was specified.");
-                    }
-
-                    requestBytes = ms.ToArray();
-                }
-                return requestBytes;
-            }
-            catch (Exception ex)
-            {
-                Trace.TraceError($"During package transfer an error occurred {ex}");
-                Trace.WriteLine("Returning information about exception");
-                throw new KronosCommunicationException(ex.Message, ex);
-            }
-            finally
+            byte[] requestBytes = null;
+            await policy.ExecuteAsync(async () =>
             {
                 try
                 {
-                    socket.Dispose();
+                    Trace.WriteLine("Connecting to the server socket");
+                    socket.Connect(_host);
+
+                    Trace.WriteLine("Sending request type");
+                    await SentToClientAndWaitForConfirmation(socket, request.RequestType);
+
+                    Trace.WriteLine("Sending request");
+                    await SentToClientAndWaitForConfirmation(socket, request);
+
+                    Trace.WriteLine("Waiting for response");
+                    using (MemoryStream ms = new MemoryStream())
+                    {
+                        byte[] requestSizeBytes = new byte[sizeof(int)];
+                        int position = socket.Receive(requestSizeBytes);
+                        int requestSize = SerializationUtils.GetLengthOfPackage(requestSizeBytes);
+
+                        ms.Write(requestSizeBytes, 0, position);
+                        position = 0;
+                        while (position != requestSize)
+                        {
+                            byte[] package = new byte[socket.BufferSize];
+                            int received = socket.Receive(package);
+                            position += received;
+
+                            ms.Write(package, 0, received);
+
+                            if (position > requestSize)
+                                throw new KronosCommunicationException(
+                                    "Invalid tcp error. Socket has received more bytes than was specified.");
+                        }
+
+                        requestBytes = ms.ToArray();
+                    }
                 }
-                catch (SocketException)
+                catch (Exception ex)
                 {
+                    Trace.TraceError($"During package transfer an error occurred {ex}");
+                    Trace.WriteLine("Returning information about exception");
+                    throw new KronosCommunicationException(ex.Message, ex);
                 }
-            }
+                finally
+                {
+                    try
+                    {
+                        socket.Dispose();
+                    }
+                    catch (SocketException)
+                    {
+                    }
+                }
+            });
+
+            return requestBytes;
         }
 
-        private static void SentToClientAndWaitForConfirmation<T>(ISocket socket, T obj)
+        private static async Task SentToClientAndWaitForConfirmation<T>(ISocket socket, T obj)
         {
             byte[] buffer = SerializationUtils.Serialize(obj);
             socket.Send(buffer);
@@ -98,7 +109,7 @@ namespace Kronos.Client.Transfer
             byte[] confirmationBuffer = new byte[SerializationUtils.Serialize(RequestStatusCode.Ok).Length];
             int count;
             while ((count = socket.Receive(confirmationBuffer)) == 0)
-                Thread.Sleep(100);
+                await Task.Delay(50);
         }
     }
 }

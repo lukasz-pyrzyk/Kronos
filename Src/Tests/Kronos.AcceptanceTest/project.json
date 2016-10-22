@@ -1,4 +1,4 @@
-﻿{
+{
   "authors": [ "Lukasz Pyrzyk" ],
   "commands": {
     "test": "xunit.runner.dnx"
@@ -15,7 +15,8 @@
     "Microsoft.NETCore.App": {
       "type": "platform",
       "version": "1.0.0"
-    }
+    },
+    "XGain": "1.2.1"
   },
   "description": "Kronos - acceptance tests",
   "frameworks": {

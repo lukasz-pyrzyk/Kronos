@@ -4,7 +4,9 @@
   "dependencies": {
     "Kronos.Core": "1.1.0",
     "Newtonsoft.Json": "9.0.1",
-    "protobuf-net": "2.1.0"
+    "Polly": "4.5.0-beta-netstandar-0001",
+    "protobuf-net": "2.1.0",
+    "XGain": "1.2.1"
   },
   "description": "Kronoc.Client is a library which allows you integrate project with Kronos cache platform (Kronos.Server)",
   "frameworks": {
