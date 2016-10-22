@@ -264,7 +264,7 @@ namespace Kronos.Client.Tests.Transfer
             IPEndPoint endpoint = new IPEndPoint(IPAddress.Any, 5000);
 
             SocketCommunicationService service = new SocketCommunicationService(endpoint, () => socketMock.Object);
-            service.SendToServerAsync(request);
+            await service.SendToServerAsync(request);
 
             socketMock.Verify(x => x.Send(requestTypeBytes), Times.Once);
             socketMock.Verify(x => x.Send(requestBytes), Times.Once);
