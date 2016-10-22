@@ -5,7 +5,7 @@ Kronos is distributed, in-memory cache system based on .NET Core. Client library
 
 ### Kronos.Client - Installation
 ```csharp
-$ Install-Package Kronos.Client -Pre
+$ Install-Package Kronos.Client
 ```
 
 ### Kronos.Client - Configuration file
@@ -43,13 +43,13 @@ byte[] packageToCache = Encoding.UTF8.GetBytes("Lorem ipsum");
 DateTime expiryDate = DateTime.Now;
 
 // insert package to server
-client.Insert(key, packageToCache, expiryDate);
+await client.InsertAsync(key, packageToCache, expiryDate);
 
 // get package from server
-byte[] cachedValues = client.Get(key);
+byte[] cachedValues = await client.GetAsync(key);
 
 // Optionally you can delete object from cache using Delete command
-client.Delete(key);
+await client.DeleteAsync(key);
 ```
 
 ### Server initialization using docker image
