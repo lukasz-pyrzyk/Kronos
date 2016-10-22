@@ -1,4 +1,5 @@
-# Kronos  [![Build status](https://ci.appveyor.com/api/projects/status/vrkm5pcbg0dv6n6w?svg=true)](https://ci.appveyor.com/project/LukaszPyrzyk/kronos) [![codecov.io](https://codecov.io/github/lukasz-pyrzyk/Kronos/coverage.svg?branch=master)](https://codecov.io/github/lukasz-pyrzyk/Kronos?branch=master) [![NuGet version](https://badge.fury.io/nu/Kronos.Client.svg)](https://badge.fury.io/nu/Kronos.Client)
+# Kronos  [![Build status](https://ci.appveyor.com/api/projects/status/vrkm5pcbg0dv6n6w?svg=true)](https://ci.appveyor.com/project/LukaszPyrzyk/kronos) [![codecov.io](https://codecov.io/github/lukasz-pyrzyk/Kronos/coverage.svg?branch=master)](https://codecov.io/github/lukasz-pyrzyk/Kronos?branch=master) [![NuGet version](https://badge.fury.io/nu/Kronos.Client.svg)](https://badge.fury.io/nu/Kronos.Client) [![Docker Stars](https://img.shields.io/docker/stars/lukaszpyrzyk/kronos.svg)](https://hub.docker.com/r/lukaszpyrzyk/kronos/)
+
 ### Description
 Kronos is distributed, in-memory cache system based on .NET Core. Client library is available by [Nuget](https://www.nuget.org/packages/Kronos.Client/).
 
