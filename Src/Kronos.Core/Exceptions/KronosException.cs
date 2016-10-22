@@ -4,8 +4,11 @@ namespace Kronos.Core.Exceptions
 {
     public class KronosException : Exception
     {
+        public override string HelpLink => "https://github.com/lukasz-pyrzyk/Kronos";
+
         public KronosException()
         {
+
         }
 
         public KronosException(string message)
