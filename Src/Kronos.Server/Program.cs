@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Net;
+using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
@@ -42,7 +43,7 @@ namespace Kronos.Server
                 using (IStorage storage = new InMemoryStorage(expiryProvider))
                 {
                     IProcessor<MessageArgs> processor = new SocketProcessor();
-                    IPAddress localAddr = (await Dns.GetHostEntryAsync("localhost")).AddressList[1];
+                    IPAddress localAddr = await GetLocalIPAddress();
                     using (IServer server = new XGainServer(localAddr, port, processor))
                     {
                         IRequestMapper mapper = new RequestMapper();
@@ -51,6 +52,20 @@ namespace Kronos.Server
                     }
                 }
             });
+        }
+
+        public static async Task<IPAddress> GetLocalIPAddress()
+        {
+            var host = await Dns.GetHostEntryAsync(Dns.GetHostName());
+            foreach (var ip in host.AddressList)
+            {
+                if (ip.AddressFamily == AddressFamily.InterNetwork)
+                {
+                    return ip;
+                }
+            }
+
+            throw new Exception("Local IP Address Not Found!");
         }
     }
 }
