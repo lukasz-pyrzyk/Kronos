@@ -36,17 +36,18 @@ namespace Kronos.Server
 
         public static Task StartAsync(int port)
         {
-            return Task.Run(() =>
+            return Task.Run(async () =>
             {
                 IExpiryProvider expiryProvider = new StorageExpiryProvider();
                 using (IStorage storage = new InMemoryStorage(expiryProvider))
                 {
                     IProcessor<MessageArgs> processor = new SocketProcessor();
-                    using (IServer server = new XGainServer(IPAddress.Any, port, processor))
+                    IPAddress localAddr = (await Dns.GetHostEntryAsync("localhost")).AddressList[1];
+                    using (IServer server = new XGainServer(localAddr, port, processor))
                     {
                         IRequestMapper mapper = new RequestMapper();
                         IServerWorker worker = new ServerWorker(mapper, storage, server);
-                        return worker.StartListeningAsync(tokenSource.Token);
+                        await worker.StartListeningAsync(tokenSource.Token);
                     }
                 }
             });
