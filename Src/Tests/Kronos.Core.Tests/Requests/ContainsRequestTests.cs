@@ -3,10 +3,10 @@ using Kronos.Core.Communication;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Kronos.Core.Storage;
-using Moq;
 using NSubstitute;
 using XGain.Sockets;
 using Xunit;
+using System.Linq;
 
 namespace Kronos.Core.Tests.Requests
 {
@@ -67,16 +67,15 @@ namespace Kronos.Core.Tests.Requests
 
             var storageMock = Substitute.For<IStorage>();
             storageMock.Contains(key).Returns(expected);
-            var socketMock = new Mock<ISocket>();
+            var socketMock = Substitute.For<ISocket>();
 
             var request = new ContainsRequest(key);
-            request.ProcessAndSendResponse(socketMock.Object, storageMock);
+            request.ProcessAndSendResponse(socketMock, storageMock);
 
             byte[] expectedPackage = SerializationUtils.Serialize(expected);
             bool result = SerializationUtils.Deserialize<bool>(expectedPackage);
-
             Assert.Equal(expected, result);
-            socketMock.Verify(x => x.Send(expectedPackage), Times.Once);
+            socketMock.Received(1).Send(Arg.Is<byte[]>(x => x.SequenceEqual(expectedPackage)));
         }
     }
 }

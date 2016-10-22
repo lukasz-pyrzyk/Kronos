@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System.Linq;
+using System.Text;
 using System.Threading.Tasks;
 using Kronos.Core.Communication;
 using Kronos.Core.Requests;
@@ -6,7 +7,6 @@ using Xunit;
 using Kronos.Core.Serialization;
 using Kronos.Core.StatusCodes;
 using Kronos.Core.Storage;
-using Moq;
 using NSubstitute;
 using XGain.Sockets;
 
@@ -82,15 +82,15 @@ namespace Kronos.Core.Tests.Requests
             string key = "lorem ipsum";
             byte[] cachedObject = Encoding.UTF8.GetBytes("object");
 
-            var storageMock = new Mock<IStorage>();
-            storageMock.Setup(x => x.TryGet(key)).Returns(cachedObject);
-            var socketMock = new Mock<ISocket>();
+            var storageMock = Substitute.For<IStorage>();
+            storageMock.TryGet(key).Returns(cachedObject);
+            var socketMock = Substitute.For<ISocket>();
 
             var request = new GetRequest(key);
-            request.ProcessAndSendResponse(socketMock.Object, storageMock.Object);
+            request.ProcessAndSendResponse(socketMock, storageMock);
 
             byte[] expectedPackage = SerializationUtils.Serialize(cachedObject);
-            socketMock.Verify(x => x.Send(expectedPackage), Times.Once);
+            socketMock.Received(1).Send(Arg.Is<byte[]>(x => x.SequenceEqual(expectedPackage)));
         }
 
         [Fact]
@@ -99,14 +99,14 @@ namespace Kronos.Core.Tests.Requests
             string key = "lorem ipsum";
             byte[] notFoundBytes = SerializationUtils.Serialize(SerializationUtils.Serialize(RequestStatusCode.NotFound));
 
-            var socketMock = new Mock<ISocket>();
-            var storageMock = new Mock<IStorage>();
-            storageMock.Setup(x => x.TryGet(key)).Returns((byte[])null);
+            var socketMock = Substitute.For<ISocket>();
+            var storageMock = Substitute.For<IStorage>();
+            storageMock.TryGet(key).Returns((byte[])null);
 
             var request = new GetRequest(key);
-            request.ProcessAndSendResponse(socketMock.Object, storageMock.Object);
+            request.ProcessAndSendResponse(socketMock, storageMock);
 
-            socketMock.Verify(x => x.Send(notFoundBytes), Times.Once);
+            socketMock.Received(1).Send(Arg.Is<byte[]>(x => x.SequenceEqual(notFoundBytes)));
         }
     }
 }

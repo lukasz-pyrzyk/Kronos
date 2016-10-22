@@ -6,10 +6,10 @@ using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Kronos.Core.StatusCodes;
 using Kronos.Core.Storage;
-using Moq;
 using NSubstitute;
 using XGain.Sockets;
 using Xunit;
+using System.Linq;
 
 namespace Kronos.Core.Tests.Requests
 {
@@ -80,15 +80,15 @@ namespace Kronos.Core.Tests.Requests
             byte[] cachedObject = SerializationUtils.Serialize("object");
             DateTime expiryDate = DateTime.Today;
 
-            var storageMock = new Mock<IStorage>();
-            var socketMock = new Mock<ISocket>();
+            var storageMock = Substitute.For<IStorage>();
+            var socketMock = Substitute.For<ISocket>();
 
             var request = new InsertRequest(key, cachedObject, expiryDate);
-            request.ProcessAndSendResponse(socketMock.Object, storageMock.Object);
+            request.ProcessAndSendResponse(socketMock, storageMock);
 
-            storageMock.Verify(x => x.AddOrUpdate(key, cachedObject), Times.Once);
+            storageMock.Received(1).AddOrUpdate(key, cachedObject);
             byte[] responseBytes = SerializationUtils.Serialize(RequestStatusCode.Ok);
-            socketMock.Verify(x => x.Send(responseBytes), Times.Once);
+            socketMock.Received(1).Send(Arg.Is<byte[]>(x => x.SequenceEqual(responseBytes)));
         }
     }
 }

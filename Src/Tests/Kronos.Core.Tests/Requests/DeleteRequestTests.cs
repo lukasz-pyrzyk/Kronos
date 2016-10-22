@@ -3,8 +3,9 @@ using Xunit;
 using Kronos.Core.Serialization;
 using Kronos.Core.StatusCodes;
 using Kronos.Core.Storage;
-using Moq;
+using NSubstitute;
 using XGain.Sockets;
+using System.Linq;
 
 namespace Kronos.Core.Tests.Requests
 {
@@ -45,16 +46,16 @@ namespace Kronos.Core.Tests.Requests
         {
             const string key = "lorem ipsum";
 
-            var storageMock = new Mock<IStorage>();
-            storageMock.Setup(x => x.TryRemove(key)).Returns(true);
-            var socketMock = new Mock<ISocket>();
+            var storageMock = Substitute.For<IStorage>();
+            storageMock.TryRemove(key).Returns(true);
+            var socketMock = Substitute.For<ISocket>();
 
             var request = new DeleteRequest(key);
-            request.ProcessAndSendResponse(socketMock.Object, storageMock.Object);
+            request.ProcessAndSendResponse(socketMock, storageMock);
 
-            storageMock.Verify(x => x.TryRemove(key), Times.Once);
+            storageMock.Received(1).TryRemove(key);
             byte[] responseBytes = SerializationUtils.Serialize(RequestStatusCode.Deleted);
-            socketMock.Verify(x => x.Send(responseBytes), Times.Once);
+            socketMock.Received(1).Send(Arg.Is<byte[]>(x => x.SequenceEqual(responseBytes)));
         }
 
         [Fact]
@@ -62,16 +63,16 @@ namespace Kronos.Core.Tests.Requests
         {
             const string key = "lorem ipsum";
 
-            var storageMock = new Mock<IStorage>();
-            storageMock.Setup(x => x.TryRemove(key)).Returns(false);
-            var socketMock = new Mock<ISocket>();
+            var storageMock = Substitute.For<IStorage>();
+            storageMock.TryRemove(key).Returns(false);
+            var socketMock = Substitute.For<ISocket>();
 
             var request = new DeleteRequest(key);
-            request.ProcessAndSendResponse(socketMock.Object, storageMock.Object);
+            request.ProcessAndSendResponse(socketMock, storageMock);
 
-            storageMock.Verify(x => x.TryRemove(key), Times.Once);
+            storageMock.Received(1).TryRemove(key);
             byte[] responseBytes = SerializationUtils.Serialize(RequestStatusCode.NotFound);
-            socketMock.Verify(x => x.Send(responseBytes), Times.Once);
+            socketMock.Received(1).Send(Arg.Is<byte[]>(x => x.SequenceEqual(responseBytes)));
         }
     }
 }
