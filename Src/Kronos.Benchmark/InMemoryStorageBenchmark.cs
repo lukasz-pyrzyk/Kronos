@@ -18,11 +18,12 @@ namespace Kronos.Benchmark
         public void Add()
         {
             string key = Guid.NewGuid().ToString();
+            DateTime expiryDate = DateTime.MaxValue;
 
             IExpiryProvider expiryProvider = new StorageExpiryProvider();
             using (IStorage storage = new InMemoryStorage(expiryProvider))
             {
-                storage.AddOrUpdate(key, sampleData);
+                storage.AddOrUpdate(key, expiryDate, sampleData);
             }
         }
 
@@ -30,12 +31,13 @@ namespace Kronos.Benchmark
         public void AddAndUpdate()
         {
             string key = Guid.NewGuid().ToString();
+            DateTime expiryDate = DateTime.MaxValue;
 
             IExpiryProvider expiryProvider = new StorageExpiryProvider();
             using (IStorage storage = new InMemoryStorage(expiryProvider))
             {
-                storage.AddOrUpdate(key, sampleData);
-                storage.AddOrUpdate(key, sampleData); // update
+                storage.AddOrUpdate(key, expiryDate, sampleData);
+                storage.AddOrUpdate(key, expiryDate, sampleData); // update
             }
         }
 
@@ -43,12 +45,14 @@ namespace Kronos.Benchmark
         public byte[] AddAndGet()
         {
             string key = Guid.NewGuid().ToString();
+            DateTime expiryDate = DateTime.MaxValue;
+
 
             byte[] result;
             IExpiryProvider expiryProvider = new StorageExpiryProvider();
             using (IStorage storage = new InMemoryStorage(expiryProvider))
             {
-                storage.AddOrUpdate(key, sampleData);
+                storage.AddOrUpdate(key, expiryDate, sampleData);
                 result = storage.TryGet(key);
             }
 
@@ -59,11 +63,13 @@ namespace Kronos.Benchmark
         public void AddAndRemove()
         {
             string key = Guid.NewGuid().ToString();
+            DateTime expiryDate = DateTime.MaxValue;
+
 
             IExpiryProvider expiryProvider = new StorageExpiryProvider();
             using (IStorage storage = new InMemoryStorage(expiryProvider))
             {
-                storage.AddOrUpdate(key, sampleData);
+                storage.AddOrUpdate(key, expiryDate, sampleData);
                 storage.TryRemove(key);
             }
         }

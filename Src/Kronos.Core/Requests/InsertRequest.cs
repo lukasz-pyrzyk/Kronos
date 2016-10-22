@@ -32,10 +32,10 @@ namespace Kronos.Core.Requests
             Object = serializedObject;
             ExpiryDate = expiryDate;
         }
-        
+
         public override void ProcessAndSendResponse(ISocket socket, IStorage storage)
         {
-            storage.AddOrUpdate(Key, Object);
+            storage.AddOrUpdate(Key, ExpiryDate, Object);
             socket.Send(SerializationUtils.Serialize(RequestStatusCode.Ok));
         }
     }

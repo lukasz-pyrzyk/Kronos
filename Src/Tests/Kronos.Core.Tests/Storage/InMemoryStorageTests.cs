@@ -1,4 +1,5 @@
-﻿using System.Text;
+﻿using System;
+using System.Text;
 using Kronos.Core.Storage;
 using NSubstitute;
 using Xunit;
@@ -13,7 +14,7 @@ namespace Kronos.Core.Tests.Storage
             string key = "key";
             string objectWord = "lorem ipsum";
             IExpiryProvider expiryProvider = Substitute.For<IExpiryProvider>();
-            IStorage storage = new InMemoryStorage(expiryProvider); storage.AddOrUpdate(key, Encoding.UTF8.GetBytes(objectWord));
+            IStorage storage = new InMemoryStorage(expiryProvider); storage.AddOrUpdate(key, DateTime.MaxValue, Encoding.UTF8.GetBytes(objectWord));
 
             byte[] objFromBytes = storage.TryGet(key);
             string stringFromBytes = Encoding.UTF8.GetString(objFromBytes);
@@ -33,8 +34,8 @@ namespace Kronos.Core.Tests.Storage
             byte[] firstObject = Encoding.UTF8.GetBytes(first);
             byte[] secondObject = Encoding.UTF8.GetBytes(second);
 
-            storage.AddOrUpdate(key, firstObject);
-            storage.AddOrUpdate(key, secondObject);
+            storage.AddOrUpdate(key, DateTime.MaxValue, firstObject);
+            storage.AddOrUpdate(key, DateTime.MaxValue, secondObject);
 
             byte[] objFromBytes = storage.TryGet(key);
             string stringFromBytes = Encoding.UTF8.GetString(objFromBytes);
@@ -51,8 +52,8 @@ namespace Kronos.Core.Tests.Storage
 
             IExpiryProvider expiryProvider = Substitute.For<IExpiryProvider>();
             IStorage storage = new InMemoryStorage(expiryProvider);
-            storage.AddOrUpdate(firstKey, package);
-            storage.AddOrUpdate(secondKey, package);
+            storage.AddOrUpdate(firstKey, DateTime.MaxValue, package);
+            storage.AddOrUpdate(secondKey, DateTime.MaxValue, package);
 
             bool deleted = storage.TryRemove(firstKey);
 
@@ -69,7 +70,7 @@ namespace Kronos.Core.Tests.Storage
 
             IExpiryProvider expiryProvider = Substitute.For<IExpiryProvider>();
             IStorage storage = new InMemoryStorage(expiryProvider);
-            storage.AddOrUpdate(firstKey, package);
+            storage.AddOrUpdate(firstKey, DateTime.MaxValue, package);
 
             bool deleted = storage.TryRemove(secondKey);
 
@@ -84,8 +85,8 @@ namespace Kronos.Core.Tests.Storage
             IStorage storage = new InMemoryStorage(expiryProvider);
 
             string key = "lorem ipsum";
-            storage.AddOrUpdate(key, new byte[0]);
-            storage.AddOrUpdate("second", new byte[0]);
+            storage.AddOrUpdate(key, DateTime.MaxValue, new byte[0]);
+            storage.AddOrUpdate("second", DateTime.MaxValue, new byte[0]);
 
             bool result = storage.Contains(key);
 
@@ -111,8 +112,8 @@ namespace Kronos.Core.Tests.Storage
             IExpiryProvider expiryProvider = Substitute.For<IExpiryProvider>();
             IStorage storage = new InMemoryStorage(expiryProvider);
 
-            storage.AddOrUpdate("first", new byte[0]);
-            storage.AddOrUpdate("second", new byte[0]);
+            storage.AddOrUpdate("first", DateTime.MaxValue, new byte[0]);
+            storage.AddOrUpdate("second", DateTime.MaxValue, new byte[0]);
 
             storage.Dispose();
             Assert.Equal(storage.Count, 0);

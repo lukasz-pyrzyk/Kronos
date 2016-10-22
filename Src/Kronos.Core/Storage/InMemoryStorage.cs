@@ -1,4 +1,5 @@
-﻿using System.Collections.Concurrent;
+﻿using System;
+using System.Collections.Concurrent;
 using System.Threading;
 using NLog;
 
@@ -22,10 +23,10 @@ namespace Kronos.Core.Storage
             _expiryProvider.Start(_storage, _cancelToken.Token);
         }
 
-        public void AddOrUpdate(string key, byte[] obj)
+        public void AddOrUpdate(string key, DateTime expiryDate, byte[] obj)
         {
             _logger.Debug($"Inserting key {key} to MemoryStorage");
-            var metaData = new NodeMetatada(key);
+            var metaData = new NodeMetatada(key, expiryDate);
             _storage.AddOrUpdate(metaData, obj, (s, bytes) => obj);
         }
 

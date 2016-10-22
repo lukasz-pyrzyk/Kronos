@@ -6,7 +6,7 @@ namespace Kronos.Core.Storage
     {
         int Count { get; }
 
-        void AddOrUpdate(string key, byte[] obj);
+        void AddOrUpdate(string key, DateTime expiryDate, byte[] obj);
         byte[] TryGet(string key);
         bool TryRemove(string key);
         bool Contains(string key);

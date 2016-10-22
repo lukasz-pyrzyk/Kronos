@@ -86,7 +86,7 @@ namespace Kronos.Core.Tests.Requests
             var request = new InsertRequest(key, cachedObject, expiryDate);
             request.ProcessAndSendResponse(socketMock, storageMock);
 
-            storageMock.Received(1).AddOrUpdate(key, cachedObject);
+            storageMock.Received(1).AddOrUpdate(key, expiryDate, cachedObject);
             byte[] responseBytes = SerializationUtils.Serialize(RequestStatusCode.Ok);
             socketMock.Received(1).Send(Arg.Is<byte[]>(x => x.SequenceEqual(responseBytes)));
         }
