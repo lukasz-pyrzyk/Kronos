@@ -17,7 +17,7 @@
     },
     "NLog": "4.4.0-betaV15",
     "protobuf-net": "2.1.0",
-    "XGain": "1.2.0"
+    "XGain": "1.2.1"
   },
   "description": "Kronos - the cache platform",
   "frameworks": {
