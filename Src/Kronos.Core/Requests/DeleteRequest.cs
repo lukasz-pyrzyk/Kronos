@@ -29,7 +29,7 @@ namespace Kronos.Core.Requests
             bool deleted = storage.TryRemove(Key);
             RequestStatusCode code = deleted ? RequestStatusCode.Deleted : RequestStatusCode.NotFound;
 
-            socket.Send(SerializationUtils.Serialize(code));
+            socket.Send(SerializationUtils.SerializeToStreamWithLength(code));
         }
     }
 }

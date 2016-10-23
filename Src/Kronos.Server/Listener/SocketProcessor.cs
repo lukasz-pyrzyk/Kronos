@@ -1,9 +1,10 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
+using System.Linq;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
-using Kronos.Core.StatusCodes;
 using NLog;
 using XGain;
 using XGain.Processing;
@@ -15,18 +16,15 @@ namespace Kronos.Server.Listener
     {
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
-        public async Task<MessageArgs> ProcessSocketConnectionAsync(ISocket client)
+        public Task<MessageArgs> ProcessSocketConnectionAsync(ISocket client)
         {
             _logger.Debug("Accepting new request");
             MessageArgs args = null;
             try
             {
-                byte[] typeBuffer = await ReceiveAndSendConfirmation(client);
-                byte[] requestBuffer = await ReceiveAndSendConfirmation(client);
+                ReceivedMessage msg = ReceiveMessageAsync(client);
 
-                RequestType type = SerializationUtils.Deserialize<RequestType>(typeBuffer);
-
-                args = new MessageArgs(client, requestBuffer, type);
+                args = new MessageArgs(client, msg.Data, msg.Type);
             }
             catch (SocketException ex)
             {
@@ -34,40 +32,51 @@ namespace Kronos.Server.Listener
                     $"Exception during receiving request from client {client?.RemoteEndPoint} + {ex}");
             }
 
-            return args;
+            return Task.FromResult(args);
         }
 
-        private async Task<byte[]> ReceiveAndSendConfirmation(ISocket socket)
+        private ReceivedMessage ReceiveMessageAsync(ISocket socket)
         {
-            byte[] packageSizeBuffer = new byte[sizeof(int)];
-            _logger.Debug("Receiving information about request size");
-            int position = socket.Receive(packageSizeBuffer);
+            byte[] lengthBuffer = new byte[sizeof(int)];
+            ReceiveBytes(socket, lengthBuffer);
+            int dataLength = BitConverter.ToInt32(lengthBuffer, 0);
 
-            int requestSize = SerializationUtils.GetLengthOfPackage(packageSizeBuffer);
-            _logger.Debug($"Request contains {requestSize} bytes");
+            byte[] typeBuffer = new byte[sizeof(RequestType)];
+            ReceiveBytes(socket, typeBuffer);
 
-            using (MemoryStream ms = new MemoryStream())
+            byte[] data = new byte[dataLength - typeBuffer.Length];
+            ReceiveBytes(socket, data);
+
+            RequestType requestType = SerializationUtils.Deserialize<RequestType>(typeBuffer);
+
+            return new ReceivedMessage { Type = requestType, Data = data };
+        }
+
+        private void ReceiveBytes(ISocket socket, byte[] buffer)
+        {
+            if (buffer.Length <= socket.BufferSize)
             {
-                await ms.WriteAsync(packageSizeBuffer, 0, position);
-                position = 0;
-                while (position != requestSize)
-                {
-                    byte[] package = new byte[socket.BufferSize];
-
-                    int received = socket.Receive(package);
-                    _logger.Debug($"Received {received} bytes");
-
-                    await ms.WriteAsync(package, 0, received);
-                    position += received;
-                    _logger.Debug($"Total received bytes: {(float)position * 100 / requestSize}%");
-                }
-
-                // send confirmation
-                byte[] statusBuffer = SerializationUtils.Serialize(RequestStatusCode.Ok);
-                socket.Send(statusBuffer);
-
-                return ms.ToArray();
+                socket.Receive(buffer);
+                return;
             }
+
+            int position = 0;
+            using (MemoryStream ms = new MemoryStream(buffer))
+            {
+                while (position != buffer.Length)
+                {
+                    byte[] buf = new byte[socket.BufferSize];
+                    int received = socket.Receive(buf);
+                    ms.Write(buf, 0, received);
+                    position += received;
+                }
+            }
+        }
+
+        struct ReceivedMessage
+        {
+            public RequestType Type { get; set; }
+            public byte[] Data { get; set; }
         }
     }
 }

@@ -51,7 +51,7 @@ namespace Kronos.Core.Tests.Requests
             var request = new GetRequest("masterKey");
 
             var communicationServiceMock = Substitute.For<IClientServerConnection>();
-            communicationServiceMock.SendToServerAsync(request).Returns(SerializationUtils.Serialize(value));
+            communicationServiceMock.SendToServerAsync(request).Returns(SerializationUtils.SerializeToStreamWithLength(value));
 
             byte[] response = await request.ExecuteAsync<byte[]>(communicationServiceMock);
 
@@ -89,7 +89,7 @@ namespace Kronos.Core.Tests.Requests
             var request = new GetRequest(key);
             request.ProcessAndSendResponse(socketMock, storageMock);
 
-            byte[] expectedPackage = SerializationUtils.Serialize(cachedObject);
+            byte[] expectedPackage = SerializationUtils.SerializeToStreamWithLength(cachedObject);
             socketMock.Received(1).Send(Arg.Is<byte[]>(x => x.SequenceEqual(expectedPackage)));
         }
 
@@ -97,7 +97,7 @@ namespace Kronos.Core.Tests.Requests
         public void ProcessAndSendResponse_ReturnsNotFoundToClient()
         {
             string key = "lorem ipsum";
-            byte[] notFoundBytes = SerializationUtils.Serialize(SerializationUtils.Serialize(RequestStatusCode.NotFound));
+            byte[] notFoundBytes = SerializationUtils.SerializeToStreamWithLength(SerializationUtils.Serialize(RequestStatusCode.NotFound));
 
             var socketMock = Substitute.For<ISocket>();
             var storageMock = Substitute.For<IStorage>();

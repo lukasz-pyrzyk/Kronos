@@ -1,10 +1,20 @@
 ﻿using System;
+using System.Collections.Generic;
 using Kronos.Core.Serialization;
 
 namespace Kronos.Core.Requests
 {
     public class RequestMapper : IRequestMapper
     {
+        public static Dictionary<RequestType, Type> Mapping = new Dictionary<RequestType, Type>()
+        {
+            [RequestType.Insert] = typeof(InsertRequest),
+            [RequestType.Get] = typeof(GetRequest),
+            [RequestType.Contains] = typeof(ContainsRequest),
+            [RequestType.Count] = typeof(CountRequest),
+            [RequestType.Delete] = typeof(DeleteRequest)
+        };
+
         public Request ProcessRequest(byte[] requestBytes, RequestType type)
         {
             Request request;

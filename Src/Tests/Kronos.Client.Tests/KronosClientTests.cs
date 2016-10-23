@@ -39,7 +39,7 @@ namespace Kronos.Client.Tests
 
             var communicationServiceMock = Substitute.For<IClientServerConnection>();
             communicationServiceMock.SendToServerAsync(Arg.Any<GetRequest>())
-                .Returns(SerializationUtils.Serialize(package));
+                .Returns(SerializationUtils.SerializeToStreamWithLength(package));
 
             KronosConfig config = LoadTestConfiguration();
             IKronosClient client = new KronosClient(config, endpoint => communicationServiceMock);
@@ -72,7 +72,7 @@ namespace Kronos.Client.Tests
         {
             var communicationServiceMock = Substitute.For<IClientServerConnection>();
             communicationServiceMock.SendToServerAsync(Arg.Any<DeleteRequest>())
-                .Returns(SerializationUtils.Serialize(RequestStatusCode.Ok));
+                .Returns(SerializationUtils.SerializeToStreamWithLength(RequestStatusCode.Ok));
 
             KronosConfig config = LoadTestConfiguration();
             IKronosClient client = new KronosClient(config, endpoint => communicationServiceMock);
@@ -88,7 +88,7 @@ namespace Kronos.Client.Tests
             int countPerServer = 5;
             var communicationServiceMock = Substitute.For<IClientServerConnection>();
             communicationServiceMock.SendToServerAsync(Arg.Any<CountRequest>())
-                .Returns(SerializationUtils.Serialize(countPerServer));
+                .Returns(SerializationUtils.SerializeToStreamWithLength(countPerServer));
 
             KronosConfig config = LoadTestConfiguration();
             int serverCount = config.ClusterConfig.Servers.Length;
@@ -107,7 +107,7 @@ namespace Kronos.Client.Tests
             string key = "lorem ipsum";
             var communicationServiceMock = Substitute.For<IClientServerConnection>();
             communicationServiceMock.SendToServerAsync(Arg.Any<ContainsRequest>())
-                .Returns(SerializationUtils.Serialize(expected));
+                .Returns(SerializationUtils.SerializeToStreamWithLength(expected));
 
             KronosConfig config = LoadTestConfiguration();
             IKronosClient client = new KronosClient(config, endpoint => communicationServiceMock);

@@ -51,7 +51,7 @@ namespace Kronos.Core.Tests.Requests
             var request = new ContainsRequest();
 
             var communicationServiceMock = Substitute.For<IClientServerConnection>();
-            communicationServiceMock.SendToServerAsync(request).Returns(SerializationUtils.Serialize(expected));
+            communicationServiceMock.SendToServerAsync(request).Returns(SerializationUtils.SerializeToStreamWithLength(expected));
 
             bool response = await request.ExecuteAsync<bool>(communicationServiceMock);
 
@@ -72,8 +72,8 @@ namespace Kronos.Core.Tests.Requests
             var request = new ContainsRequest(key);
             request.ProcessAndSendResponse(socketMock, storageMock);
 
-            byte[] expectedPackage = SerializationUtils.Serialize(expected);
-            bool result = SerializationUtils.Deserialize<bool>(expectedPackage);
+            byte[] expectedPackage = SerializationUtils.SerializeToStreamWithLength(expected);
+            bool result = SerializationUtils.DeserializeWithLength<bool>(expectedPackage);
             Assert.Equal(expected, result);
             socketMock.Received(1).Send(Arg.Is<byte[]>(x => x.SequenceEqual(expectedPackage)));
         }
