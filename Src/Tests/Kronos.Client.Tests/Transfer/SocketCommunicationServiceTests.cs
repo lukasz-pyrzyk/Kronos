@@ -11,6 +11,7 @@ using Kronos.Core.Serialization;
 using Kronos.Core.StatusCodes;
 using Moq;
 using NSubstitute;
+using NSubstitute.ExceptionExtensions;
 using XGain.Sockets;
 using Xunit;
 
@@ -38,23 +39,35 @@ namespace Kronos.Client.Tests.Transfer
         }
 
         [Fact]
-        public async Task SendToServer_CatchsExceptionFromSocketDispose()
+        public async Task SendToServer_Dispose_WasCatched_SocketException()
         {
             // arrange
             var socket = Substitute.For<ISocket>();
-            socket.Dispose();
+            socket.When(x => x.Dispose()).Do(x => { throw new SocketException(); });
 
             var request = new InsertRequest();
             var ipEndpoint = new IPEndPoint(IPAddress.Any, 500);
 
             var service = new SocketCommunicationService(ipEndpoint, () => socket);
 
-            //  act
+            //  act and assert
             await service.SendToServerAsync(request);
+        }
 
-            socket.Received(1).Connect(ipEndpoint);
-            socket.Received(2).Send(Arg.Any<byte[]>());
-            socket.Received(1).Dispose();
+        [Fact]
+        public async Task SendToServer_Dispose_WasNowCatched_ArgumentNullException()
+        {
+            // arrange
+            var socket = Substitute.For<ISocket>();
+            socket.When(x => x.Dispose()).Do(x => { throw new ArgumentNullException(); });
+
+            var request = new InsertRequest();
+            var ipEndpoint = new IPEndPoint(IPAddress.Any, 500);
+
+            var service = new SocketCommunicationService(ipEndpoint, () => socket);
+
+            //  act and assert
+            await Assert.ThrowsAsync(typeof(ArgumentNullException), () => service.SendToServerAsync(request));
         }
     }
 }
