@@ -36,8 +36,12 @@ namespace Kronos.Server.Listener
         {
             try
             {
-                Request request = _mapper.ProcessRequest(args.RequestBytes, (RequestType)args.UserToken);
+                string id = new Guid().ToString();
+                var type = (RequestType)args.UserToken;
+                _logger.Info($"Processing new request with Id: {id}, type: {type}, {args.RequestBytes} bytes");
+                Request request = _mapper.ProcessRequest(args.RequestBytes, type);
                 request.ProcessAndSendResponse(args.Client, Storage);
+                _logger.Info($"Processing {id} finished");
             }
             catch (Exception ex)
             {
@@ -57,6 +61,7 @@ namespace Kronos.Server.Listener
 
         public void Dispose()
         {
+            _logger.Info("Disposing server");
             _server.Dispose();
         }
     }

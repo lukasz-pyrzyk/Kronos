@@ -17,7 +17,6 @@ namespace Kronos.Server.Listener
 
         public Task<MessageArgs> ProcessSocketConnectionAsync(ISocket client)
         {
-            _logger.Debug("Accepting new request");
             MessageArgs args = null;
             try
             {
