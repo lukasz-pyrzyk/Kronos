@@ -9,7 +9,6 @@ using Kronos.Core.Exceptions;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Kronos.Core.StatusCodes;
-using Moq;
 using NSubstitute;
 using NSubstitute.ExceptionExtensions;
 using XGain.Sockets;
