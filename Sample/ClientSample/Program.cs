@@ -1,10 +1,5 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Diagnostics;
-using System.Globalization;
-using System.IO;
-using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Kronos.Client;
 
@@ -14,39 +9,50 @@ namespace ClientSample
     {
         public static void Main(string[] args)
         {
+            Task.WaitAll(StartAsync());
+
+            Console.ReadKey();
+        }
+
+        private static async Task StartAsync()
+        {
             string configPath = "KronosConfig.json";
 
             IKronosClient client = KronosClientFactory.CreateClient(configPath);
 
             var watch = Stopwatch.StartNew();
-            byte[] package = new byte[1024];
+            byte[] package = new byte[1024 * 9];
             new Random().NextBytes(package);
-
-            List<Task> workers = new List<Task>();
 
             for (int i = 0; i < 100; i++)
             {
-                Task worker = Task.Run(async () =>
-                {
-                    string key = Guid.NewGuid().ToString();
-                    DateTime expiryDate = DateTime.Now.AddDays(1);
+                Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+                string key = Guid.NewGuid().ToString();
+                DateTime expiryDate = DateTime.UtcNow.AddDays(1);
 
-                    await client.InsertAsync(key, package, expiryDate);
-                    byte[] fromServer = await client.GetAsync(key);
+                Console.WriteLine("ADD - testing");
+                await client.InsertAsync(key, package, expiryDate);
+                Console.WriteLine($"ADD - done (size: {package.Length})");
 
-                    string deserialized = Encoding.UTF8.GetString(fromServer);
-                    Console.WriteLine($"{deserialized.Length} - {DateTime.Now.ToString(CultureInfo.InvariantCulture)}");
-                });
+                Console.WriteLine("COUNT - testing");
+                int count = await client.CountAsync();
+                Console.WriteLine($"COUNT - done (count: {count})");
 
-                workers.Add(worker);
+                Console.WriteLine("CONTAINS - testing");
+                bool contains = await client.ContainsAsync(key);
+                Console.WriteLine($"CONTAINS - done (exists: {contains})");
 
-                if (workers.Count > Environment.ProcessorCount) Task.WaitAny(workers.ToArray());
+                Console.WriteLine("GET - testing");
+                byte[] fromServer = await client.GetAsync(key);
+                Console.WriteLine($"GET - done (size: {fromServer.Length})");
+
+                Console.WriteLine("GET - testing");
+                await client.DeleteAsync(key);
+                bool containsAfterDeletion = await client.ContainsAsync(key);
+                Console.WriteLine($"GET - done (exists after deletion: {containsAfterDeletion})");
             }
-            Task.WaitAll(workers.ToArray());
             watch.Stop();
             Console.WriteLine(watch.ElapsedMilliseconds);
-
-            Console.ReadKey();
         }
     }
 }
