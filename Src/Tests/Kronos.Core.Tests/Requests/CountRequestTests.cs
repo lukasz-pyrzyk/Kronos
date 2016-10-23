@@ -39,7 +39,7 @@ namespace Kronos.Core.Tests.Requests
             var request = new CountRequest();
 
             var communicationServiceMock = Substitute.For<IClientServerConnection>();
-            communicationServiceMock.SendToServerAsync(request).Returns(SerializationUtils.Serialize(value));
+            communicationServiceMock.SendToServerAsync(request).Returns(SerializationUtils.SerializeToStreamWithLength(value));
 
             int response = await request.ExecuteAsync<int>(communicationServiceMock);
 
@@ -59,7 +59,7 @@ namespace Kronos.Core.Tests.Requests
             var request = new CountRequest();
             request.ProcessAndSendResponse(socketMock, storageMock);
 
-            byte[] expectedPackage = SerializationUtils.Serialize(expectecCount);
+            byte[] expectedPackage = SerializationUtils.SerializeToStreamWithLength(expectecCount);
             socketMock.Received(1).Send(Arg.Is<byte[]>(x => x.SequenceEqual(expectedPackage)));
         }
     }

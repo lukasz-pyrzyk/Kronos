@@ -36,7 +36,7 @@ namespace Kronos.Core.Requests
         public override void ProcessAndSendResponse(ISocket socket, IStorage storage)
         {
             storage.AddOrUpdate(Key, ExpiryDate, Object);
-            socket.Send(SerializationUtils.Serialize(RequestStatusCode.Ok));
+            socket.Send(SerializationUtils.SerializeToStreamWithLength(RequestStatusCode.Ok));
         }
     }
 }

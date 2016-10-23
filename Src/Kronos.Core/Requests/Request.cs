@@ -33,7 +33,7 @@ namespace Kronos.Core.Requests
 
         protected virtual T PrepareResponse<T>(byte[] responseBytes)
         {
-            T results = SerializationUtils.Deserialize<T>(responseBytes);
+            T results = SerializationUtils.DeserializeWithLength<T>(responseBytes);
             return results;
         }
     }

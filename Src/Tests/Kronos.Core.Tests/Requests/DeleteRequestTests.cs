@@ -54,7 +54,7 @@ namespace Kronos.Core.Tests.Requests
             request.ProcessAndSendResponse(socketMock, storageMock);
 
             storageMock.Received(1).TryRemove(key);
-            byte[] responseBytes = SerializationUtils.Serialize(RequestStatusCode.Deleted);
+            byte[] responseBytes = SerializationUtils.SerializeToStreamWithLength(RequestStatusCode.Deleted);
             socketMock.Received(1).Send(Arg.Is<byte[]>(x => x.SequenceEqual(responseBytes)));
         }
 
@@ -71,7 +71,7 @@ namespace Kronos.Core.Tests.Requests
             request.ProcessAndSendResponse(socketMock, storageMock);
 
             storageMock.Received(1).TryRemove(key);
-            byte[] responseBytes = SerializationUtils.Serialize(RequestStatusCode.NotFound);
+            byte[] responseBytes = SerializationUtils.SerializeToStreamWithLength(RequestStatusCode.NotFound);
             socketMock.Received(1).Send(Arg.Is<byte[]>(x => x.SequenceEqual(responseBytes)));
         }
     }

@@ -26,7 +26,7 @@ namespace Kronos.Core.Requests
         {
             bool contains = storage.Contains(Key);
 
-            socket.Send(SerializationUtils.Serialize(contains));
+            socket.Send(SerializationUtils.SerializeToStreamWithLength(contains));
         }
     }
 }

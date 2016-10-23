@@ -14,7 +14,7 @@ namespace Kronos.Core.Requests
         {
             int count = storage.Count;
 
-            socket.Send(SerializationUtils.Serialize(count));
+            socket.Send(SerializationUtils.SerializeToStreamWithLength(count));
         }
     }
 }

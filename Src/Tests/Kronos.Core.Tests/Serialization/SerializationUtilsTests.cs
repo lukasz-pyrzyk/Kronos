@@ -22,19 +22,5 @@ namespace Kronos.Core.Tests.Serialization
             Assert.Equal(requestFromBytes.ExpiryDate, requestFromBytes.ExpiryDate);
             Assert.Equal(requestFromBytes.Object, requestFromBytes.Object);
         }
-
-        [Fact]
-        public void GetLengthOfPackage_ReturnsCorrectNumber()
-        {
-            string word = "lorem ipsum";
-            byte[] buffer = SerializationUtils.Serialize(word);
-
-            int expectedSize;
-            Serializer.TryReadLengthPrefix(buffer, 0, buffer.Length, PrefixStyle.Base128, out expectedSize);
-
-            int size = SerializationUtils.GetLengthOfPackage(buffer);
-
-            Assert.Equal(size, expectedSize);
-        }
     }
 }

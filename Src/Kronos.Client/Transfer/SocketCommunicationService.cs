@@ -8,7 +8,6 @@ using Kronos.Core.Communication;
 using Kronos.Core.Exceptions;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
-using Kronos.Core.StatusCodes;
 using Polly;
 using XGain.Sockets;
 
@@ -24,7 +23,7 @@ namespace Kronos.Client.Transfer
 
         private static readonly TimeSpan[] _timeSpans = { TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(3) };
         private readonly Policy _policy = Policy.Handle<Exception>()
-                    .WaitAndRetryAsync(_timeSpans);
+                    .WaitAndRetry(_timeSpans);
 
         public SocketCommunicationService(IPEndPoint host) : this(host, () => new XGainSocket(AddressFamily.InterNetwork))
         {
@@ -41,18 +40,15 @@ namespace Kronos.Client.Transfer
             ISocket socket = _newSocketFunc();
 
             byte[] requestBytes = null;
-            await _policy.ExecuteAsync(async () =>
+            _policy.Execute(() =>
             {
                 try
                 {
                     Trace.WriteLine("Connecting to the server socket");
                     socket.Connect(_host);
 
-                    Trace.WriteLine("Sending request type");
-                    await SentToClientAndWaitForConfirmation(socket, request.RequestType);
-
                     Trace.WriteLine("Sending request");
-                    await SentToClientAndWaitForConfirmation(socket, request);
+                    SendToServer(socket, request);
 
                     Trace.WriteLine("Waiting for response");
                     using (MemoryStream ms = new MemoryStream())
@@ -100,16 +96,18 @@ namespace Kronos.Client.Transfer
             return requestBytes;
         }
 
-        private static async Task SentToClientAndWaitForConfirmation<T>(ISocket socket, T obj)
+        private static void SendToServer(ISocket socket, Request request)
         {
-            byte[] buffer = SerializationUtils.Serialize(obj);
-            socket.Send(buffer);
+            byte[] data;
+            using (MemoryStream ms = new MemoryStream())
+            {
+                SerializationUtils.SerializeToStream(ms, request.RequestType);
+                SerializationUtils.SerializeToStream(ms, request);
+                data = ms.ToArray();
+            }
 
-            // wait for confirmation
-            byte[] confirmationBuffer = new byte[SerializationUtils.Serialize(RequestStatusCode.Ok).Length];
-            int count;
-            while ((count = socket.Receive(confirmationBuffer)) == 0)
-                await Task.Delay(50);
+            socket.Send(BitConverter.GetBytes(data.Length));
+            socket.Send(data);
         }
     }
 }

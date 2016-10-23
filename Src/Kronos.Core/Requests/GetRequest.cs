@@ -27,12 +27,12 @@ namespace Kronos.Core.Requests
         public override void ProcessAndSendResponse(ISocket socket, IStorage storage)
         {
             byte[] requestedObject = storage.TryGet(Key) ?? SerializationUtils.Serialize(RequestStatusCode.NotFound);
-            socket.Send(SerializationUtils.Serialize(requestedObject));
+            socket.Send(SerializationUtils.SerializeToStreamWithLength(requestedObject));
         }
 
         protected override T PrepareResponse<T>(byte[] responseBytes)
         {
-            if (responseBytes.Length == 6) // if size is equal to serialized RequestStatusCode
+            if (responseBytes.Length == 2) // if size is equal to serialized RequestStatusCode
             {
                 try
                 {
@@ -40,7 +40,7 @@ namespace Kronos.Core.Requests
                     RequestStatusCode notFound = SerializationUtils.Deserialize<RequestStatusCode>(responseBytes);
                     if (notFound == RequestStatusCode.NotFound)
                     {
-                        responseBytes = SerializationUtils.Serialize(new byte[] {0});
+                        responseBytes = SerializationUtils.SerializeToStreamWithLength(new byte[] {0});
                     }
                 }
                 catch
@@ -48,7 +48,7 @@ namespace Kronos.Core.Requests
                 }
             }
 
-            return SerializationUtils.Deserialize<T>(responseBytes);
+            return SerializationUtils.DeserializeWithLength<T>(responseBytes);
         }
     }
 }
