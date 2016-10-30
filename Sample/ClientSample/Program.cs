@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Threading.Tasks;
 using Kronos.Client;
 
@@ -10,8 +11,6 @@ namespace ClientSample
         public static void Main(string[] args)
         {
             Task.WaitAll(StartAsync());
-
-            Console.ReadKey();
         }
 
         private static async Task StartAsync()
@@ -46,13 +45,32 @@ namespace ClientSample
                 byte[] fromServer = await client.GetAsync(key);
                 Console.WriteLine($"GET - done (size: {fromServer.Length})");
 
-                Console.WriteLine("GET - testing");
+                Console.WriteLine("DELETE - testing");
                 await client.DeleteAsync(key);
                 bool containsAfterDeletion = await client.ContainsAsync(key);
-                Console.WriteLine($"GET - done (exists after deletion: {containsAfterDeletion})");
+                Console.WriteLine($"DELETE - done (exists after deletion: {containsAfterDeletion})");
             }
             watch.Stop();
             Console.WriteLine(watch.ElapsedMilliseconds);
+        }
+
+        private static async Task SendFileFilesAsync()
+        {
+            const string directory = @"path";
+            string configPath = "KronosConfig.json";
+
+            IKronosClient client = KronosClientFactory.CreateClient(configPath);
+
+            foreach (string file in Directory.EnumerateFiles(directory, "*.*", SearchOption.AllDirectories))
+            {
+                var time = Stopwatch.StartNew();
+                var data = File.ReadAllBytes(file);
+                string name = Path.GetFileName(file);
+                Console.WriteLine($"Sending {name}");
+                await client.InsertAsync(name, data, DateTime.Now.AddMinutes(10));
+                time.Stop();
+                Console.WriteLine($"Sending finished. Time: {time.ElapsedMilliseconds}");
+            }
         }
     }
 }
