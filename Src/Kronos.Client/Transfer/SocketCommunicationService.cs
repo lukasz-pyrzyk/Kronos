@@ -66,10 +66,6 @@ namespace Kronos.Client.Transfer
                             position += received;
 
                             ms.Write(package, 0, received);
-
-                            if (position > requestSize)
-                                throw new KronosCommunicationException(
-                                    "Invalid tcp error. Socket has received more bytes than was specified.");
                         }
 
                         requestBytes = ms.ToArray();
@@ -107,7 +103,15 @@ namespace Kronos.Client.Transfer
             }
 
             socket.Send(BitConverter.GetBytes(data.Length));
-            socket.Send(data);
+
+            int sentbytes = 0;
+            while (sentbytes != data.Length)
+            {
+                int sizeToSend = Math.Min(data.Length - sentbytes, socket.BufferSize);
+
+                int sent = socket.Send(data, sentbytes, sizeToSend, SocketFlags.None);
+                sentbytes += sent;
+            }
         }
     }
 }

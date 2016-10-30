@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using Kronos.Core.Requests;
@@ -21,7 +20,6 @@ namespace Kronos.Server.Listener
             try
             {
                 ReceivedMessage msg = ReceiveMessageAsync(client);
-
                 args = new MessageArgs(client, msg.Data, msg.Type);
             }
             catch (SocketException ex)
@@ -36,38 +34,28 @@ namespace Kronos.Server.Listener
         private ReceivedMessage ReceiveMessageAsync(ISocket socket)
         {
             byte[] lengthBuffer = new byte[sizeof(int)];
-            ReceiveBytes(socket, lengthBuffer);
+            ReceiveUntilFullBuffer(socket, lengthBuffer);
             int dataLength = BitConverter.ToInt32(lengthBuffer, 0);
 
             byte[] typeBuffer = new byte[sizeof(RequestType)];
-            ReceiveBytes(socket, typeBuffer);
+            ReceiveUntilFullBuffer(socket, typeBuffer);
 
             byte[] data = new byte[dataLength - typeBuffer.Length];
-            ReceiveBytes(socket, data);
+            ReceiveUntilFullBuffer(socket, data);
 
             RequestType requestType = SerializationUtils.Deserialize<RequestType>(typeBuffer);
 
             return new ReceivedMessage { Type = requestType, Data = data };
         }
 
-        private void ReceiveBytes(ISocket socket, byte[] buffer)
+        private void ReceiveUntilFullBuffer(ISocket socket, byte[] buffer)
         {
-            if (buffer.Length <= socket.BufferSize)
-            {
-                socket.Receive(buffer);
-                return;
-            }
-
             int position = 0;
-            using (MemoryStream ms = new MemoryStream(buffer))
+            while (position != buffer.Length)
             {
-                while (position != buffer.Length)
-                {
-                    byte[] buf = new byte[socket.BufferSize];
-                    int received = socket.Receive(buf);
-                    ms.Write(buf, 0, received);
-                    position += received;
-                }
+                int expectedSize = Math.Min(buffer.Length - position, socket.BufferSize);
+                int received = socket.Receive(buffer, position, expectedSize, SocketFlags.None);
+                position += received;
             }
         }
 
