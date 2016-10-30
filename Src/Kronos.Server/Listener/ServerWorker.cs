@@ -36,7 +36,7 @@ namespace Kronos.Server.Listener
         {
             try
             {
-                string id = new Guid().ToString();
+                string id = Guid.NewGuid().ToString();
                 var type = (RequestType)args.UserToken;
                 _logger.Info($"Processing new request with Id: {id}, type: {type}, {args.RequestBytes} bytes");
                 Request request = _mapper.ProcessRequest(args.RequestBytes, type);

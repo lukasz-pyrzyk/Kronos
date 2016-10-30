@@ -8,7 +8,7 @@
     "Kronos.Core": "1.1.0-*",
     "OpenCover": "4.6.519",
     "protobuf-net": "2.1.0",
-    "XGain": "1.2.1",
+    "XGain": "1.2.2",
     "xunit": "2.2.0-beta2-build3300",
     "Microsoft.NETCore.App": {
       "type": "platform",
