@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Text;
@@ -22,8 +23,9 @@ namespace Kronos.Client.Tests.Transfer
         public async Task SendToServer_WorksCorrect()
         {
             // arrange
-            var socket = Substitute.For<ISocket>();
             var request = new InsertRequest();
+            var socket = PrepareSocket(request);
+
             var ipEndpoint = new IPEndPoint(IPAddress.Any, 500);
 
             var service = new SocketCommunicationService(ipEndpoint, () => socket);
@@ -33,7 +35,7 @@ namespace Kronos.Client.Tests.Transfer
 
             // assert
             socket.Received(1).Connect(ipEndpoint);
-            socket.Received(2).Send(Arg.Any<byte[]>());
+            socket.Received(2).Send(Arg.Any<byte[]>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<SocketFlags>());
             socket.Received(1).Dispose();
         }
 
@@ -41,10 +43,11 @@ namespace Kronos.Client.Tests.Transfer
         public async Task SendToServer_Dispose_WasCatched_SocketException()
         {
             // arrange
-            var socket = Substitute.For<ISocket>();
+            var request = new InsertRequest();
+            var socket = PrepareSocket(request);
+
             socket.When(x => x.Dispose()).Do(x => { throw new SocketException(); });
 
-            var request = new InsertRequest();
             var ipEndpoint = new IPEndPoint(IPAddress.Any, 500);
 
             var service = new SocketCommunicationService(ipEndpoint, () => socket);
@@ -57,16 +60,38 @@ namespace Kronos.Client.Tests.Transfer
         public async Task SendToServer_Dispose_WasNowCatched_ArgumentNullException()
         {
             // arrange
-            var socket = Substitute.For<ISocket>();
+            var request = new InsertRequest();
+            var socket = PrepareSocket(request);
+
             socket.When(x => x.Dispose()).Do(x => { throw new ArgumentNullException(); });
 
-            var request = new InsertRequest();
             var ipEndpoint = new IPEndPoint(IPAddress.Any, 500);
 
             var service = new SocketCommunicationService(ipEndpoint, () => socket);
 
             //  act and assert
             await Assert.ThrowsAsync(typeof(ArgumentNullException), () => service.SendToServerAsync(request));
+        }
+
+        private static ISocket PrepareSocket(Request request)
+        {
+            var data = PrepareData(request);
+            var socket = Substitute.For<ISocket>();
+            socket.BufferSize.Returns(4 * 1024);
+            socket.Send(Arg.Any<byte[]>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<SocketFlags>())
+                .Returns(data.Length);
+
+            return socket;
+        }
+
+        private static byte[] PrepareData(Request request)
+        {
+            using (MemoryStream ms = new MemoryStream())
+            {
+                SerializationUtils.SerializeToStream(ms, request.RequestType);
+                SerializationUtils.SerializeToStream(ms, request);
+                return ms.ToArray();
+            }
         }
     }
 }

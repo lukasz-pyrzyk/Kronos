@@ -102,7 +102,8 @@ namespace Kronos.Client.Transfer
                 data = ms.ToArray();
             }
 
-            socket.Send(BitConverter.GetBytes(data.Length));
+            byte[] lengthBytes = BitConverter.GetBytes(data.Length);
+            socket.Send(lengthBytes, 0, lengthBytes.Length, SocketFlags.None);
 
             int sentbytes = 0;
             while (sentbytes != data.Length)
