@@ -45,7 +45,7 @@ namespace Kronos.Server.Listener
 
             RequestType requestType = SerializationUtils.Deserialize<RequestType>(typeBuffer);
 
-            return new ReceivedMessage { Type = requestType, Data = data };
+            return new ReceivedMessage(requestType, data);
         }
 
         private void ReceiveUntilFullBuffer(ISocket socket, byte[] buffer)
@@ -57,12 +57,6 @@ namespace Kronos.Server.Listener
                 int received = socket.Receive(buffer, position, expectedSize, SocketFlags.None);
                 position += received;
             }
-        }
-
-        struct ReceivedMessage
-        {
-            public RequestType Type { get; set; }
-            public byte[] Data { get; set; }
         }
     }
 }
