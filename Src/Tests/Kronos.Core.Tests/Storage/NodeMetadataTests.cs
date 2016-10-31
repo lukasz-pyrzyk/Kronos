@@ -14,7 +14,7 @@ namespace Kronos.Core.Tests.Storage
             var metadata = new NodeMetatada(key, expiryDate);
 
             Assert.Equal(key, metadata.Key);
-            Assert.Equal(expiryDate, metadata.ExpiryDate);
+            Assert.Equal(expiryDate.Ticks, metadata.ExpiryDate.Ticks);
         }
 
         [Fact]
@@ -25,7 +25,7 @@ namespace Kronos.Core.Tests.Storage
             var metadata = new NodeMetatada(key, expiryDate);
             string message = metadata.ToString();
 
-            Assert.Equal($"{key}|{expiryDate:o}", message);
+            Assert.Equal($"{key}|{expiryDate:s}", message);
         }
 
         [Fact]

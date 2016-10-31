@@ -20,11 +20,11 @@ namespace Kronos.Core.Storage
                 {
                     if (token.IsCancellationRequested) break;
 
-                    DateTime date = DateTime.UtcNow;
+                    long ticks = DateTime.UtcNow.Ticks;
                     ulong deleted = 0;
                     foreach (KeyValuePair<NodeMetatada, byte[]> node in nodes)
                     {
-                        if (node.Key.ExpiryDate < date)
+                        if (node.Key.ExpiryDate.Ticks < ticks)
                         {
                             byte[] temp;
                             nodes.TryRemove(node.Key, out temp);
