@@ -4,23 +4,26 @@ namespace Kronos.Core.Storage
 {
     public class NodeMetatada
     {
+        private readonly int _hashCode;
+
+        public string Key { get; }
+        public ExpiryDate ExpiryDate { get; }
+
         public NodeMetatada(string key, DateTime expiryDate = default(DateTime))
         {
             Key = key;
             ExpiryDate = expiryDate;
+            _hashCode = key.GetHashCode();
         }
-
-        public string Key { get; }
-        public DateTime ExpiryDate { get; }
 
         public override string ToString()
         {
-            return $"{Key}|{ExpiryDate:O}";
+            return $"{Key}|{ExpiryDate}";
         }
 
         public override int GetHashCode()
         {
-            return Key.GetHashCode();
+            return _hashCode;
         }
     }
 }
