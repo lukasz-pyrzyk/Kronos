@@ -47,9 +47,9 @@ namespace Kronos.Core.Serialization
             Serializer.SerializeWithLengthPrefix(stream, obj, style);
         }
 
-        public static T Deserialize<T>(byte[] buffer)
+        public static T Deserialize<T>(byte[] buffer, int? count = null)
         {
-            using (MemoryStream ms = new MemoryStream(buffer))
+            using (MemoryStream ms = new MemoryStream(buffer, 0, count ?? buffer.Length))
             {
                 return Serializer.Deserialize<T>(ms);
             }
