@@ -12,6 +12,9 @@ namespace Kronos.Server.Listener
 {
     public class SocketProcessor : IProcessor<MessageArgs>
     {
+        private const int IntSize = sizeof(int);
+        private const int RequestTypeSize = sizeof(ushort);
+
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
         public Task<MessageArgs> ProcessSocketConnectionAsync(ISocket client)
@@ -33,11 +36,11 @@ namespace Kronos.Server.Listener
 
         private ReceivedMessage ReceiveMessageAsync(ISocket socket)
         {
-            byte[] lengthBuffer = new byte[sizeof(int)];
+            byte[] lengthBuffer = new byte[IntSize];
             ReceiveUntilFullBuffer(socket, lengthBuffer);
             int dataLength = BitConverter.ToInt32(lengthBuffer, 0);
 
-            byte[] typeBuffer = new byte[sizeof(RequestType)];
+            byte[] typeBuffer = new byte[RequestTypeSize];
             ReceiveUntilFullBuffer(socket, typeBuffer);
 
             byte[] data = new byte[dataLength - typeBuffer.Length];
