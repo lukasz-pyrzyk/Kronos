@@ -103,16 +103,9 @@ namespace Kronos.Client.Transfer
             }
 
             byte[] lengthBytes = BitConverter.GetBytes(data.Length);
-            socket.Send(lengthBytes, 0, lengthBytes.Length, SocketFlags.None);
 
-            int sentbytes = 0;
-            while (sentbytes != data.Length)
-            {
-                int sizeToSend = Math.Min(data.Length - sentbytes, socket.BufferSize);
-
-                int sent = socket.Send(data, sentbytes, sizeToSend, SocketFlags.None);
-                sentbytes += sent;
-            }
+            SocketUtils.SendAll(socket, lengthBytes);
+            SocketUtils.SendAll(socket, data);
         }
     }
 }
