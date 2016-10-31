@@ -10,7 +10,7 @@ namespace Kronos.Core.Tests.Storage
     public class StorageExpiryProviderTests
     {
         [Fact]
-        public void Start_CanDeleteObjectsFromStorage()
+        public async Task Start_CanDeleteObjectsFromStorage()
         {
             var data = new ConcurrentDictionary<NodeMetatada, byte[]>
             {
@@ -20,7 +20,7 @@ namespace Kronos.Core.Tests.Storage
 
             StorageExpiryProvider provider = new StorageExpiryProvider();
             provider.Start(data, CancellationToken.None);
-            Thread.Sleep(StorageExpiryProvider.Timer + 100);
+            await Task.Delay(StorageExpiryProvider.Timer + 100);
 
             Assert.Equal(data.Count, 1);
         }
