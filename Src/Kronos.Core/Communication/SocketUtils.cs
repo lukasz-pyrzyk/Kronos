@@ -17,5 +17,16 @@ namespace Kronos.Core.Communication
                 sentbytes += sent;
             }
         }
+
+        public static void ReceiveAll(ISocket socket, byte[] buffer, int count)
+        {
+            int position = 0;
+            while (position != count)
+            {
+                int expectedSize = Math.Min(count - position, socket.BufferSize);
+                int received = socket.Receive(buffer, position, expectedSize, SocketFlags.None);
+                position += received;
+            }
+        }
     }
 }
