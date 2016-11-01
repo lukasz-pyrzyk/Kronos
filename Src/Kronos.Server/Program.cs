@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
-using System.Runtime;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
@@ -29,8 +28,6 @@ namespace Kronos.Server
 
         public static void Main(string[] args)
         {
-            GCSettings.LargeObjectHeapCompactionMode = GCLargeObjectHeapCompactionMode.CompactOnce;
-
             LoggerSetup();
 
             int port = Convert.ToInt32(args[0]);

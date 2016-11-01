@@ -33,11 +33,20 @@ namespace Kronos.Core.Storage
                         }
                     }
 
-                    if(deleted > 0) _logger.Info($"Deleted {deleted} elements from storage");
+                    if (deleted > 0)
+                    {
+                        long currentMemory = GC.GetTotalMemory(true);
+                        _logger.Info($"Deleted {deleted} elements from storage. Current memory: {ConvertBytesToMegabytes(currentMemory)}mb");
+                    }
 
                     await Task.Delay(Timer, token);
                 }
             }, TaskCreationOptions.LongRunning);
+        }
+
+        private static string ConvertBytesToMegabytes(long bytes)
+        {
+            return (bytes / 1024f / 1024f).ToString("0.00");
         }
     }
 }
