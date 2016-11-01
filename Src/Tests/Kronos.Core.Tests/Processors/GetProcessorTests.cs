@@ -33,10 +33,6 @@ namespace Kronos.Core.Tests.Processors
             });
 
             byte[] expectedBytes = SerializationUtils.SerializeToStreamWithLength(obj);
-            var communicationServiceMock = Substitute.For<IClientServerConnection>();
-            communicationServiceMock
-                .Send(request)
-                .Returns(SerializationUtils.SerializeToStreamWithLength(expected));
             var socket = Substitute.For<ISocket>();
             socket.Send(Arg.Any<byte[]>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<SocketFlags>())
                 .Returns(expectedBytes.Length);
@@ -66,10 +62,6 @@ namespace Kronos.Core.Tests.Processors
             });
 
             byte[] expectedBytes = SerializationUtils.SerializeToStreamWithLength(obj);
-            var communicationServiceMock = Substitute.For<IClientServerConnection>();
-            communicationServiceMock
-                .Send(request)
-                .Returns(SerializationUtils.SerializeToStreamWithLength(expected));
             var socket = Substitute.For<ISocket>();
             socket.Send(Arg.Any<byte[]>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<SocketFlags>())
                 .Returns(expectedBytes.Length);

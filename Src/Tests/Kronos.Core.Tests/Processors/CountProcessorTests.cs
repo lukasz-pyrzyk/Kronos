@@ -17,7 +17,6 @@ namespace Kronos.Core.Tests.Processors
         public void Handle_ReturnsNumberOfElementInStorage()
         {
             // arrange
-            bool expected = true;
             var request = new CountRequest();
             var processor = new CountProcessor();
             int count = 5;
@@ -25,10 +24,6 @@ namespace Kronos.Core.Tests.Processors
             storage.Count.Returns(count);
 
             byte[] expectedBytes = SerializationUtils.SerializeToStreamWithLength(count);
-            var communicationServiceMock = Substitute.For<IClientServerConnection>();
-            communicationServiceMock
-                .Send(request)
-                .Returns(SerializationUtils.SerializeToStreamWithLength(expected));
             var socket = Substitute.For<ISocket>();
             socket.Send(Arg.Any<byte[]>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<SocketFlags>())
                 .Returns(expectedBytes.Length);

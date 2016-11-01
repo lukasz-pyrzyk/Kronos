@@ -19,16 +19,11 @@ namespace Kronos.Core.Tests.Processors
         public void Handle_ReturnsTrueOrFalseIfElementWasDeleted(bool deleted)
         {
             // arrange
-            bool expected = true;
             var request = new DeleteRequest();
             var processor = new DeleteProcessor();
             var storage = Substitute.For<IStorage>();
             storage.TryRemove(request.Key).Returns(deleted);
             byte[] expectedBytes = SerializationUtils.SerializeToStreamWithLength(deleted);
-            var communicationServiceMock = Substitute.For<IClientServerConnection>();
-            communicationServiceMock
-                .Send(request)
-                .Returns(SerializationUtils.SerializeToStreamWithLength(expected));
             var socket = Substitute.For<ISocket>();
             socket.Send(Arg.Any<byte[]>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<SocketFlags>())
                 .Returns(expectedBytes.Length);

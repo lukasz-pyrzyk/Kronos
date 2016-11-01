@@ -18,16 +18,11 @@ namespace Kronos.Core.Tests.Processors
         public void Handle_ReturnsTrueWhenElementAdded(bool added)
         {
             // arrange
-            bool expected = true;
             var request = new InsertRequest();
             var processor = new InsertProcessor();
             var storage = Substitute.For<IStorage>();
             storage.TryRemove(request.Key).Returns(added);
             byte[] expectedBytes = SerializationUtils.SerializeToStreamWithLength(added);
-            var communicationServiceMock = Substitute.For<IClientServerConnection>();
-            communicationServiceMock
-                .Send(request)
-                .Returns(SerializationUtils.SerializeToStreamWithLength(expected));
             var socket = Substitute.For<ISocket>();
             socket.Send(Arg.Any<byte[]>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<SocketFlags>())
                 .Returns(expectedBytes.Length);
