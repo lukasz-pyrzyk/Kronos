@@ -1,32 +1,18 @@
-﻿using Kronos.Core.Serialization;
-using Kronos.Core.Storage;
-using ProtoBuf;
-using XGain.Sockets;
+﻿using ProtoBuf;
 
 namespace Kronos.Core.Requests
 {
     [ProtoContract]
-    public class ContainsRequest : Request
+    public struct ContainsRequest : IRequest
     {
-        public override RequestType RequestType => RequestType.Contains;
-
         [ProtoMember(1)]
-        public string Key { get; set; }
+        public string Key { get; private set; }
 
-        public ContainsRequest()
-        {
-        }
+        public RequestType Type => RequestType.Contains;
 
         public ContainsRequest(string key)
         {
             Key = key;
-        }
-
-        public override void ProcessAndSendResponse(ISocket socket, IStorage storage)
-        {
-            bool contains = storage.Contains(Key);
-
-            socket.Send(SerializationUtils.SerializeToStreamWithLength(contains));
         }
     }
 }

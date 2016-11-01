@@ -2,6 +2,7 @@
 using System.Buffers;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using Kronos.Core.Communication;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using NLog;
@@ -39,30 +40,19 @@ namespace Kronos.Server.Listener
         private ReceivedMessage ReceiveMessageAsync(ISocket socket)
         {
             byte[] lengthBuffer = _bytesPool.Rent(IntSize);
-            ReceiveUntilFullBuffer(socket, lengthBuffer, IntSize);
+            SocketUtils.ReceiveAll(socket, lengthBuffer, IntSize);
             int dataLength = BitConverter.ToInt32(lengthBuffer, 0);
             _bytesPool.Return(lengthBuffer);
 
             byte[] typeBuffer = _bytesPool.Rent(RequestTypeSize);
-            ReceiveUntilFullBuffer(socket, typeBuffer, RequestTypeSize);
+            SocketUtils.ReceiveAll(socket, typeBuffer, RequestTypeSize);
             RequestType requestType = SerializationUtils.Deserialize<RequestType>(typeBuffer, RequestTypeSize);
             _bytesPool.Return(typeBuffer);
 
             byte[] data = new byte[dataLength - RequestTypeSize];
-            ReceiveUntilFullBuffer(socket, data, data.Length);
+            SocketUtils.ReceiveAll(socket, data, data.Length);
 
             return new ReceivedMessage(requestType, data);
-        }
-
-        private void ReceiveUntilFullBuffer(ISocket socket, byte[] buffer, int count)
-        {
-            int position = 0;
-            while (position != count)
-            {
-                int expectedSize = Math.Min(count - position, socket.BufferSize);
-                int received = socket.Receive(buffer, position, expectedSize, SocketFlags.None);
-                position += received;
-            }
         }
     }
 }

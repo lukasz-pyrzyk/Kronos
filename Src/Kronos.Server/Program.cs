@@ -5,7 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
 using Kronos.Core.Communication;
-using Kronos.Core.Requests;
+using Kronos.Core.Processors;
 using Kronos.Core.Storage;
 using Kronos.Server.Listener;
 using NLog;
@@ -46,7 +46,7 @@ namespace Kronos.Server
                     IPAddress localAddr = await GetLocalIPAddress();
                     using (IServer server = new XGainServer(localAddr, port, processor))
                     {
-                        IRequestMapper mapper = new RequestMapper();
+                        IRequestProcessor mapper = new RequestProcessor(storage);
                         IServerWorker worker = new ServerWorker(mapper, storage, server);
                         await worker.StartListeningAsync(tokenSource.Token);
                     }

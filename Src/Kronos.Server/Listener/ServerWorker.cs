@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Threading.Tasks;
 using Kronos.Core.Communication;
+using Kronos.Core.Processors;
 using Kronos.Core.Requests;
 using Kronos.Core.Storage;
 using NLog;
@@ -12,13 +13,13 @@ namespace Kronos.Server.Listener
     public class ServerWorker : IServerWorker
     {
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
-        private readonly IRequestMapper _mapper;
+        private readonly IRequestProcessor _requestsProcessor;
         private readonly IServer _server;
         public IStorage Storage { get; }
 
-        public ServerWorker(IRequestMapper mapper, IStorage storage, IServer server)
+        public ServerWorker(IRequestProcessor requestsProcessor, IStorage storage, IServer server)
         {
-            _mapper = mapper;
+            _requestsProcessor = requestsProcessor;
             _server = server;
             Storage = storage;
 
@@ -39,8 +40,7 @@ namespace Kronos.Server.Listener
                 string id = Guid.NewGuid().ToString();
                 var type = (RequestType)args.UserToken;
                 _logger.Info($"Processing new request with Id: {id}, type: {type}, {args.RequestBytes} bytes");
-                Request request = _mapper.ProcessRequest(args.RequestBytes, type);
-                request.ProcessAndSendResponse(args.Client, Storage);
+                _requestsProcessor.HandleIncomingRequest(type, args.RequestBytes, args.Client);
                 _logger.Info($"Processing {id} finished");
             }
             catch (Exception ex)
