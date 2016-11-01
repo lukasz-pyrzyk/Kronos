@@ -22,7 +22,7 @@ namespace Kronos.Client.Tests
 
             var communicationServiceMock = Substitute.For<IClientServerConnection>();
             communicationServiceMock.Send(Arg.Any<IRequest>())
-                .Returns(SerializationUtils.Serialize(true));
+                .Returns(SerializationUtils.SerializeToStreamWithLength(true));
 
             KronosConfig config = LoadTestConfiguration();
             IKronosClient client = new KronosClient(config, endpoint => communicationServiceMock);
@@ -57,7 +57,7 @@ namespace Kronos.Client.Tests
             byte[] serverResponse = SerializationUtils.Serialize(RequestStatusCode.NotFound);
             var communicationServiceMock = Substitute.For<IClientServerConnection>();
             communicationServiceMock.Send(Arg.Any<GetRequest>())
-                .Returns(SerializationUtils.Serialize(serverResponse));
+                .Returns(SerializationUtils.SerializeToStreamWithLength(serverResponse));
 
             KronosConfig config = LoadTestConfiguration();
             IKronosClient client = new KronosClient(config, endpoint => communicationServiceMock);
