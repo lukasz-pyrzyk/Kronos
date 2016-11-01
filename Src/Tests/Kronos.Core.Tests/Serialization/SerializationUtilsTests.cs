@@ -17,7 +17,7 @@ namespace Kronos.Core.Tests.Serialization
             byte[] array = SerializationUtils.Serialize(request);
             InsertRequest requestFromBytes = SerializationUtils.Deserialize<InsertRequest>(array);
 
-            Assert.Equal(requestFromBytes.RequestType, request.RequestType);
+            Assert.Equal(requestFromBytes.Type, request.Type);
             Assert.Equal(requestFromBytes.Key, requestFromBytes.Key);
             Assert.Equal(requestFromBytes.ExpiryDate, requestFromBytes.ExpiryDate);
             Assert.Equal(requestFromBytes.Object, requestFromBytes.Object);

@@ -3,7 +3,6 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using System.Threading.Tasks;
 using Kronos.Core.Communication;
 using Kronos.Core.Exceptions;
 using Kronos.Core.Requests;
@@ -15,27 +14,33 @@ namespace Kronos.Client.Transfer
 {
     public class SocketCommunicationService : IClientServerConnection
     {
-        public static int RetryCount => _timeSpans.Length;
+        public int RetryCount => _timeSpans.Length;
 
         private readonly IPEndPoint _host;
 
         private readonly Func<ISocket> _newSocketFunc;
 
-        private static readonly TimeSpan[] _timeSpans = { TimeSpan.FromSeconds(1), TimeSpan.FromSeconds(3) };
-        private readonly Policy _policy = Policy.Handle<Exception>()
-                    .WaitAndRetry(_timeSpans);
+        private readonly TimeSpan[] _timeSpans;
+        private readonly Policy _policy;
 
         public SocketCommunicationService(IPEndPoint host) : this(host, () => new XGainSocket(AddressFamily.InterNetwork))
         {
         }
 
-        internal SocketCommunicationService(IPEndPoint host, Func<ISocket> newSocketFunc)
+        internal SocketCommunicationService(IPEndPoint host, Func<ISocket> newSocketFunc, int retryCount = 2)
         {
             _host = host;
             _newSocketFunc = newSocketFunc;
+            var spans = new TimeSpan[retryCount];
+            for (int i = 0; i < retryCount; i++)
+            {
+                spans[i] = new TimeSpan(3 * retryCount);
+            }
+            _timeSpans = spans;
+            _policy = Policy.Handle<Exception>().WaitAndRetry(_timeSpans);
         }
 
-        public async Task<byte[]> SendToServerAsync(Request request)
+        public byte[] Send<TRequest>(TRequest request) where TRequest : IRequest
         {
             ISocket socket = _newSocketFunc();
 
@@ -48,7 +53,7 @@ namespace Kronos.Client.Transfer
                     socket.Connect(_host);
 
                     Trace.WriteLine("Sending request");
-                    SendToServer(socket, request);
+                    SendToServer(request, socket);
 
                     Trace.WriteLine("Waiting for response");
                     using (MemoryStream ms = new MemoryStream())
@@ -92,20 +97,20 @@ namespace Kronos.Client.Transfer
             return requestBytes;
         }
 
-        private static void SendToServer(ISocket socket, Request request)
+        private static void SendToServer(IRequest request, ISocket server)
         {
             byte[] data;
             using (MemoryStream ms = new MemoryStream())
             {
-                SerializationUtils.SerializeToStream(ms, request.RequestType);
+                SerializationUtils.SerializeToStream(ms, request.Type);
                 SerializationUtils.SerializeToStream(ms, request);
                 data = ms.ToArray();
             }
 
             byte[] lengthBytes = BitConverter.GetBytes(data.Length);
 
-            SocketUtils.SendAll(socket, lengthBytes);
-            SocketUtils.SendAll(socket, data);
+            SocketUtils.SendAll(server, lengthBytes);
+            SocketUtils.SendAll(server, data);
         }
     }
 }

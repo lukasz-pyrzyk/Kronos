@@ -3,7 +3,8 @@
 namespace Kronos.Core.Requests
 {
     [ProtoContract]
-    public struct CountRequest
+    public struct CountRequest : IRequest
     {
+        public RequestType Type => RequestType.Count;
     }
 }
