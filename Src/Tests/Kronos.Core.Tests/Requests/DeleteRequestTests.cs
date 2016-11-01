@@ -1,11 +1,6 @@
 ﻿using Kronos.Core.Requests;
 using Xunit;
 using Kronos.Core.Serialization;
-using Kronos.Core.StatusCodes;
-using Kronos.Core.Storage;
-using NSubstitute;
-using XGain.Sockets;
-using System.Linq;
 
 namespace Kronos.Core.Tests.Requests
 {
@@ -40,39 +35,5 @@ namespace Kronos.Core.Tests.Requests
             Assert.Equal(requestFromBytes.Type, request.Type);
             Assert.Equal(requestFromBytes.Key, request.Key);
         }
-
-        //[Fact]
-        //public void ProcessAndSendResponse_RemovesElementFromCollection()
-        //{
-        //    const string key = "lorem ipsum";
-
-        //    var storageMock = Substitute.For<IStorage>();
-        //    storageMock.TryRemove(key).Returns(true);
-        //    var socketMock = Substitute.For<ISocket>();
-
-        //    var request = new DeleteRequest(key);
-        //    request.ProcessAndSendResponse(socketMock, storageMock);
-
-        //    storageMock.Received(1).TryRemove(key);
-        //    byte[] responseBytes = SerializationUtils.SerializeToStreamWithLength(RequestStatusCode.Deleted);
-        //    socketMock.Received(1).Send(Arg.Is<byte[]>(x => x.SequenceEqual(responseBytes)));
-        //}
-
-        //[Fact]
-        //public void ProcessAndSendResponse_DoesNotRemoveElementFromCollectionWhenNotExist()
-        //{
-        //    const string key = "lorem ipsum";
-
-        //    var storageMock = Substitute.For<IStorage>();
-        //    storageMock.TryRemove(key).Returns(false);
-        //    var socketMock = Substitute.For<ISocket>();
-
-        //    var request = new DeleteRequest(key);
-        //    request.ProcessAndSendResponse(socketMock, storageMock);
-
-        //    storageMock.Received(1).TryRemove(key);
-        //    byte[] responseBytes = SerializationUtils.SerializeToStreamWithLength(RequestStatusCode.NotFound);
-        //    socketMock.Received(1).Send(Arg.Is<byte[]>(x => x.SequenceEqual(responseBytes)));
-        //}
     }
 }

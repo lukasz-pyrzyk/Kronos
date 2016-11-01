@@ -1,15 +1,8 @@
 ﻿using System;
 using System.Text;
-using System.Threading.Tasks;
-using Kronos.Core.Communication;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
-using Kronos.Core.StatusCodes;
-using Kronos.Core.Storage;
-using NSubstitute;
-using XGain.Sockets;
 using Xunit;
-using System.Linq;
 
 namespace Kronos.Core.Tests.Requests
 {
@@ -51,39 +44,5 @@ namespace Kronos.Core.Tests.Requests
             Assert.Equal(requestFromBytes.ExpiryDate, request.ExpiryDate);
             Assert.Equal(requestFromBytes.Key, request.Key);
         }
-
-        //[Theory]
-        //[InlineData(RequestStatusCode.Ok)]
-        //[InlineData(RequestStatusCode.Failed)]
-        //public async Task Execute_ReturnsCorrectValue(RequestStatusCode status)
-        //{
-        //    var request = new InsertRequest();
-
-        //    var communicationServiceMock = Substitute.For<IClientServerConnection>();
-        //    communicationServiceMock.Send(request).Returns(SerializationUtils.SerializeToStreamWithLength(status));
-
-        //    RequestStatusCode response = await request.ExecuteAsync<RequestStatusCode>(communicationServiceMock);
-
-        //    Assert.Equal(response, status);
-        //    await communicationServiceMock.Received(1).Send(Arg.Any<InsertRequest>());
-        //}
-
-        //[Fact]
-        //public void ProcessAndSendResponse_AddsObjectToStorage()
-        //{
-        //    string key = "lorem ipsum";
-        //    byte[] cachedObject = SerializationUtils.Serialize("object");
-        //    DateTime expiryDate = DateTime.Today;
-
-        //    var storageMock = Substitute.For<IStorage>();
-        //    var socketMock = Substitute.For<ISocket>();
-
-        //    var request = new InsertRequest(key, cachedObject, expiryDate);
-        //    request.ProcessAndSendResponse(socketMock, storageMock);
-
-        //    storageMock.Received(1).AddOrUpdate(key, expiryDate, cachedObject);
-        //    byte[] responseBytes = SerializationUtils.SerializeToStreamWithLength(RequestStatusCode.Ok);
-        //    socketMock.Received(1).Send(Arg.Is<byte[]>(x => x.SequenceEqual(responseBytes)));
-        //}
     }
 }
