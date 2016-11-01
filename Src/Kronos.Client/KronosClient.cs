@@ -6,7 +6,9 @@ using System.Threading.Tasks;
 using Kronos.Client.Transfer;
 using Kronos.Core.Communication;
 using Kronos.Core.Configuration;
+using Kronos.Core.Processors;
 using Kronos.Core.Requests;
+using Kronos.Core.Serialization;
 using Kronos.Core.StatusCodes;
 
 namespace Kronos.Client
@@ -19,6 +21,12 @@ namespace Kronos.Client
     {
         private readonly ServerProvider _serverProvider;
         private readonly Func<IPEndPoint, IClientServerConnection> _connectionResolver;
+
+        private readonly InsertProcessor _insertProcessor = new InsertProcessor();
+        private readonly GetProcessor _getProcessor = new GetProcessor();
+        private readonly DeleteProcessor _deleteProcessor = new DeleteProcessor();
+        private readonly CountProcessor _countProcessor = new CountProcessor();
+        private readonly ContainsProcessor _containsProcessor = new ContainsProcessor();
 
         public KronosClient(KronosConfig config) : this(config, endpoint => new SocketCommunicationService(endpoint))
         {
@@ -36,9 +44,9 @@ namespace Kronos.Client
             InsertRequest request = new InsertRequest(key, package, expiryDate);
 
             IClientServerConnection connection = SelectServerAndCreateConnection(key);
-            RequestStatusCode status = await request.ExecuteAsync<RequestStatusCode>(connection);
+            bool response = await _insertProcessor.ExecuteAsync(request, connection);
 
-            Trace.WriteLine($"InsertRequest status: {status}");
+            Trace.WriteLine($"InsertRequest status: {response}");
         }
 
         public async Task<byte[]> GetAsync(string key)
@@ -47,9 +55,10 @@ namespace Kronos.Client
             GetRequest request = new GetRequest(key);
 
             IClientServerConnection connection = SelectServerAndCreateConnection(key);
-            byte[] valueFromCache = await request.ExecuteAsync<byte[]>(connection);
+            byte[] valueFromCache = await _getProcessor.ExecuteAsync(request, connection);
 
-            if (valueFromCache != null && valueFromCache.Length == 1 && valueFromCache[0] == 0)
+            byte[] notFoundBytes = SerializationUtils.Serialize(RequestStatusCode.NotFound);
+            if (valueFromCache != null && valueFromCache.SequenceEqual(notFoundBytes))
                 return null;
 
             return valueFromCache;
@@ -59,9 +68,8 @@ namespace Kronos.Client
         {
             Trace.WriteLine("New delete request");
             DeleteRequest request = new DeleteRequest(key);
-
             IClientServerConnection connection = SelectServerAndCreateConnection(key);
-            RequestStatusCode status = await request.ExecuteAsync<RequestStatusCode>(connection);
+            bool status = await _deleteProcessor.ExecuteAsync(request, connection);
 
             Trace.WriteLine($"InsertRequest status: {status}");
         }
@@ -78,7 +86,7 @@ namespace Kronos.Client
                 var server = servers[i];
                 var request = new CountRequest();
                 IClientServerConnection connection = _connectionResolver(server.EndPoint);
-                tasks[i] = request.ExecuteAsync<int>(connection);
+                tasks[i] = _countProcessor.ExecuteAsync(request, connection);
             }
 
             await Task.WhenAll(tasks);
@@ -96,7 +104,7 @@ namespace Kronos.Client
                 var server = servers[i];
                 var request = new ContainsRequest(key);
                 IClientServerConnection connection = _connectionResolver(server.EndPoint);
-                tasks[i] = request.ExecuteAsync<bool>(connection);
+                tasks[i] = _containsProcessor.ExecuteAsync(request, connection);
             }
 
             await Task.WhenAll(tasks);

@@ -16,9 +16,11 @@ namespace Kronos.Core.Tests.Storage
             IExpiryProvider expiryProvider = Substitute.For<IExpiryProvider>();
             IStorage storage = new InMemoryStorage(expiryProvider); storage.AddOrUpdate(key, DateTime.MaxValue, Encoding.UTF8.GetBytes(objectWord));
 
-            byte[] objFromBytes = storage.TryGet(key);
+            byte[] objFromBytes;
+            bool success = storage.TryGet(key, out objFromBytes);
             string stringFromBytes = Encoding.UTF8.GetString(objFromBytes);
 
+            Assert.True(success);
             Assert.Equal(objectWord, stringFromBytes);
         }
 
@@ -37,9 +39,11 @@ namespace Kronos.Core.Tests.Storage
             storage.AddOrUpdate(key, DateTime.MaxValue, firstObject);
             storage.AddOrUpdate(key, DateTime.MaxValue, secondObject);
 
-            byte[] objFromBytes = storage.TryGet(key);
+            byte[] objFromBytes;
+            bool success = storage.TryGet(key, out objFromBytes);
             string stringFromBytes = Encoding.UTF8.GetString(objFromBytes);
 
+            Assert.True(success);
             Assert.Equal(stringFromBytes, second);
         }
 
@@ -124,9 +128,12 @@ namespace Kronos.Core.Tests.Storage
         {
             IExpiryProvider expiryProvider = Substitute.For<IExpiryProvider>();
             IStorage storage = new InMemoryStorage(expiryProvider);
-            byte[] objFromBytes = storage.TryGet(string.Empty);
+
+            byte[] objFromBytes;
+            bool success = storage.TryGet("lorem ipsum", out objFromBytes);
 
             Assert.Null(objFromBytes);
+            Assert.False(success);
         }
     }
 }

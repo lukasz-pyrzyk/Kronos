@@ -25,24 +25,15 @@ namespace Kronos.Core.Storage
 
         public void AddOrUpdate(string key, DateTime expiryDate, byte[] obj)
         {
-            _logger.Debug($"Inserting key {key} to MemoryStorage");
             var metaData = new NodeMetatada(key, expiryDate);
             _storage.AddOrUpdate(metaData, obj, (s, bytes) => obj);
         }
 
-        public byte[] TryGet(string key)
+        public bool TryGet(string key, out byte[] obj)
         {
-            _logger.Debug($"Getting package for key {key}");
             var metaData = new NodeMetatada(key);
-            byte[] obj;
-            if (_storage.TryGetValue(metaData, out obj))
-            {
-                _logger.Debug($"Returning object of key {key}");
-                return obj;
-            }
 
-            _logger.Debug($"Key {key} not found. Returning null");
-            return null;
+            return _storage.TryGetValue(metaData, out obj);
         }
 
         public bool TryRemove(string key)

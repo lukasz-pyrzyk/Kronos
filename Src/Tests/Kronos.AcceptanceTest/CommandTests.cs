@@ -5,6 +5,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Kronos.Client;
 using Kronos.Core.Communication;
+using Kronos.Core.Processors;
 using Kronos.Core.Requests;
 using Kronos.Core.Storage;
 using Kronos.Server.Listener;
@@ -32,8 +33,8 @@ namespace Kronos.AcceptanceTest
                 IProcessor<MessageArgs> processor = new SocketProcessor();
                 using (IServer server = new XGainServer(IPAddress.Any, port, processor))
                 {
-                    IRequestMapper mapper = new RequestMapper();
-                    using (IServerWorker worker = new ServerWorker(mapper, storage, server))
+                    IRequestProcessor requestProcessor = new RequestProcessor(storage);
+                    using (IServerWorker worker = new ServerWorker(requestProcessor, storage, server))
                     {
                         worker.StartListeningAsync(tokenSource.Token);
 
@@ -65,7 +66,7 @@ namespace Kronos.AcceptanceTest
                 IProcessor<MessageArgs> processor = new SocketProcessor();
                 using (IServer server = new XGainServer(IPAddress.Any, port, processor))
                 {
-                    IRequestMapper mapper = new RequestMapper();
+                    IRequestProcessor mapper = new RequestProcessor(storage);
                     using (IServerWorker worker = new ServerWorker(mapper, storage, server))
                     {
 
@@ -105,7 +106,7 @@ namespace Kronos.AcceptanceTest
                 IProcessor<MessageArgs> processor = new SocketProcessor();
                 using (IServer server = new XGainServer(IPAddress.Any, port, processor))
                 {
-                    IRequestMapper mapper = new RequestMapper();
+                    IRequestProcessor mapper = new RequestProcessor(storage);
                     using (IServerWorker worker = new ServerWorker(mapper, storage, server))
                     {
                         worker.StartListeningAsync(tokenSource.Token);
@@ -142,7 +143,7 @@ namespace Kronos.AcceptanceTest
                 IProcessor<MessageArgs> processor = new SocketProcessor();
                 using (IServer server = new XGainServer(IPAddress.Any, port, processor))
                 {
-                    IRequestMapper mapper = new RequestMapper();
+                    IRequestProcessor mapper = new RequestProcessor(storage);
                     using (IServerWorker worker = new ServerWorker(mapper, storage, server))
                     {
                         worker.StartListeningAsync(tokenSource.Token);
@@ -177,7 +178,7 @@ namespace Kronos.AcceptanceTest
                 IProcessor<MessageArgs> processor = new SocketProcessor();
                 using (IServer server = new XGainServer(IPAddress.Any, port, processor))
                 {
-                    IRequestMapper mapper = new RequestMapper();
+                    IRequestProcessor mapper = new RequestProcessor(storage);
                     using (IServerWorker worker = new ServerWorker(mapper, storage, server))
                     {
                         worker.StartListeningAsync(tokenSource.Token);

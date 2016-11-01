@@ -1,4 +1,4 @@
-﻿using Kronos.Core.Requests;
+﻿using Kronos.Core.Processors;
 using Kronos.Core.Storage;
 using Kronos.Server.Listener;
 using NSubstitute;
@@ -12,7 +12,7 @@ namespace Kronos.Server.Tests.Listener
         [Fact]
         public void Ctor_AssignsServices()
         {
-            var requestProcessorMock = Substitute.For<IRequestMapper>();
+            var requestProcessorMock = Substitute.For<IRequestProcessor>();
             var storageMock = Substitute.For<IStorage>();
             var serverMock = Substitute.For<IServer>();
 
@@ -25,7 +25,7 @@ namespace Kronos.Server.Tests.Listener
         [Fact]
         public void Dispose_StopsServer()
         {
-            var requestProcessorMock = Substitute.For<IRequestMapper>();
+            var requestProcessorMock = Substitute.For<IRequestProcessor>();
             var storageMock = Substitute.For<IStorage>();
             var serverMock = Substitute.For<IServer>();
 
