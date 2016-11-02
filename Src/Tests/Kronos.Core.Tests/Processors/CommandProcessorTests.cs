@@ -42,14 +42,14 @@ namespace Kronos.Core.Tests.Processors
             var socket = Substitute.For<ISocket>();
             byte[] expectedBytes = SerializationUtils.SerializeToStreamWithLength(true);
 
-            socket.Send(Arg.Any<byte[]>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<SocketFlags>())
+            socket.Send(Arg.Any<byte[]>(), Arg.Any<int>(), Arg.Any<int>(), SocketFlags.Partial)
                 .Returns(expectedBytes.Length);
 
             // Act
             processor.Handle(ref request, Substitute.For<IStorage>(), socket);
 
             // Assert
-            socket.Received(1).Send(Arg.Is<byte[]>(x => x.SequenceEqual(expectedBytes)), Arg.Any<int>(), Arg.Any<int>(), SocketFlags.None);
+            socket.Received(1).Send(Arg.Is<byte[]>(x => x.SequenceEqual(expectedBytes)), Arg.Any<int>(), Arg.Any<int>(), SocketFlags.Partial);
         }
 
         internal class FakeProcessor : CommandProcessor<InsertRequest, bool>
