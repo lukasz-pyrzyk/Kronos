@@ -1,5 +1,5 @@
 $projects = @(
-    "Src\Tests\Kronos.AcceptanceTest\"
+    "Tests\Kronos.AcceptanceTest\"
 )
 
 # test function for project
