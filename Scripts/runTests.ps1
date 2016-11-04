@@ -4,9 +4,6 @@ param (
 
 $openCover = Get-ChildItem -Path "C:\Users\$([Environment]::UserName)\.nuget\packages\OpenCover\" -Filter "OpenCover.Console.exe" -Recurse | % { $_.FullName }
 
-# entry folder
-$kronosSrc = ".\Src\"
-
 # test projects to run with OpenCover
 $projects = @(
     @{Path="Tests\Kronos.Core.Tests"; Filter="+[Kronos.Core]*"}
@@ -22,7 +19,7 @@ function RunCodeCoverage($testProject, $filter) {
 
 # run unit tests and calculate code coverage for each test project
 foreach ($project in $projects) {
-    RunCodeCoverage $($kronosSrc + $project.Path) $project.Filter
+    RunCodeCoverage $($project.Path) $project.Filter
 	
 	write-host "OpenCover exit code:" $LastExitCode
 	# try to find error

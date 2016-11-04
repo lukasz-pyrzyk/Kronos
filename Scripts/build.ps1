@@ -7,9 +7,9 @@ $projects = @(
     "Src\Kronos.Core",
     "Src\Kronos.Client",
     "Src\Kronos.Server",
-    "Src\Tests\Kronos.Core.Tests\"
-    "Src\Tests\Kronos.Client.Tests\"
-    "Src\Tests\Kronos.Server.Tests\"
+    "Tests\Kronos.Core.Tests\"
+    "Tests\Kronos.Client.Tests\"
+    "Tests\Kronos.Server.Tests\"
 )
 
 # build function for project
