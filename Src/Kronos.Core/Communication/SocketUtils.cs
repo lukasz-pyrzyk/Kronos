@@ -13,7 +13,7 @@ namespace Kronos.Core.Communication
             {
                 int sizeToSend = Math.Min(data.Length - sentbytes, socket.BufferSize);
 
-                int sent = socket.Send(data, sentbytes, sizeToSend, SocketFlags.Partial);
+                int sent = socket.Send(data, sentbytes, sizeToSend, SocketFlags.None);
                 sentbytes += sent;
             }
         }
@@ -24,7 +24,7 @@ namespace Kronos.Core.Communication
             while (position != count)
             {
                 int expectedSize = Math.Min(count - position, socket.BufferSize);
-                int received = socket.Receive(buffer, position, expectedSize, SocketFlags.Partial);
+                int received = socket.Receive(buffer, position, expectedSize, SocketFlags.None);
                 position += received;
             }
         }
