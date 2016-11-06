@@ -10,6 +10,7 @@ namespace Kronos.Core.Storage
     public class StorageExpiryProvider : IExpiryProvider
     {
         public static readonly int Timer = 1000;
+        private int _runsWithoutGc;
         private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
         public void Start(ConcurrentDictionary<NodeMetatada, byte[]> nodes, CancellationToken token)
@@ -32,16 +33,28 @@ namespace Kronos.Core.Storage
                             deleted++;
                         }
                     }
-
                     if (deleted > 0)
                     {
-                        long currentMemory = GC.GetTotalMemory(true);
-                        _logger.Info($"Deleted {deleted} elements from storage. Current memory: {ConvertBytesToMegabytes(currentMemory)}mb");
+                        _logger.Info($"Deleted {deleted} elements from storage");
+                    }
+
+                    _runsWithoutGc++;
+                    if (_runsWithoutGc >= 25)
+                    {
+                        _runsWithoutGc = 0;
+                        FlushMemory();
                     }
 
                     await Task.Delay(Timer, token);
                 }
+
             }, TaskCreationOptions.LongRunning);
+        }
+
+        private void FlushMemory()
+        {
+            long memory = GC.GetTotalMemory(true);
+            _logger.Info($"Memory was flushed. Current usage: {ConvertBytesToMegabytes(memory)}mb");
         }
 
         private static string ConvertBytesToMegabytes(long bytes)
