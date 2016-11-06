@@ -15,7 +15,7 @@ namespace Kronos.Core.Processors
 
         public async Task<TResponse> ExecuteAsync(TRequest request, IClientServerConnection service)
         {
-            byte[] response = await Task.Run(() => service.Send(request));
+            byte[] response = await Task.Run(() => service.Send(request)).ConfigureAwait(false);
 
             TResponse results = PrepareResponse<TResponse>(response);
 
