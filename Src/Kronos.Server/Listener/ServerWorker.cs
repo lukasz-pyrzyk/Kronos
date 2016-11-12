@@ -5,6 +5,7 @@ using Kronos.Core.Communication;
 using Kronos.Core.Processors;
 using Kronos.Core.Requests;
 using Kronos.Core.Storage;
+using Microsoft.Extensions.PlatformAbstractions;
 using NLog;
 using XGain;
 
@@ -51,7 +52,9 @@ namespace Kronos.Server.Listener
 
         private void ServerOnOnStart(object sender, StartArgs args)
         {
-            _logger.Info($"Kronos server has been started on {args.LocalEndpoint}");
+            string version = PlatformServices.Default.Application.ApplicationVersion;
+
+            _logger.Info($"Kronos server v. {version} has been started on {args.LocalEndpoint} ");
         }
 
         private void ServerOnOnError(object sender, ErrorArgs args)
