@@ -60,6 +60,10 @@ namespace ClusterBenchmark
                 byte[] fromServer = await client.GetAsync(key);
                 Console.WriteLine($" GET - done (size: {fromServer.Length})");
 
+                if (fromServer.Length != package.Length)
+                    throw new Exception(
+                        $"Received message is invalid! Size should be {package.Length}, but wit {fromServer.Length}");
+
                 Console.WriteLine($" DELETE - testing");
                 await client.DeleteAsync(key);
                 bool containsAfterDeletion = await client.ContainsAsync(key);
