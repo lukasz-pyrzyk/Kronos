@@ -4,16 +4,20 @@ FROM microsoft/dotnet:1.0.0-preview2-sdk
 MAINTAINER Lukasz Pyrzyk <lukasz.pyrzyk@gmail.com>
 
 # copy all files
-COPY . /app/
+COPY ./Src/Kronos.Core /app/Kronos.Core
+COPY ./Src/Kronos.Server /app/Kronos.Server
+COPY ./NuGet.config /app/
 
 # set workdir
 WORKDIR /app
 
 # restore nuget packages
-RUN ["dotnet", "restore"]
+RUN dotnet restore
 
-# go to the server folder
-WORKDIR /app/Src/Kronos.Server
+WORKDIR Kronos.Server
+
+# compile with release mode
+RUN dotnet publish -c Release -o ./bin
 
 # set entrypoint to the docker run
-ENTRYPOINT ["dotnet", "run"]
+ENTRYPOINT ["dotnet", "./bin/Kronos.Server.dll"]
