@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections.Concurrent;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Kronos.Client;
@@ -8,7 +9,7 @@ namespace ClusterBenchmark
     public class Program
     {
         private const int ExpirySecond = 100;
-
+        private static ConcurrentBag<Exception> exceptions = new ConcurrentBag<Exception>();
 
         public static void Main(string[] args)
         {
@@ -25,60 +26,70 @@ namespace ClusterBenchmark
             parallelRun = bool.Parse(args[2]);
             Console.WriteLine($"Starting benchmark with {iterations} iterations, {packageSize}mb data, parallel: {parallelRun}");
 
-            int workersCount = parallelRun == false ? 1 : Environment.ProcessorCount;
+            int workersCount = parallelRun == false ? 1 : 2;
             Task[] workers = new Task[workersCount];
+
+            var watch = Stopwatch.StartNew();
+
             for (int i = 0; i < workersCount; i++)
             {
                 workers[i] = StartAsync(iterations, packageSize);
             }
 
             Task.WaitAll(workers);
+
+            watch.Stop();
+            Console.WriteLine(watch.ElapsedMilliseconds);
+            Console.WriteLine($"There was {exceptions.Count} exceptions");
+            Console.ReadKey();
         }
 
         private static async Task StartAsync(int iterations, int packageSize)
         {
             string configPath = "KronosConfig.json";
-
-            var watch = Stopwatch.StartNew();
-            byte[] package = new byte[packageSize * 1024 * 1024];
-            new Random().NextBytes(package);
-
-            for (int i = 0; i < iterations; i++)
+            try
             {
-                IKronosClient client = KronosClientFactory.CreateClient(configPath);
+                byte[] package = new byte[packageSize * 1024 * 1024];
+                new Random().NextBytes(package);
 
-                Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-                string key = Guid.NewGuid().ToString();
-                DateTime expiryDate = DateTime.UtcNow.AddSeconds(ExpirySecond);
+                for (int i = 0; i < iterations; i++)
+                {
+                    IKronosClient client = KronosClientFactory.CreateClient(configPath);
 
-                Console.WriteLine($"ADD - testing");
-                await client.InsertAsync(key, package, expiryDate);
-                Console.WriteLine($" ADD - done (size: {package.Length})");
+                    Debug.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+                    string key = Guid.NewGuid().ToString();
+                    DateTime expiryDate = DateTime.UtcNow.AddSeconds(ExpirySecond);
 
-                Console.WriteLine($" COUNT - testing");
-                int count = await client.CountAsync();
-                Console.WriteLine($" COUNT - done (count: {count})");
+                    Debug.WriteLine($"ADD - testing");
+                    await client.InsertAsync(key, package, expiryDate);
+                    Debug.WriteLine($" ADD - done (size: {package.Length})");
 
-                Console.WriteLine($" CONTAINS - testing");
-                bool contains = await client.ContainsAsync(key);
-                Console.WriteLine($"CONTAINS - done (exists: {contains})");
+                    Debug.WriteLine($" COUNT - testing");
+                    int count = await client.CountAsync();
+                    Debug.WriteLine($" COUNT - done (count: {count})");
 
-                Console.WriteLine($" GET - testing");
-                byte[] fromServer = await client.GetAsync(key);
-                Console.WriteLine($" GET - done (size: {fromServer.Length})");
+                    Debug.WriteLine($" CONTAINS - testing");
+                    bool contains = await client.ContainsAsync(key);
+                    Debug.WriteLine($"CONTAINS - done (exists: {contains})");
 
-                if (fromServer.Length != package.Length)
-                    throw new Exception(
-                        $"Received message is invalid! Size should be {package.Length}, but wit {fromServer.Length}");
+                    Debug.WriteLine($" GET - testing");
+                    byte[] fromServer = await client.GetAsync(key);
+                    Debug.WriteLine($" GET - done (size: {fromServer.Length})");
 
-                Console.WriteLine($" DELETE - testing");
-                await client.DeleteAsync(key);
-                bool containsAfterDeletion = await client.ContainsAsync(key);
-                Console.WriteLine($" DELETE - done (exists after deletion: {containsAfterDeletion})");
+                    if (fromServer.Length != package.Length)
+                        throw new Exception(
+                            $"Received message is invalid! Size should be {package.Length}, but wit {fromServer.Length}");
+
+                    Debug.WriteLine($" DELETE - testing");
+                    await client.DeleteAsync(key);
+                    bool containsAfterDeletion = await client.ContainsAsync(key);
+                    Debug.WriteLine($" DELETE - done (exists after deletion: {containsAfterDeletion})");
+                }
             }
-
-            watch.Stop();
-            Console.WriteLine(watch.ElapsedMilliseconds);
+            catch (Exception ex)
+            {
+                exceptions.Add(ex);
+            }
         }
     }
 }
