@@ -29,7 +29,7 @@ namespace Kronos.Client.Tests.Transfer
 
             // assert
             socket.Received(1).Connect(ipEndpoint);
-            socket.Received(2).Send(Arg.Any<byte[]>(), Arg.Any<int>(), Arg.Any<int>(), SocketFlags.Partial);
+            socket.Received(2).Send(Arg.Any<byte[]>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<SocketFlags>());
             socket.Received(1).Dispose();
         }
 
@@ -72,7 +72,7 @@ namespace Kronos.Client.Tests.Transfer
             var data = PrepareData(request);
             var socket = Substitute.For<ISocket>();
             socket.BufferSize.Returns(4 * 1024);
-            socket.Send(Arg.Any<byte[]>(), Arg.Any<int>(), Arg.Any<int>(), SocketFlags.Partial)
+            socket.Send(Arg.Any<byte[]>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<SocketFlags>())
                 .Returns(4, data.Length);
 
             return socket;
