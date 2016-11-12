@@ -25,14 +25,14 @@ namespace Kronos.Core.Tests.Processors
             storage.Contains(request.Key).Returns(contains);
             byte[] expectedBytes = SerializationUtils.SerializeToStreamWithLength(contains);
             var socket = Substitute.For<ISocket>();
-            socket.Send(Arg.Any<byte[]>(), Arg.Any<int>(), Arg.Any<int>(), SocketFlags.Partial)
+            socket.Send(Arg.Any<byte[]>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<SocketFlags>())
                 .Returns(expectedBytes.Length);
 
             // act
             processor.Handle(ref request, storage, socket);
 
             // assert
-            socket.Received(1).Send(Arg.Is<byte[]>(x => x.SequenceEqual(expectedBytes)), Arg.Any<int>(), Arg.Any<int>(), SocketFlags.Partial);
+            socket.Received(1).Send(Arg.Is<byte[]>(x => x.SequenceEqual(expectedBytes)), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<SocketFlags>());
         }
     }
 }

@@ -42,19 +42,20 @@ namespace Kronos.Core.Tests.Processors
             var socket = Substitute.For<ISocket>();
             byte[] expectedBytes = SerializationUtils.SerializeToStreamWithLength(true);
 
-            socket.Send(Arg.Any<byte[]>(), Arg.Any<int>(), Arg.Any<int>(), SocketFlags.Partial)
+            socket.Send(Arg.Any<byte[]>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<SocketFlags>())
                 .Returns(expectedBytes.Length);
 
             // Act
             processor.Handle(ref request, Substitute.For<IStorage>(), socket);
 
             // Assert
-            socket.Received(1).Send(Arg.Is<byte[]>(x => x.SequenceEqual(expectedBytes)), Arg.Any<int>(), Arg.Any<int>(), SocketFlags.Partial);
+            socket.Received(1).Send(Arg.Is<byte[]>(x => x.SequenceEqual(expectedBytes)), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<SocketFlags>());
         }
 
         internal class FakeProcessor : CommandProcessor<InsertRequest, bool>
         {
             public override RequestType Type { get; }
+
             public override void Handle(ref InsertRequest request, IStorage storage, ISocket client)
             {
                 Reply(true, client);
