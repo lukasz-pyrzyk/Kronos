@@ -7,12 +7,24 @@ namespace ClusterBenchmark
 {
     public class Program
     {
-        private const int Iterations = 50;
         private const int ExpirySecond = 100;
-        private const int PackageSize = 15; // mb
+
+        private static int Iterations;
+        private static int PackageSize;
+        private static bool ParallelRun;
 
         public static void Main(string[] args)
         {
+            if (args.Length != 3)
+            {
+                Console.WriteLine($"You need to specify three arguments: {nameof(Iterations)}, {nameof(PackageSize)}, {nameof(ParallelRun)}");
+            }
+
+            Iterations = int.Parse(args[0]);
+            PackageSize = int.Parse(args[1]);
+            ParallelRun = bool.Parse(args[2]);
+            Console.WriteLine($"Starting benchmark with {Iterations} iterations, {PackageSize}mb data, parallel: {ParallelRun}");
+
             Task.WaitAll(StartAsync());
         }
 
@@ -54,13 +66,32 @@ namespace ClusterBenchmark
                 Console.WriteLine($" DELETE - done (exists after deletion: {containsAfterDeletion})");
             };
 
+            if (ParallelRun)
+                await RunParallel(action);
+            else
+                await Run(action);
+
+            watch.Stop();
+            Console.WriteLine(watch.ElapsedMilliseconds);
+        }
+
+        private static async Task Run(Func<Task> action)
+        {
             for (int i = 0; i < Iterations; i++)
             {
                 await action.Invoke();
             }
+        }
 
-            watch.Stop();
-            Console.WriteLine(watch.ElapsedMilliseconds);
+        private static async Task RunParallel(Func<Task> action)
+        {
+            Task[] tasks = new Task[Iterations];
+            for (int i = 0; i < Iterations; i++)
+            {
+                tasks[i] = action.Invoke();
+            }
+
+            await Task.WhenAll(tasks);
         }
     }
 }
