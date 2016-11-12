@@ -40,18 +40,18 @@ namespace Kronos.Client
 
         public async Task InsertAsync(string key, byte[] package, DateTime expiryDate)
         {
-            Trace.WriteLine("New insert request");
+            Debug.WriteLine("New insert request");
             InsertRequest request = new InsertRequest(key, package, expiryDate);
 
             IClientServerConnection connection = SelectServerAndCreateConnection(key);
             bool response = await _insertProcessor.ExecuteAsync(request, connection);
 
-            Trace.WriteLine($"InsertRequest status: {response}");
+            Debug.WriteLine($"InsertRequest status: {response}");
         }
 
         public async Task<byte[]> GetAsync(string key)
         {
-            Trace.WriteLine("New get request");
+            Debug.WriteLine("New get request");
             GetRequest request = new GetRequest(key);
 
             IClientServerConnection connection = SelectServerAndCreateConnection(key);
@@ -66,17 +66,17 @@ namespace Kronos.Client
 
         public async Task DeleteAsync(string key)
         {
-            Trace.WriteLine("New delete request");
+            Debug.WriteLine("New delete request");
             DeleteRequest request = new DeleteRequest(key);
             IClientServerConnection connection = SelectServerAndCreateConnection(key);
             bool status = await _deleteProcessor.ExecuteAsync(request, connection);
 
-            Trace.WriteLine($"InsertRequest status: {status}");
+            Debug.WriteLine($"InsertRequest status: {status}");
         }
 
         public async Task<int> CountAsync()
         {
-            Trace.WriteLine("New count request");
+            Debug.WriteLine("New count request");
 
             ServerConfig[] servers = _serverProvider.SelectServers();
 
@@ -115,7 +115,7 @@ namespace Kronos.Client
         private IClientServerConnection SelectServerAndCreateConnection(string key)
         {
             ServerConfig server = _serverProvider.SelectServer(key.GetHashCode());
-            Trace.WriteLine($"Selected server {server}");
+            Debug.WriteLine($"Selected server {server}");
             IClientServerConnection connection = _connectionResolver(server.EndPoint);
             return connection;
         }

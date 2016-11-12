@@ -49,13 +49,13 @@ namespace Kronos.Client.Transfer
             {
                 try
                 {
-                    Trace.WriteLine("Connecting to the server socket");
+                    Debug.WriteLine("Connecting to the server socket");
                     socket.Connect(_host);
 
-                    Trace.WriteLine("Sending request");
+                    Debug.WriteLine("Sending request");
                     SendToServer(request, socket);
 
-                    Trace.WriteLine("Waiting for response");
+                    Debug.WriteLine("Waiting for response");
                     using (MemoryStream ms = new MemoryStream())
                     {
                         byte[] requestSizeBytes = new byte[sizeof(int)];
@@ -79,7 +79,7 @@ namespace Kronos.Client.Transfer
                 catch (Exception ex)
                 {
                     Trace.TraceError($"During package transfer an error occurred {ex}");
-                    Trace.WriteLine("Returning information about exception");
+                    Debug.WriteLine("Returning information about exception");
                     throw new KronosCommunicationException(ex.Message, ex);
                 }
                 finally
