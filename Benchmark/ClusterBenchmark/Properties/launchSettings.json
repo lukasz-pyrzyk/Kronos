@@ -1,0 +1,8 @@
+{
+  "profiles": {
+    "ClusterBenchmark": {
+      "commandName": "Project",
+      "commandLineArgs": "50 1 true"
+    }
+  }
+}

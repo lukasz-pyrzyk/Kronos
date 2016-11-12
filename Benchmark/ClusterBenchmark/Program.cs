@@ -9,34 +9,41 @@ namespace ClusterBenchmark
     {
         private const int ExpirySecond = 100;
 
-        private static int Iterations;
-        private static int PackageSize;
-        private static bool ParallelRun;
 
         public static void Main(string[] args)
         {
+            int iterations, packageSize;
+            bool parallelRun;
+
             if (args.Length != 3)
             {
-                Console.WriteLine($"You need to specify three arguments: {nameof(Iterations)}, {nameof(PackageSize)}, {nameof(ParallelRun)}");
+                Console.WriteLine($"You need to specify three arguments: {nameof(iterations)}, {nameof(packageSize)}, {nameof(parallelRun)}");
             }
 
-            Iterations = int.Parse(args[0]);
-            PackageSize = int.Parse(args[1]);
-            ParallelRun = bool.Parse(args[2]);
-            Console.WriteLine($"Starting benchmark with {Iterations} iterations, {PackageSize}mb data, parallel: {ParallelRun}");
+            iterations = int.Parse(args[0]);
+            packageSize = int.Parse(args[1]);
+            parallelRun = bool.Parse(args[2]);
+            Console.WriteLine($"Starting benchmark with {iterations} iterations, {packageSize}mb data, parallel: {parallelRun}");
 
-            Task.WaitAll(StartAsync());
+            int workersCount = parallelRun == false ? 1 : Environment.ProcessorCount;
+            Task[] workers = new Task[workersCount];
+            for (int i = 0; i < workersCount; i++)
+            {
+                workers[i] = StartAsync(iterations, packageSize);
+            }
+
+            Task.WaitAll(workers);
         }
 
-        private static async Task StartAsync()
+        private static async Task StartAsync(int iterations, int packageSize)
         {
             string configPath = "KronosConfig.json";
 
             var watch = Stopwatch.StartNew();
-            byte[] package = new byte[PackageSize * 1024 * 1024];
+            byte[] package = new byte[packageSize * 1024 * 1024];
             new Random().NextBytes(package);
 
-            Func<Task> action = async () =>
+            for (int i = 0; i < iterations; i++)
             {
                 IKronosClient client = KronosClientFactory.CreateClient(configPath);
 
@@ -68,34 +75,10 @@ namespace ClusterBenchmark
                 await client.DeleteAsync(key);
                 bool containsAfterDeletion = await client.ContainsAsync(key);
                 Console.WriteLine($" DELETE - done (exists after deletion: {containsAfterDeletion})");
-            };
-
-            if (ParallelRun)
-                await RunParallel(action);
-            else
-                await Run(action);
+            }
 
             watch.Stop();
             Console.WriteLine(watch.ElapsedMilliseconds);
-        }
-
-        private static async Task Run(Func<Task> action)
-        {
-            for (int i = 0; i < Iterations; i++)
-            {
-                await action.Invoke();
-            }
-        }
-
-        private static async Task RunParallel(Func<Task> action)
-        {
-            Task[] tasks = new Task[Iterations];
-            for (int i = 0; i < Iterations; i++)
-            {
-                tasks[i] = action.Invoke();
-            }
-
-            await Task.WhenAll(tasks);
         }
     }
 }
