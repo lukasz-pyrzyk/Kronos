@@ -24,7 +24,7 @@ namespace ClusterBenchmark
             iterations = int.Parse(args[0]);
             packageSize = int.Parse(args[1]);
             parallelRun = bool.Parse(args[2]);
-            Console.WriteLine($"Starting benchmark with {iterations} iterations, {packageSize}mb data, parallel: {parallelRun}");
+            Console.WriteLine($"{DateTime.Now.ToString("O")} Starting benchmark with {iterations} iterations, {packageSize}mb data, parallel: {parallelRun}");
 
             int workersCount = parallelRun == false ? 1 : 2;
             Task[] workers = new Task[workersCount];
@@ -39,7 +39,7 @@ namespace ClusterBenchmark
             Task.WaitAll(workers);
 
             watch.Stop();
-            Console.WriteLine(watch.ElapsedMilliseconds);
+            Console.WriteLine($"Done in {watch.Elapsed.TotalSeconds}s, which is {watch.ElapsedMilliseconds}ms");
             Console.WriteLine($"There was {exceptions.Count} exceptions");
             Console.ReadKey();
         }
