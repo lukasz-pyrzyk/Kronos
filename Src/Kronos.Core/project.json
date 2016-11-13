@@ -1,5 +1,9 @@
 {
   "authors": [ "Lukasz Pyrzyk" ],
+  "buildOptions": {
+    "optimize": true,
+    "allowUnsafe": true
+  },
   "copyright": "Lukasz Pyrzyk",
   "dependencies": {
     "XGain": "1.2.4-rc-35",
@@ -13,9 +17,6 @@
         "dotnet5.2"
       ]
     }
-  },
-  "buildOptions": {
-    "optimize": true
   },
   "packOptions": {
     "iconUrl": "https://raw.githubusercontent.com/lukasz-pyrzyk/Kronos/master/SolutionItems/nugetIcon.png",

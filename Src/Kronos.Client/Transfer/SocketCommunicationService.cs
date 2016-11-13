@@ -99,6 +99,7 @@ namespace Kronos.Client.Transfer
 
         private static void SendToServer(IRequest request, ISocket server)
         {
+            // todo array pool and stackalloc
             byte[] data;
             using (MemoryStream ms = new MemoryStream())
             {
@@ -107,7 +108,8 @@ namespace Kronos.Client.Transfer
                 data = ms.ToArray();
             }
 
-            byte[] lengthBytes = BitConverter.GetBytes(data.Length);
+            byte[] lengthBytes = new byte[4]; // stackalloc
+            NoAllocBitConverter.GetBytes(data.Length, lengthBytes);
 
             SocketUtils.SendAll(server, lengthBytes);
             SocketUtils.SendAll(server, data);

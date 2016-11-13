@@ -15,7 +15,6 @@
     "protobuf-net": "2.1.0",
     "XGain": "1.2.4-rc-35",
     "xunit": "2.2.0-beta2-build3300"
-
   },
   "description": "Kronos - core dll tests",
   "frameworks": {
