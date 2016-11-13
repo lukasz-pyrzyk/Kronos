@@ -9,6 +9,6 @@ namespace Kronos.Core.Communication
     {
         IStorage Storage { get; }
 
-        Task StartListeningAsync(CancellationToken token);
+        void Start();
     }
 }

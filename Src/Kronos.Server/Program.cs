@@ -17,8 +17,6 @@ namespace Kronos.Server
 {
     public class Program
     {
-        private static readonly CancellationTokenSource tokenSource = new CancellationTokenSource();
-
         public static void LoggerSetup()
         {
             var reader = XmlReader.Create("NLog.config");
@@ -32,29 +30,38 @@ namespace Kronos.Server
 
             int port = Convert.ToInt32(args[0]);
 
-            Task.WaitAll(new[] { StartAsync(port) }, tokenSource.Token);
+            Task.WaitAll(StartAsync(port));
         }
 
-        public static Task StartAsync(int port)
+        public static async Task StartAsync(int port)
         {
-            return Task.Run(async () =>
+            IPAddress localAddr = await GetLocalIPAddress();
+
+            IProcessor<MessageArgs> processor = new SocketProcessor();
+
+            IExpiryProvider expiryProvider = new StorageExpiryProvider();
+            IStorage storage = new InMemoryStorage(expiryProvider);
+
+            IServer server = new XGainServer(localAddr, port, processor);
+            IRequestProcessor mapper = new RequestProcessor(storage);
+            IServerWorker worker = new ServerWorker(mapper, storage, server);
+            worker.Start();
+
+            var reset = new ManualResetEventSlim();
+            Console.CancelKeyPress += (sender, e) =>
             {
-                IExpiryProvider expiryProvider = new StorageExpiryProvider();
-                using (IStorage storage = new InMemoryStorage(expiryProvider))
-                {
-                    IProcessor<MessageArgs> processor = new SocketProcessor();
-                    IPAddress localAddr = await GetLocalIPAddress();
-                    using (IServer server = new XGainServer(localAddr, port, processor))
-                    {
-                        IRequestProcessor mapper = new RequestProcessor(storage);
-                        IServerWorker worker = new ServerWorker(mapper, storage, server);
-                        await worker.StartListeningAsync(tokenSource.Token);
-                    }
-                }
-            });
+                reset.Set();
+            };
+
+            reset.Wait();
+
+            // dispose components
+            storage.Dispose();
+            server.Dispose();
+            worker.Dispose();
         }
 
-        public static async Task<IPAddress> GetLocalIPAddress()
+        private static async Task<IPAddress> GetLocalIPAddress()
         {
             var host = await Dns.GetHostEntryAsync(Dns.GetHostName());
             foreach (var ip in host.AddressList)

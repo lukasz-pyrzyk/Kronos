@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading;
 using System.Threading.Tasks;
 using Kronos.Core.Communication;
 using Kronos.Core.Processors;
@@ -29,9 +28,9 @@ namespace Kronos.Server.Listener
             _server.OnError += ServerOnOnError;
         }
 
-        public Task StartListeningAsync(CancellationToken token)
+        public void Start()
         {
-            return _server.Start(token);
+            _server.Start();
         }
 
         private void ServerOnOnNewMessage(object sender, MessageArgs args)

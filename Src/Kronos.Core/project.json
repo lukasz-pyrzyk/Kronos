@@ -2,9 +2,9 @@
   "authors": [ "Lukasz Pyrzyk" ],
   "copyright": "Lukasz Pyrzyk",
   "dependencies": {
+    "XGain": "1.2.4-rc-35",
     "NLog": "4.4.0-betaV15",
-    "protobuf-net": "2.1.0",
-    "XGain": "1.2.3"
+    "protobuf-net": "2.1.0"
   },
   "description": "Kronoc.Core is a main library for Kronos cache platform (Kronos.Server)",
   "frameworks": {
