@@ -40,9 +40,9 @@ namespace Kronos.Server.Listener
             {
                 string id = Guid.NewGuid().ToString();
                 var type = (RequestType)args.UserToken;
-                _logger.Info($"Processing new request with Id: {id}, type: {type}, {args.RequestBytes} bytes");
+                _logger.Debug($"Processing new request with Id: {id}, type: {type}, {args.RequestBytes} bytes");
                 _requestsProcessor.HandleIncomingRequest(type, args.RequestBytes, args.Client);
-                _logger.Info($"Processing {id} finished");
+                _logger.Debug($"Processing {id} finished");
             }
             catch (Exception ex)
             {

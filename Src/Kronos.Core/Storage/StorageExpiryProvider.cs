@@ -54,7 +54,7 @@ namespace Kronos.Core.Storage
         private void FlushMemory()
         {
             long memory = GC.GetTotalMemory(true);
-            _logger.Info($"Memory was flushed. Current usage: {ConvertBytesToMegabytes(memory)}mb");
+            _logger.Debug($"Memory was flushed. Current usage: {ConvertBytesToMegabytes(memory)}mb");
         }
 
         private static string ConvertBytesToMegabytes(long bytes)
