@@ -26,7 +26,7 @@ namespace Kronos.AcceptanceTest
             DateTime expiry = DateTime.MaxValue;
 
             byte[] received;
-            var tokenSource = new CancellationTokenSource();
+
             IExpiryProvider expiryProvider = new StorageExpiryProvider();
             using (IStorage storage = new InMemoryStorage(expiryProvider))
             {
@@ -36,7 +36,7 @@ namespace Kronos.AcceptanceTest
                     IRequestProcessor requestProcessor = new RequestProcessor(storage);
                     using (IServerWorker worker = new ServerWorker(requestProcessor, storage, server))
                     {
-                        worker.StartListeningAsync(tokenSource.Token);
+                        worker.Start();
 
                         IKronosClient client = KronosClientFactory.CreateClient(port);
                         await client.InsertAsync(key, data, expiry);
@@ -45,7 +45,6 @@ namespace Kronos.AcceptanceTest
                 }
             }
 
-            tokenSource.Cancel();
             Assert.Equal(data, received);
         }
 
@@ -69,8 +68,7 @@ namespace Kronos.AcceptanceTest
                     IRequestProcessor mapper = new RequestProcessor(storage);
                     using (IServerWorker worker = new ServerWorker(mapper, storage, server))
                     {
-
-                        worker.StartListeningAsync(CancellationToken.None);
+                        worker.Start();
 
                         IKronosClient client = KronosClientFactory.CreateClient(port);
                         await client.InsertAsync(key, data, expiry);
@@ -96,10 +94,9 @@ namespace Kronos.AcceptanceTest
             byte[] data = Encoding.UTF8.GetBytes("lorem ipsum");
             DateTime expiry = DateTime.MaxValue;
 
-            var tokenSource = new CancellationTokenSource();
-
             int countFromClientApi;
             int countFromStorage;
+
             IExpiryProvider expiryProvider = new StorageExpiryProvider();
             using (IStorage storage = new InMemoryStorage(expiryProvider))
             {
@@ -109,7 +106,7 @@ namespace Kronos.AcceptanceTest
                     IRequestProcessor mapper = new RequestProcessor(storage);
                     using (IServerWorker worker = new ServerWorker(mapper, storage, server))
                     {
-                        worker.StartListeningAsync(tokenSource.Token);
+                        worker.Start();
 
                         IKronosClient client = KronosClientFactory.CreateClient(port);
                         await client.InsertAsync(key, data, expiry);
@@ -120,7 +117,6 @@ namespace Kronos.AcceptanceTest
                 }
             }
 
-            tokenSource.Cancel();
             Assert.Equal(countFromClientApi, 1);
             Assert.Equal(countFromClientApi, countFromStorage);
         }
@@ -133,8 +129,6 @@ namespace Kronos.AcceptanceTest
             byte[] data = Encoding.UTF8.GetBytes("lorem ipsum");
             DateTime expiry = DateTime.MaxValue;
 
-            var tokenSource = new CancellationTokenSource();
-
             bool containsFromClientApi;
             bool containsFromStorage;
             IExpiryProvider expiryProvider = new StorageExpiryProvider();
@@ -146,7 +140,7 @@ namespace Kronos.AcceptanceTest
                     IRequestProcessor mapper = new RequestProcessor(storage);
                     using (IServerWorker worker = new ServerWorker(mapper, storage, server))
                     {
-                        worker.StartListeningAsync(tokenSource.Token);
+                        worker.Start();
 
                         IKronosClient client = KronosClientFactory.CreateClient(port);
                         await client.InsertAsync(key, data, expiry);
@@ -157,7 +151,6 @@ namespace Kronos.AcceptanceTest
                 }
             }
 
-            tokenSource.Cancel();
             Assert.True(containsFromClientApi);
             Assert.Equal(containsFromClientApi, containsFromStorage);
         }
@@ -167,8 +160,6 @@ namespace Kronos.AcceptanceTest
         {
             const int port = 9995;
             const string key = "key";
-
-            var tokenSource = new CancellationTokenSource();
 
             bool containsFromClientApi;
             bool containsFromStorage;
@@ -181,7 +172,7 @@ namespace Kronos.AcceptanceTest
                     IRequestProcessor mapper = new RequestProcessor(storage);
                     using (IServerWorker worker = new ServerWorker(mapper, storage, server))
                     {
-                        worker.StartListeningAsync(tokenSource.Token);
+                        worker.Start();
 
                         IKronosClient client = KronosClientFactory.CreateClient(port);
 
@@ -191,7 +182,6 @@ namespace Kronos.AcceptanceTest
                 }
             }
 
-            tokenSource.Cancel();
             Assert.False(containsFromClientApi);
             Assert.Equal(containsFromClientApi, containsFromStorage);
         }
