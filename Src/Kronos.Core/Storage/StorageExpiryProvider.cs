@@ -17,10 +17,8 @@ namespace Kronos.Core.Storage
         {
             Task.Factory.StartNew(async () =>
             {
-                while (true)
+                while (!token.IsCancellationRequested)
                 {
-                    if (token.IsCancellationRequested) break;
-
                     long ticks = DateTime.UtcNow.Ticks;
                     ulong deleted = 0;
                     foreach (KeyValuePair<NodeMetatada, byte[]> node in nodes)
