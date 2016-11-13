@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Buffers;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using Kronos.Core.Communication;
@@ -18,7 +17,6 @@ namespace Kronos.Server.Listener
         private const int RequestTypeSize = sizeof(ushort);
 
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
-        private readonly ArrayPool<byte> _bytesPool = ArrayPool<byte>.Create();
 
         public Task<MessageArgs> ProcessSocketConnectionAsync(ISocket client)
         {
@@ -39,17 +37,15 @@ namespace Kronos.Server.Listener
 
         private ReceivedMessage ReceiveMessageAsync(ISocket socket)
         {
-            byte[] lengthBuffer = _bytesPool.Rent(IntSize);
+            byte[] lengthBuffer = new byte[IntSize]; // TODO stackalloc
             SocketUtils.ReceiveAll(socket, lengthBuffer, IntSize);
             int dataLength = BitConverter.ToInt32(lengthBuffer, 0);
-            _bytesPool.Return(lengthBuffer);
 
-            byte[] typeBuffer = _bytesPool.Rent(RequestTypeSize);
+            byte[] typeBuffer = new byte[RequestTypeSize]; // todo stackalloc;
             SocketUtils.ReceiveAll(socket, typeBuffer, RequestTypeSize);
             RequestType requestType = SerializationUtils.Deserialize<RequestType>(typeBuffer, RequestTypeSize);
-            _bytesPool.Return(typeBuffer);
 
-            byte[] data = new byte[dataLength - RequestTypeSize];
+            byte[] data = new byte[dataLength - RequestTypeSize]; // todo array pooling
             SocketUtils.ReceiveAll(socket, data, data.Length);
 
             return new ReceivedMessage(requestType, data);
