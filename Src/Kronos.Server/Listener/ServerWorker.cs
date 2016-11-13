@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Threading.Tasks;
 using Kronos.Core.Communication;
 using Kronos.Core.Processors;
 using Kronos.Core.Requests;
@@ -23,9 +22,9 @@ namespace Kronos.Server.Listener
             _server = server;
             Storage = storage;
 
-            _server.OnNewMessage += ServerOnOnNewMessage;
-            _server.OnStart += ServerOnOnStart;
-            _server.OnError += ServerOnOnError;
+            _server.OnNewMessage += OnMessage;
+            _server.OnStart += OnStart;
+            _server.OnError += OnError;
         }
 
         public void Start()
@@ -33,7 +32,7 @@ namespace Kronos.Server.Listener
             _server.Start();
         }
 
-        private void ServerOnOnNewMessage(object sender, MessageArgs args)
+        private void OnMessage(object sender, MessageArgs args)
         {
             try
             {
@@ -49,14 +48,14 @@ namespace Kronos.Server.Listener
             }
         }
 
-        private void ServerOnOnStart(object sender, StartArgs args)
+        private void OnStart(object sender, StartArgs args)
         {
             string version = PlatformServices.Default.Application.ApplicationVersion;
 
             _logger.Info($"Kronos server v. {version} has been started on {args.LocalEndpoint} ");
         }
 
-        private void ServerOnOnError(object sender, ErrorArgs args)
+        private void OnError(object sender, ErrorArgs args)
         {
             _logger.Error(args.Exception);
         }
