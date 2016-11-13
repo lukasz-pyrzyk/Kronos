@@ -33,7 +33,7 @@ namespace ClusterBenchmark
 
             for (int i = 0; i < workersCount; i++)
             {
-                workers[i] = StartAsync(iterations, packageSize);
+                workers[i] = StartAsync((int)Math.Ceiling(iterations / (double)workersCount), packageSize);
             }
 
             Task.WaitAll(workers);
