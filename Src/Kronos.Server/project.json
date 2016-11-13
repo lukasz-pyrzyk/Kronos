@@ -11,17 +11,28 @@
   "copyToOutput": [ "./Nlog.config" ],
   "dependencies": {
     "Kronos.Core": "1.1.1",
-    "Microsoft.NETCore.App": {
-      "type": "platform",
-      "version": "1.0.1"
-    },
+    "Microsoft.Extensions.PlatformAbstractions": "1.0.0",
     "NLog": "4.4.0-betaV15",
     "protobuf-net": "2.1.0",
+
     "XGain": "1.2.4-rc-35"
   },
   "description": "Kronos - the cache platform",
   "frameworks": {
+    "net461": {
+      "dependencies": {
+        "System.Net.Primitives": "4.0.10",
+        "System.Threading.Tasks": "4.0.10"
+      }
+    },
     "netcoreapp1.0": {
+      "imports": [
+        "dotnet5.6",
+        "dnxcore50"
+      ],
+      "Microsoft.NETCore.App": {
+        "version": "1.0.1"
+      }
     }
   },
   "packOptions": {
@@ -35,6 +46,9 @@
     "configProperties": {
       "System.GC.Server": true
     }
+  },
+  "runtimes": {
+    "win10-x64": {}
   },
   "version": "1.1.1-*"
 }

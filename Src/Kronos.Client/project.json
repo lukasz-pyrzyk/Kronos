@@ -10,9 +10,16 @@
   },
   "description": "Kronoc.Client is a library which allows you integrate project with Kronos cache platform (Kronos.Server)",
   "frameworks": {
+    "net461": {
+      "dependencies": {
+        "System.IO": "4.0.10",
+        "System.Net.Primitives": "4.0.10"
+      }
+    },
     "netstandard1.3": {
       "imports": [
-        "dotnet5.2"
+        "dotnet5.6",
+        "dnxcore50"
       ]
     }
   },

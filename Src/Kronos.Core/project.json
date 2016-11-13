@@ -12,9 +12,15 @@
   },
   "description": "Kronoc.Core is a main library for Kronos cache platform (Kronos.Server)",
   "frameworks": {
+    "net461": {
+      "dependencies": {
+        "System.Runtime": "4.0.20"
+      }
+    },
     "netstandard1.3": {
       "imports": [
-        "dotnet5.2"
+        "dnxcore50",
+        "dotnet5.6"
       ]
     }
   },
