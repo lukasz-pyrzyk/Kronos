@@ -1,31 +1,27 @@
 {
   "authors": [ "Lukasz Pyrzyk" ],
-  "commands": {
-    "ClientSample": "ClientSample"
-  },
   "buildOptions": {
     "emitEntryPoint": true
+  },
+  "commands": {
+    "ClientSample": "ClientSample"
   },
   "dependencies": {
     "Kronos.Client": "1.1.1-*",
     "Kronos.Core": "1.1.1-*"
-
   },
   "description": "Console Kronos client",
   "frameworks": {
-    "net461": {},
     "netcoreapp1.0": {
-      "imports": [
-        "dotnet5.6",
-        "dnxcore50"
-      ],
-      "Microsoft.NETCore.App": {
-        "version": "1.0.1"
-      }
-    }
-  },
-  "runtimes": {
-    "win7-x64": {}
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.0.0"
+        }
+      },
+      "imports": "dnxcore50"
+    },
+    "net452": {}
   },
   "version": "1.1.1-*"
 }
