@@ -8,7 +8,7 @@
   "dependencies": {
     "NLog": "4.4.0-betaV15",
     "protobuf-net": "2.1.0",
-    "XGain": "1.2.4-rc-37"
+    "XGain": "1.2.5"
   },
   "description": "Kronoc.Core is a main library for Kronos cache platform (Kronos.Server)",
   "frameworks": {
