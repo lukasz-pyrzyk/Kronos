@@ -1,23 +1,24 @@
 {
   "authors": [ "Lukasz Pyrzyk" ],
+  "buildOptions": {
+    "optimize": true
+  },
   "copyright": "Lukasz Pyrzyk",
   "dependencies": {
     "Kronos.Core": "1.1.1",
     "Newtonsoft.Json": "9.0.1",
     "Polly": "4.5.0-beta-netstandar-0001",
     "protobuf-net": "2.1.0",
-    "XGain": "1.2.4-rc-35"
+    "XGain": "1.2.5"
   },
   "description": "Kronoc.Client is a library which allows you integrate project with Kronos cache platform (Kronos.Server)",
   "frameworks": {
     "netstandard1.3": {
       "imports": [
-        "dotnet5.2"
+        "dnxcore50"
       ]
-    }
-  },
-  "buildOptions": {
-    "optimize": true
+    },
+    "net452": {}
   },
   "packOptions": {
     "iconUrl": "https://raw.githubusercontent.com/lukasz-pyrzyk/Kronos/master/SolutionItems/nugetIcon.png",
