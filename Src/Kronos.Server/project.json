@@ -11,18 +11,23 @@
   "copyToOutput": [ "./Nlog.config" ],
   "dependencies": {
     "Kronos.Core": "1.1.1",
-    "Microsoft.NETCore.App": {
-      "type": "platform",
-      "version": "1.0.1"
-    },
+    "Microsoft.Extensions.PlatformAbstractions": "1.0.0",
     "NLog": "4.4.0-betaV15",
     "protobuf-net": "2.1.0",
-    "XGain": "1.2.4-rc-35"
+    "XGain": "1.2.5"
   },
   "description": "Kronos - the cache platform",
   "frameworks": {
     "netcoreapp1.0": {
-    }
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.0.0"
+        }
+      },
+      "imports": "dnxcore50"
+    },
+    "net452": {}
   },
   "packOptions": {
     "iconUrl": "https://raw.githubusercontent.com/lukasz-pyrzyk/Kronos/master/SolutionItems/nugetIcon.png",

@@ -6,17 +6,18 @@
   },
   "copyright": "Lukasz Pyrzyk",
   "dependencies": {
-    "XGain": "1.2.4-rc-35",
     "NLog": "4.4.0-betaV15",
-    "protobuf-net": "2.1.0"
+    "protobuf-net": "2.1.0",
+    "XGain": "1.2.5"
   },
   "description": "Kronoc.Core is a main library for Kronos cache platform (Kronos.Server)",
   "frameworks": {
     "netstandard1.3": {
       "imports": [
-        "dotnet5.2"
+        "dnxcore50"
       ]
-    }
+    },
+    "net452": {}
   },
   "packOptions": {
     "iconUrl": "https://raw.githubusercontent.com/lukasz-pyrzyk/Kronos/master/SolutionItems/nugetIcon.png",
