@@ -13,7 +13,7 @@
     "NSubstitute": "2.0.0-rc",
     "OpenCover": "4.6.519",
     "protobuf-net": "2.1.0",
-    "XGain": "1.2.4-rc-37",
+    "XGain": "1.2.5",
     "xunit": "2.2.0-beta2-build3300"
   },
   "description": "Kronos - core dll tests",

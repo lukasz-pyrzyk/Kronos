@@ -15,7 +15,7 @@
       "type": "platform",
       "version": "1.0.0"
     },
-    "XGain": "1.2.4-rc-37"
+    "XGain": "1.2.5"
   },
   "description": "Kronos - acceptance tests",
   "frameworks": {
