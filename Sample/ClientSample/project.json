@@ -7,8 +7,8 @@
     "ClientSample": "ClientSample"
   },
   "dependencies": {
-    "Kronos.Client": "1.1.1-*",
-    "Kronos.Core": "1.1.1-*"
+    "Kronos.Client": "1.1.2",
+    "Kronos.Core": "1.1.2"
   },
   "description": "Console Kronos client",
   "frameworks": {
@@ -23,5 +23,5 @@
     },
     "net452": {}
   },
-  "version": "1.1.1-*"
+  "version": "1.1.2"
 }
