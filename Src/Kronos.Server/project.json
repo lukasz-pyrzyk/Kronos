@@ -12,7 +12,7 @@
   "dependencies": {
     "Kronos.Core": "1.1.2",
     "Microsoft.Extensions.PlatformAbstractions": "1.0.0",
-    "NLog": "4.4.0-betaV15",
+    "NLog": "5.0.0-beta03",
     "protobuf-net": "2.1.0",
     "XGain": "1.2.5"
   },

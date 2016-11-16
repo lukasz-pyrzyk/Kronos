@@ -6,7 +6,7 @@
   },
   "copyright": "Lukasz Pyrzyk",
   "dependencies": {
-    "NLog": "4.4.0-betaV15",
+    "NLog": "5.0.0-beta03",
     "protobuf-net": "2.1.0",
     "XGain": "1.2.5"
   },
