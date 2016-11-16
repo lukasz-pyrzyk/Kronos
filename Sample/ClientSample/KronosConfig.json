@@ -2,7 +2,7 @@
     "ClusterConfig": {
         "Servers": [
             {
-                "Ip": "192.168.56.1",
+                "Domain": "localhost",
                 "Port": 5000
             }
         ]

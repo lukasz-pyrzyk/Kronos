@@ -1,8 +1,4 @@
-﻿using System.Linq;
-using System.Net;
-using System.Net.Sockets;
-using System.Threading.Tasks;
-using Xunit;
+﻿using Xunit;
 
 namespace Kronos.Client.Tests
 {
@@ -17,7 +13,7 @@ namespace Kronos.Client.Tests
             int port = 500;
 
             // Act
-            IKronosClient client = KronosClientFactory.CreateClient(ip, port);
+            IKronosClient client = KronosClientFactory.CreateClient(port, ip);
 
             // Assert
             Assert.NotNull(client);
@@ -34,15 +30,6 @@ namespace Kronos.Client.Tests
 
             // Assert
             Assert.NotNull(client);
-        }
-
-        private static async Task<string> GetLocalIp()
-        {
-            var hosts = await Dns.GetHostAddressesAsync(Dns.GetHostName());
-
-            string localIp = hosts.First(x => x.AddressFamily == AddressFamily.InterNetwork).ToString();
-
-            return localIp;
         }
     }
 }

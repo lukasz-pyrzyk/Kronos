@@ -6,13 +6,16 @@ using Xunit;
 
 namespace Kronos.Core.Tests.Communication
 {
-    public class IPAddressUtilsTests
+    public class EndpointUtilsTests
     {
-        [Fact]
-        public async Task GetLocalAsync_ReturnsIpAddress()
+        [Theory]
+        [InlineData(null)]
+        [InlineData("localhost")]
+        [InlineData("google.com")]
+        public async Task GetIPAsync_ReturnsIpAddress(string hostName)
         {
             // Act
-            IPAddress address = await IPAddressUtils.GetLocalAsync();
+            IPAddress address = await EndpointUtils.GetIPAsync();
 
             // Assert
             Assert.NotNull(address);

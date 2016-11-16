@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Runtime.Serialization;
+using Kronos.Core.Communication;
 
 namespace Kronos.Core.Configuration
 {
@@ -9,12 +10,31 @@ namespace Kronos.Core.Configuration
         private IPEndPoint _endPoint;
 
         [DataMember]
+        public string Domain { get; set; }
+
+        [DataMember]
         public string Ip { get; set; }
 
         [DataMember]
         public int Port { get; set; }
 
-        public IPEndPoint EndPoint => _endPoint ?? (_endPoint = new IPEndPoint(IPAddress.Parse(Ip), Port));
+        public IPEndPoint EndPoint => _endPoint ?? (_endPoint = CreateIPEndPoint());
+
+        private IPEndPoint CreateIPEndPoint()
+        {
+            IPAddress address;
+            if (!string.IsNullOrEmpty(Domain))
+            {
+                address = EndpointUtils.GetIPAsync(Domain).Result;
+                Ip = address.ToString();
+            }
+            else
+            {
+                address = IPAddress.Parse(Ip);
+            }
+
+            return new IPEndPoint(address, Port);
+        }
 
         public override string ToString()
         {
