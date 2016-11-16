@@ -1,12 +1,10 @@
 ﻿using System;
 using System.Net;
 using System.Text;
-using System.Threading;
 using System.Threading.Tasks;
 using Kronos.Client;
 using Kronos.Core.Communication;
 using Kronos.Core.Processors;
-using Kronos.Core.Requests;
 using Kronos.Core.Storage;
 using Kronos.Server.Listener;
 using XGain;
@@ -17,11 +15,14 @@ namespace Kronos.AcceptanceTest
 {
     public class CommandTests
     {
+        private const string localHost = "localhost";
+
         [Fact]
         public async Task Insert_And_Get_WorksCorrectly()
         {
             const int port = 9999;
             const string key = "key";
+
             byte[] data = Encoding.UTF8.GetBytes("lorem ipsum");
             DateTime expiry = DateTime.MaxValue;
 
@@ -38,7 +39,7 @@ namespace Kronos.AcceptanceTest
                     {
                         worker.Start();
 
-                        IKronosClient client = KronosClientFactory.CreateClient(port);
+                        IKronosClient client = KronosClientFactory.CreateClient(localHost, port);
                         await client.InsertAsync(key, data, expiry);
                         received = await client.GetAsync(key);
                     }
@@ -70,7 +71,7 @@ namespace Kronos.AcceptanceTest
                     {
                         worker.Start();
 
-                        IKronosClient client = KronosClientFactory.CreateClient(port);
+                        IKronosClient client = KronosClientFactory.CreateClient(localHost, port);
                         await client.InsertAsync(key, data, expiry);
 
                         sizeBeforeRemoving = storage.Count;
@@ -108,7 +109,7 @@ namespace Kronos.AcceptanceTest
                     {
                         worker.Start();
 
-                        IKronosClient client = KronosClientFactory.CreateClient(port);
+                        IKronosClient client = KronosClientFactory.CreateClient(localHost, port);
                         await client.InsertAsync(key, data, expiry);
 
                         countFromClientApi = await client.CountAsync();
@@ -142,7 +143,7 @@ namespace Kronos.AcceptanceTest
                     {
                         worker.Start();
 
-                        IKronosClient client = KronosClientFactory.CreateClient(port);
+                        IKronosClient client = KronosClientFactory.CreateClient(localHost, port);
                         await client.InsertAsync(key, data, expiry);
 
                         containsFromClientApi = await client.ContainsAsync(key);
@@ -174,7 +175,7 @@ namespace Kronos.AcceptanceTest
                     {
                         worker.Start();
 
-                        IKronosClient client = KronosClientFactory.CreateClient(port);
+                        IKronosClient client = KronosClientFactory.CreateClient(localHost, port);
 
                         containsFromClientApi = await client.ContainsAsync(key);
                         containsFromStorage = storage.Contains(key);

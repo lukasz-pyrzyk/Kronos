@@ -4,29 +4,29 @@ namespace Kronos.Client.Tests
 {
     public class KronosClientFactoryTests
     {
-
         [Fact]
         public void CreateClient_FromIpAndPort()
         {
             // Arrange
-            string ip = "8.8.8.8";
-            int port = 500;
+            const string ip = "8.8.8.8";
+            const int port = 500;
 
             // Act
-            IKronosClient client = KronosClientFactory.CreateClient(port, ip);
+            IKronosClient client = KronosClientFactory.CreateClientFromIp(ip, port);
 
             // Assert
             Assert.NotNull(client);
         }
 
         [Fact]
-        public void CreateClient_FromPort()
+        public void CreateClient_FromDomain()
         {
             // Arrange
-            int port = 500;
+            const string localHost = "localhost";
+            const int port = 500;
 
             // Act
-            IKronosClient client = KronosClientFactory.CreateClient(port);
+            IKronosClient client = KronosClientFactory.CreateClient(localHost, port);
 
             // Assert
             Assert.NotNull(client);
