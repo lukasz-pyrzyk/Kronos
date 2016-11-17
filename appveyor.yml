@@ -8,18 +8,18 @@ build_script:
 - ps: >-
     cd C:\projects\kronos
 
-    .\Scripts\build.ps1 -version $env:appveyor_build_number
+    .\Scripts\Windows\build.ps1 -version $env:appveyor_build_number
 
-    .\Scripts\pack.ps1 -version $env:appveyor_build_number
+    .\Scripts\Windows\pack.ps1 -version $env:appveyor_build_number
 test_script:
 - ps: >-
     $coverageFile = "kronosCoverage.xml"
 
 
     # run tests
-    .\Scripts\runTests.ps1 -fileName $coverageFile
+    .\Scripts\Windows\runTests.ps1 -fileName $coverageFile
 
-    .\Scripts\runAcceptanceTests.ps1 -fileName $coverageFile
+    .\Scripts\Windows\runAcceptanceTests.ps1 -fileName $coverageFile
 
 
     # add python folder into Path variable
