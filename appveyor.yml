@@ -11,20 +11,26 @@ build_script:
     cd C:\projects\kronos
 
     .\Scripts\build.ps1 -version $env:appveyor_build_number
-    .\scripts\pack.ps1 -version $env:appveyor_build_number
+
+    .\Scripts\pack.ps1 -version $env:appveyor_build_number
 test_script:
 - ps: >-
     $coverageFile = "kronosCoverage.xml"
 
+
     # run tests
     .\Scripts\runTests.ps1 -fileName $coverageFile
+
     .\Scripts\runAcceptanceTests.ps1 -fileName $coverageFile
+
 
     # add python folder into Path variable
     $env:Path = $env:Path + "C:\\Python34;C:\\Python34\\Scripts;"
 
+
     # install codecov plugin
     pip install codecov
+
 
     # send code coverage to the codecov server
     codecov -f $coverageFile -X gcov
