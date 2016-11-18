@@ -30,3 +30,4 @@ install:
   - export PATH="$DOTNET_INSTALL_DIR:$PATH"  
 script:  
   - ./Scripts/Linux/build.sh
+  - ./Scripts/Linux/runTests.sh
