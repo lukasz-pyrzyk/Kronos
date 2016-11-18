@@ -2,7 +2,7 @@
 
 Kronos is distributed, in-memory cache system based on .NET Core. Client library is available by [Nuget](https://www.nuget.org/packages/Kronos.Client/).
 
-### Build
+### Build status
 | Windows |  Linux | Code coverage |
 |:-------:|:------:|:------:|
 |  [![Build status](https://ci.appveyor.com/api/projects/status/vrkm5pcbg0dv6n6w?svg=true)](https://ci.appveyor.com/project/LukaszPyrzyk/kronos) | [![Build Status](https://travis-ci.org/lukasz-pyrzyk/Kronos.svg?branch=master)](https://travis-ci.org/lukasz-pyrzyk/Kronos) | [![codecov.io](https://codecov.io/github/lukasz-pyrzyk/Kronos/coverage.svg?branch=master)](https://codecov.io/github/lukasz-pyrzyk/Kronos?branch=master) |
