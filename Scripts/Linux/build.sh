@@ -1,5 +1,9 @@
 #!/usr/bin/env bash
 
+#settings
+MODE="Release"
+
+
 #exit if any command fails
 set -e
 
@@ -14,7 +18,9 @@ dotnet restore
 # Ideally we would use the 'dotnet test' command to test netcoreapp and net451 so restrict for now 
 # but this currently doesn't work due to https://github.com/dotnet/cli/issues/3073 so restrict to netcoreapp
 
-dotnet build src/**/project.json -c Release
+dotnet build Src/Kronos.Core/project.json -f netstandard1.3 -c $MODE 
+dotnet build Src/Kronos.Client/project.json -f netstandard1.3 -c $MODE 
+dotnet build Src/Kronos.Server/project.json -f netcoreapp1.0 -c $MODE 
 
 #mono \  
 #./test/TEST_PROJECT_NAME/bin/Release/net451/*/dotnet-test-xunit.exe \
