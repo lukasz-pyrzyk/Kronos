@@ -1,3 +1,6 @@
+#exit if any command fails
+set -e
+
 dotnet restore
 
 RUNTIME="netcoreapp1.0"
