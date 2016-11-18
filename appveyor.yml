@@ -15,6 +15,7 @@ test_script:
 - ps: >-
     $coverageFile = "kronosCoverage.xml"
 
+
     # run tests
     .\Scripts\Windows\runTests.ps1 -fileName $coverageFile
 
