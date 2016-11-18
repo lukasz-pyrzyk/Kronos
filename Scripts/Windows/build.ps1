@@ -6,10 +6,7 @@ param (
 $projects = @(
     "Src\Kronos.Core",
     "Src\Kronos.Client",
-    "Src\Kronos.Server",
-    "Tests\Kronos.Core.Tests\"
-    "Tests\Kronos.Client.Tests\"
-    "Tests\Kronos.Server.Tests\"
+    "Src\Kronos.Server"
 )
 
 # build function for project

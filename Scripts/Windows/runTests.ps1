@@ -9,6 +9,7 @@ $projects = @(
     @{Path="Tests\Kronos.Core.Tests"; Filter="+[Kronos.Core]*"}
     @{Path="Tests\Kronos.Client.Tests"; Filter="+[Kronos.Client]*"}
     @{Path="Tests\Kronos.Server.Tests"; Filter="+[Kronos.Server]*"}
+    @{Path="Tests\Kronos.AcceptanceTest"; Filter="+[Kronos.AcceptanceTest]*"}
 )
 
 $error = 0;
