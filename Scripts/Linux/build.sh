@@ -20,7 +20,7 @@ dotnet restore
 
 dotnet build Src/Kronos.Core/project.json -f netstandard1.3 -c $MODE 
 dotnet build Src/Kronos.Client/project.json -f netstandard1.3 -c $MODE 
-dotnet build Src/Kronos.Server/project.json -f netcoreapp1.0 -c $MODE 
+dotnet build Src/Kronos.Server/project.json -f netcoreapp1.1 -c $MODE 
 
 #mono \  
 #./test/TEST_PROJECT_NAME/bin/Release/net451/*/dotnet-test-xunit.exe \
