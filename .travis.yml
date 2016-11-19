@@ -1,8 +1,6 @@
 language: csharp  
 sudo: required  
-dist: trusty  
-env:  
-  - CLI_VERSION=1.0.0-preview3-003686
+dist: trusty
 addons:  
   apt:
     packages:
@@ -17,7 +15,7 @@ mono:
 os:  
   - linux
   #- osx # todo: wait for https://github.com/dotnet/corefx/issues/9394
- dotnet: 1.0.0-preview2.1-003177
+dotnet: 1.0.0-preview2.1-003177
 osx_image: xcode7.3  
 branches:  
   only:
