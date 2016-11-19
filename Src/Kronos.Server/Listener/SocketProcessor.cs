@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using Kronos.Core.Communication;
@@ -40,10 +41,12 @@ namespace Kronos.Server.Listener
             byte[] lengthBuffer = new byte[IntSize]; // TODO stackalloc
             SocketUtils.ReceiveAll(socket, lengthBuffer, IntSize);
             int dataLength = BitConverter.ToInt32(lengthBuffer, 0);
+            Debug.Assert(dataLength != 0);
 
             byte[] typeBuffer = new byte[RequestTypeSize]; // todo stackalloc;
             SocketUtils.ReceiveAll(socket, typeBuffer, RequestTypeSize);
             RequestType requestType = SerializationUtils.Deserialize<RequestType>(typeBuffer, RequestTypeSize);
+            Debug.Assert(requestType != RequestType.Unknown);
 
             byte[] data = new byte[dataLength - RequestTypeSize]; // todo array pooling
             SocketUtils.ReceiveAll(socket, data, data.Length);

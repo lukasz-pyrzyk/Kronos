@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Net.Sockets;
 using XGain.Sockets;
 
@@ -8,13 +9,15 @@ namespace Kronos.Core.Communication
     {
         public static void SendAll(ISocket socket, byte[] data)
         {
-            int sentbytes = 0;
-            while (sentbytes != data.Length)
+            int position = 0;
+            while (position != data.Length)
             {
-                int sizeToSend = Math.Min(data.Length - sentbytes, socket.BufferSize);
+                int sizeToSend = Math.Min(data.Length - position, socket.BufferSize);
 
-                int sent = socket.Send(data, sentbytes, sizeToSend, SocketFlags.None);
-                sentbytes += sent;
+                int count = socket.Send(data, position, sizeToSend, SocketFlags.None);
+                position += count;
+
+                Debug.Assert(position <= count);
             }
         }
 
@@ -26,6 +29,8 @@ namespace Kronos.Core.Communication
                 int expectedSize = Math.Min(count - position, socket.BufferSize);
                 int received = socket.Receive(buffer, position, expectedSize, SocketFlags.None);
                 position += received;
+
+                Debug.Assert(position <= count);
             }
         }
     }
