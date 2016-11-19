@@ -3,7 +3,7 @@ set -e
 
 dotnet restore
 
-RUNTIME="netcoreapp1.0"
+RUNTIME="netcoreapp1.1"
 dotnet test Tests/Kronos.Core.Tests/project.json -f $RUNTIME
 dotnet test Tests/Kronos.Client.Tests/project.json -f $RUNTIME
 dotnet test Tests/Kronos.Server.Tests/project.json -f $RUNTIME
