@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Diagnostics;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -14,10 +15,17 @@ namespace Kronos.Server.Listener
 {
     public class SocketProcessor : IProcessor<MessageArgs>
     {
+        public ArrayPool<byte> BytesPool { get; }
+
         private const int IntSize = sizeof(int);
         private const int RequestTypeSize = sizeof(ushort);
 
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+
+        public SocketProcessor()
+        {
+            BytesPool = ArrayPool<byte>.Create();
+        }
 
         public Task<MessageArgs> ProcessSocketConnectionAsync(ISocket client)
         {
