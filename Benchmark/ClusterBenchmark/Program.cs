@@ -88,6 +88,7 @@ namespace ClusterBenchmark
             }
             catch (Exception ex)
             {
+                Console.WriteLine(ex.ToString());
                 exceptions.Add(ex);
             }
         }
