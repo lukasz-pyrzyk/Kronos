@@ -17,7 +17,7 @@ RUN dotnet restore
 WORKDIR Kronos.Server
 
 # compile with release mode
-RUN dotnet build --framework netcoreapp1.0 -c Release -o ./bin
+RUN dotnet build --framework netcoreapp1.1 -c Release -o ./bin
 
 # set entrypoint to the docker run
 ENTRYPOINT ["dotnet", "./bin/Kronos.Server.dll"]
