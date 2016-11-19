@@ -7,10 +7,6 @@
     "dotnet-test-xunit": "2.2.0-preview2-build1029",
     "Kronos.Client": "1.1.2",
     "Kronos.Core": "1.1.2",
-    "Microsoft.NETCore.App": {
-      "type": "platform",
-      "version": "1.0.0"
-    },
     "NSubstitute": "2.0.0-rc",
     "OpenCover": "4.6.519",
     "protobuf-net": "2.1.0",
@@ -20,6 +16,13 @@
   "description": "Kronos - client tests",
   "frameworks": {
     "netcoreapp1.0": {
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.1.0"
+        }
+      },
+      "imports": "dnxcore50"
     }
   },
   "testRunner": "xunit"
