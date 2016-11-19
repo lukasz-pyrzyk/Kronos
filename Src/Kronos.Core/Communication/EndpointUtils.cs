@@ -7,11 +7,16 @@ namespace Kronos.Core.Communication
 {
     public static class EndpointUtils
     {
-        public static async Task<IPAddress> GetIPAsync(string hostName = "localhost")
+        public static async Task<IPAddress> GetIPAsync()
         {
-            var host = await Dns.GetHostEntryAsync(hostName);
+            return await GetIPAsync(Dns.GetHostName());
+        }
 
-            return host.AddressList.Where(x => x.AddressFamily == AddressFamily.InterNetwork).First();
+        public static async Task<IPAddress> GetIPAsync(string hostNameW)
+        {
+            var host = await Dns.GetHostEntryAsync(Dns.GetHostName());
+
+            return host.AddressList.First(x => x.AddressFamily == AddressFamily.InterNetwork);
         }
     }
 }
