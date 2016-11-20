@@ -22,6 +22,19 @@ namespace Kronos.Core.Processors
             return results;
         }
 
+        public async Task<TResponse[]> ExecuteAsync(TRequest request, IClientServerConnection[] services)
+        {
+            int count = services.Length;
+            Task<TResponse>[] responses = new Task<TResponse>[count];
+            for (int i = 0; i < count; i++)
+            {
+                IClientServerConnection connection = services[i];
+                responses[i] = ExecuteAsync(request, connection);
+            }
+
+            return await Task.WhenAll(responses);
+        }
+
         protected void Reply(TResponse response, ISocket client)
         {
             byte[] data = SerializationUtils.SerializeToStreamWithLength(response);
