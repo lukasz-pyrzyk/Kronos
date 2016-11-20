@@ -80,36 +80,22 @@ namespace Kronos.Client
 
             ServerConfig[] servers = _serverProvider.SelectServers();
 
-            Task<int>[] tasks = new Task<int>[servers.Length];
-            for (int i = 0; i < servers.Length; i++)
-            {
-                var server = servers[i];
-                var request = new CountRequest();
-                IClientServerConnection connection = _connectionResolver(server.EndPoint);
-                tasks[i] = _countProcessor.ExecuteAsync(request, connection);
-            }
+            var request = new CountRequest();
+            int[] results = await _countProcessor.ExecuteAsync(request, servers.Select(x => _connectionResolver(x.EndPoint)).ToArray());
 
-            await Task.WhenAll(tasks);
-
-            return tasks.Sum(x => x.Result);
+            return results.Sum();
         }
 
         public async Task<bool> ContainsAsync(string key)
         {
-            ServerConfig[] servers = _serverProvider.SelectServers();
+            Debug.WriteLine("New contains request");
 
-            Task<bool>[] tasks = new Task<bool>[servers.Length];
-            for (int i = 0; i < servers.Length; i++)
-            {
-                var server = servers[i];
-                var request = new ContainsRequest(key);
-                IClientServerConnection connection = _connectionResolver(server.EndPoint);
-                tasks[i] = _containsProcessor.ExecuteAsync(request, connection);
-            }
+            var request = new ContainsRequest(key);
 
-            await Task.WhenAll(tasks);
+            IClientServerConnection connection = SelectServerAndCreateConnection(key);
+            bool contains = await _containsProcessor.ExecuteAsync(request, connection);
 
-            return tasks.Any(x => x.Result);
+            return contains;
         }
 
         private IClientServerConnection SelectServerAndCreateConnection(string key)
