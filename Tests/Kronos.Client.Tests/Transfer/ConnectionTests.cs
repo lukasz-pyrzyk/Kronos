@@ -11,7 +11,7 @@ using Xunit;
 
 namespace Kronos.Client.Tests.Transfer
 {
-    public class SocketCommunicationServiceTests
+    public class ConnectionTests
     {
         [Fact]
         public void SendToServer_WorksCorrect()

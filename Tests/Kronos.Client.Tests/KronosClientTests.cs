@@ -19,15 +19,15 @@ namespace Kronos.Client.Tests
             byte[] package = Encoding.UTF8.GetBytes("package");
             DateTime expiryDate = DateTime.Today.AddDays(1);
 
-            var communicationServiceMock = Substitute.For<IConnection>();
-            communicationServiceMock.Send(Arg.Any<IRequest>())
+            var connectionMock = Substitute.For<IConnection>();
+            connectionMock.Send(Arg.Any<IRequest>())
                 .Returns(SerializationUtils.SerializeToStreamWithLength(true));
 
             KronosConfig config = LoadTestConfiguration();
-            IKronosClient client = new KronosClient(config, endpoint => communicationServiceMock);
+            IKronosClient client = new KronosClient(config, endpoint => connectionMock);
             await client.InsertAsync(key, package, expiryDate);
 
-            communicationServiceMock.Received(1).Send(Arg.Any<InsertRequest>());
+            connectionMock.Received(1).Send(Arg.Any<InsertRequest>());
         }
 
         [Fact]
@@ -36,68 +36,68 @@ namespace Kronos.Client.Tests
             const string word = "lorem ipsum";
             byte[] package = SerializationUtils.Serialize(word);
 
-            var communicationServiceMock = Substitute.For<IConnection>();
-            communicationServiceMock.Send(Arg.Any<GetRequest>())
+            var connectionMock = Substitute.For<IConnection>();
+            connectionMock.Send(Arg.Any<GetRequest>())
                 .Returns(SerializationUtils.SerializeToStreamWithLength(package));
 
             KronosConfig config = LoadTestConfiguration();
-            IKronosClient client = new KronosClient(config, endpoint => communicationServiceMock);
+            IKronosClient client = new KronosClient(config, endpoint => connectionMock);
 
             byte[] response = await client.GetAsync("key");
 
             string responseString = SerializationUtils.Deserialize<string>(response);
             Assert.Equal(responseString, word);
-            communicationServiceMock.Received(1).Send(Arg.Any<GetRequest>());
+            connectionMock.Received(1).Send(Arg.Any<GetRequest>());
         }
 
         [Fact]
         public async Task Get_DoestNotReturnObject()
         {
             byte[] serverResponse = SerializationUtils.Serialize(RequestStatusCode.NotFound);
-            var communicationServiceMock = Substitute.For<IConnection>();
-            communicationServiceMock.Send(Arg.Any<GetRequest>())
+            var connectionMock = Substitute.For<IConnection>();
+            connectionMock.Send(Arg.Any<GetRequest>())
                 .Returns(SerializationUtils.SerializeToStreamWithLength(serverResponse));
 
             KronosConfig config = LoadTestConfiguration();
-            IKronosClient client = new KronosClient(config, endpoint => communicationServiceMock);
+            IKronosClient client = new KronosClient(config, endpoint => connectionMock);
 
             byte[] response = await client.GetAsync("key");
 
             Assert.Null(response);
-            communicationServiceMock.Received(1).Send(Arg.Any<GetRequest>());
+            connectionMock.Received(1).Send(Arg.Any<GetRequest>());
         }
 
         [Fact]
         public async Task Delete_CallsSendToServerAsync()
         {
-            var communicationServiceMock = Substitute.For<IConnection>();
-            communicationServiceMock.Send(Arg.Any<DeleteRequest>())
+            var connectionMock = Substitute.For<IConnection>();
+            connectionMock.Send(Arg.Any<DeleteRequest>())
                 .Returns(SerializationUtils.SerializeToStreamWithLength(true));
 
             KronosConfig config = LoadTestConfiguration();
-            IKronosClient client = new KronosClient(config, endpoint => communicationServiceMock);
+            IKronosClient client = new KronosClient(config, endpoint => connectionMock);
 
             await client.DeleteAsync("key");
 
-            communicationServiceMock.Received(1).Send(Arg.Any<DeleteRequest>());
+            connectionMock.Received(1).Send(Arg.Any<DeleteRequest>());
         }
 
         [Fact]
         public async Task Count_ReturnsNumberOfElementsInStorage()
         {
             int countPerServer = 5;
-            var communicationServiceMock = Substitute.For<IConnection>();
-            communicationServiceMock.Send(Arg.Any<CountRequest>())
+            var connectionMock = Substitute.For<IConnection>();
+            connectionMock.Send(Arg.Any<CountRequest>())
                 .Returns(SerializationUtils.SerializeToStreamWithLength(countPerServer));
 
             KronosConfig config = LoadTestConfiguration();
             int serverCount = config.ClusterConfig.Servers.Length;
-            IKronosClient client = new KronosClient(config, endpoint => communicationServiceMock);
+            IKronosClient client = new KronosClient(config, endpoint => connectionMock);
 
             int sum = await client.CountAsync();
 
             Assert.Equal(sum, countPerServer * serverCount);
-            communicationServiceMock.Received(serverCount).Send(Arg.Any<CountRequest>());
+            connectionMock.Received(serverCount).Send(Arg.Any<CountRequest>());
         }
 
         [Fact]
@@ -105,17 +105,17 @@ namespace Kronos.Client.Tests
         {
             bool expected = true;
             string key = "lorem ipsum";
-            var communicationServiceMock = Substitute.For<IConnection>();
-            communicationServiceMock.Send(Arg.Any<ContainsRequest>())
+            var connectionMock = Substitute.For<IConnection>();
+            connectionMock.Send(Arg.Any<ContainsRequest>())
                 .Returns(SerializationUtils.SerializeToStreamWithLength(expected));
 
             KronosConfig config = LoadTestConfiguration();
-            IKronosClient client = new KronosClient(config, endpoint => communicationServiceMock);
+            IKronosClient client = new KronosClient(config, endpoint => connectionMock);
 
             bool exists = await client.ContainsAsync(key);
 
             Assert.Equal(expected, exists);
-            communicationServiceMock.Received(1).Send(Arg.Any<ContainsRequest>());
+            connectionMock.Received(1).Send(Arg.Any<ContainsRequest>());
         }
 
         private static KronosConfig LoadTestConfiguration()
