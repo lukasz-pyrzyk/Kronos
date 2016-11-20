@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using Kronos.Core.Communication;
 using Kronos.Core.Processors;
 using Kronos.Core.Requests;
@@ -32,19 +33,23 @@ namespace Kronos.Server.Listener
             _server.Start();
         }
 
-        private void OnMessage(object sender, MessageArgs args)
+        private void OnMessage(object sender, MessageArgs message)
         {
             try
             {
                 string id = Guid.NewGuid().ToString();
-                var type = (RequestType)args.UserToken;
-                _logger.Debug($"Processing new request with Id: {id}, type: {type}, {args.RequestBytes} bytes");
-                _requestsProcessor.HandleIncomingRequest(type, args.RequestBytes, args.Client);
+                var args = message as ReceivedMessage;
+                _logger.Debug($"Processing new request with Id: {id}, type: {args.Type}, {args.Received} bytes");
+                _requestsProcessor.HandleIncomingRequest(args.Type, args.RequestBytes, args.Received, args.Client);
                 _logger.Debug($"Processing {id} finished");
             }
             catch (Exception ex)
             {
                 _logger.Error(ex);
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(message.RequestBytes);
             }
         }
 

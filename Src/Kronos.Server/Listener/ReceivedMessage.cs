@@ -1,16 +1,20 @@
 ﻿using Kronos.Core.Requests;
+using XGain;
+using XGain.Sockets;
 
 namespace Kronos.Server.Listener
 {
-    internal struct ReceivedMessage
+    public class ReceivedMessage : MessageArgs
     {
-        public ReceivedMessage(RequestType type, byte[] data)
+        public ReceivedMessage(ISocket client, RequestType type, byte[] buffer, int received) : base(client, buffer)
         {
             Type = type;
-            Data = data;
+            Buffer = buffer;
+            Received = received;
         }
 
         public RequestType Type { get; }
-        public byte[] Data { get; }
+        public byte[] Buffer { get; }
+        public int Received { get; }
     }
 }

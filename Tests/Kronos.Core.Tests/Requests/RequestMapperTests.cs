@@ -23,7 +23,7 @@ namespace Kronos.Core.Tests.Requests
 
             Exception ex =
                 Assert.Throws<InvalidOperationException>(
-                    () => processor.HandleIncomingRequest(type, requestBytes, Substitute.For<ISocket>()));
+                    () => processor.HandleIncomingRequest(type, requestBytes, requestBytes.Length, Substitute.For<ISocket>()));
 
             Assert.Equal(ex.Message, $"Cannot find processor for type {type}");
         }
@@ -38,7 +38,7 @@ namespace Kronos.Core.Tests.Requests
 
             IRequestProcessor processor = new RequestProcessor(storage);
 
-            processor.HandleIncomingRequest(request.Type, requestBytes, socket);
+            processor.HandleIncomingRequest(request.Type, requestBytes, requestBytes.Length, socket);
         }
 
         public static IEnumerable<object[]> TestData()

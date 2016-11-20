@@ -23,32 +23,32 @@ namespace ClientSample
             byte[] package = new byte[1024 * 9];
             new Random().NextBytes(package);
 
-            for (int i = 0; i < 100; i++)
+            for (int i = 0; i < 10000; i++)
             {
-                Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+                Debug.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
                 string key = Guid.NewGuid().ToString();
                 DateTime expiryDate = DateTime.UtcNow.AddDays(1);
 
-                Console.WriteLine("ADD - testing");
+                Debug.WriteLine("ADD - testing");
                 await client.InsertAsync(key, package, expiryDate);
-                Console.WriteLine($"ADD - done (size: {package.Length})");
+                Debug.WriteLine($"ADD - done (size: {package.Length})");
 
-                Console.WriteLine("COUNT - testing");
+                Debug.WriteLine("COUNT - testing");
                 int count = await client.CountAsync();
-                Console.WriteLine($"COUNT - done (count: {count})");
+                Debug.WriteLine($"COUNT - done (count: {count})");
 
-                Console.WriteLine("CONTAINS - testing");
+                Debug.WriteLine("CONTAINS - testing");
                 bool contains = await client.ContainsAsync(key);
-                Console.WriteLine($"CONTAINS - done (exists: {contains})");
+                Debug.WriteLine($"CONTAINS - done (exists: {contains})");
 
-                Console.WriteLine("GET - testing");
+                Debug.WriteLine("GET - testing");
                 byte[] fromServer = await client.GetAsync(key);
-                Console.WriteLine($"GET - done (size: {fromServer.Length})");
+                Debug.WriteLine($"GET - done (size: {fromServer.Length})");
 
-                Console.WriteLine("DELETE - testing");
+                Debug.WriteLine("DELETE - testing");
                 await client.DeleteAsync(key);
                 bool containsAfterDeletion = await client.ContainsAsync(key);
-                Console.WriteLine($"DELETE - done (exists after deletion: {containsAfterDeletion})");
+                Debug.WriteLine($"DELETE - done (exists after deletion: {containsAfterDeletion})");
             }
             watch.Stop();
             Console.WriteLine(watch.ElapsedMilliseconds);

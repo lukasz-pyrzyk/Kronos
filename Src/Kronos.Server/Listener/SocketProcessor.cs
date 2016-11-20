@@ -7,33 +7,24 @@ using Kronos.Core.Communication;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using NLog;
-using XGain;
 using XGain.Processing;
 using XGain.Sockets;
 
 namespace Kronos.Server.Listener
 {
-    public class SocketProcessor : IProcessor<MessageArgs>
+    public class SocketProcessor : IProcessor<ReceivedMessage>
     {
-        public ArrayPool<byte> BytesPool { get; }
-
         private const int IntSize = sizeof(int);
         private const int RequestTypeSize = sizeof(ushort);
 
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
-        public SocketProcessor()
+        public Task<ReceivedMessage> ProcessSocketConnectionAsync(ISocket client)
         {
-            BytesPool = ArrayPool<byte>.Create();
-        }
-
-        public Task<MessageArgs> ProcessSocketConnectionAsync(ISocket client)
-        {
-            MessageArgs args = null;
+            ReceivedMessage args = null;
             try
             {
-                ReceivedMessage msg = ReceiveMessageAsync(client);
-                args = new MessageArgs(client, msg.Data, msg.Type);
+                args = ReceiveMessageAsync(client);
             }
             catch (SocketException ex)
             {
@@ -46,20 +37,23 @@ namespace Kronos.Server.Listener
 
         private ReceivedMessage ReceiveMessageAsync(ISocket socket)
         {
-            byte[] lengthBuffer = new byte[IntSize]; // TODO stackalloc
+            byte[] lengthBuffer = ArrayPool<byte>.Shared.Rent(IntSize); // TODO stackalloc
             SocketUtils.ReceiveAll(socket, lengthBuffer, IntSize);
             int dataLength = BitConverter.ToInt32(lengthBuffer, 0);
+            ArrayPool<byte>.Shared.Return(lengthBuffer);
             Debug.Assert(dataLength != 0);
 
-            byte[] typeBuffer = new byte[RequestTypeSize]; // todo stackalloc;
+            byte[] typeBuffer = ArrayPool<byte>.Shared.Rent(RequestTypeSize); // todo stackalloc;
             SocketUtils.ReceiveAll(socket, typeBuffer, RequestTypeSize);
             RequestType requestType = SerializationUtils.Deserialize<RequestType>(typeBuffer, RequestTypeSize);
+            ArrayPool<byte>.Shared.Return(typeBuffer);
             Debug.Assert(requestType != RequestType.Unknown);
 
-            byte[] data = new byte[dataLength - RequestTypeSize]; // todo array pooling
-            SocketUtils.ReceiveAll(socket, data, data.Length);
+            int packageSize = dataLength - RequestTypeSize;
+            byte[] data = ArrayPool<byte>.Shared.Rent(packageSize);
+            SocketUtils.ReceiveAll(socket, data, packageSize);
 
-            return new ReceivedMessage(requestType, data);
+            return new ReceivedMessage(socket, requestType, data, packageSize);
         }
     }
 }

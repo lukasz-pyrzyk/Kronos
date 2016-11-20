@@ -38,38 +38,33 @@ namespace Kronos.Core.Processors
             _containsProcessor = containsProcessor;
         }
 
-        public void HandleIncomingRequest(RequestType requestType, byte[] request, ISocket client)
+        public void HandleIncomingRequest(RequestType requestType, byte[] request, int receivedBytes, ISocket client)
         {
             switch (requestType)
             {
                 case RequestType.Insert:
-                    var insertRequest = Deserialize<InsertRequest>(request);
+                    var insertRequest = SerializationUtils.Deserialize<InsertRequest>(request, receivedBytes);
                     _insertProcessor.Handle(ref insertRequest, _storage, client);
                     break;
                 case RequestType.Get:
-                    var getRequest = Deserialize<GetRequest>(request);
+                    var getRequest = SerializationUtils.Deserialize<GetRequest>(request, receivedBytes);
                     _getProcessor.Handle(ref getRequest, _storage, client);
                     break;
                 case RequestType.Delete:
-                    var deleteRequest = Deserialize<DeleteRequest>(request);
+                    var deleteRequest = SerializationUtils.Deserialize<DeleteRequest>(request, receivedBytes);
                     _deleteProcessor.Handle(ref deleteRequest, _storage, client);
                     break;
                 case RequestType.Count:
-                    var countRequest = Deserialize<CountRequest>(request);
+                    var countRequest = SerializationUtils.Deserialize<CountRequest>(request, receivedBytes);
                     _countProcessor.Handle(ref countRequest, _storage, client);
                     break;
                 case RequestType.Contains:
-                    var containsRequest = Deserialize<ContainsRequest>(request);
+                    var containsRequest = SerializationUtils.Deserialize<ContainsRequest>(request, receivedBytes);
                     _containsProcessor.Handle(ref containsRequest, _storage, client);
                     break;
                 default:
                     throw new InvalidOperationException($"Cannot find processor for type {requestType}");
             }
-        }
-
-        private TRequest Deserialize<TRequest>(byte[] request)
-        {
-            return SerializationUtils.Deserialize<TRequest>(request);
         }
     }
 }

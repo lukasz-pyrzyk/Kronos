@@ -11,7 +11,7 @@
     "OpenCover": "4.6.519",
     "protobuf-net": "2.1.0",
     "xunit": "2.2.0-beta2-build3300",
-    "XGain": "1.2.6"
+    "XGain": "1.2.7"
   },
   "description": "Kronos - acceptance tests",
   "frameworks": {

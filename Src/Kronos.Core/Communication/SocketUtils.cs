@@ -14,10 +14,10 @@ namespace Kronos.Core.Communication
             {
                 int sizeToSend = Math.Min(data.Length - position, socket.BufferSize);
 
-                int count = socket.Send(data, position, sizeToSend, SocketFlags.None);
-                position += count;
+                int sent = socket.Send(data, position, sizeToSend, SocketFlags.None);
+                position += sent;
 
-                Debug.Assert(position <= count);
+                Debug.Assert(position <= data.Length);
             }
         }
 

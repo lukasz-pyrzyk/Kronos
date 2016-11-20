@@ -31,8 +31,8 @@ namespace Kronos.AcceptanceTest
             IExpiryProvider expiryProvider = new StorageExpiryProvider();
             using (IStorage storage = new InMemoryStorage(expiryProvider))
             {
-                IProcessor<MessageArgs> processor = new SocketProcessor();
-                using (IServer server = new XGainServer(IPAddress.Any, port, processor))
+                var processor = new SocketProcessor();
+                using (IServer server = new XGainServer<ReceivedMessage>(IPAddress.Any, port, processor))
                 {
                     IRequestProcessor requestProcessor = new RequestProcessor(storage);
                     using (IServerWorker worker = new ServerWorker(requestProcessor, storage, server))
@@ -63,8 +63,8 @@ namespace Kronos.AcceptanceTest
             IExpiryProvider expiryProvider = new StorageExpiryProvider();
             using (IStorage storage = new InMemoryStorage(expiryProvider))
             {
-                IProcessor<MessageArgs> processor = new SocketProcessor();
-                using (IServer server = new XGainServer(IPAddress.Any, port, processor))
+               var processor = new SocketProcessor();
+                using (IServer server = new XGainServer<ReceivedMessage>(IPAddress.Any, port, processor))
                 {
                     IRequestProcessor mapper = new RequestProcessor(storage);
                     using (IServerWorker worker = new ServerWorker(mapper, storage, server))
@@ -101,8 +101,8 @@ namespace Kronos.AcceptanceTest
             IExpiryProvider expiryProvider = new StorageExpiryProvider();
             using (IStorage storage = new InMemoryStorage(expiryProvider))
             {
-                IProcessor<MessageArgs> processor = new SocketProcessor();
-                using (IServer server = new XGainServer(IPAddress.Any, port, processor))
+                var processor = new SocketProcessor();
+                using (IServer server = new XGainServer<ReceivedMessage>(IPAddress.Any, port, processor))
                 {
                     IRequestProcessor mapper = new RequestProcessor(storage);
                     using (IServerWorker worker = new ServerWorker(mapper, storage, server))
@@ -135,8 +135,8 @@ namespace Kronos.AcceptanceTest
             IExpiryProvider expiryProvider = new StorageExpiryProvider();
             using (IStorage storage = new InMemoryStorage(expiryProvider))
             {
-                IProcessor<MessageArgs> processor = new SocketProcessor();
-                using (IServer server = new XGainServer(IPAddress.Any, port, processor))
+                var processor = new SocketProcessor();
+                using (IServer server = new XGainServer<ReceivedMessage>(IPAddress.Any, port, processor))
                 {
                     IRequestProcessor mapper = new RequestProcessor(storage);
                     using (IServerWorker worker = new ServerWorker(mapper, storage, server))
@@ -167,8 +167,8 @@ namespace Kronos.AcceptanceTest
             IExpiryProvider expiryProvider = new StorageExpiryProvider();
             using (IStorage storage = new InMemoryStorage(expiryProvider))
             {
-                IProcessor<MessageArgs> processor = new SocketProcessor();
-                using (IServer server = new XGainServer(IPAddress.Any, port, processor))
+                var processor = new SocketProcessor();
+                using (IServer server = new XGainServer<ReceivedMessage>(IPAddress.Any, port, processor))
                 {
                     IRequestProcessor mapper = new RequestProcessor(storage);
                     using (IServerWorker worker = new ServerWorker(mapper, storage, server))
