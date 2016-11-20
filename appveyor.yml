@@ -17,15 +17,19 @@ test_script:
 
 
     # run tests
+    
     .\Scripts\Windows\runTests.ps1 -fileName $coverageFile
 
     # add python folder into Path variable
+    
     $env:Path = $env:Path + "C:\\Python34;C:\\Python34\\Scripts;"
 
 
     # install codecov plugin
+    
     pip install codecov
 
 
     # send code coverage to the codecov server
+    
     codecov -f $coverageFile -X gcov
