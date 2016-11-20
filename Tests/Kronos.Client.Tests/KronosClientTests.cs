@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Text;
 using System.Threading.Tasks;
-using Kronos.Core.Communication;
 using Kronos.Core.Configuration;
+using Kronos.Core.Network;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
-using Kronos.Core.StatusCodes;
 using NSubstitute;
 using Xunit;
 
@@ -20,7 +19,7 @@ namespace Kronos.Client.Tests
             byte[] package = Encoding.UTF8.GetBytes("package");
             DateTime expiryDate = DateTime.Today.AddDays(1);
 
-            var communicationServiceMock = Substitute.For<IClientServerConnection>();
+            var communicationServiceMock = Substitute.For<IConnection>();
             communicationServiceMock.Send(Arg.Any<IRequest>())
                 .Returns(SerializationUtils.SerializeToStreamWithLength(true));
 
@@ -37,7 +36,7 @@ namespace Kronos.Client.Tests
             const string word = "lorem ipsum";
             byte[] package = SerializationUtils.Serialize(word);
 
-            var communicationServiceMock = Substitute.For<IClientServerConnection>();
+            var communicationServiceMock = Substitute.For<IConnection>();
             communicationServiceMock.Send(Arg.Any<GetRequest>())
                 .Returns(SerializationUtils.SerializeToStreamWithLength(package));
 
@@ -55,7 +54,7 @@ namespace Kronos.Client.Tests
         public async Task Get_DoestNotReturnObject()
         {
             byte[] serverResponse = SerializationUtils.Serialize(RequestStatusCode.NotFound);
-            var communicationServiceMock = Substitute.For<IClientServerConnection>();
+            var communicationServiceMock = Substitute.For<IConnection>();
             communicationServiceMock.Send(Arg.Any<GetRequest>())
                 .Returns(SerializationUtils.SerializeToStreamWithLength(serverResponse));
 
@@ -71,7 +70,7 @@ namespace Kronos.Client.Tests
         [Fact]
         public async Task Delete_CallsSendToServerAsync()
         {
-            var communicationServiceMock = Substitute.For<IClientServerConnection>();
+            var communicationServiceMock = Substitute.For<IConnection>();
             communicationServiceMock.Send(Arg.Any<DeleteRequest>())
                 .Returns(SerializationUtils.SerializeToStreamWithLength(true));
 
@@ -87,7 +86,7 @@ namespace Kronos.Client.Tests
         public async Task Count_ReturnsNumberOfElementsInStorage()
         {
             int countPerServer = 5;
-            var communicationServiceMock = Substitute.For<IClientServerConnection>();
+            var communicationServiceMock = Substitute.For<IConnection>();
             communicationServiceMock.Send(Arg.Any<CountRequest>())
                 .Returns(SerializationUtils.SerializeToStreamWithLength(countPerServer));
 
@@ -106,7 +105,7 @@ namespace Kronos.Client.Tests
         {
             bool expected = true;
             string key = "lorem ipsum";
-            var communicationServiceMock = Substitute.For<IClientServerConnection>();
+            var communicationServiceMock = Substitute.For<IConnection>();
             communicationServiceMock.Send(Arg.Any<ContainsRequest>())
                 .Returns(SerializationUtils.SerializeToStreamWithLength(expected));
 

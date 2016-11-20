@@ -1,7 +1,7 @@
 ﻿using System;
 using Kronos.Core.Storage;
 
-namespace Kronos.Core.Communication
+namespace Kronos.Core.Network
 {
     public interface IServerWorker : IDisposable
     {

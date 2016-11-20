@@ -22,7 +22,7 @@ namespace Kronos.Client.Tests.Transfer
 
             var ipEndpoint = new IPEndPoint(IPAddress.Any, 500);
 
-            var service = new SocketCommunicationService(ipEndpoint, () => socket);
+            var service = new Connection(ipEndpoint, () => socket);
 
             // act
             service.Send(request);
@@ -44,7 +44,7 @@ namespace Kronos.Client.Tests.Transfer
 
             var ipEndpoint = new IPEndPoint(IPAddress.Any, 500);
 
-            var service = new SocketCommunicationService(ipEndpoint, () => socket);
+            var service = new Connection(ipEndpoint, () => socket);
 
             //  act and assert
             service.Send(request);
@@ -61,7 +61,7 @@ namespace Kronos.Client.Tests.Transfer
 
             var ipEndpoint = new IPEndPoint(IPAddress.Any, 500);
 
-            var service = new SocketCommunicationService(ipEndpoint, () => socket, 0);
+            var service = new Connection(ipEndpoint, () => socket, 0);
 
             //  act and assert
             Assert.Throws(typeof(ArgumentNullException), () => service.Send(request));

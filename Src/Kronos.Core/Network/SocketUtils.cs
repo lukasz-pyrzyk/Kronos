@@ -3,7 +3,7 @@ using System.Diagnostics;
 using System.Net.Sockets;
 using XGain.Sockets;
 
-namespace Kronos.Core.Communication
+namespace Kronos.Core.Network
 {
     public static class SocketUtils
     {
