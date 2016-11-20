@@ -44,6 +44,7 @@ namespace ClientSample
                 Debug.WriteLine("GET - testing");
                 byte[] fromServer = await client.GetAsync(key);
                 Debug.WriteLine($"GET - done (size: {fromServer.Length})");
+                Debug.Assert(fromServer.Length == package.Length);
 
                 Debug.WriteLine("DELETE - testing");
                 await client.DeleteAsync(key);
