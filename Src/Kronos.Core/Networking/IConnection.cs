@@ -1,6 +1,6 @@
 ﻿using Kronos.Core.Requests;
 
-namespace Kronos.Core.Network
+namespace Kronos.Core.Networking
 {
     /// <summary>
     /// Communication layer between client and server

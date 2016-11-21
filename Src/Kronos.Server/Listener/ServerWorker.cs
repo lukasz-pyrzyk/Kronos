@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Buffers;
-using Kronos.Core.Network;
+using Kronos.Core.Networking;
 using Kronos.Core.Processors;
 using Kronos.Core.Storage;
 using Microsoft.Extensions.PlatformAbstractions;

@@ -1,5 +1,5 @@
 ﻿using System.Threading.Tasks;
-using Kronos.Core.Network;
+using Kronos.Core.Networking;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Kronos.Core.Storage;

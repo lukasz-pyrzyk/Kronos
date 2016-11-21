@@ -1,10 +1,10 @@
 ﻿using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using Kronos.Core.Network;
+using Kronos.Core.Networking;
 using Xunit;
 
-namespace Kronos.Core.Tests.Network
+namespace Kronos.Core.Tests.Networking
 {
     public class EndpointUtilsTests
     {

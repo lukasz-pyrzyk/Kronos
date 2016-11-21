@@ -2,7 +2,7 @@
 using System.Text;
 using System.Threading.Tasks;
 using Kronos.Core.Configuration;
-using Kronos.Core.Network;
+using Kronos.Core.Networking;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using NSubstitute;

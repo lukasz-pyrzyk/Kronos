@@ -1,6 +1,6 @@
 ﻿using System.Net;
 using System.Runtime.Serialization;
-using Kronos.Core.Network;
+using Kronos.Core.Networking;
 
 namespace Kronos.Core.Configuration
 {

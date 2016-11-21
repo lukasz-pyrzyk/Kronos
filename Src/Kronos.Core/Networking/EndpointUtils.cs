@@ -3,7 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 
-namespace Kronos.Core.Network
+namespace Kronos.Core.Networking
 {
     public static class EndpointUtils
     {
