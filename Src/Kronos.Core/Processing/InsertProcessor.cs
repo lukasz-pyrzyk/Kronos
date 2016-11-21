@@ -2,7 +2,7 @@
 using Kronos.Core.Storage;
 using XGain.Sockets;
 
-namespace Kronos.Core.Processors
+namespace Kronos.Core.Processing
 {
     public class InsertProcessor : CommandProcessor<InsertRequest, bool>
     {

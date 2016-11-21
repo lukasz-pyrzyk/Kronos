@@ -6,7 +6,7 @@ using System.Threading.Tasks;
 using Kronos.Client.Transfer;
 using Kronos.Core.Configuration;
 using Kronos.Core.Networking;
-using Kronos.Core.Processors;
+using Kronos.Core.Processing;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 

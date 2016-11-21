@@ -1,7 +1,7 @@
 ﻿using Kronos.Core.Requests;
 using XGain.Sockets;
 
-namespace Kronos.Core.Processors
+namespace Kronos.Core.Processing
 {
     public interface IRequestProcessor
     {
