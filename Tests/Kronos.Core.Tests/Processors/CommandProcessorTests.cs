@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using Kronos.Core.Communication;
+using Kronos.Core.Networking;
 using Kronos.Core.Processors;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
@@ -19,9 +19,9 @@ namespace Kronos.Core.Tests.Processors
         {
             // Arrange
             bool fakeResult = true;
-            byte[] fakeData = SerializationUtils.SerializeToStreamWithLength(fakeResult);
+            byte[] fakeData = SerializationUtils.Serialize(fakeResult);
             var request = new InsertRequest();
-            IClientServerConnection connection = Substitute.For<IClientServerConnection>();
+            IConnection connection = Substitute.For<IConnection>();
             connection.Send(request).Returns(fakeData);
             var processor = new FakeProcessor();
 

@@ -3,7 +3,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
-using Kronos.Core.Communication;
+using Kronos.Core.Networking;
 using Kronos.Core.Processors;
 using Kronos.Core.Storage;
 using Kronos.Server.Listener;

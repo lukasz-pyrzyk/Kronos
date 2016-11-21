@@ -1,7 +1,7 @@
-﻿using Kronos.Core.StatusCodes;
+﻿using Kronos.Core.Networking;
 using Xunit;
 
-namespace Kronos.Core.Tests.StatusCodes
+namespace Kronos.Core.Tests.Networking
 {
     public class RequestStatusTests
     {
@@ -11,8 +11,8 @@ namespace Kronos.Core.Tests.StatusCodes
         [InlineData(RequestStatusCode.Failed, 2)]
         [InlineData(RequestStatusCode.NotFound, 3)]
         public void RequestStatusContainsGoodStatusCodes(RequestStatusCode status, int expectedValue)
-        {   
-            int statusCode = (int) status;
+        {
+            int statusCode = (int)status;
 
             Assert.Equal(statusCode, expectedValue);
         }

@@ -1,6 +1,6 @@
 ﻿using ProtoBuf;
 
-namespace Kronos.Core.StatusCodes
+namespace Kronos.Core.Networking
 {
     [ProtoContract]
     public enum RequestStatusCode : ushort

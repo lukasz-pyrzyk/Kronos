@@ -11,7 +11,7 @@ using Xunit;
 
 namespace Kronos.Client.Tests.Transfer
 {
-    public class SocketCommunicationServiceTests
+    public class ConnectionTests
     {
         [Fact]
         public void SendToServer_WorksCorrect()
@@ -22,7 +22,7 @@ namespace Kronos.Client.Tests.Transfer
 
             var ipEndpoint = new IPEndPoint(IPAddress.Any, 500);
 
-            var service = new SocketCommunicationService(ipEndpoint, () => socket);
+            var service = new Connection(ipEndpoint, () => socket);
 
             // act
             service.Send(request);
@@ -44,7 +44,7 @@ namespace Kronos.Client.Tests.Transfer
 
             var ipEndpoint = new IPEndPoint(IPAddress.Any, 500);
 
-            var service = new SocketCommunicationService(ipEndpoint, () => socket);
+            var service = new Connection(ipEndpoint, () => socket);
 
             //  act and assert
             service.Send(request);
@@ -61,7 +61,7 @@ namespace Kronos.Client.Tests.Transfer
 
             var ipEndpoint = new IPEndPoint(IPAddress.Any, 500);
 
-            var service = new SocketCommunicationService(ipEndpoint, () => socket, 0);
+            var service = new Connection(ipEndpoint, () => socket, 0);
 
             //  act and assert
             Assert.Throws(typeof(ArgumentNullException), () => service.Send(request));
@@ -73,6 +73,8 @@ namespace Kronos.Client.Tests.Transfer
             var socket = Substitute.For<ISocket>();
             socket.BufferSize.Returns(4 * 1024);
             socket.Send(Arg.Any<byte[]>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<SocketFlags>())
+                .Returns(4, data.Length);
+            socket.Receive(Arg.Any<byte[]>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<SocketFlags>())
                 .Returns(4, data.Length);
 
             return socket;

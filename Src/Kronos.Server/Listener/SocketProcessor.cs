@@ -3,7 +3,7 @@ using System.Buffers;
 using System.Diagnostics;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using Kronos.Core.Communication;
+using Kronos.Core.Networking;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using NLog;

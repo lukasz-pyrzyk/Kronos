@@ -1,11 +1,10 @@
 ﻿using System.Linq;
 using System.Net.Sockets;
 using System.Text;
-using Kronos.Core.Communication;
+using Kronos.Core.Networking;
 using Kronos.Core.Processors;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
-using Kronos.Core.StatusCodes;
 using Kronos.Core.Storage;
 using NSubstitute;
 using XGain.Sockets;

@@ -1,6 +1,5 @@
 ﻿using System.Linq;
 using System.Net.Sockets;
-using Kronos.Core.Communication;
 using Kronos.Core.Processors;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;

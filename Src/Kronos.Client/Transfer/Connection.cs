@@ -3,8 +3,8 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
-using Kronos.Core.Communication;
 using Kronos.Core.Exceptions;
+using Kronos.Core.Networking;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Polly;
@@ -12,7 +12,7 @@ using XGain.Sockets;
 
 namespace Kronos.Client.Transfer
 {
-    public class SocketCommunicationService : IClientServerConnection
+    public class Connection : IConnection
     {
         public int RetryCount => _timeSpans.Length;
 
@@ -23,11 +23,11 @@ namespace Kronos.Client.Transfer
         private readonly TimeSpan[] _timeSpans;
         private readonly Policy _policy;
 
-        public SocketCommunicationService(IPEndPoint host) : this(host, () => new XGainSocket(AddressFamily.InterNetwork))
+        public Connection(IPEndPoint host) : this(host, () => new XGainSocket(AddressFamily.InterNetwork))
         {
         }
 
-        internal SocketCommunicationService(IPEndPoint host, Func<ISocket> newSocketFunc, int retryCount = 2)
+        internal Connection(IPEndPoint host, Func<ISocket> newSocketFunc, int retryCount = 2)
         {
             _host = host;
             _newSocketFunc = newSocketFunc;
@@ -56,25 +56,7 @@ namespace Kronos.Client.Transfer
                     SendToServer(request, socket);
 
                     Debug.WriteLine("Waiting for response");
-                    using (MemoryStream ms = new MemoryStream())
-                    {
-                        byte[] requestSizeBytes = new byte[sizeof(int)];
-                        int position = socket.Receive(requestSizeBytes);
-                        int requestSize = SerializationUtils.GetLengthOfPackage(requestSizeBytes);
-
-                        ms.Write(requestSizeBytes, 0, position);
-                        position = 0;
-                        while (position != requestSize)
-                        {
-                            byte[] package = new byte[socket.BufferSize];
-                            int received = socket.Receive(package);
-                            position += received;
-
-                            ms.Write(package, 0, received);
-                        }
-
-                        requestBytes = ms.ToArray();
-                    }
+                    requestBytes = ReceiveFromServer(socket);
                 }
                 catch (Exception ex)
                 {
@@ -113,6 +95,19 @@ namespace Kronos.Client.Transfer
 
             SocketUtils.SendAll(server, lengthBytes);
             SocketUtils.SendAll(server, data);
+        }
+
+        private static byte[] ReceiveFromServer(ISocket socket)
+        {
+            // todo array pool and stackalloc
+            byte[] sizeBytes = new byte[sizeof(int)];
+            SocketUtils.ReceiveAll(socket, sizeBytes, sizeBytes.Length);
+            int size = BitConverter.ToInt32(sizeBytes, 0);
+
+            byte[] requestBytes = new byte[size];
+            SocketUtils.ReceiveAll(socket, requestBytes, requestBytes.Length);
+
+            return requestBytes;
         }
     }
 }
