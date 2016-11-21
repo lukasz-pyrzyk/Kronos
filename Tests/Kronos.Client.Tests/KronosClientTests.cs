@@ -21,7 +21,7 @@ namespace Kronos.Client.Tests
 
             var connectionMock = Substitute.For<IConnection>();
             connectionMock.Send(Arg.Any<IRequest>())
-                .Returns(SerializationUtils.SerializeToStreamWithLength(true));
+                .Returns(SerializationUtils.Serialize(true));
 
             KronosConfig config = LoadTestConfiguration();
             IKronosClient client = new KronosClient(config, endpoint => connectionMock);
@@ -38,7 +38,7 @@ namespace Kronos.Client.Tests
 
             var connectionMock = Substitute.For<IConnection>();
             connectionMock.Send(Arg.Any<GetRequest>())
-                .Returns(SerializationUtils.SerializeToStreamWithLength(package));
+                .Returns(SerializationUtils.Serialize(package));
 
             KronosConfig config = LoadTestConfiguration();
             IKronosClient client = new KronosClient(config, endpoint => connectionMock);
@@ -56,7 +56,7 @@ namespace Kronos.Client.Tests
             byte[] serverResponse = SerializationUtils.Serialize(RequestStatusCode.NotFound);
             var connectionMock = Substitute.For<IConnection>();
             connectionMock.Send(Arg.Any<GetRequest>())
-                .Returns(SerializationUtils.SerializeToStreamWithLength(serverResponse));
+                .Returns(SerializationUtils.Serialize(serverResponse));
 
             KronosConfig config = LoadTestConfiguration();
             IKronosClient client = new KronosClient(config, endpoint => connectionMock);
@@ -72,7 +72,7 @@ namespace Kronos.Client.Tests
         {
             var connectionMock = Substitute.For<IConnection>();
             connectionMock.Send(Arg.Any<DeleteRequest>())
-                .Returns(SerializationUtils.SerializeToStreamWithLength(true));
+                .Returns(SerializationUtils.Serialize(true));
 
             KronosConfig config = LoadTestConfiguration();
             IKronosClient client = new KronosClient(config, endpoint => connectionMock);
@@ -88,7 +88,7 @@ namespace Kronos.Client.Tests
             int countPerServer = 5;
             var connectionMock = Substitute.For<IConnection>();
             connectionMock.Send(Arg.Any<CountRequest>())
-                .Returns(SerializationUtils.SerializeToStreamWithLength(countPerServer));
+                .Returns(SerializationUtils.Serialize(countPerServer));
 
             KronosConfig config = LoadTestConfiguration();
             int serverCount = config.ClusterConfig.Servers.Length;
@@ -107,7 +107,7 @@ namespace Kronos.Client.Tests
             string key = "lorem ipsum";
             var connectionMock = Substitute.For<IConnection>();
             connectionMock.Send(Arg.Any<ContainsRequest>())
-                .Returns(SerializationUtils.SerializeToStreamWithLength(expected));
+                .Returns(SerializationUtils.Serialize(expected));
 
             KronosConfig config = LoadTestConfiguration();
             IKronosClient client = new KronosClient(config, endpoint => connectionMock);

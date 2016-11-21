@@ -103,7 +103,6 @@ namespace Kronos.Client.Transfer
             byte[] sizeBytes = new byte[sizeof(int)];
             SocketUtils.ReceiveAll(socket, sizeBytes, sizeBytes.Length);
             int size = BitConverter.ToInt32(sizeBytes, 0);
-            Debug.Assert(size > 0);
 
             byte[] requestBytes = new byte[size];
             SocketUtils.ReceiveAll(socket, requestBytes, requestBytes.Length);

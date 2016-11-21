@@ -19,7 +19,7 @@ namespace Kronos.Core.Tests.Processors
         {
             // Arrange
             bool fakeResult = true;
-            byte[] fakeData = SerializationUtils.SerializeToStreamWithLength(fakeResult);
+            byte[] fakeData = SerializationUtils.Serialize(fakeResult);
             var request = new InsertRequest();
             IConnection connection = Substitute.For<IConnection>();
             connection.Send(request).Returns(fakeData);

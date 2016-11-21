@@ -8,13 +8,6 @@ namespace Kronos.Core.Serialization
     {
         public const PrefixStyle Style = PrefixStyle.Fixed32;
 
-        public static int GetLengthOfPackage(byte[] buffer)
-        {
-            int size;
-            Serializer.TryReadLengthPrefix(buffer, 0, buffer.Length, Style, out size);
-            return size;
-        }
-
         public static byte[] Serialize<T>(T obj)
         {
             byte[] buffer;
@@ -52,14 +45,6 @@ namespace Kronos.Core.Serialization
             using (MemoryStream ms = new MemoryStream(buffer, 0, count ?? buffer.Length))
             {
                 return Serializer.Deserialize<T>(ms);
-            }
-        }
-
-        public static T DeserializeWithLength<T>(byte[] buffer)
-        {
-            using (MemoryStream ms = new MemoryStream(buffer))
-            {
-                return Serializer.DeserializeWithLengthPrefix<T>(ms, Style);
             }
         }
     }

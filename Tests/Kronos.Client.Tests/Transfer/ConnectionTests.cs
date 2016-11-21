@@ -74,6 +74,8 @@ namespace Kronos.Client.Tests.Transfer
             socket.BufferSize.Returns(4 * 1024);
             socket.Send(Arg.Any<byte[]>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<SocketFlags>())
                 .Returns(4, data.Length);
+            socket.Receive(Arg.Any<byte[]>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<SocketFlags>())
+                .Returns(4, data.Length);
 
             return socket;
         }
