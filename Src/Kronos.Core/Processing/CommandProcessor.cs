@@ -5,7 +5,7 @@ using Kronos.Core.Serialization;
 using Kronos.Core.Storage;
 using XGain.Sockets;
 
-namespace Kronos.Core.Processors
+namespace Kronos.Core.Processing
 {
     public abstract class CommandProcessor<TRequest, TResponse> where TRequest : IRequest
     {

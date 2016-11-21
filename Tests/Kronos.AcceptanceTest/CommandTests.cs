@@ -4,7 +4,7 @@ using System.Text;
 using System.Threading.Tasks;
 using Kronos.Client;
 using Kronos.Core.Networking;
-using Kronos.Core.Processors;
+using Kronos.Core.Processing;
 using Kronos.Core.Storage;
 using Kronos.Server.Listener;
 using XGain;

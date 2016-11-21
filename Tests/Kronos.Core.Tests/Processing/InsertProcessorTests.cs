@@ -1,6 +1,6 @@
 ﻿using System.Linq;
 using System.Net.Sockets;
-using Kronos.Core.Processors;
+using Kronos.Core.Processing;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Kronos.Core.Storage;
@@ -8,21 +8,20 @@ using NSubstitute;
 using XGain.Sockets;
 using Xunit;
 
-namespace Kronos.Core.Tests.Processors
+namespace Kronos.Core.Tests.Processing
 {
-    public class DeleteProcessorTests
+    public class InsertProcessorTests
     {
         [Theory]
         [InlineData(true)]
-        [InlineData(false)]
-        public void Handle_ReturnsTrueOrFalseIfElementWasDeleted(bool deleted)
+        public void Handle_ReturnsTrueWhenElementAdded(bool added)
         {
             // arrange
-            var request = new DeleteRequest();
-            var processor = new DeleteProcessor();
+            var request = new InsertRequest();
+            var processor = new InsertProcessor();
             var storage = Substitute.For<IStorage>();
-            storage.TryRemove(request.Key).Returns(deleted);
-            byte[] expectedBytes = SerializationUtils.SerializeToStreamWithLength(deleted);
+            storage.TryRemove(request.Key).Returns(added);
+            byte[] expectedBytes = SerializationUtils.SerializeToStreamWithLength(added);
             var socket = Substitute.For<ISocket>();
             socket.Send(Arg.Any<byte[]>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<SocketFlags>())
                 .Returns(expectedBytes.Length);

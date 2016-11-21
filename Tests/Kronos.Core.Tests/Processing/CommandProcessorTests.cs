@@ -2,7 +2,7 @@
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using Kronos.Core.Networking;
-using Kronos.Core.Processors;
+using Kronos.Core.Processing;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Kronos.Core.Storage;
@@ -10,7 +10,7 @@ using NSubstitute;
 using XGain.Sockets;
 using Xunit;
 
-namespace Kronos.Core.Tests.Processors
+namespace Kronos.Core.Tests.Processing
 {
     public class CommandProcessorTests
     {

@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Buffers;
 using Kronos.Core.Networking;
-using Kronos.Core.Processors;
+using Kronos.Core.Processing;
 using Kronos.Core.Storage;
 using Microsoft.Extensions.PlatformAbstractions;
 using NLog;
