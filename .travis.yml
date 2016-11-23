@@ -33,6 +33,6 @@ script:
   - ./Scripts/Linux/build.sh
   - ./Scripts/Linux/runTests.sh
 after_success:
-  - docker build -t lukaszpyrzyk/kronos
+  - docker build -t lukaszpyrzyk/kronos .
   - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
   - docker push lukaszpyrzyk/kronos
