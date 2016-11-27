@@ -10,16 +10,25 @@ namespace ClusterBenchmark.Tasks
         public async Task<Results> Run(string configPath, int iterations, int packageSize)
         {
             var results = new Results();
+            var watch = new Stopwatch();
             try
             {
-                var package = PrepareData(packageSize);
-
                 IKronosClient client = KronosClientFactory.CreateClient(configPath);
-                var watch = Stopwatch.StartNew();
+                await WarnupServer(client);
+
+                var package = PrepareData(packageSize);
+                watch.Start();
                 for (int i = 0; i < iterations; i++)
                 {
                     Debug.WriteLine($"Iteration : {i}");
-                    await RunInternalAsync(client, package);
+                    try 
+                    {
+                        await RunInternalAsync(client, package);
+                    }
+                    catch(Exception ex)
+                    {
+                        results.Exceptions.Add(ex);
+                    }
                 }
                 watch.Stop();
                 results.Time = watch.Elapsed;
@@ -27,15 +36,37 @@ namespace ClusterBenchmark.Tasks
             catch (Exception ex)
             {
                 Console.WriteLine(ex.ToString());
+                watch.Stop();
+                results.Time = watch.Elapsed;
                 results.Exceptions.Add(ex);
             }
 
             return results;
         }
 
+        private async Task WarnupServer(IKronosClient client)
+        {
+            Console.WriteLine("Warnup");
+            var watch = Stopwatch.StartNew();
+            await SendToWarnup(client, size: 10, times: 10000);
+            await SendToWarnup(client, size: 5 * 1024 * 1024, times: 10);
+            watch.Stop();
+            Console.WriteLine($"Warnup finished in {watch.ElapsedMilliseconds}ms");
+        }
+
+        private async Task SendToWarnup(IKronosClient client, int size, int times)
+        {
+            byte[] package = PrepareData(size);
+            for (int i = 0; i < times; i++)
+            {
+                string key = Guid.NewGuid().ToString();
+                await client.InsertAsync(key, package, DateTime.UtcNow.AddDays(1));
+            }
+        }
+
         protected virtual byte[] PrepareData(int packageSize)
         {
-            byte[] package = new byte[packageSize * 1024 * 1024];
+            byte[] package = new byte[packageSize];
             new Random().NextBytes(package);
             return package;
         }

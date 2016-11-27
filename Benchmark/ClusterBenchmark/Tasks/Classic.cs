@@ -11,10 +11,9 @@ namespace ClusterBenchmark.Tasks
         protected override async Task RunInternalAsync(IKronosClient client, byte[] package)
         {
             string key = Guid.NewGuid().ToString();
-            await client.InsertAsync(key, package, DateTime.UtcNow.AddDays(5));
+            await client.InsertAsync(key, package, DateTime.UtcNow.AddSeconds(2));
             byte[] data = await client.GetAsync(key);
             Debug.Assert(data.SequenceEqual(package));
-            await client.DeleteAsync(key);
         }
     }
 }

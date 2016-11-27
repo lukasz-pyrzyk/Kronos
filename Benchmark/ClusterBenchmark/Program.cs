@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
@@ -9,7 +8,6 @@ namespace ClusterBenchmark
 {
     public class Program
     {
-        private static readonly ConcurrentBag<Exception> Exceptions = new ConcurrentBag<Exception>();
         private static readonly Dictionary<string, Func<Benchmark>> Benchmarks;
 
         static Program()
@@ -56,7 +54,7 @@ namespace ClusterBenchmark
 
             double time = workers.Max(x => x.Result.Time.TotalMilliseconds);
             Console.WriteLine($"Done in {time}ms, which is {time * 0.001}s");
-            Console.WriteLine($"There was {Exceptions.Count} exceptions");
+            Console.WriteLine($"There was {workers.Sum(x => x.Result.Exceptions.Count())} exceptions");
         }
     }
 }
