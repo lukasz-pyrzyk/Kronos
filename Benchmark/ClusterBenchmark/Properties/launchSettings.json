@@ -2,7 +2,7 @@
   "profiles": {
     "ClusterBenchmark": {
       "commandName": "Project",
-      "commandLineArgs": "500 1 true"
+      "commandLineArgs": "all 100 1 false true"
     }
   }
 }

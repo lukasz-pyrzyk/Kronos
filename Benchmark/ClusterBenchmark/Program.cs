@@ -1,96 +1,62 @@
 ﻿using System;
 using System.Collections.Concurrent;
-using System.Diagnostics;
+using System.Collections.Generic;
+using System.Linq;
 using System.Threading.Tasks;
-using Kronos.Client;
+using ClusterBenchmark.Tasks;
 
 namespace ClusterBenchmark
 {
     public class Program
     {
-        private const int ExpirySecond = 100;
-        private static ConcurrentBag<Exception> exceptions = new ConcurrentBag<Exception>();
+        private static readonly ConcurrentBag<Exception> Exceptions = new ConcurrentBag<Exception>();
+        private static readonly Dictionary<string, Func<Benchmark>> Benchmarks;
+
+        static Program()
+        {
+            Benchmarks = new Dictionary<string, Func<Benchmark>>
+            {
+                ["all"] = () => new All(),
+                ["classic"] = () => new Classic()
+            };
+        }
 
         public static void Main(string[] args)
         {
-            int iterations, packageSize;
-            bool parallelRun;
-
-            if (args.Length != 3)
+            if (args.Length != 5)
             {
-                Console.WriteLine($"You need to specify three arguments: {nameof(iterations)}, {nameof(packageSize)}, {nameof(parallelRun)}");
+                Console.WriteLine("Passed invalid number arguments");
             }
 
-            iterations = int.Parse(args[0]);
-            packageSize = int.Parse(args[1]);
-            parallelRun = bool.Parse(args[2]);
-            Console.WriteLine($"{DateTime.Now.ToString("O")} Starting benchmark with {iterations} iterations, {packageSize}mb data, parallel: {parallelRun}");
+            string benchmarkName = args[0];
+            int iterations = int.Parse(args[1]);
+            int packageSize = int.Parse(args[2]);
+            bool parallelRun = bool.Parse(args[3]);
+            bool localRun = bool.Parse(args[4]);
+
+            Console.WriteLine($"{DateTime.Now:O} Starting benchmark { benchmarkName} with {iterations} iterations, {packageSize}mb data, parallel: {parallelRun}, local: {localRun}");
 
             int workersCount = parallelRun == false ? 1 : 2;
-            Task[] workers = new Task[workersCount];
+            Task<Results>[] workers = new Task<Results>[workersCount];
 
-            var watch = Stopwatch.StartNew();
+            string config = localRun ? "local.json" : "KronosConfig.json";
+            Func<Benchmark> newBenchmark;
+            Benchmarks.TryGetValue(benchmarkName, out newBenchmark);
+            if (newBenchmark == null)
+            {
+                Console.WriteLine($"Cannot find benchmark {benchmarkName}");
+            }
 
             for (int i = 0; i < workersCount; i++)
             {
-                workers[i] = StartAsync((int)Math.Ceiling(iterations / (double)workersCount), packageSize);
+                workers[i] = newBenchmark().Run(config, (int)Math.Ceiling(iterations / (double)workersCount), packageSize);
             }
 
             Task.WaitAll(workers);
 
-            watch.Stop();
-            Console.WriteLine($"Done in {watch.Elapsed.TotalSeconds}s, which is {watch.ElapsedMilliseconds}ms");
-            Console.WriteLine($"There was {exceptions.Count} exceptions");
-            Console.ReadKey();
-        }
-
-        private static async Task StartAsync(int iterations, int packageSize)
-        {
-            string configPath = "KronosConfig.json";
-            try
-            {
-                byte[] package = new byte[packageSize * 1024 * 1024];
-                new Random().NextBytes(package);
-
-                for (int i = 0; i < iterations; i++)
-                {
-                    IKronosClient client = KronosClientFactory.CreateClient(configPath);
-
-                    Debug.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
-                    string key = Guid.NewGuid().ToString();
-                    DateTime expiryDate = DateTime.UtcNow.AddSeconds(ExpirySecond);
-
-                    Debug.WriteLine($"ADD - testing");
-                    await client.InsertAsync(key, package, expiryDate);
-                    Debug.WriteLine($" ADD - done (size: {package.Length})");
-
-                    Debug.WriteLine($" COUNT - testing");
-                    int count = await client.CountAsync();
-                    Debug.WriteLine($" COUNT - done (count: {count})");
-
-                    Debug.WriteLine($" CONTAINS - testing");
-                    bool contains = await client.ContainsAsync(key);
-                    Debug.WriteLine($"CONTAINS - done (exists: {contains})");
-
-                    Debug.WriteLine($" GET - testing");
-                    byte[] fromServer = await client.GetAsync(key);
-                    Debug.WriteLine($" GET - done (size: {fromServer.Length})");
-
-                    if (fromServer.Length != package.Length)
-                        throw new Exception(
-                            $"Received message is invalid! Size should be {package.Length}, but wit {fromServer.Length}");
-
-                    Debug.WriteLine($" DELETE - testing");
-                    await client.DeleteAsync(key);
-                    bool containsAfterDeletion = await client.ContainsAsync(key);
-                    Debug.WriteLine($" DELETE - done (exists after deletion: {containsAfterDeletion})");
-                }
-            }
-            catch (Exception ex)
-            {
-                Console.WriteLine(ex.ToString());
-                exceptions.Add(ex);
-            }
+            double time = workers.Max(x => x.Result.Time.TotalMilliseconds);
+            Console.WriteLine($"Done in {time}ms, which is {time * 0.001}s");
+            Console.WriteLine($"There was {Exceptions.Count} exceptions");
         }
     }
 }

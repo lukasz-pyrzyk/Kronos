@@ -1,0 +1,10 @@
+﻿{
+  "ClusterConfig": {
+    "Servers": [
+      {
+        "Domain": "localhost",
+        "Port": 5000
+      }
+    ]
+  }
+}
