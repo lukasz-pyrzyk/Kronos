@@ -3,7 +3,6 @@ using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Kronos.Server.Listener;
 using NSubstitute;
-using XGain.Sockets;
 using Xunit;
 
 namespace Kronos.Server.Tests.Listener
@@ -14,7 +13,7 @@ namespace Kronos.Server.Tests.Listener
         //public async Task ProcessSocketConnection_ReceivesCorrectValue()
         //{
         //    var requestProcessorMock = Substitute.For<IRequestMapper>();
-        //    var clientSocketMock = Substitute.For<ISocket>();
+        //    var clientSocketMock = Substitute.For<Socket>();
 
         //    clientSocketMock.BufferSize.Returns(65535);
         //    clientSocketMock.Connected.Returns(true);

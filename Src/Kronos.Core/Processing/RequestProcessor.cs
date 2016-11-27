@@ -1,8 +1,8 @@
 using System;
+using System.Net.Sockets;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Kronos.Core.Storage;
-using XGain.Sockets;
 
 namespace Kronos.Core.Processing
 {
@@ -38,7 +38,7 @@ namespace Kronos.Core.Processing
             _containsProcessor = containsProcessor;
         }
 
-        public void HandleIncomingRequest(RequestType requestType, byte[] request, int receivedBytes, ISocket client)
+        public void HandleIncomingRequest(RequestType requestType, byte[] request, int receivedBytes, Socket client)
         {
             switch (requestType)
             {

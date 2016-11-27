@@ -6,8 +6,8 @@ using Kronos.Client;
 using Kronos.Core.Networking;
 using Kronos.Core.Processing;
 using Kronos.Core.Storage;
+using Kronos.Server;
 using Kronos.Server.Listener;
-using XGain;
 using Xunit;
 
 namespace Kronos.AcceptanceTest

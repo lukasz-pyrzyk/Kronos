@@ -3,9 +3,9 @@ using System.Buffers;
 using Kronos.Core.Networking;
 using Kronos.Core.Processing;
 using Kronos.Core.Storage;
+using Kronos.Server.EventArgs;
 using Microsoft.Extensions.PlatformAbstractions;
 using NLog;
-using XGain;
 
 namespace Kronos.Server.Listener
 {

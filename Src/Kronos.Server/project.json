@@ -14,7 +14,8 @@
     "Microsoft.Extensions.PlatformAbstractions": "1.0.0",
     "NLog": "5.0.0-beta03",
     "protobuf-net": "2.1.0",
-    "XGain": "1.2.7"
+    "System.Buffers": "4.3.0",
+    "System.Runtime": "4.1.0"
   },
   "description": "Kronos - the cache platform",
   "frameworks": {

@@ -1,8 +1,8 @@
-﻿using System.Text;
+﻿using System.Net.Sockets;
+using System.Text;
 using Kronos.Core.Requests;
 using Kronos.Server.Listener;
 using NSubstitute;
-using XGain.Sockets;
 using Xunit;
 
 namespace Kronos.Server.Tests.Listener
@@ -15,7 +15,7 @@ namespace Kronos.Server.Tests.Listener
             // Arrange
             RequestType type = RequestType.Get;
             byte[] data = Encoding.UTF8.GetBytes("lorem ipsum");
-            ISocket socket = Substitute.For<ISocket>();
+            Socket socket = Substitute.For<Socket>();
 
             // Act
             ReceivedMessage message = new ReceivedMessage(socket, type, data, data.Length);

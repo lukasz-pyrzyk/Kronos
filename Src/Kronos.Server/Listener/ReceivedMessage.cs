@@ -1,12 +1,12 @@
-﻿using Kronos.Core.Requests;
-using XGain;
-using XGain.Sockets;
+﻿using System.Net.Sockets;
+using Kronos.Core.Requests;
+using Kronos.Server.EventArgs;
 
 namespace Kronos.Server.Listener
 {
     public class ReceivedMessage : MessageArgs
     {
-        public ReceivedMessage(ISocket client, RequestType type, byte[] buffer, int received) : base(client, buffer)
+        public ReceivedMessage(Socket client, RequestType type, byte[] buffer, int received) : base(client, buffer)
         {
             Type = type;
             Buffer = buffer;

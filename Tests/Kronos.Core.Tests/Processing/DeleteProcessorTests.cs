@@ -5,7 +5,6 @@ using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Kronos.Core.Storage;
 using NSubstitute;
-using XGain.Sockets;
 using Xunit;
 
 namespace Kronos.Core.Tests.Processing
@@ -23,7 +22,7 @@ namespace Kronos.Core.Tests.Processing
             var storage = Substitute.For<IStorage>();
             storage.TryRemove(request.Key).Returns(deleted);
             byte[] expectedBytes = SerializationUtils.SerializeToStreamWithLength(deleted);
-            var socket = Substitute.For<ISocket>();
+            var socket = Substitute.For<Socket>();
             socket.Send(Arg.Any<byte[]>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<SocketFlags>())
                 .Returns(expectedBytes.Length);
 

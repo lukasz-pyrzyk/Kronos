@@ -8,7 +8,6 @@ using Kronos.Core.Networking;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Polly;
-using XGain.Sockets;
 
 namespace Kronos.Client.Transfer
 {
@@ -18,16 +17,16 @@ namespace Kronos.Client.Transfer
 
         private readonly IPEndPoint _host;
 
-        private readonly Func<ISocket> _newSocketFunc;
+        private readonly Func<Socket> _newSocketFunc;
 
         private readonly TimeSpan[] _timeSpans;
         private readonly Policy _policy;
 
-        public Connection(IPEndPoint host) : this(host, () => new XGainSocket(AddressFamily.InterNetwork))
+        public Connection(IPEndPoint host) : this(host, () => new Socket(SocketType.Stream, ProtocolType.IP))
         {
         }
 
-        internal Connection(IPEndPoint host, Func<ISocket> newSocketFunc, int retryCount = 2)
+        internal Connection(IPEndPoint host, Func<Socket> newSocketFunc, int retryCount = 2)
         {
             _host = host;
             _newSocketFunc = newSocketFunc;
@@ -42,7 +41,7 @@ namespace Kronos.Client.Transfer
 
         public byte[] Send<TRequest>(TRequest request) where TRequest : IRequest
         {
-            ISocket socket = _newSocketFunc();
+            Socket socket = _newSocketFunc();
 
             byte[] requestBytes = null;
             _policy.Execute(() =>
@@ -79,7 +78,7 @@ namespace Kronos.Client.Transfer
             return requestBytes;
         }
 
-        private static void SendToServer(IRequest request, ISocket server)
+        private static void SendToServer(IRequest request, Socket server)
         {
             // todo array pool and stackalloc
             byte[] data;
@@ -97,7 +96,7 @@ namespace Kronos.Client.Transfer
             SocketUtils.SendAll(server, data);
         }
 
-        private static byte[] ReceiveFromServer(ISocket socket)
+        private static byte[] ReceiveFromServer(Socket socket)
         {
             // todo array pool and stackalloc
             byte[] sizeBytes = new byte[sizeof(int)];

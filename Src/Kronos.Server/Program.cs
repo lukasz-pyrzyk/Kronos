@@ -7,10 +7,9 @@ using Kronos.Core.Networking;
 using Kronos.Core.Processing;
 using Kronos.Core.Storage;
 using Kronos.Server.Listener;
+using Kronos.Server.Processing;
 using NLog;
 using NLog.Config;
-using XGain;
-using XGain.Processing;
 
 namespace Kronos.Server
 {

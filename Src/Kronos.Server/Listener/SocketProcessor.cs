@@ -6,10 +6,8 @@ using System.Threading.Tasks;
 using Kronos.Core.Networking;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
+using Kronos.Server.Processing;
 using NLog;
-using XGain.Processing;
-using XGain.Sockets;
-
 namespace Kronos.Server.Listener
 {
     public class SocketProcessor : IProcessor<ReceivedMessage>
@@ -19,7 +17,7 @@ namespace Kronos.Server.Listener
 
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
-        public Task<ReceivedMessage> ProcessSocketConnectionAsync(ISocket client)
+        public Task<ReceivedMessage> ProcessSocketConnectionAsync(Socket client)
         {
             ReceivedMessage args = null;
             try
@@ -35,7 +33,7 @@ namespace Kronos.Server.Listener
             return Task.FromResult(args);
         }
 
-        private ReceivedMessage ReceiveMessageAsync(ISocket socket)
+        private ReceivedMessage ReceiveMessageAsync(Socket socket)
         {
             byte[] lengthBuffer = ArrayPool<byte>.Shared.Rent(IntSize); // TODO stackalloc
             SocketUtils.ReceiveAll(socket, lengthBuffer, IntSize);

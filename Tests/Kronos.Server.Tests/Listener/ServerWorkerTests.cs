@@ -2,7 +2,6 @@
 using Kronos.Core.Storage;
 using Kronos.Server.Listener;
 using NSubstitute;
-using XGain;
 using Xunit;
 
 namespace Kronos.Server.Tests.Listener

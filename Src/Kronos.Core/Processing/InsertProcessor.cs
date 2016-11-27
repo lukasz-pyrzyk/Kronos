@@ -1,6 +1,6 @@
-﻿using Kronos.Core.Requests;
+﻿using System.Net.Sockets;
+using Kronos.Core.Requests;
 using Kronos.Core.Storage;
-using XGain.Sockets;
 
 namespace Kronos.Core.Processing
 {
@@ -8,7 +8,7 @@ namespace Kronos.Core.Processing
     {
         public override RequestType Type { get; } = RequestType.Insert;
 
-        public override void Handle(ref InsertRequest request, IStorage storage, ISocket client)
+        public override void Handle(ref InsertRequest request, IStorage storage, Socket client)
         {
             storage.AddOrUpdate(request.Key, request.ExpiryDate, request.Object);
 
