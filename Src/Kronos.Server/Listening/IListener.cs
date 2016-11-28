@@ -1,7 +1,7 @@
 ﻿using System;
 using Kronos.Server.EventArgs;
 
-namespace Kronos.Server.Listener
+namespace Kronos.Server.Listening
 {
     public interface IListener : IDisposable
     {

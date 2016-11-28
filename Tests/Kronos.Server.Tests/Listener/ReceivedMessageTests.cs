@@ -2,7 +2,6 @@
 using System.Text;
 using Kronos.Core.Requests;
 using Kronos.Server.EventArgs;
-using Kronos.Server.Listener;
 using Xunit;
 
 namespace Kronos.Server.Tests.Listener

@@ -7,7 +7,7 @@ using Kronos.Server.EventArgs;
 using Microsoft.Extensions.PlatformAbstractions;
 using NLog;
 
-namespace Kronos.Server.Listener
+namespace Kronos.Server.Listening
 {
     public class ServerWorker : IServerWorker
     {

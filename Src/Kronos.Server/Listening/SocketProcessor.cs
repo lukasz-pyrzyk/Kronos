@@ -9,7 +9,7 @@ using Kronos.Core.Serialization;
 using Kronos.Server.EventArgs;
 using NLog;
 
-namespace Kronos.Server.Listener
+namespace Kronos.Server.Listening
 {
     public class SocketProcessor : IProcessor<RequestArgs>
     {
