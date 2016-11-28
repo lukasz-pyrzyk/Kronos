@@ -1,4 +1,4 @@
-FROM microsoft/dotnet
+FROM microsoft/dotnet:runtime
 
 # maintener info
 MAINTAINER Lukasz Pyrzyk <lukasz.pyrzyk@gmail.com>
