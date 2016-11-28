@@ -1,23 +1,13 @@
-FROM microsoft/dotnet
+FROM microsoft/dotnet:runtime
 
 # maintener info
 MAINTAINER Lukasz Pyrzyk <lukasz.pyrzyk@gmail.com>
 
-# copy all files
-COPY ./Src/Kronos.Core /app/Kronos.Core
-COPY ./Src/Kronos.Server /app/Kronos.Server
-COPY ./NuGet.config /app/
-
 # set workdir
-WORKDIR /app
+WORKDIR /dotnetapp
 
-# restore nuget packages
-RUN dotnet restore
-
-WORKDIR Kronos.Server
-
-# compile with release mode
-RUN dotnet build --framework netcoreapp1.1 -c Release -o ./bin
+# copy published binaries to the container
+COPY ./Bin .
 
 # set entrypoint to the docker run
-ENTRYPOINT ["dotnet", "./bin/Kronos.Server.dll"]
+ENTRYPOINT ["dotnet", "Kronos.Server.dll"]
