@@ -32,7 +32,7 @@ namespace Kronos.Core.Tests.Processing
             Assert.Equal(fakeResult, result);
         }
 
-        [Fact]
+        [Fact(Skip = "Awaiting System.Threading.Channels (IChannel) or TypeMock")]
         public void SendsDataToTheClient()
         {
             // Arrange

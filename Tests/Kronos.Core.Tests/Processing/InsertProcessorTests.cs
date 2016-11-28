@@ -11,7 +11,7 @@ namespace Kronos.Core.Tests.Processing
 {
     public class InsertProcessorTests
     {
-        [Theory]
+        [Theory(Skip = "Awaiting System.Threading.Channels (IChannel) or TypeMock")]
         [InlineData(true)]
         public void Handle_ReturnsTrueWhenElementAdded(bool added)
         {

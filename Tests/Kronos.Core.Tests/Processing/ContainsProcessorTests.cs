@@ -11,7 +11,7 @@ namespace Kronos.Core.Tests.Processing
 {
     public class ContainsProcessorTests
     {
-        [Theory]
+        [Theory(Skip = "Awaiting System.Threading.Channels (IChannel) or TypeMock")]
         [InlineData(true)]
         [InlineData(false)]
         public void Handle_ReturnsTrueOrFalseIfElementIsInTheStorage(bool contains)

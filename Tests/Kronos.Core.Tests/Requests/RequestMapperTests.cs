@@ -23,7 +23,7 @@ namespace Kronos.Core.Tests.Requests
 
             Exception ex =
                 Assert.Throws<InvalidOperationException>(
-                    () => processor.HandleIncomingRequest(type, requestBytes, requestBytes.Length, Substitute.For<Socket>()));
+                    () => processor.HandleIncomingRequest(type, requestBytes, requestBytes.Length, new Socket(SocketType.Stream, ProtocolType.IP)));
 
             Assert.Equal(ex.Message, $"Cannot find processor for type {type}");
         }

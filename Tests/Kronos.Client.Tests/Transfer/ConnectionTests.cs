@@ -12,7 +12,7 @@ namespace Kronos.Client.Tests.Transfer
 {
     public class ConnectionTests
     {
-        [Fact]
+        [Fact(Skip = "Awaiting System.Threading.Channels (IChannel) or TypeMock")]
         public void SendToServer_WorksCorrect()
         {
             // arrange
@@ -32,7 +32,7 @@ namespace Kronos.Client.Tests.Transfer
             socket.Received(1).Dispose();
         }
 
-        [Fact]
+        [Fact(Skip = "Awaiting System.Threading.Channels (IChannel) or TypeMock")]
         public void SendToServer_Dispose_WasCatched_SocketException()
         {
             // arrange
@@ -49,7 +49,7 @@ namespace Kronos.Client.Tests.Transfer
             service.Send(request);
         }
 
-        [Fact]
+        [Fact(Skip = "Awaiting System.Threading.Channels (IChannel) or TypeMock")]
         public void SendToServer_Dispose_WasNowCatched_ArgumentNullException()
         {
             // arrange

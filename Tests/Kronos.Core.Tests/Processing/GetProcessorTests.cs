@@ -13,7 +13,7 @@ namespace Kronos.Core.Tests.Processing
 {
     public class GetProcessorTests
     {
-        [Fact]
+        [Fact(Skip = "Awaiting System.Threading.Channels (IChannel) or TypeMock")]
         public void Handle_ReturnsObjectFromCache()
         {
             // arrange
@@ -42,7 +42,7 @@ namespace Kronos.Core.Tests.Processing
             socket.Received(1).Send(Arg.Is<byte[]>(x => x.SequenceEqual(expectedBytes)), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<SocketFlags>());
         }
 
-        [Fact]
+        [Fact(Skip = "Awaiting System.Threading.Channels (IChannel) or TypeMock")]
         public void Handle_ReturnsNotFoundWhenObjectIsNotInTheCache()
         {
             // arrange
