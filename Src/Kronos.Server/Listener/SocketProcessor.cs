@@ -6,20 +6,21 @@ using System.Threading.Tasks;
 using Kronos.Core.Networking;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
-using Kronos.Server.Processing;
+using Kronos.Server.EventArgs;
 using NLog;
+
 namespace Kronos.Server.Listener
 {
-    public class SocketProcessor : IProcessor<ReceivedMessage>
+    public class SocketProcessor : IProcessor<RequestArgs>
     {
         private const int IntSize = sizeof(int);
         private const int RequestTypeSize = sizeof(ushort);
 
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
-        public Task<ReceivedMessage> ProcessSocketConnectionAsync(Socket client)
+        public Task<RequestArgs> ProcessSocketConnectionAsync(Socket client)
         {
-            ReceivedMessage args = null;
+            RequestArgs args = null;
             try
             {
                 args = ReceiveMessageAsync(client);
@@ -33,7 +34,7 @@ namespace Kronos.Server.Listener
             return Task.FromResult(args);
         }
 
-        private ReceivedMessage ReceiveMessageAsync(Socket socket)
+        private RequestArgs ReceiveMessageAsync(Socket socket)
         {
             byte[] lengthBuffer = ArrayPool<byte>.Shared.Rent(IntSize); // TODO stackalloc
             SocketUtils.ReceiveAll(socket, lengthBuffer, IntSize);
@@ -51,7 +52,7 @@ namespace Kronos.Server.Listener
             byte[] data = ArrayPool<byte>.Shared.Rent(packageSize);
             SocketUtils.ReceiveAll(socket, data, packageSize);
 
-            return new ReceivedMessage(socket, requestType, data, packageSize);
+            return new RequestArgs(requestType, data, packageSize, socket);
         }
     }
 }

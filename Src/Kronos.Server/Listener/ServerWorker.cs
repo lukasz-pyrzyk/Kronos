@@ -13,10 +13,11 @@ namespace Kronos.Server.Listener
     {
         private readonly ILogger _logger = LogManager.GetCurrentClassLogger();
         private readonly IRequestProcessor _requestsProcessor;
-        private readonly IServer _server;
+        private readonly IListener _server;
+
         public IStorage Storage { get; }
 
-        public ServerWorker(IRequestProcessor requestsProcessor, IStorage storage, IServer server)
+        public ServerWorker(IRequestProcessor requestsProcessor, IStorage storage, IListener server)
         {
             _requestsProcessor = requestsProcessor;
             _server = server;
@@ -32,14 +33,13 @@ namespace Kronos.Server.Listener
             _server.Start();
         }
 
-        private void OnMessage(object sender, MessageArgs message)
+        private void OnMessage(object sender, RequestArgs request)
         {
             try
             {
                 string id = Guid.NewGuid().ToString();
-                var args = message as ReceivedMessage;
-                _logger.Debug($"Processing new request with Id: {id}, type: {args.Type}, {args.Received} bytes");
-                _requestsProcessor.HandleIncomingRequest(args.Type, args.RequestBytes, args.Received, args.Client);
+                _logger.Debug($"Processing new request with Id: {id}, type: {request.Type}, {request.Received} bytes");
+                _requestsProcessor.HandleIncomingRequest(request.Type, request.Request, request.Received, request.Client);
                 _logger.Debug($"Processing {id} finished");
             }
             catch (Exception ex)
@@ -48,7 +48,7 @@ namespace Kronos.Server.Listener
             }
             finally
             {
-                ArrayPool<byte>.Shared.Return(message.RequestBytes);
+                ArrayPool<byte>.Shared.Return(request.Request);
             }
         }
 

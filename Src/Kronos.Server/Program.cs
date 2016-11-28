@@ -6,8 +6,8 @@ using System.Xml;
 using Kronos.Core.Networking;
 using Kronos.Core.Processing;
 using Kronos.Core.Storage;
+using Kronos.Server.EventArgs;
 using Kronos.Server.Listener;
-using Kronos.Server.Processing;
 using NLog;
 using NLog.Config;
 
@@ -35,12 +35,11 @@ namespace Kronos.Server
         {
             IPAddress localAddr = await EndpointUtils.GetIPAsync();
 
-            IProcessor<ReceivedMessage> processor = new SocketProcessor();
+            IProcessor<RequestArgs> processor = new SocketProcessor();
 
             IExpiryProvider expiryProvider = new StorageExpiryProvider();
             IStorage storage = new InMemoryStorage(expiryProvider);
-
-            IServer server = new XGainServer<ReceivedMessage>(localAddr, port, processor);
+            IListener server = new Listener<RequestArgs>(localAddr, port, processor);
             IRequestProcessor mapper = new RequestProcessor(storage);
             IServerWorker worker = new ServerWorker(mapper, storage, server);
             worker.Start();

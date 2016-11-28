@@ -1,6 +1,7 @@
 ﻿using System.Net.Sockets;
 using System.Text;
 using Kronos.Core.Requests;
+using Kronos.Server.EventArgs;
 using Kronos.Server.Listener;
 using Xunit;
 
@@ -16,11 +17,11 @@ namespace Kronos.Server.Tests.Listener
             byte[] data = Encoding.UTF8.GetBytes("lorem ipsum");
 
             // Act
-            ReceivedMessage message = new ReceivedMessage(new Socket(SocketType.Stream, ProtocolType.IP), type, data, data.Length);
+            var message = new RequestArgs(type, data, data.Length, new Socket(SocketType.Stream, ProtocolType.IP));
 
             // Assert
             Assert.Equal(message.Type, type);
-            Assert.Equal(message.Buffer, data);
+            Assert.Equal(message.Request, data);
         }
     }
 }

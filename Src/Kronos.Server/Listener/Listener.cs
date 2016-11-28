@@ -4,14 +4,13 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Kronos.Server.EventArgs;
-using Kronos.Server.Processing;
 
-namespace Kronos.Server
+namespace Kronos.Server.Listener
 {
-    public class XGainServer<TMessage> : IServer where TMessage : MessageArgs
+    public class Listener<TMessage> : IListener where TMessage : RequestArgs
     {
         public event EventHandler<StartArgs> OnStart;
-        public event EventHandler<MessageArgs> OnNewMessage;
+        public event EventHandler<RequestArgs> OnNewMessage;
         public event EventHandler<ErrorArgs> OnError;
 
         private readonly TcpListener _listener;
@@ -19,7 +18,7 @@ namespace Kronos.Server
 
         private readonly CancellationTokenSource _cancel = new CancellationTokenSource();
 
-        public XGainServer(IPAddress ipAddress, int port, IProcessor<TMessage> processor)
+        public Listener(IPAddress ipAddress, int port, IProcessor<TMessage> processor)
         {
             _listener = new TcpListener(ipAddress, port);
             _processor = processor;
@@ -72,7 +71,7 @@ namespace Kronos.Server
 
         private async void ProcessSocketConnection(Socket socket)
         {
-            MessageArgs args = await _processor.ProcessSocketConnectionAsync(socket);
+            RequestArgs args = await _processor.ProcessSocketConnectionAsync(socket);
             RaiseOnNewMessageEvent(socket, args);
         }
 
@@ -86,7 +85,7 @@ namespace Kronos.Server
             OnError?.Invoke(this, new ErrorArgs(ex));
         }
 
-        private void RaiseOnNewMessageEvent(Socket socket, MessageArgs args)
+        private void RaiseOnNewMessageEvent(Socket socket, RequestArgs args)
         {
             OnNewMessage?.Invoke(socket, args);
         }
