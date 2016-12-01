@@ -1,6 +1,6 @@
-﻿using Kronos.Core.Requests;
+﻿using System.Net.Sockets;
+using Kronos.Core.Requests;
 using Kronos.Core.Storage;
-using XGain.Sockets;
 
 namespace Kronos.Core.Processing
 {
@@ -8,7 +8,7 @@ namespace Kronos.Core.Processing
     {
         public override RequestType Type { get; } = RequestType.Count;
 
-        public override void Handle(ref CountRequest request, IStorage storage, ISocket client)
+        public override void Handle(ref CountRequest request, IStorage storage, Socket client)
         {
             int count = storage.Count;
 

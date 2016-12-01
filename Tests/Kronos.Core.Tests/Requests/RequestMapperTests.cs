@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Net.Sockets;
 using Kronos.Core.Processing;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Kronos.Core.Storage;
 using NSubstitute;
-using XGain.Sockets;
 using Xunit;
 
 namespace Kronos.Core.Tests.Requests
@@ -23,7 +23,7 @@ namespace Kronos.Core.Tests.Requests
 
             Exception ex =
                 Assert.Throws<InvalidOperationException>(
-                    () => processor.HandleIncomingRequest(type, requestBytes, requestBytes.Length, Substitute.For<ISocket>()));
+                    () => processor.HandleIncomingRequest(type, requestBytes, requestBytes.Length, new Socket(SocketType.Stream, ProtocolType.IP)));
 
             Assert.Equal(ex.Message, $"Cannot find processor for type {type}");
         }
@@ -34,7 +34,7 @@ namespace Kronos.Core.Tests.Requests
         {
             byte[] requestBytes = SerializationUtils.Serialize(request);
             IStorage storage = Substitute.For<IStorage>();
-            ISocket socket = Substitute.For<ISocket>();
+            Socket socket = Substitute.For<Socket>();
 
             IRequestProcessor processor = new RequestProcessor(storage);
 

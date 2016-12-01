@@ -1,8 +1,7 @@
 ﻿using Kronos.Core.Processing;
 using Kronos.Core.Storage;
-using Kronos.Server.Listener;
+using Kronos.Server.Listening;
 using NSubstitute;
-using XGain;
 using Xunit;
 
 namespace Kronos.Server.Tests.Listener
@@ -14,7 +13,7 @@ namespace Kronos.Server.Tests.Listener
         {
             var requestProcessorMock = Substitute.For<IRequestProcessor>();
             var storageMock = Substitute.For<IStorage>();
-            var serverMock = Substitute.For<IServer>();
+            var serverMock = Substitute.For<IListener>();
 
             ServerWorker worker = new ServerWorker(requestProcessorMock, storageMock, serverMock);
 
@@ -27,7 +26,7 @@ namespace Kronos.Server.Tests.Listener
         {
             var requestProcessorMock = Substitute.For<IRequestProcessor>();
             var storageMock = Substitute.For<IStorage>();
-            var serverMock = Substitute.For<IServer>();
+            var serverMock = Substitute.For<IListener>();
 
             ServerWorker worker = new ServerWorker(requestProcessorMock, storageMock, serverMock);
             worker.Dispose();
