@@ -16,12 +16,12 @@ namespace ClusterBenchmark.Tasks
                 IKronosClient client = KronosClientFactory.CreateClient(configPath);
                 await WarnupServer(client);
 
-                var package = PrepareData(packageSize);
+                var package = PrepareData(Mb(packageSize));
                 watch.Start();
                 for (int i = 0; i < iterations; i++)
                 {
                     Debug.WriteLine($"Iteration : {i}");
-                    try 
+                    try
                     {
                         await RunInternalAsync(client, package);
                     }
@@ -49,7 +49,7 @@ namespace ClusterBenchmark.Tasks
             Console.WriteLine("Warnup");
             var watch = Stopwatch.StartNew();
             await SendToWarnup(client, size: 10, times: 10000);
-            await SendToWarnup(client, size: 5 * 1024 * 1024, times: 10);
+            await SendToWarnup(client, size: Mb(5), times: 10);
             watch.Stop();
             Console.WriteLine($"Warnup finished in {watch.ElapsedMilliseconds}ms");
         }
@@ -70,6 +70,8 @@ namespace ClusterBenchmark.Tasks
             new Random().NextBytes(package);
             return package;
         }
+
+        private static int Mb(int bytes) => bytes*1024*1024;
 
         protected abstract Task RunInternalAsync(IKronosClient client, byte[] package);
     }
