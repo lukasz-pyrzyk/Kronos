@@ -35,5 +35,5 @@ script:
   - dotnet publish ./Src/Kronos.Server/ -c Release -o ./Bin -f netcoreapp1.1
 after_success:
   - docker build -t lukaszpyrzyk/kronos:$TRAVIS_PULL_REQUEST_BRANCH .
-  - docker login -e="$DOCKER_EMAIL" -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+  - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
   - docker push lukaszpyrzyk/kronos:$TRAVIS_PULL_REQUEST_BRANCH
