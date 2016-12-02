@@ -11,7 +11,7 @@ using NLog;
 
 namespace Kronos.Server.Listening
 {
-    public class SocketProcessor : IProcessor<RequestArgs>
+    public class SocketProcessor : IProcessor
     {
         private const int IntSize = sizeof(int);
         private const int RequestTypeSize = sizeof(ushort);

@@ -4,21 +4,23 @@ using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
 using Kronos.Server.EventArgs;
+using NLog;
 
 namespace Kronos.Server.Listening
 {
-    public class Listener<TMessage> : IListener where TMessage : RequestArgs
+    public class Listener : IListener
     {
         public event EventHandler<StartArgs> OnStart;
         public event EventHandler<RequestArgs> OnNewMessage;
         public event EventHandler<ErrorArgs> OnError;
 
         private readonly TcpListener _listener;
-        private readonly IProcessor<TMessage> _processor;
-
+        private readonly IProcessor _processor;
         private readonly CancellationTokenSource _cancel = new CancellationTokenSource();
 
-        public Listener(IPAddress ipAddress, int port, IProcessor<TMessage> processor)
+        private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+
+        public Listener(IPAddress ipAddress, int port, IProcessor processor)
         {
             _listener = new TcpListener(ipAddress, port);
             _processor = processor;
@@ -26,6 +28,8 @@ namespace Kronos.Server.Listening
 
         public void Start(int? maxDegreeOfParallelism = null)
         {
+            _logger.Info("Starting TCP/IP server");
+
             _listener.Start();
             RaiseOnStartEvent();
 
@@ -57,6 +61,7 @@ namespace Kronos.Server.Listening
             {
                 _cancel.Cancel();
                 _listener.Stop();
+                _logger.Info("Server has been stopped");
             }
             catch (SocketException ex)
             {
@@ -66,6 +71,7 @@ namespace Kronos.Server.Listening
 
         public void Dispose()
         {
+            _logger.Info("Stopping TCP/IP server");
             Stop();
         }
 

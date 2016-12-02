@@ -4,8 +4,8 @@ using Kronos.Server.EventArgs;
 
 namespace Kronos.Server.Listening
 {
-    public interface IProcessor<T> where T : RequestArgs
+    public interface IProcessor
     {
-        Task<T> ProcessSocketConnectionAsync(Socket socket);
+        Task<RequestArgs> ProcessSocketConnectionAsync(Socket socket);
     }
 }

@@ -35,11 +35,11 @@ namespace Kronos.Server
         {
             IPAddress localAddr = await EndpointUtils.GetIPAsync();
 
-            IProcessor<RequestArgs> processor = new SocketProcessor();
+            IProcessor processor = new SocketProcessor();
 
             IExpiryProvider expiryProvider = new StorageExpiryProvider();
             IStorage storage = new InMemoryStorage(expiryProvider);
-            IListener server = new Listener<RequestArgs>(localAddr, port, processor);
+            IListener server = new Listener(localAddr, port, processor);
             IRequestProcessor mapper = new RequestProcessor(storage);
             IServerWorker worker = new ServerWorker(mapper, storage, server);
             worker.Start();
