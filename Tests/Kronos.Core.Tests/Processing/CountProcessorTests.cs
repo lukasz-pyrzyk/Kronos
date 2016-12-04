@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 using Kronos.Core.Processing;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
@@ -12,7 +13,7 @@ namespace Kronos.Core.Tests.Processing
     public class CountProcessorTests
     {
         [Fact(Skip = "Awaiting System.Threading.Channels (IChannel) or TypeMock")]
-        public void Handle_ReturnsNumberOfElementInStorage()
+        public async Task Handle_ReturnsNumberOfElementInStorage()
         {
             // arrange
             var request = new CountRequest();
@@ -27,7 +28,7 @@ namespace Kronos.Core.Tests.Processing
                 .Returns(expectedBytes.Length);
 
             // act
-            processor.Handle(ref request, storage, socket);
+            await processor.HandleAsync(request, storage, socket);
 
             // assert
             socket.Received(1).Send(Arg.Is<byte[]>(x => x.SequenceEqual(expectedBytes)), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<SocketFlags>());

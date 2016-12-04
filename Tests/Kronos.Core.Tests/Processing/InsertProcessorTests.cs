@@ -1,5 +1,6 @@
 ﻿using System.Linq;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 using Kronos.Core.Processing;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
@@ -13,7 +14,7 @@ namespace Kronos.Core.Tests.Processing
     {
         [Theory(Skip = "Awaiting System.Threading.Channels (IChannel) or TypeMock")]
         [InlineData(true)]
-        public void Handle_ReturnsTrueWhenElementAdded(bool added)
+        public async Task Handle_ReturnsTrueWhenElementAdded(bool added)
         {
             // arrange
             var request = new InsertRequest();
@@ -26,7 +27,7 @@ namespace Kronos.Core.Tests.Processing
                 .Returns(expectedBytes.Length);
 
             // act
-            processor.Handle(ref request, storage, socket);
+            await processor.HandleAsync(request, storage, socket);
 
             // assert
             socket.Received(1).Send(Arg.Is<byte[]>(x => x.SequenceEqual(expectedBytes)), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<SocketFlags>());

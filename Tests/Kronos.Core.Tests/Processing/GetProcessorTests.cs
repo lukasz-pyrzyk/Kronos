@@ -1,6 +1,7 @@
 ﻿using System.Linq;
 using System.Net.Sockets;
 using System.Text;
+using System.Threading.Tasks;
 using Kronos.Core.Networking;
 using Kronos.Core.Processing;
 using Kronos.Core.Requests;
@@ -14,7 +15,7 @@ namespace Kronos.Core.Tests.Processing
     public class GetProcessorTests
     {
         [Fact(Skip = "Awaiting System.Threading.Channels (IChannel) or TypeMock")]
-        public void Handle_ReturnsObjectFromCache()
+        public async Task Handle_ReturnsObjectFromCache()
         {
             // arrange
             byte[] obj = Encoding.UTF8.GetBytes("siema");
@@ -36,14 +37,14 @@ namespace Kronos.Core.Tests.Processing
                 .Returns(expectedBytes.Length);
 
             // act
-            processor.Handle(ref request, storage, socket);
+            await processor.HandleAsync(request, storage, socket);
 
             // assert
             socket.Received(1).Send(Arg.Is<byte[]>(x => x.SequenceEqual(expectedBytes)), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<SocketFlags>());
         }
 
         [Fact(Skip = "Awaiting System.Threading.Channels (IChannel) or TypeMock")]
-        public void Handle_ReturnsNotFoundWhenObjectIsNotInTheCache()
+        public async Task Handle_ReturnsNotFoundWhenObjectIsNotInTheCache()
         {
             // arrange
             byte[] obj = SerializationUtils.Serialize(RequestStatusCode.NotFound);
@@ -65,7 +66,7 @@ namespace Kronos.Core.Tests.Processing
                 .Returns(expectedBytes.Length);
 
             // act
-            processor.Handle(ref request, storage, socket);
+            await processor.HandleAsync(request, storage, socket);
 
             // assert
             socket.Received(1).Send(Arg.Is<byte[]>(x => x.SequenceEqual(expectedBytes)), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<SocketFlags>());
