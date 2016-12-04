@@ -1,5 +1,6 @@
 using System;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Kronos.Core.Storage;
@@ -38,29 +39,29 @@ namespace Kronos.Core.Processing
             _containsProcessor = containsProcessor;
         }
 
-        public void HandleIncomingRequest(RequestType requestType, byte[] request, int receivedBytes, Socket client)
+        public async Task HandleAsync(RequestType requestType, byte[] request, int receivedBytes, Socket client)
         {
             switch (requestType)
             {
                 case RequestType.Insert:
                     var insertRequest = SerializationUtils.Deserialize<InsertRequest>(request, receivedBytes);
-                    _insertProcessor.Handle(ref insertRequest, _storage, client);
+                    await _insertProcessor.HandleAsync(insertRequest, _storage, client);
                     break;
                 case RequestType.Get:
                     var getRequest = SerializationUtils.Deserialize<GetRequest>(request, receivedBytes);
-                    _getProcessor.Handle(ref getRequest, _storage, client);
+                    await _getProcessor.HandleAsync(getRequest, _storage, client);
                     break;
                 case RequestType.Delete:
                     var deleteRequest = SerializationUtils.Deserialize<DeleteRequest>(request, receivedBytes);
-                    _deleteProcessor.Handle(ref deleteRequest, _storage, client);
+                    await _deleteProcessor.HandleAsync(deleteRequest, _storage, client);
                     break;
                 case RequestType.Count:
                     var countRequest = SerializationUtils.Deserialize<CountRequest>(request, receivedBytes);
-                    _countProcessor.Handle(ref countRequest, _storage, client);
+                    await _countProcessor.HandleAsync(countRequest, _storage, client);
                     break;
                 case RequestType.Contains:
                     var containsRequest = SerializationUtils.Deserialize<ContainsRequest>(request, receivedBytes);
-                    _containsProcessor.Handle(ref containsRequest, _storage, client);
+                    await _containsProcessor.HandleAsync(containsRequest, _storage, client);
                     break;
                 default:
                     throw new InvalidOperationException($"Cannot find processor for type {requestType}");

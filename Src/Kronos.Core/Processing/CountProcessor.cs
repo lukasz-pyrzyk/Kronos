@@ -1,4 +1,5 @@
 ﻿using System.Net.Sockets;
+using System.Threading.Tasks;
 using Kronos.Core.Requests;
 using Kronos.Core.Storage;
 
@@ -8,11 +9,11 @@ namespace Kronos.Core.Processing
     {
         public override RequestType Type { get; } = RequestType.Count;
 
-        public override void Handle(ref CountRequest request, IStorage storage, Socket client)
+        public override async Task HandleAsync(CountRequest request, IStorage storage, Socket client)
         {
             int count = storage.Count;
 
-            Reply(count, client);
+            await ReplyAsync(count, client);
         }
     }
 }

@@ -20,7 +20,11 @@
         "System.Runtime.Extensions": "4.3.0"
       }
     },
-    "net452": {}
+    "net461": {
+      "dependencies": {
+        "System.Net.Sockets": "4.3.0"
+      }
+    }
   },
   "packOptions": {
     "iconUrl": "https://raw.githubusercontent.com/lukasz-pyrzyk/Kronos/master/SolutionItems/nugetIcon.png",

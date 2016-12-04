@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 using Kronos.Core.Exceptions;
 using Kronos.Core.Networking;
 using Kronos.Core.Requests;
@@ -36,26 +37,26 @@ namespace Kronos.Client.Transfer
                 spans[i] = new TimeSpan(3 * retryCount);
             }
             _timeSpans = spans;
-            _policy = Policy.Handle<Exception>().WaitAndRetry(_timeSpans);
+            _policy = Policy.Handle<Exception>().WaitAndRetryAsync(_timeSpans);
         }
 
-        public byte[] Send<TRequest>(TRequest request) where TRequest : IRequest
+        public async Task<byte[]> SendAsync<TRequest>(TRequest request) where TRequest : IRequest
         {
             Socket socket = _newSocketFunc();
 
             byte[] requestBytes = null;
-            _policy.Execute(() =>
+            await _policy.ExecuteAsync(async () =>
             {
                 try
                 {
                     Debug.WriteLine("Connecting to the server socket");
-                    socket.Connect(_host);
+                    await socket.ConnectAsync(_host);
 
                     Debug.WriteLine("Sending request");
-                    SendToServer(request, socket);
+                    await SendToServerAsync(request, socket);
 
                     Debug.WriteLine("Waiting for response");
-                    requestBytes = ReceiveFromServer(socket);
+                    requestBytes = await ReceiveFromServerAsync(socket);
                 }
                 catch (Exception ex)
                 {
@@ -78,7 +79,7 @@ namespace Kronos.Client.Transfer
             return requestBytes;
         }
 
-        private static void SendToServer(IRequest request, Socket server)
+        private static async Task SendToServerAsync(IRequest request, Socket server)
         {
             // todo array pool and stackalloc
             byte[] data;
@@ -92,19 +93,19 @@ namespace Kronos.Client.Transfer
             byte[] lengthBytes = new byte[4]; // stackalloc
             NoAllocBitConverter.GetBytes(data.Length, lengthBytes);
 
-            SocketUtils.SendAll(server, lengthBytes);
-            SocketUtils.SendAll(server, data);
+            await SocketUtils.SendAllAsync(server, lengthBytes);
+            await SocketUtils.SendAllAsync(server, data);
         }
 
-        private static byte[] ReceiveFromServer(Socket socket)
+        private static async Task<byte[]> ReceiveFromServerAsync(Socket socket)
         {
             // todo array pool and stackalloc
             byte[] sizeBytes = new byte[sizeof(int)];
-            SocketUtils.ReceiveAll(socket, sizeBytes, sizeBytes.Length);
+            await SocketUtils.ReceiveAllAsync(socket, sizeBytes, sizeBytes.Length);
             int size = BitConverter.ToInt32(sizeBytes, 0);
 
             byte[] requestBytes = new byte[size];
-            SocketUtils.ReceiveAll(socket, requestBytes, requestBytes.Length);
+            await SocketUtils.ReceiveAllAsync(socket, requestBytes, requestBytes.Length);
 
             return requestBytes;
         }

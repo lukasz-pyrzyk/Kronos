@@ -1,34 +1,36 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 
 namespace Kronos.Core.Networking
 {
     public static class SocketUtils
     {
-        private const int BufferSize = 8*1024;
+        private const int BufferSize = 8 * 1024;
 
-        public static void SendAll(Socket socket, byte[] data)
+        public static async Task SendAllAsync(Socket socket, byte[] data)
         {
             int position = 0;
             while (position != data.Length)
             {
-                int sizeToSend = Math.Min(data.Length - position, BufferSize);
-
-                int sent = socket.Send(data, position, sizeToSend, SocketFlags.None);
+                int size = Math.Min(data.Length - position, BufferSize);
+                var segment = new ArraySegment<byte>(data, position, size);
+                int sent = await socket.SendAsync(segment, SocketFlags.None);
                 position += sent;
 
                 Debug.Assert(position <= data.Length);
             }
         }
 
-        public static void ReceiveAll(Socket socket, byte[] buffer, int count)
+        public static async Task ReceiveAllAsync(Socket socket, byte[] data, int count)
         {
             int position = 0;
             while (position != count)
             {
-                int expectedSize = Math.Min(count - position, BufferSize);
-                int received = socket.Receive(buffer, position, expectedSize, SocketFlags.None);
+                int size = Math.Min(count - position, BufferSize);
+                var segment = new ArraySegment<byte>(data, position, size);
+                int received = await socket.ReceiveAsync(segment, SocketFlags.None);
                 position += received;
 
                 Debug.Assert(position <= count);

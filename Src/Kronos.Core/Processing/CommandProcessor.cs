@@ -11,11 +11,11 @@ namespace Kronos.Core.Processing
     {
         public abstract RequestType Type { get; }
 
-        public abstract void Handle(ref TRequest request, IStorage storage, Socket client);
+        public abstract Task HandleAsync(TRequest request, IStorage storage, Socket client);
 
         public async Task<TResponse> ExecuteAsync(TRequest request, IConnection service)
         {
-            byte[] response = await Task.Run(() => service.Send(request)).ConfigureAwait(false);
+            byte[] response = await service.SendAsync(request);
 
             TResponse results = PrepareResponse<TResponse>(response);
 
@@ -35,11 +35,11 @@ namespace Kronos.Core.Processing
             return await Task.WhenAll(responses);
         }
 
-        protected void Reply(TResponse response, Socket client)
+        protected async Task ReplyAsync(TResponse response, Socket client)
         {
             byte[] data = SerializationUtils.SerializeToStreamWithLength(response);
 
-            SocketUtils.SendAll(client, data);
+            await SocketUtils.SendAllAsync(client, data);
         }
 
         protected virtual T PrepareResponse<T>(byte[] responseBytes)

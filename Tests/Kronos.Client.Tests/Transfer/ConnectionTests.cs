@@ -2,6 +2,7 @@
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 using Kronos.Client.Transfer;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
@@ -13,7 +14,7 @@ namespace Kronos.Client.Tests.Transfer
     public class ConnectionTests
     {
         [Fact(Skip = "Awaiting System.Threading.Channels (IChannel) or TypeMock")]
-        public void SendToServer_WorksCorrect()
+        public async Task SendToServer_WorksCorrect()
         {
             // arrange
             var request = new InsertRequest();
@@ -24,7 +25,7 @@ namespace Kronos.Client.Tests.Transfer
             var service = new Connection(ipEndpoint, () => socket);
 
             // act
-            service.Send(request);
+            await service.SendAsync(request);
 
             // assert
             socket.Received(1).Connect(ipEndpoint);
@@ -33,7 +34,7 @@ namespace Kronos.Client.Tests.Transfer
         }
 
         [Fact(Skip = "Awaiting System.Threading.Channels (IChannel) or TypeMock")]
-        public void SendToServer_Dispose_WasCatched_SocketException()
+        public async Task SendToServer_Dispose_WasCatched_SocketException()
         {
             // arrange
             var request = new InsertRequest();
@@ -46,7 +47,7 @@ namespace Kronos.Client.Tests.Transfer
             var service = new Connection(ipEndpoint, () => socket);
 
             //  act and assert
-            service.Send(request);
+            await service.SendAsync(request);
         }
 
         [Fact(Skip = "Awaiting System.Threading.Channels (IChannel) or TypeMock")]
@@ -63,7 +64,7 @@ namespace Kronos.Client.Tests.Transfer
             var service = new Connection(ipEndpoint, () => socket, 0);
 
             //  act and assert
-            Assert.Throws(typeof(ArgumentNullException), () => service.Send(request));
+            Assert.Throws(typeof(ArgumentNullException), async () => await service.SendAsync(request));
         }
 
         private static Socket PrepareSocket(IRequest request)

@@ -1,4 +1,5 @@
 ﻿using System.Net.Sockets;
+using System.Threading.Tasks;
 using Kronos.Core.Networking;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
@@ -10,7 +11,7 @@ namespace Kronos.Core.Processing
     {
         public override RequestType Type { get; } = RequestType.Get;
 
-        public override void Handle(ref GetRequest request, IStorage storage, Socket client)
+        public override async Task HandleAsync(GetRequest request, IStorage storage, Socket client)
         {
             byte[] response;
             if (!storage.TryGet(request.Key, out response))
@@ -18,7 +19,7 @@ namespace Kronos.Core.Processing
                 response = SerializationUtils.Serialize(RequestStatusCode.NotFound);
             }
 
-            Reply(response, client);
+            await ReplyAsync(response, client);
         }
     }
 }

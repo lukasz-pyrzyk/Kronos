@@ -23,7 +23,7 @@ namespace Kronos.Server.Listening
             _server = server;
             Storage = storage;
 
-            _server.OnNewMessage += OnMessage;
+            _server.OnNewMessage += OnMessageAsync;
             _server.OnStart += OnStart;
             _server.OnError += OnError;
         }
@@ -33,13 +33,13 @@ namespace Kronos.Server.Listening
             _server.Start();
         }
 
-        private void OnMessage(object sender, RequestArgs request)
+        private async void OnMessageAsync(object sender, RequestArgs request)
         {
             try
             {
                 string id = Guid.NewGuid().ToString();
                 _logger.Debug($"Processing new request with Id: {id}, type: {request.Type}, {request.Received} bytes");
-                _requestsProcessor.HandleIncomingRequest(request.Type, request.Request, request.Received, request.Client);
+                await _requestsProcessor.HandleAsync(request.Type, request.Request, request.Received, request.Client);
                 _logger.Debug($"Processing {id} finished");
             }
             catch (Exception ex)

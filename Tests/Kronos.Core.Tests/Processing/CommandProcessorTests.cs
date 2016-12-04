@@ -21,19 +21,19 @@ namespace Kronos.Core.Tests.Processing
             byte[] fakeData = SerializationUtils.Serialize(fakeResult);
             var request = new InsertRequest();
             IConnection connection = Substitute.For<IConnection>();
-            connection.Send(request).Returns(fakeData);
+            connection.SendAsync(request).Returns(fakeData);
             var processor = new FakeProcessor();
 
             // Act
             bool result = await processor.ExecuteAsync(request, connection);
 
             // Assert
-            connection.Received(1).Send(request);
+            await connection.Received(1).SendAsync(request);
             Assert.Equal(fakeResult, result);
         }
 
         [Fact(Skip = "Awaiting System.Threading.Channels (IChannel) or TypeMock")]
-        public void SendsDataToTheClient()
+        public async Task SendsDataToTheClient()
         {
             // Arrange
             var request = new InsertRequest();
@@ -45,7 +45,7 @@ namespace Kronos.Core.Tests.Processing
                 .Returns(expectedBytes.Length);
 
             // Act
-            processor.Handle(ref request, Substitute.For<IStorage>(), socket);
+            await processor.HandleAsync(request, Substitute.For<IStorage>(), socket);
 
             // Assert
             socket.Received(1).Send(Arg.Is<byte[]>(x => x.SequenceEqual(expectedBytes)), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<SocketFlags>());
@@ -55,9 +55,9 @@ namespace Kronos.Core.Tests.Processing
         {
             public override RequestType Type { get; }
 
-            public override void Handle(ref InsertRequest request, IStorage storage, Socket client)
+            public override async Task HandleAsync(InsertRequest request, IStorage storage, Socket client)
             {
-                Reply(true, client);
+                await ReplyAsync(true, client);
             }
         }
     }
