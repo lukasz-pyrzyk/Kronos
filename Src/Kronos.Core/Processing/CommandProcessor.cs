@@ -15,7 +15,7 @@ namespace Kronos.Core.Processing
 
         public async Task<TResponse> ExecuteAsync(TRequest request, IConnection service)
         {
-            byte[] response = await service.SendAsync(request);
+            byte[] response = await service.SendAsync(request).ConfigureAwait(false);
 
             TResponse results = PrepareResponse<TResponse>(response);
 
@@ -32,14 +32,14 @@ namespace Kronos.Core.Processing
                 responses[i] = ExecuteAsync(request, connection);
             }
 
-            return await Task.WhenAll(responses);
+            return await Task.WhenAll(responses).ConfigureAwait(false);
         }
 
         protected async Task ReplyAsync(TResponse response, Socket client)
         {
             byte[] data = SerializationUtils.SerializeToStreamWithLength(response);
 
-            await SocketUtils.SendAllAsync(client, data);
+            await SocketUtils.SendAllAsync(client, data).ConfigureAwait(false);
         }
 
         protected virtual T PrepareResponse<T>(byte[] responseBytes)

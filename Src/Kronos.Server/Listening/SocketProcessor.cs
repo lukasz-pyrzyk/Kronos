@@ -23,7 +23,7 @@ namespace Kronos.Server.Listening
             RequestArgs args = null;
             try
             {
-                args = await ReceiveMessageAsync(client);
+                args = await ReceiveMessageAsync(client).ConfigureAwait(false);
             }
             catch (SocketException ex)
             {
@@ -37,20 +37,20 @@ namespace Kronos.Server.Listening
         private async Task<RequestArgs> ReceiveMessageAsync(Socket socket)
         {
             byte[] lengthBuffer = ArrayPool<byte>.Shared.Rent(IntSize); // TODO stackalloc
-            await SocketUtils.ReceiveAllAsync(socket, lengthBuffer, IntSize);
+            await SocketUtils.ReceiveAllAsync(socket, lengthBuffer, IntSize).ConfigureAwait(false);
             int dataLength = BitConverter.ToInt32(lengthBuffer, 0);
             ArrayPool<byte>.Shared.Return(lengthBuffer);
             Debug.Assert(dataLength != 0);
 
             byte[] typeBuffer = ArrayPool<byte>.Shared.Rent(RequestTypeSize); // todo stackalloc;
-            await SocketUtils.ReceiveAllAsync(socket, typeBuffer, RequestTypeSize);
+            await SocketUtils.ReceiveAllAsync(socket, typeBuffer, RequestTypeSize).ConfigureAwait(false);
             RequestType requestType = SerializationUtils.Deserialize<RequestType>(typeBuffer, RequestTypeSize);
             ArrayPool<byte>.Shared.Return(typeBuffer);
             Debug.Assert(requestType != RequestType.Unknown);
 
             int packageSize = dataLength - RequestTypeSize;
             byte[] data = ArrayPool<byte>.Shared.Rent(packageSize);
-            await SocketUtils.ReceiveAllAsync(socket, data, packageSize);
+            await SocketUtils.ReceiveAllAsync(socket, data, packageSize).ConfigureAwait(false);
 
             return new RequestArgs(requestType, data, packageSize, socket);
         }

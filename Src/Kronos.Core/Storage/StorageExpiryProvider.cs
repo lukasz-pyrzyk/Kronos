@@ -36,7 +36,7 @@ namespace Kronos.Core.Storage
                         _logger.Info($"Deleted {deleted} elements from storage");
                     }
 
-                    await Task.Delay(Timer, token);
+                    await Task.Delay(Timer, token).ConfigureAwait(false);
                 }
 
             }, TaskCreationOptions.LongRunning);

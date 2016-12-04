@@ -13,7 +13,7 @@ namespace Kronos.Core.Processing
         {
             bool contains = storage.Contains(request.Key);
 
-            await ReplyAsync(contains, client);
+            await ReplyAsync(contains, client).ConfigureAwait(false);
         }
     }
 }

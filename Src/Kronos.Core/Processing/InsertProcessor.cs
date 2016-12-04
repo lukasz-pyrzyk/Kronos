@@ -13,7 +13,7 @@ namespace Kronos.Core.Processing
         {
             storage.AddOrUpdate(request.Key, request.ExpiryDate, request.Object);
 
-            await ReplyAsync(true, client);
+            await ReplyAsync(true, client).ConfigureAwait(false);
         }
     }
 }

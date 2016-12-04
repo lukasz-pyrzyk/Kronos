@@ -39,7 +39,7 @@ namespace Kronos.Server.Listening
             {
                 string id = Guid.NewGuid().ToString();
                 _logger.Debug($"Processing new request with Id: {id}, type: {request.Type}, {request.Received} bytes");
-                await _requestsProcessor.HandleAsync(request.Type, request.Request, request.Received, request.Client);
+                await _requestsProcessor.HandleAsync(request.Type, request.Request, request.Received, request.Client).ConfigureAwait(false);
                 _logger.Debug($"Processing {id} finished");
             }
             catch (Exception ex)

@@ -19,7 +19,7 @@ namespace Kronos.Core.Processing
                 response = SerializationUtils.Serialize(RequestStatusCode.NotFound);
             }
 
-            await ReplyAsync(response, client);
+            await ReplyAsync(response, client).ConfigureAwait(false);
         }
     }
 }

@@ -9,12 +9,12 @@ namespace Kronos.Core.Networking
     {
         public static async Task<IPAddress> GetIPAsync()
         {
-            return await GetIPAsync(Dns.GetHostName());
+            return await GetIPAsync(Dns.GetHostName()).ConfigureAwait(false);
         }
 
         public static async Task<IPAddress> GetIPAsync(string hostNameW)
         {
-            var host = await Dns.GetHostEntryAsync(Dns.GetHostName());
+            var host = await Dns.GetHostEntryAsync(hostNameW).ConfigureAwait(false);
 
             return host.AddressList.First(x => x.AddressFamily == AddressFamily.InterNetwork);
         }

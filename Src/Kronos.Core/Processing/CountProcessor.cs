@@ -13,7 +13,7 @@ namespace Kronos.Core.Processing
         {
             int count = storage.Count;
 
-            await ReplyAsync(count, client);
+            await ReplyAsync(count, client).ConfigureAwait(false);
         }
     }
 }

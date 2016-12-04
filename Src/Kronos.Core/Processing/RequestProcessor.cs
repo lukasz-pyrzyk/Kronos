@@ -45,23 +45,23 @@ namespace Kronos.Core.Processing
             {
                 case RequestType.Insert:
                     var insertRequest = SerializationUtils.Deserialize<InsertRequest>(request, receivedBytes);
-                    await _insertProcessor.HandleAsync(insertRequest, _storage, client);
+                    await _insertProcessor.HandleAsync(insertRequest, _storage, client).ConfigureAwait(false);
                     break;
                 case RequestType.Get:
                     var getRequest = SerializationUtils.Deserialize<GetRequest>(request, receivedBytes);
-                    await _getProcessor.HandleAsync(getRequest, _storage, client);
+                    await _getProcessor.HandleAsync(getRequest, _storage, client).ConfigureAwait(false);
                     break;
                 case RequestType.Delete:
                     var deleteRequest = SerializationUtils.Deserialize<DeleteRequest>(request, receivedBytes);
-                    await _deleteProcessor.HandleAsync(deleteRequest, _storage, client);
+                    await _deleteProcessor.HandleAsync(deleteRequest, _storage, client).ConfigureAwait(false);
                     break;
                 case RequestType.Count:
                     var countRequest = SerializationUtils.Deserialize<CountRequest>(request, receivedBytes);
-                    await _countProcessor.HandleAsync(countRequest, _storage, client);
+                    await _countProcessor.HandleAsync(countRequest, _storage, client).ConfigureAwait(false);
                     break;
                 case RequestType.Contains:
                     var containsRequest = SerializationUtils.Deserialize<ContainsRequest>(request, receivedBytes);
-                    await _containsProcessor.HandleAsync(containsRequest, _storage, client);
+                    await _containsProcessor.HandleAsync(containsRequest, _storage, client).ConfigureAwait(false);
                     break;
                 default:
                     throw new InvalidOperationException($"Cannot find processor for type {requestType}");

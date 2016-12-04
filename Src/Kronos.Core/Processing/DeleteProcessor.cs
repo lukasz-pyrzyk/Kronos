@@ -13,7 +13,7 @@ namespace Kronos.Core.Processing
         {
             bool deleted = storage.TryRemove(request.Key);
 
-            await ReplyAsync(deleted, client);
+            await ReplyAsync(deleted, client).ConfigureAwait(false);
         }
     }
 }

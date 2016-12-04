@@ -50,13 +50,13 @@ namespace Kronos.Client.Transfer
                 try
                 {
                     Debug.WriteLine("Connecting to the server socket");
-                    await socket.ConnectAsync(_host);
+                    await socket.ConnectAsync(_host).ConfigureAwait(false);
 
                     Debug.WriteLine("Sending request");
-                    await SendToServerAsync(request, socket);
+                    await SendToServerAsync(request, socket).ConfigureAwait(false);
 
                     Debug.WriteLine("Waiting for response");
-                    requestBytes = await ReceiveFromServerAsync(socket);
+                    requestBytes = await ReceiveFromServerAsync(socket).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
@@ -74,7 +74,7 @@ namespace Kronos.Client.Transfer
                     {
                     }
                 }
-            });
+            }).ConfigureAwait(false);
 
             return requestBytes;
         }
@@ -93,19 +93,19 @@ namespace Kronos.Client.Transfer
             byte[] lengthBytes = new byte[4]; // stackalloc
             NoAllocBitConverter.GetBytes(data.Length, lengthBytes);
 
-            await SocketUtils.SendAllAsync(server, lengthBytes);
-            await SocketUtils.SendAllAsync(server, data);
+            await SocketUtils.SendAllAsync(server, lengthBytes).ConfigureAwait(false);
+            await SocketUtils.SendAllAsync(server, data).ConfigureAwait(false);
         }
 
         private static async Task<byte[]> ReceiveFromServerAsync(Socket socket)
         {
             // todo array pool and stackalloc
             byte[] sizeBytes = new byte[sizeof(int)];
-            await SocketUtils.ReceiveAllAsync(socket, sizeBytes, sizeBytes.Length);
+            await SocketUtils.ReceiveAllAsync(socket, sizeBytes, sizeBytes.Length).ConfigureAwait(false);
             int size = BitConverter.ToInt32(sizeBytes, 0);
 
             byte[] requestBytes = new byte[size];
-            await SocketUtils.ReceiveAllAsync(socket, requestBytes, requestBytes.Length);
+            await SocketUtils.ReceiveAllAsync(socket, requestBytes, requestBytes.Length).ConfigureAwait(false);
 
             return requestBytes;
         }

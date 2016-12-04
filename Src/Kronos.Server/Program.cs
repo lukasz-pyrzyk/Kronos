@@ -33,7 +33,7 @@ namespace Kronos.Server
 
         public static async Task StartAsync(int port)
         {
-            IPAddress localAddr = await EndpointUtils.GetIPAsync();
+            IPAddress localAddr = await EndpointUtils.GetIPAsync().ConfigureAwait(false);
 
             IProcessor processor = new SocketProcessor();
 
