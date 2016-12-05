@@ -31,17 +31,13 @@ namespace Kronos.AcceptanceTest
             using (IStorage storage = new InMemoryStorage(expiryProvider))
             {
                 var processor = new SocketProcessor();
-                using (IListener server = new Listener(IPAddress.Any, port, processor))
+                var requestProcessor = new RequestProcessor(storage);
+                using (IListener server = new Listener(IPAddress.Any, port, processor, requestProcessor))
                 {
-                    IRequestProcessor requestProcessor = new RequestProcessor(storage);
-                    using (IServerWorker worker = new ServerWorker(requestProcessor, storage, server))
-                    {
-                        worker.Start();
-
-                        IKronosClient client = KronosClientFactory.CreateClient(localHost, port);
-                        await client.InsertAsync(key, data, expiry);
-                        received = await client.GetAsync(key);
-                    }
+                    server.Start();
+                    IKronosClient client = KronosClientFactory.CreateClient(localHost, port);
+                    await client.InsertAsync(key, data, expiry);
+                    received = await client.GetAsync(key);
                 }
             }
 
@@ -62,23 +58,19 @@ namespace Kronos.AcceptanceTest
             IExpiryProvider expiryProvider = new StorageExpiryProvider();
             using (IStorage storage = new InMemoryStorage(expiryProvider))
             {
-               var processor = new SocketProcessor();
-                using (IListener server = new Listener(IPAddress.Any, port, processor))
+                var processor = new SocketProcessor();
+                var requestProcessor = new RequestProcessor(storage);
+                using (IListener server = new Listener(IPAddress.Any, port, processor, requestProcessor))
                 {
-                    IRequestProcessor mapper = new RequestProcessor(storage);
-                    using (IServerWorker worker = new ServerWorker(mapper, storage, server))
-                    {
-                        worker.Start();
+                    server.Start();
+                    IKronosClient client = KronosClientFactory.CreateClient(localHost, port);
+                    await client.InsertAsync(key, data, expiry);
 
-                        IKronosClient client = KronosClientFactory.CreateClient(localHost, port);
-                        await client.InsertAsync(key, data, expiry);
+                    sizeBeforeRemoving = storage.Count;
 
-                        sizeBeforeRemoving = storage.Count;
+                    await client.DeleteAsync(key);
 
-                        await client.DeleteAsync(key);
-
-                        sizeAfterRemoving = storage.Count;
-                    }
+                    sizeAfterRemoving = storage.Count;
                 }
             }
 
@@ -101,19 +93,15 @@ namespace Kronos.AcceptanceTest
             using (IStorage storage = new InMemoryStorage(expiryProvider))
             {
                 var processor = new SocketProcessor();
-                using (IListener server = new Listener(IPAddress.Any, port, processor))
+                var requestProcessor = new RequestProcessor(storage);
+                using (IListener server = new Listener(IPAddress.Any, port, processor, requestProcessor))
                 {
-                    IRequestProcessor mapper = new RequestProcessor(storage);
-                    using (IServerWorker worker = new ServerWorker(mapper, storage, server))
-                    {
-                        worker.Start();
+                    server.Start();
+                    IKronosClient client = KronosClientFactory.CreateClient(localHost, port);
+                    await client.InsertAsync(key, data, expiry);
 
-                        IKronosClient client = KronosClientFactory.CreateClient(localHost, port);
-                        await client.InsertAsync(key, data, expiry);
-
-                        countFromClientApi = await client.CountAsync();
-                        countFromStorage = storage.Count;
-                    }
+                    countFromClientApi = await client.CountAsync();
+                    countFromStorage = storage.Count;
                 }
             }
 
@@ -135,19 +123,15 @@ namespace Kronos.AcceptanceTest
             using (IStorage storage = new InMemoryStorage(expiryProvider))
             {
                 var processor = new SocketProcessor();
-                using (IListener server = new Listener(IPAddress.Any, port, processor))
+                var requestProcessor = new RequestProcessor(storage);
+                using (IListener server = new Listener(IPAddress.Any, port, processor, requestProcessor))
                 {
-                    IRequestProcessor mapper = new RequestProcessor(storage);
-                    using (IServerWorker worker = new ServerWorker(mapper, storage, server))
-                    {
-                        worker.Start();
+                    server.Start();
+                    IKronosClient client = KronosClientFactory.CreateClient(localHost, port);
+                    await client.InsertAsync(key, data, expiry);
 
-                        IKronosClient client = KronosClientFactory.CreateClient(localHost, port);
-                        await client.InsertAsync(key, data, expiry);
-
-                        containsFromClientApi = await client.ContainsAsync(key);
-                        containsFromStorage = storage.Contains(key);
-                    }
+                    containsFromClientApi = await client.ContainsAsync(key);
+                    containsFromStorage = storage.Contains(key);
                 }
             }
 
@@ -167,18 +151,14 @@ namespace Kronos.AcceptanceTest
             using (IStorage storage = new InMemoryStorage(expiryProvider))
             {
                 var processor = new SocketProcessor();
-                using (IListener server = new Listener(IPAddress.Any, port, processor))
+                var requestProcessor = new RequestProcessor(storage);
+                using (IListener server = new Listener(IPAddress.Any, port, processor, requestProcessor))
                 {
-                    IRequestProcessor mapper = new RequestProcessor(storage);
-                    using (IServerWorker worker = new ServerWorker(mapper, storage, server))
-                    {
-                        worker.Start();
+                    server.Start();
+                    IKronosClient client = KronosClientFactory.CreateClient(localHost, port);
 
-                        IKronosClient client = KronosClientFactory.CreateClient(localHost, port);
-
-                        containsFromClientApi = await client.ContainsAsync(key);
-                        containsFromStorage = storage.Contains(key);
-                    }
+                    containsFromClientApi = await client.ContainsAsync(key);
+                    containsFromStorage = storage.Contains(key);
                 }
             }
 

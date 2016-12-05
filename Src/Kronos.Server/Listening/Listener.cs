@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using Kronos.Core.Processing;
 using Kronos.Server.EventArgs;
 using NLog;
 
@@ -10,28 +11,29 @@ namespace Kronos.Server.Listening
 {
     public class Listener : IListener
     {
-        public event EventHandler<StartArgs> OnStart;
-        public event EventHandler<RequestArgs> OnNewMessage;
-        public event EventHandler<ErrorArgs> OnError;
+        public int ActiveConnections => _activeConnections;
+
+        private int _activeConnections;
 
         private readonly TcpListener _listener;
         private readonly IProcessor _processor;
+        private readonly IRequestProcessor _requestProcessor;
         private readonly CancellationTokenSource _cancel = new CancellationTokenSource();
 
         private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
-        public Listener(IPAddress ipAddress, int port, IProcessor processor)
+        public Listener(IPAddress ipAddress, int port, IProcessor processor, IRequestProcessor requestProcessor)
         {
             _listener = new TcpListener(ipAddress, port);
             _processor = processor;
+            _requestProcessor = requestProcessor;
         }
 
-        public void Start(int? maxDegreeOfParallelism = null)
+        public void Start()
         {
-            _logger.Info("Starting TCP/IP server");
-
+            _logger.Info("Starting Kronos Server");
             _listener.Start();
-            RaiseOnStartEvent();
+            _logger.Info($"Kronos has been started on {_listener.LocalEndpoint}");
 
             CancellationToken token = _cancel.Token;
 
@@ -49,7 +51,7 @@ namespace Kronos.Server.Listening
                     }
                     catch (Exception ex)
                     {
-                        RaiseOnError(ex);
+                        _logger.Error($"Exception during accepting new request {ex}");
                     }
                 }
             }, token);
@@ -65,7 +67,7 @@ namespace Kronos.Server.Listening
             }
             catch (SocketException ex)
             {
-                RaiseOnError(ex);
+                _logger.Error($"Exception during disposing server: {ex}");
             }
         }
 
@@ -75,25 +77,23 @@ namespace Kronos.Server.Listening
             Stop();
         }
 
-        private async void ProcessSocketConnection(Socket socket)
+        private async Task ProcessSocketConnection(Socket socket)
         {
-            RequestArgs args = await _processor.ProcessSocketConnectionAsync(socket);
-            RaiseOnNewMessageEvent(socket, args);
-        }
+            Interlocked.Increment(ref _activeConnections);
+            string id = Guid.NewGuid().ToString();
+            RequestArgs request = await _processor.ProcessSocketConnectionAsync(socket);
+            try
+            {
+                _logger.Debug($"Processing new request with Id: {id}, type: {request.Type}, {request.Received} bytes");
+                _requestProcessor.HandleIncomingRequest(request.Type, request.Request, request.Received, request.Client);
+                _logger.Debug($"Processing {id} finished");
+            }
+            catch (Exception ex)
+            {
+                _logger.Error($"Exception on processing request {id}, {ex}");
+            }
 
-        private void RaiseOnStartEvent()
-        {
-            OnStart?.Invoke(this, new StartArgs(_listener.LocalEndpoint));
-        }
-
-        private void RaiseOnError(Exception ex)
-        {
-            OnError?.Invoke(this, new ErrorArgs(ex));
-        }
-
-        private void RaiseOnNewMessageEvent(Socket socket, RequestArgs args)
-        {
-            OnNewMessage?.Invoke(socket, args);
+            Interlocked.Decrement(ref _activeConnections);
         }
     }
 }

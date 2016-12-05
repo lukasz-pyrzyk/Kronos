@@ -5,11 +5,7 @@ namespace Kronos.Server.Listening
 {
     public interface IListener : IDisposable
     {
-        event EventHandler<StartArgs> OnStart;
-        event EventHandler<RequestArgs> OnNewMessage;
-        event EventHandler<ErrorArgs> OnError;
-
-        void Start(int? maxDegreeOfParallelism = null);
+        void Start();
         void Stop();
     }
 }
