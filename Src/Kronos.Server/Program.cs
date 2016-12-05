@@ -6,7 +6,6 @@ using System.Xml;
 using Kronos.Core.Networking;
 using Kronos.Core.Processing;
 using Kronos.Core.Storage;
-using Kronos.Server.EventArgs;
 using Kronos.Server.Listening;
 using NLog;
 using NLog.Config;
@@ -35,14 +34,14 @@ namespace Kronos.Server
         {
             IPAddress localAddr = await EndpointUtils.GetIPAsync();
 
-            IProcessor processor = new SocketProcessor();
-
             IExpiryProvider expiryProvider = new StorageExpiryProvider();
             IStorage storage = new InMemoryStorage(expiryProvider);
-            IListener server = new Listener(localAddr, port, processor);
-            IRequestProcessor mapper = new RequestProcessor(storage);
-            IServerWorker worker = new ServerWorker(mapper, storage, server);
-            worker.Start();
+
+            IRequestProcessor requestProcessor = new RequestProcessor(storage);
+            IProcessor processor = new SocketProcessor();
+            IListener server = new Listener(localAddr, port, processor, requestProcessor);
+
+            server.Start();
 
             var reset = new ManualResetEventSlim();
             Console.CancelKeyPress += (sender, e) =>
@@ -55,7 +54,6 @@ namespace Kronos.Server
             // dispose components
             storage.Dispose();
             server.Dispose();
-            worker.Dispose();
         }
     }
 }
