@@ -39,11 +39,8 @@ namespace Kronos.Server.Listening
 
             Task.Factory.StartNew(async () =>
             {
-                while (true)
+                while (!token.IsCancellationRequested)
                 {
-                    if (token.IsCancellationRequested)
-                        break;
-
                     try
                     {
                         Socket socket = await _listener.AcceptSocketAsync();
