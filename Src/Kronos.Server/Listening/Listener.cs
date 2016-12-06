@@ -37,7 +37,7 @@ namespace Kronos.Server.Listening
 
             CancellationToken token = _cancel.Token;
 
-            Task.Run(async () =>
+            Task.Factory.StartNew(async () =>
             {
                 while (true)
                 {
@@ -54,7 +54,7 @@ namespace Kronos.Server.Listening
                         _logger.Error($"Exception during accepting new request {ex}");
                     }
                 }
-            }, token);
+            }, token, TaskCreationOptions.LongRunning, TaskScheduler.Current);
         }
 
         public void Stop()
