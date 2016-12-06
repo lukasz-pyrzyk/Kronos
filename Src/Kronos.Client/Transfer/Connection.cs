@@ -51,7 +51,7 @@ namespace Kronos.Client.Transfer
                     Send(request, socket);
 
                     Debug.WriteLine("Waiting for response");
-                    response = Receive(socket);
+                    response = await ReceiveAsync(socket);
                 }
                 catch (Exception ex)
                 {
@@ -84,15 +84,15 @@ namespace Kronos.Client.Transfer
             SocketUtils.SendAll(server, data);
         }
 
-        private static byte[] Receive(Socket socket)
+        private static async Task<byte[]> ReceiveAsync(Socket socket)
         {
             // todo array pool and stackalloc
             byte[] sizeBytes = new byte[IntSize];
-            SocketUtils.ReceiveAll(socket, sizeBytes, sizeBytes.Length);
+            await SocketUtils.ReceiveAllAsync(socket, sizeBytes, sizeBytes.Length);
             int size = BitConverter.ToInt32(sizeBytes, 0);
 
             byte[] requestBytes = new byte[size];
-            SocketUtils.ReceiveAll(socket, requestBytes, requestBytes.Length);
+            await SocketUtils.ReceiveAllAsync(socket, requestBytes, requestBytes.Length);
 
             return requestBytes;
         }
