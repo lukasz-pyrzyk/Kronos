@@ -21,6 +21,8 @@ namespace Kronos.Client.Transfer
         private readonly TimeSpan[] _timeSpans;
         private readonly Policy _policy;
 
+        private const int IntSize = sizeof(int);
+
         public Connection(IPEndPoint host, int retryCount = 2)
         {
             _host = host;
@@ -46,10 +48,10 @@ namespace Kronos.Client.Transfer
                     await socket.ConnectAsync(_host);
 
                     Debug.WriteLine("Sending request");
-                    SendToServer(request, socket);
+                    Send(request, socket);
 
                     Debug.WriteLine("Waiting for response");
-                    requestBytes = ReceiveFromServer(socket);
+                    requestBytes = Receive(socket);
                 }
                 catch (Exception ex)
                 {
@@ -72,7 +74,7 @@ namespace Kronos.Client.Transfer
             return requestBytes;
         }
 
-        private static void SendToServer(IRequest request, Socket server)
+        private static void Send(IRequest request, Socket server)
         {
             // todo array pool and stackalloc
             byte[] data;
@@ -83,17 +85,17 @@ namespace Kronos.Client.Transfer
                 data = ms.ToArray();
             }
 
-            byte[] lengthBytes = new byte[4]; // stackalloc
+            byte[] lengthBytes = new byte[IntSize]; // stackalloc
             NoAllocBitConverter.GetBytes(data.Length, lengthBytes);
 
             SocketUtils.SendAll(server, lengthBytes);
             SocketUtils.SendAll(server, data);
         }
 
-        private static byte[] ReceiveFromServer(Socket socket)
+        private static byte[] Receive(Socket socket)
         {
             // todo array pool and stackalloc
-            byte[] sizeBytes = new byte[sizeof(int)];
+            byte[] sizeBytes = new byte[IntSize];
             SocketUtils.ReceiveAll(socket, sizeBytes, sizeBytes.Length);
             int size = BitConverter.ToInt32(sizeBytes, 0);
 
