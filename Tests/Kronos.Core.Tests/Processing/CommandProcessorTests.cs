@@ -21,14 +21,14 @@ namespace Kronos.Core.Tests.Processing
             byte[] fakeData = SerializationUtils.Serialize(fakeResult);
             var request = new InsertRequest();
             IConnection connection = Substitute.For<IConnection>();
-            connection.Send(request).Returns(fakeData);
+            connection.SendAsync(request).Returns(fakeData);
             var processor = new FakeProcessor();
 
             // Act
             bool result = await processor.ExecuteAsync(request, connection);
 
             // Assert
-            connection.Received(1).Send(request);
+            await connection.Received(1).SendAsync(request);
             Assert.Equal(fakeResult, result);
         }
 

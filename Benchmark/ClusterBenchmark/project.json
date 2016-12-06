@@ -18,6 +18,6 @@
       },
       "imports": "dnxcore50"
     },
-    "net452": {}
+    "net461": {}
   }
 }

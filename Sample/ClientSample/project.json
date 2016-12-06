@@ -21,7 +21,7 @@
       },
       "imports": "dnxcore50"
     },
-    "net452": {}
+    "net461": {}
   },
   "version": "1.1.2"
 }
