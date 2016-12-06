@@ -1,4 +1,5 @@
-﻿using Kronos.Core.Requests;
+﻿using System.Threading.Tasks;
+using Kronos.Core.Requests;
 
 namespace Kronos.Core.Networking
 {
@@ -12,6 +13,6 @@ namespace Kronos.Core.Networking
         /// </summary>
         /// <param name="request">Request to process on the server</param>
         /// <returns>Status code of request</returns>
-        byte[] Send<TRequest>(TRequest request) where TRequest : IRequest;
+        Task<byte[]> SendAsync<TRequest>(TRequest request) where TRequest : IRequest;
     }
 }

@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
+using System.Threading.Tasks;
 using Kronos.Core.Exceptions;
 using Kronos.Core.Networking;
 using Kronos.Core.Requests;
@@ -17,39 +18,32 @@ namespace Kronos.Client.Transfer
 
         private readonly IPEndPoint _host;
 
-        private readonly Func<Socket> _newSocketFunc;
-
         private readonly TimeSpan[] _timeSpans;
         private readonly Policy _policy;
 
-        public Connection(IPEndPoint host) : this(host, () => new Socket(SocketType.Stream, ProtocolType.IP))
-        {
-        }
-
-        internal Connection(IPEndPoint host, Func<Socket> newSocketFunc, int retryCount = 2)
+        public Connection(IPEndPoint host, int retryCount = 2)
         {
             _host = host;
-            _newSocketFunc = newSocketFunc;
             var spans = new TimeSpan[retryCount];
             for (int i = 0; i < retryCount; i++)
             {
                 spans[i] = new TimeSpan(3 * retryCount);
             }
             _timeSpans = spans;
-            _policy = Policy.Handle<Exception>().WaitAndRetry(_timeSpans);
+            _policy = Policy.Handle<Exception>().WaitAndRetryAsync(_timeSpans);
         }
 
-        public byte[] Send<TRequest>(TRequest request) where TRequest : IRequest
+        public async Task<byte[]> SendAsync<TRequest>(TRequest request) where TRequest : IRequest
         {
-            Socket socket = _newSocketFunc();
+            Socket socket = new Socket(SocketType.Stream, ProtocolType.IP);
 
             byte[] requestBytes = null;
-            _policy.Execute(() =>
+            await _policy.ExecuteAsync(async () =>
             {
                 try
                 {
                     Debug.WriteLine("Connecting to the server socket");
-                    socket.Connect(_host);
+                    await socket.ConnectAsync(_host);
 
                     Debug.WriteLine("Sending request");
                     SendToServer(request, socket);
