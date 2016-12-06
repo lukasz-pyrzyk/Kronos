@@ -47,7 +47,7 @@ namespace Kronos.Client.Tests
 
             string responseString = SerializationUtils.Deserialize<string>(response);
             Assert.Equal(responseString, word);
-            connectionMock.Received(1).SendAsync(Arg.Any<GetRequest>());
+            await connectionMock.Received(1).SendAsync(Arg.Any<GetRequest>());
         }
 
         [Fact]
