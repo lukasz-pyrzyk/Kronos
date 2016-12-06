@@ -38,6 +38,7 @@ namespace Kronos.Server.Listening
                 int packageSize = dataLength - RequestTypeSize;
                 byte[] data = ArrayPool<byte>.Shared.Rent(packageSize);
                 await SocketUtils.ReceiveAllAsync(client, data, packageSize);
+                return new RequestArgs(requestType, data, packageSize, client);
             }
             catch (SocketException ex)
             {
