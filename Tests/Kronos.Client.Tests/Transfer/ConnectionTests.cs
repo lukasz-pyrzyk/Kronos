@@ -34,19 +34,6 @@ namespace Kronos.Client.Tests.Transfer
         }
 
         [Fact(Skip = "Awaiting System.Threading.Channels (IChannel) or TypeMock")]
-        public async Task SendToServer_Dispose_WasCatched_SocketException()
-        {
-            // arrange
-            var request = new InsertRequest();
-            var ipEndpoint = new IPEndPoint(IPAddress.Any, 500);
-
-            var service = new Connection(ipEndpoint);
-
-            //  act and assert
-            await service.SendAsync(request);
-        }
-
-        [Fact(Skip = "Awaiting System.Threading.Channels (IChannel) or TypeMock")]
         public async Task SendToServer_Dispose_WasNowCatched_ArgumentNullException()
         {
             // arrange
