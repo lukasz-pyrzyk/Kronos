@@ -1,6 +1,8 @@
 language: csharp  
 sudo: required  
 dist: trusty
+env:
+  - FOO=foo BAR=bar
 services:
   - docker
 addons:
@@ -34,6 +36,11 @@ script:
   - ./Scripts/Linux/runTests.sh
   - dotnet publish ./Src/Kronos.Server/ -c Release -o ./Bin -f netcoreapp1.1
 after_success:
-  - docker build -t lukaszpyrzyk/kronos:$TRAVIS_PULL_REQUEST_BRANCH .
+  - docker build -t lukaszpyrzyk/kronos .
   - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-  - docker push lukaszpyrzyk/kronos:$TRAVIS_PULL_REQUEST_BRANCH
+  - 'if [ "$TRAVIS_BRANCH" == "master" ]; then
+          docker push lukaszpyrzyk/kronos
+      else
+          docker tag lukaszpyrzyk/kronos lukaszpyrzyk/kronos:$TRAVIS_PULL_REQUEST_BRANCH
+          docker push lukaszpyrzyk/kronos:$TRAVIS_PULL_REQUEST_BRANCH
+     fi'
