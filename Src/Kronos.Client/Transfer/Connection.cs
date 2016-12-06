@@ -39,7 +39,7 @@ namespace Kronos.Client.Transfer
         {
             Socket socket = new Socket(SocketType.Stream, ProtocolType.IP);
 
-            byte[] requestBytes = null;
+            byte[] response = null;
             await _policy.ExecuteAsync(async () =>
             {
                 try
@@ -51,27 +51,19 @@ namespace Kronos.Client.Transfer
                     Send(request, socket);
 
                     Debug.WriteLine("Waiting for response");
-                    requestBytes = Receive(socket);
+                    response = Receive(socket);
                 }
                 catch (Exception ex)
                 {
-                    Trace.TraceError($"During package transfer an error occurred {ex}");
-                    Debug.WriteLine("Returning information about exception");
-                    throw new KronosCommunicationException(ex.Message, ex);
+                    throw new KronosCommunicationException($"Connection to the {_host} has been refused", ex);
                 }
                 finally
                 {
-                    try
-                    {
-                        socket.Dispose();
-                    }
-                    catch (SocketException)
-                    {
-                    }
+                    socket.Dispose();
                 }
             });
 
-            return requestBytes;
+            return response;
         }
 
         private static void Send(IRequest request, Socket server)
