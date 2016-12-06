@@ -1,8 +1,6 @@
 language: csharp  
 sudo: required  
 dist: trusty
-env:
-  - FOO=foo BAR=bar
 services:
   - docker
 addons:
@@ -38,9 +36,9 @@ script:
 after_success:
   - docker build -t lukaszpyrzyk/kronos .
   - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-  - 'if [ "$TRAVIS_BRANCH" == "master" ]; then
+  - 'if [ $TRAVIS_BRANCH = "master" ]; then
           docker push lukaszpyrzyk/kronos
       else
           docker tag lukaszpyrzyk/kronos lukaszpyrzyk/kronos:$TRAVIS_PULL_REQUEST_BRANCH
           docker push lukaszpyrzyk/kronos:$TRAVIS_PULL_REQUEST_BRANCH
-     fi'
+      fi'
