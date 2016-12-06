@@ -78,7 +78,7 @@ namespace Kronos.Server.Listening
         {
             Interlocked.Increment(ref _activeConnections);
             string id = Guid.NewGuid().ToString();
-            RequestArgs request = await _processor.ProcessSocketConnectionAsync(socket);
+            RequestArgs request = await _processor.ReceiveRequestAsync(socket);
             try
             {
                 _logger.Debug($"Processing new request with Id: {id}, type: {request.Type}, {request.Received} bytes");
