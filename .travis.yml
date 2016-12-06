@@ -36,8 +36,13 @@ script:
 after_success:
   - docker build -t lukaszpyrzyk/kronos .
   - 'if [ "$TRAVIS_BRANCH" == "master" ]; then
+          echo "Pushing to the master!"
           docker push lukaszpyrzyk/kronos;
+          echo "Pushing to the master is done";
      else
+          echo "Changing branch tag";
           docker tag lukaszpyrzyk/kronos lukaszpyrzyk/kronos:$TRAVIS_PULL_REQUEST_BRANCH;
+          cho "Changing branch tag done";
           docker push lukaszpyrzyk/kronos:$TRAVIS_PULL_REQUEST_BRANCH;
+          echo "Pushing branch done";
      fi'
