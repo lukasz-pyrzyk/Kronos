@@ -39,7 +39,7 @@ after_success:
   - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
   - docker build -t lukaszpyrzyk/kronos .
   - 'if [ "$BRANCH" == "master" ]; then
-          echo "Pushing to the master!"
+          echo "Pushing to the master!";
           docker push lukaszpyrzyk/kronos;
           echo "Pushing to the master is done";
      else
