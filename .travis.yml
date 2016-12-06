@@ -34,11 +34,8 @@ script:
   - ./Scripts/Linux/runTests.sh
   - dotnet publish ./Src/Kronos.Server/ -c Release -o ./Bin -f netcoreapp1.1
 after_success:
-  - docker build -t lukaszpyrzyk/kronos .
-  - docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
-  - 'if [ $TRAVIS_BRANCH = "master" ]; then
-          docker push lukaszpyrzyk/kronos
-      else
-          docker tag lukaszpyrzyk/kronos lukaszpyrzyk/kronos:$TRAVIS_PULL_REQUEST_BRANCH
-          docker push lukaszpyrzyk/kronos:$TRAVIS_PULL_REQUEST_BRANCH
-      fi'
+  - if [ "$TRAVIS_BRANCH" == "master" ]; then
+    docker build -t lukaszpyrzyk/kronos .
+    docker login -u="$DOCKER_USERNAME" -p="$DOCKER_PASSWORD"
+    docker push lukaszpyrzyk/kronos
+    fi
