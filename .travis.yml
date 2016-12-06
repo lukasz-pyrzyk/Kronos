@@ -45,7 +45,7 @@ after_success:
           echo "Changing branch tag";
           docker tag lukaszpyrzyk/kronos lukaszpyrzyk/kronos:$BRANCH;
           echo "Changing branch tag done";
-          docker images
+          docker images -a
           docker push lukaszpyrzyk/kronos:$BRANCH;
           echo "Pushing branch done";
      fi'
