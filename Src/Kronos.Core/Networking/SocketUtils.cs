@@ -14,7 +14,7 @@ namespace Kronos.Core.Networking
             int position = 0;
             while (position != data.Length)
             {
-                int size = CalculateBufferSize(data, position);
+                int size = Math.Min(data.Length - position, BufferSize);
                 int sent = socket.Send(data, position, size, SocketFlags.None);
                 position += sent;
 
@@ -27,18 +27,13 @@ namespace Kronos.Core.Networking
             int position = 0;
             while (position != count)
             {
-                int size =  CalculateBufferSize(data, position);
+                int size = Math.Min(count - position, BufferSize);
                 var segment = new ArraySegment<byte>(data, position, size);
                 int received = await socket.ReceiveAsync(segment, SocketFlags.None);
                 position += received;
 
                 Debug.Assert(position <= count);
             }
-        }
-
-        private static int CalculateBufferSize(byte[] data, int position)
-        {
-            return Math.Min(data.Length - position, BufferSize);
         }
     }
 }
