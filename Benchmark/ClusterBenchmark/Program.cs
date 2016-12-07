@@ -1,7 +1,5 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using System.Linq;
-using System.Threading.Tasks;
 using ClusterBenchmark.Tasks;
 
 namespace ClusterBenchmark
@@ -34,8 +32,7 @@ namespace ClusterBenchmark
 
             Console.WriteLine($"{DateTime.Now:O} Starting benchmark { benchmarkName} with {iterations} iterations, {packageSize}mb data, parallel: {parallelRun}, local: {localRun}");
 
-            int workersCount = parallelRun == false ? 1 : 2;
-            Task<Results>[] workers = new Task<Results>[workersCount];
+            int workers = parallelRun == false ? 1 : Environment.ProcessorCount;
 
             string config = localRun ? "local.json" : "KronosConfig.json";
             Func<Benchmark> newBenchmark;
@@ -45,16 +42,9 @@ namespace ClusterBenchmark
                 Console.WriteLine($"Cannot find benchmark {benchmarkName}");
             }
 
-            for (int i = 0; i < workersCount; i++)
-            {
-                workers[i] = newBenchmark().Run(config, (int)Math.Ceiling(iterations / (double)workersCount), packageSize);
-            }
+            var result = newBenchmark().Run(config, iterations, workers, packageSize).Result;
 
-            Task.WaitAll(workers);
-
-            double time = workers.Max(x => x.Result.Time.TotalMilliseconds);
-            Console.WriteLine($"Done in {time}ms, which is {time * 0.001}s");
-            Console.WriteLine($"There was {workers.Sum(x => x.Result.Exceptions.Count())} exceptions");
+            Console.WriteLine($"Done in {result.Time.TotalMilliseconds}ms, which is {result.Time.TotalSeconds}s, exceptions: {result.Exceptions.Count}");
         }
     }
 }

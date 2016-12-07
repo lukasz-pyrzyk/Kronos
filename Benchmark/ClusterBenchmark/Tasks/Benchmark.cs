@@ -1,4 +1,4 @@
-﻿using System;
+using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
 using Kronos.Client;
@@ -7,7 +7,7 @@ namespace ClusterBenchmark.Tasks
 {
     public abstract class Benchmark
     {
-        public async Task<Results> Run(string configPath, int iterations, int packageSize)
+        public async Task<Results> Run(string configPath, int iterations, int workersCount, int packageSize)
         {
             var results = new Results();
             var watch = new Stopwatch();
@@ -17,19 +17,34 @@ namespace ClusterBenchmark.Tasks
                 await WarnupServer(client);
 
                 var package = PrepareData(Mb(packageSize));
+
+                int iterationsPerWorker = (int)Math.Ceiling(iterations / (double)workersCount);
+                Console.WriteLine($"Starting {workersCount} workers with {iterationsPerWorker} iterations per each one");
+                Task[] workers = new Task[workersCount];
+
                 watch.Start();
-                for (int i = 0; i < iterations; i++)
+                for (int w = 0; w < workersCount; w++)
                 {
-                    Debug.WriteLine($"Iteration : {i}");
-                    try
-                    {
-                        await RunInternalAsync(client, package);
-                    }
-                    catch(Exception ex)
-                    {
-                        results.Exceptions.Add(ex);
-                    }
+                    Task workerTask = Task.Run(async () => {
+                        IKronosClient ownClient = KronosClientFactory.CreateClient(configPath);
+                        for (int i = 0; i < iterationsPerWorker; i++)
+                        {
+                            try
+                            {
+                                await RunInternalAsync(ownClient, package);
+                            }
+                            catch(Exception ex)
+                            {
+                                results.Exceptions.Add(ex);
+                            }
+                        }
+                    });
+
+                    workers[w] = workerTask;
                 }
+
+                await Task.WhenAll(workers);
+
                 watch.Stop();
                 results.Time = watch.Elapsed;
             }
