@@ -16,37 +16,24 @@ namespace Kronos.Server.Listening
         private const int IntSize = sizeof(int);
         private const int RequestTypeSize = sizeof(ushort);
 
-        private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
-
         public async Task<RequestArgs> ReceiveRequestAsync(Socket client)
         {
-            RequestArgs args = null;
-            try
-            {
-                byte[] lengthBuffer = ArrayPool<byte>.Shared.Rent(IntSize); // TODO stackalloc
-                await SocketUtils.ReceiveAllAsync(client, lengthBuffer, IntSize);
-                int dataLength = BitConverter.ToInt32(lengthBuffer, 0);
-                ArrayPool<byte>.Shared.Return(lengthBuffer);
-                Debug.Assert(dataLength != 0);
+            byte[] lengthBuffer = ArrayPool<byte>.Shared.Rent(IntSize); // TODO stackalloc
+            await SocketUtils.ReceiveAllAsync(client, lengthBuffer, IntSize).ConfigureAwait(false);
+            int dataLength = BitConverter.ToInt32(lengthBuffer, 0);
+            ArrayPool<byte>.Shared.Return(lengthBuffer);
+            Debug.Assert(dataLength != 0);
 
-                byte[] typeBuffer = ArrayPool<byte>.Shared.Rent(RequestTypeSize); // todo stackalloc;
-                await SocketUtils.ReceiveAllAsync(client, typeBuffer, RequestTypeSize);
-                RequestType requestType = SerializationUtils.Deserialize<RequestType>(typeBuffer, RequestTypeSize);
-                ArrayPool<byte>.Shared.Return(typeBuffer);
-                Debug.Assert(requestType != RequestType.Unknown);
+            byte[] typeBuffer = ArrayPool<byte>.Shared.Rent(RequestTypeSize); // todo stackalloc;
+            await SocketUtils.ReceiveAllAsync(client, typeBuffer, RequestTypeSize).ConfigureAwait(false);
+            RequestType requestType = SerializationUtils.Deserialize<RequestType>(typeBuffer, RequestTypeSize);
+            ArrayPool<byte>.Shared.Return(typeBuffer);
+            Debug.Assert(requestType != RequestType.Unknown);
 
-                int packageSize = dataLength - RequestTypeSize;
-                byte[] data = ArrayPool<byte>.Shared.Rent(packageSize);
-                await SocketUtils.ReceiveAllAsync(client, data, packageSize);
-                return new RequestArgs(requestType, data, packageSize, client);
-            }
-            catch (SocketException ex)
-            {
-                _logger.Error(
-                    $"Exception during receiving request from client {client?.RemoteEndPoint} + {ex}");
-            }
-
-            return args;
+            int packageSize = dataLength - RequestTypeSize;
+            byte[] data = ArrayPool<byte>.Shared.Rent(packageSize);
+            await SocketUtils.ReceiveAllAsync(client, data, packageSize).ConfigureAwait(false);
+            return new RequestArgs(requestType, data, packageSize, client);
         }
     }
 }
