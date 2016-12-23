@@ -25,7 +25,11 @@ namespace Kronos.Server
         {
             LoggerSetup();
 
-            int port = Convert.ToInt32(args[0]);
+            int port = 5000;
+            if (args.Length == 1)
+            {
+                int.TryParse(args[0], out port);
+            }
 
             Task.WaitAll(StartAsync(port));
         }
