@@ -44,7 +44,7 @@ namespace Kronos.Server.Listening
                 {
                     try
                     {
-                        Socket socket = await _listener.AcceptSocketAsync();
+                        Socket socket = await _listener.AcceptSocketAsync().ConfigureAwait(false);
                         ProcessSocketConnection(socket);
                     }
                     catch (Exception ex)
