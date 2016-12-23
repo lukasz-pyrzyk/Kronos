@@ -3,6 +3,7 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
+using Kronos.Core.Networking;
 using Kronos.Core.Processing;
 using Kronos.Server.EventArgs;
 using NLog;
@@ -78,11 +79,14 @@ namespace Kronos.Server.Listening
         {
             Interlocked.Increment(ref _activeConnections);
             string id = Guid.NewGuid().ToString();
-            RequestArgs request = await _processor.ReceiveRequestAsync(socket);
+            RequestArgs request = await _processor.ReceiveRequestAsync(socket).ConfigureAwait(false);
             try
             {
-                _logger.Debug($"Processing new request with Id: {id}, type: {request.Type}, {request.Received} bytes");
-                _requestProcessor.HandleIncomingRequest(request.Type, request.Request, request.Received, request.Client);
+                _logger.Debug($"Processing new request {request.Type} with Id: {id}, {request.Received} bytes");
+                byte[] response = _requestProcessor.Handle(request.Type, request.Request, request.Received);
+                _logger.Debug($"Sending response with {response.Length} bytes to the user");
+                await SocketUtils.SendAllAsync(socket, response).ConfigureAwait(false);
+
                 _logger.Debug($"Processing {id} finished");
             }
             catch (Exception ex)

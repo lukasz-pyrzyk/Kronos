@@ -45,13 +45,13 @@ namespace Kronos.Client.Transfer
                 try
                 {
                     Debug.WriteLine("Connecting to the server socket");
-                    await socket.ConnectAsync(_host);
+                    await socket.ConnectAsync(_host).ConfigureAwait(false);
 
                     Debug.WriteLine("Sending request");
-                    Send(request, socket);
+                    await SendAsync(request, socket).ConfigureAwait(false);
 
                     Debug.WriteLine("Waiting for response");
-                    response = await ReceiveAsync(socket);
+                    response = await ReceiveAsync(socket).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
@@ -61,12 +61,12 @@ namespace Kronos.Client.Transfer
                 {
                     socket.Dispose();
                 }
-            });
+            }).ConfigureAwait(false);
 
             return response;
         }
 
-        private static void Send(IRequest request, Socket server)
+        private static async Task SendAsync(IRequest request, Socket server)
         {
             // todo array pool and stackalloc
             byte[] data;
@@ -80,8 +80,8 @@ namespace Kronos.Client.Transfer
             byte[] lengthBytes = new byte[IntSize]; // stackalloc
             NoAllocBitConverter.GetBytes(data.Length, lengthBytes);
 
-            SocketUtils.SendAll(server, lengthBytes);
-            SocketUtils.SendAll(server, data);
+            await SocketUtils.SendAllAsync(server, lengthBytes).ConfigureAwait(false);
+            await SocketUtils.SendAllAsync(server, data).ConfigureAwait(false);
         }
 
         private static async Task<byte[]> ReceiveAsync(Socket socket)
