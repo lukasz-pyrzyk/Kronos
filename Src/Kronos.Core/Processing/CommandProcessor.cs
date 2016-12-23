@@ -1,5 +1,4 @@
-﻿using System.Net.Sockets;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Kronos.Core.Networking;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
@@ -11,7 +10,7 @@ namespace Kronos.Core.Processing
     {
         public abstract RequestType Type { get; }
 
-        public abstract void Handle(ref TRequest request, IStorage storage, Socket client);
+        public abstract byte[] Process(ref TRequest request, IStorage storage);
 
         public async Task<TResponse> ExecuteAsync(TRequest request, IConnection service)
         {
@@ -35,11 +34,9 @@ namespace Kronos.Core.Processing
             return await Task.WhenAll(responses);
         }
 
-        protected void Reply(TResponse response, Socket client)
+        protected byte[] Reply(TResponse response)
         {
-            byte[] data = SerializationUtils.SerializeToStreamWithLength(response);
-
-            SocketUtils.SendAll(client, data);
+            return SerializationUtils.SerializeToStreamWithLength(response);
         }
 
         protected virtual T PrepareResponse<T>(byte[] responseBytes)

@@ -45,7 +45,7 @@ namespace Kronos.Core.Tests.Processing
                 .Returns(expectedBytes.Length);
 
             // Act
-            processor.Handle(ref request, Substitute.For<IStorage>(), socket);
+            processor.Process(ref request, Substitute.For<IStorage>());
 
             // Assert
             socket.Received(1).Send(Arg.Is<byte[]>(x => x.SequenceEqual(expectedBytes)), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<SocketFlags>());
@@ -55,9 +55,9 @@ namespace Kronos.Core.Tests.Processing
         {
             public override RequestType Type { get; }
 
-            public override void Handle(ref InsertRequest request, IStorage storage, Socket client)
+            public override byte[] Process(ref InsertRequest request, IStorage storage)
             {
-                Reply(true, client);
+                return Reply(true);
             }
         }
     }

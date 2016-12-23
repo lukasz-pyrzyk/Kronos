@@ -1,5 +1,4 @@
 using System;
-using System.Net.Sockets;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Kronos.Core.Storage;
@@ -38,30 +37,25 @@ namespace Kronos.Core.Processing
             _containsProcessor = containsProcessor;
         }
 
-        public void HandleIncomingRequest(RequestType requestType, byte[] request, int receivedBytes, Socket client)
+        public byte[] Handle(RequestType requestType, byte[] request, int receivedBytes)
         {
             switch (requestType)
             {
                 case RequestType.Insert:
                     var insertRequest = SerializationUtils.Deserialize<InsertRequest>(request, receivedBytes);
-                    _insertProcessor.Handle(ref insertRequest, _storage, client);
-                    break;
+                    return _insertProcessor.Process(ref insertRequest, _storage);
                 case RequestType.Get:
                     var getRequest = SerializationUtils.Deserialize<GetRequest>(request, receivedBytes);
-                    _getProcessor.Handle(ref getRequest, _storage, client);
-                    break;
+                    return _getProcessor.Process(ref getRequest, _storage);
                 case RequestType.Delete:
                     var deleteRequest = SerializationUtils.Deserialize<DeleteRequest>(request, receivedBytes);
-                    _deleteProcessor.Handle(ref deleteRequest, _storage, client);
-                    break;
+                    return _deleteProcessor.Process(ref deleteRequest, _storage);
                 case RequestType.Count:
                     var countRequest = SerializationUtils.Deserialize<CountRequest>(request, receivedBytes);
-                    _countProcessor.Handle(ref countRequest, _storage, client);
-                    break;
+                    return _countProcessor.Process(ref countRequest, _storage);
                 case RequestType.Contains:
                     var containsRequest = SerializationUtils.Deserialize<ContainsRequest>(request, receivedBytes);
-                    _containsProcessor.Handle(ref containsRequest, _storage, client);
-                    break;
+                    return _containsProcessor.Process(ref containsRequest, _storage);
                 default:
                     throw new InvalidOperationException($"Cannot find processor for type {requestType}");
             }

@@ -1,5 +1,4 @@
-﻿using System.Net.Sockets;
-using Kronos.Core.Requests;
+﻿using Kronos.Core.Requests;
 using Kronos.Core.Storage;
 
 namespace Kronos.Core.Processing
@@ -8,11 +7,11 @@ namespace Kronos.Core.Processing
     {
         public override RequestType Type { get; } = RequestType.Insert;
 
-        public override void Handle(ref InsertRequest request, IStorage storage, Socket client)
+        public override byte[] Process(ref InsertRequest request, IStorage storage)
         {
             storage.AddOrUpdate(request.Key, request.ExpiryDate, request.Object);
 
-            Reply(true, client);
+            return Reply(true);
         }
     }
 }

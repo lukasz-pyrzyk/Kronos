@@ -1,5 +1,4 @@
-﻿using System.Net.Sockets;
-using Kronos.Core.Requests;
+﻿using Kronos.Core.Requests;
 using Kronos.Core.Storage;
 
 namespace Kronos.Core.Processing
@@ -8,11 +7,11 @@ namespace Kronos.Core.Processing
     {
         public override RequestType Type { get; } = RequestType.Delete;
 
-        public override void Handle(ref DeleteRequest request, IStorage storage, Socket client)
+        public override byte[] Process(ref DeleteRequest request, IStorage storage)
         {
             bool deleted = storage.TryRemove(request.Key);
 
-            Reply(deleted, client);
+            return Reply(deleted);
         }
     }
 }

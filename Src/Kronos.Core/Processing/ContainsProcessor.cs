@@ -1,5 +1,4 @@
-﻿using System.Net.Sockets;
-using Kronos.Core.Requests;
+﻿using Kronos.Core.Requests;
 using Kronos.Core.Storage;
 
 namespace Kronos.Core.Processing
@@ -8,11 +7,11 @@ namespace Kronos.Core.Processing
     {
         public override RequestType Type { get; } = RequestType.Contains;
 
-        public override void Handle(ref ContainsRequest request, IStorage storage, Socket client)
+        public override byte[] Process(ref ContainsRequest request, IStorage storage)
         {
             bool contains = storage.Contains(request.Key);
 
-            Reply(contains, client);
+            return Reply(contains);
         }
     }
 }
