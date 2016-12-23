@@ -1,6 +1,9 @@
 using System;
 using System.Collections.Generic;
+using BenchmarkDotNet.Running;
+using ClusterBenchmark.Benchmarks;
 using ClusterBenchmark.Tasks;
+using Benchmark = ClusterBenchmark.Tasks.Benchmark;
 
 namespace ClusterBenchmark
 {
@@ -19,32 +22,34 @@ namespace ClusterBenchmark
 
         public static void Main(string[] args)
         {
-            if (args.Length != 5)
-            {
-                Console.WriteLine("Passed invalid number arguments");
-            }
+            BenchmarkRunner.Run<AppBenchmark>();
 
-            string benchmarkName = args[0];
-            int iterations = int.Parse(args[1]);
-            int packageSize = int.Parse(args[2]);
-            bool parallelRun = bool.Parse(args[3]);
-            bool localRun = bool.Parse(args[4]);
+            //if (args.Length != 5)
+            //{
+            //    Console.WriteLine("Passed invalid number arguments");
+            //}
 
-            Console.WriteLine($"{DateTime.Now:O} Starting benchmark { benchmarkName} with {iterations} iterations, {packageSize}mb data, parallel: {parallelRun}, local: {localRun}");
+            //string benchmarkName = args[0];
+            //int iterations = int.Parse(args[1]);
+            //int packageSize = int.Parse(args[2]);
+            //bool parallelRun = bool.Parse(args[3]);
+            //bool localRun = bool.Parse(args[4]);
 
-            int workers = parallelRun == false ? 1 : Environment.ProcessorCount;
+            //Console.WriteLine($"{DateTime.Now:O} Starting benchmark { benchmarkName} with {iterations} iterations, {packageSize}mb data, parallel: {parallelRun}, local: {localRun}");
 
-            string config = localRun ? "local.json" : "KronosConfig.json";
-            Func<Benchmark> newBenchmark;
-            Benchmarks.TryGetValue(benchmarkName, out newBenchmark);
-            if (newBenchmark == null)
-            {
-                Console.WriteLine($"Cannot find benchmark {benchmarkName}");
-            }
+            //int workers = parallelRun == false ? 1 : Environment.ProcessorCount;
 
-            var result = newBenchmark().Run(config, iterations, workers, packageSize).Result;
+            //string config = localRun ? "local.json" : "KronosConfig.json";
+            //Func<Benchmark> newBenchmark;
+            //Benchmarks.TryGetValue(benchmarkName, out newBenchmark);
+            //if (newBenchmark == null)
+            //{
+            //    Console.WriteLine($"Cannot find benchmark {benchmarkName}");
+            //}
 
-            Console.WriteLine($"Done in {result.Time.TotalMilliseconds}ms, which is {result.Time.TotalSeconds}s, exceptions: {result.Exceptions.Count}");
+            //var result = newBenchmark().Run(config, iterations, workers, packageSize).Result;
+
+            //Console.WriteLine($"Done in {result.Time.TotalMilliseconds}ms, which is {result.Time.TotalSeconds}s, exceptions: {result.Exceptions.Count}");
         }
     }
 }

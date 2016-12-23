@@ -2,7 +2,7 @@
     "ClusterConfig": {
         "Servers": [
             {
-                "Domain": "localhost",
+                "Domain": "cerber.cloudapp.net",
                 "Port": 5000
             }
         ]
