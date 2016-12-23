@@ -28,7 +28,7 @@ namespace Kronos.Core.Tests.Requests
             Assert.Equal(ex.Message, $"Cannot find processor for type {type}");
         }
 
-        [Theory(Skip = "Fix it")]
+        [Theory]
         [MemberData(nameof(TestData))]
         public void ProcessRequest_DetectsAndDeserializesReqeustType(IRequest request, object specificProcessor)
         {
@@ -37,7 +37,8 @@ namespace Kronos.Core.Tests.Requests
 
             IRequestProcessor processor = new RequestProcessor(storage);
 
-            processor.Handle(request.Type, requestBytes, requestBytes.Length);
+            byte[] response = processor.Handle(request.Type, requestBytes, requestBytes.Length);
+            Assert.NotNull(response);
         }
 
         public static IEnumerable<object[]> TestData()

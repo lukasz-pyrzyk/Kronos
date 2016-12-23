@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Net.Sockets;
-using Kronos.Core.Processing;
+﻿using Kronos.Core.Processing;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Kronos.Core.Storage;
@@ -11,7 +9,6 @@ namespace Kronos.Core.Tests.Processing
 {
     public class ContainsProcessorTests
     {
-        [Theory(Skip = "Awaiting System.Threading.Channels (IChannel) or TypeMock")]
         [InlineData(true)]
         [InlineData(false)]
         public void Handle_ReturnsTrueOrFalseIfElementIsInTheStorage(bool contains)
@@ -24,10 +21,10 @@ namespace Kronos.Core.Tests.Processing
             byte[] expectedBytes = SerializationUtils.SerializeToStreamWithLength(contains);
 
             // act
-            processor.Process(ref request, storage);
+            byte[] response = processor.Process(ref request, storage);
 
             // assert
-            //socket.Received(1).Send(Arg.Is<byte[]>(x => x.SequenceEqual(expectedBytes)), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<SocketFlags>());
+            Assert.Equal(expectedBytes, response);
         }
     }
 }

@@ -11,7 +11,6 @@ namespace Kronos.Core.Tests.Processing
 {
     public class DeleteProcessorTests
     {
-        [Theory(Skip = "Awaiting System.Threading.Channels (IChannel) or TypeMock")]
         [InlineData(true)]
         [InlineData(false)]
         public void Handle_ReturnsTrueOrFalseIfElementWasDeleted(bool deleted)
@@ -22,15 +21,11 @@ namespace Kronos.Core.Tests.Processing
             var storage = Substitute.For<IStorage>();
             storage.TryRemove(request.Key).Returns(deleted);
             byte[] expectedBytes = SerializationUtils.SerializeToStreamWithLength(deleted);
-            var socket = Substitute.For<Socket>();
-            socket.Send(Arg.Any<byte[]>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<SocketFlags>())
-                .Returns(expectedBytes.Length);
 
-            // act
-            processor.Process(ref request, storage);
+            byte[] response = processor.Process(ref request, storage);
 
             // assert
-            socket.Received(1).Send(Arg.Is<byte[]>(x => x.SequenceEqual(expectedBytes)), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<SocketFlags>());
+            Assert.Equal(expectedBytes, response);
         }
     }
 }

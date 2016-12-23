@@ -32,23 +32,19 @@ namespace Kronos.Core.Tests.Processing
             Assert.Equal(fakeResult, result);
         }
 
-        [Fact(Skip = "Awaiting System.Threading.Channels (IChannel) or TypeMock")]
+        [Fact]
         public void SendsDataToTheClient()
         {
             // Arrange
             var request = new InsertRequest();
             var processor = new FakeProcessor();
-            var socket = Substitute.For<Socket>();
             byte[] expectedBytes = SerializationUtils.SerializeToStreamWithLength(true);
 
-            socket.Send(Arg.Any<byte[]>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<SocketFlags>())
-                .Returns(expectedBytes.Length);
-
             // Act
-            processor.Process(ref request, Substitute.For<IStorage>());
+            byte[] response = processor.Process(ref request, Substitute.For<IStorage>());
 
-            // Assert
-            socket.Received(1).Send(Arg.Is<byte[]>(x => x.SequenceEqual(expectedBytes)), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<SocketFlags>());
+            // assert
+            Assert.Equal(expectedBytes, response);
         }
 
         internal class FakeProcessor : CommandProcessor<InsertRequest, bool>

@@ -13,62 +13,54 @@ namespace Kronos.Core.Tests.Processing
 {
     public class GetProcessorTests
     {
-        [Fact(Skip = "Awaiting System.Threading.Channels (IChannel) or TypeMock")]
         public void Handle_ReturnsObjectFromCache()
         {
             // arrange
-            byte[] obj = Encoding.UTF8.GetBytes("siema");
-            byte[] response;
+            byte[] obj = Encoding.UTF8.GetBytes("lorem ipsum");
             bool expected = true;
+            byte[] dummy;
             var request = new GetRequest();
             var processor = new GetProcessor();
             var storage = Substitute.For<IStorage>();
 
-            storage.TryGet(request.Key, out response).Returns(x =>
+            storage.TryGet(request.Key, out dummy).Returns(x =>
             {
                 x[1] = obj;
                 return expected;
             });
 
             byte[] expectedBytes = SerializationUtils.SerializeToStreamWithLength(obj);
-            var socket = Substitute.For<Socket>();
-            socket.Send(Arg.Any<byte[]>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<SocketFlags>())
-                .Returns(expectedBytes.Length);
 
-            // act
-            processor.Process(ref request, storage);
+            // Act
+            byte[] response = processor.Process(ref request, storage);
 
             // assert
-            socket.Received(1).Send(Arg.Is<byte[]>(x => x.SequenceEqual(expectedBytes)), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<SocketFlags>());
+            Assert.Equal(expectedBytes, response);
         }
 
-        [Fact(Skip = "Awaiting System.Threading.Channels (IChannel) or TypeMock")]
         public void Handle_ReturnsNotFoundWhenObjectIsNotInTheCache()
         {
             // arrange
             byte[] obj = SerializationUtils.Serialize(RequestStatusCode.NotFound);
-            byte[] response;
+            byte[] dummy;
             bool expected = false;
             var request = new GetRequest();
             var processor = new GetProcessor();
             var storage = Substitute.For<IStorage>();
 
-            storage.TryGet(request.Key, out response).Returns(x =>
+            storage.TryGet(request.Key, out dummy).Returns(x =>
             {
                 x[1] = obj;
                 return expected;
             });
 
             byte[] expectedBytes = SerializationUtils.SerializeToStreamWithLength(obj);
-            var socket = Substitute.For<Socket>();
-            socket.Send(Arg.Any<byte[]>(), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<SocketFlags>())
-                .Returns(expectedBytes.Length);
 
-            // act
-            processor.Process(ref request, storage);
+            // Act
+            byte[] response = processor.Process(ref request, storage);
 
             // assert
-            socket.Received(1).Send(Arg.Is<byte[]>(x => x.SequenceEqual(expectedBytes)), Arg.Any<int>(), Arg.Any<int>(), Arg.Any<SocketFlags>());
+            Assert.Equal(expectedBytes, response);
         }
     }
 }
