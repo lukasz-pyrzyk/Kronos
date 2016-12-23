@@ -37,14 +37,14 @@ namespace Kronos.Client.Transfer
 
         public async Task<byte[]> SendAsync<TRequest>(TRequest request) where TRequest : IRequest
         {
-            Socket socket = new Socket(SocketType.Stream, ProtocolType.IP);
-
+            Socket socket = null;
             byte[] response = null;
             await _policy.ExecuteAsync(async () =>
             {
                 try
                 {
                     Debug.WriteLine("Connecting to the server socket");
+                    socket = new Socket(SocketType.Stream, ProtocolType.IP);
                     await socket.ConnectAsync(_host).ConfigureAwait(false);
 
                     Debug.WriteLine("Sending request");
@@ -52,6 +52,8 @@ namespace Kronos.Client.Transfer
 
                     Debug.WriteLine("Waiting for response");
                     response = await ReceiveAsync(socket).ConfigureAwait(false);
+
+                    return response;
                 }
                 catch (Exception ex)
                 {
@@ -59,7 +61,7 @@ namespace Kronos.Client.Transfer
                 }
                 finally
                 {
-                    socket.Dispose();
+                    socket?.Dispose();
                 }
             }).ConfigureAwait(false);
 
@@ -88,11 +90,11 @@ namespace Kronos.Client.Transfer
         {
             // todo array pool and stackalloc
             byte[] sizeBytes = new byte[IntSize];
-            await SocketUtils.ReceiveAllAsync(socket, sizeBytes, sizeBytes.Length);
+            await SocketUtils.ReceiveAllAsync(socket, sizeBytes, sizeBytes.Length).ConfigureAwait(false);
             int size = BitConverter.ToInt32(sizeBytes, 0);
 
             byte[] requestBytes = new byte[size];
-            await SocketUtils.ReceiveAllAsync(socket, requestBytes, requestBytes.Length);
+            await SocketUtils.ReceiveAllAsync(socket, requestBytes, requestBytes.Length).ConfigureAwait(false);
 
             return requestBytes;
         }
