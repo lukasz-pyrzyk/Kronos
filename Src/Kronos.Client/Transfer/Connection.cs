@@ -79,8 +79,7 @@ namespace Kronos.Client.Transfer
                 data = ms.ToArray();
             }
 
-            byte[] lengthBytes = new byte[IntSize]; // stackalloc
-            NoAllocBitConverter.GetBytes(data.Length, lengthBytes);
+            byte[] lengthBytes = BitConverter.GetBytes(data.Length);
 
             await SocketUtils.SendAllAsync(server, lengthBytes).ConfigureAwait(false);
             await SocketUtils.SendAllAsync(server, data).ConfigureAwait(false);
