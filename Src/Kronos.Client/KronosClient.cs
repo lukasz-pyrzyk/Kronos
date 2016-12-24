@@ -16,7 +16,7 @@ namespace Kronos.Client
     /// Official Kronos client
     /// <see cref="IKronosClient" />
     /// </summary>
-    internal class KronosClient : IKronosClient
+    public class KronosClient : IKronosClient
     {
         private readonly ServerProvider _serverProvider;
         private readonly Func<IPEndPoint, IConnection> _connectionResolver;
@@ -31,7 +31,7 @@ namespace Kronos.Client
         {
         }
 
-        internal KronosClient(KronosConfig config, Func<IPEndPoint, IConnection> connectionResolver)
+        public KronosClient(KronosConfig config, Func<IPEndPoint, IConnection> connectionResolver)
         {
             _serverProvider = new ServerProvider(config.ClusterConfig);
             _connectionResolver = connectionResolver;
