@@ -15,7 +15,7 @@ $projects = @(
 $error = 0;
 
 function RunCodeCoverage($testProject, $filter) {
-    & $openCover -target:dotnet.exe `"-targetargs:test $testProject`" -output:$fileName -register:'user' -filter:$filter -mergeoutput -oldStyle -returntargetcode
+    & $openCover -target:dotnet.exe `"-targetargs:test $testProject`" -output:$fileName -register:'user' -mergeoutput -oldStyle -returntargetcode
 }
 
 # run unit tests and calculate code coverage for each test project
