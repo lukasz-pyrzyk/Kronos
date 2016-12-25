@@ -1,3 +1,5 @@
+dotnet --version
+
 # build function for project
 write-host "Build started"
 # restore packages
