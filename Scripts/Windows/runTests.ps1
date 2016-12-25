@@ -6,10 +6,10 @@ $openCover = Get-ChildItem -Path "C:\Users\$([Environment]::UserName)\.nuget\pac
 
 # test projects to run with OpenCover
 $projects = @(
-    @{Path="Tests\Kronos.Core.Tests"; Filter="+[Kronos.Core]*"}
-    @{Path="Tests\Kronos.Client.Tests"; Filter="+[Kronos.Client]*"}
-    @{Path="Tests\Kronos.Server.Tests"; Filter="+[Kronos.Server]*"}
-    @{Path="Tests\Kronos.AcceptanceTest"; Filter="+[Kronos.AcceptanceTest]*"}
+    @{Path="Tests\Kronos.Core.Tests\Kronos.Core.Tests.csproj"; Filter="+[Kronos.Core]*"}
+    @{Path="Tests\Kronos.Client.Tests\Kronos.Client.Tests.csproj"; Filter="+[Kronos.Client]*"}
+    @{Path="Tests\Kronos.Server.Tests\Kronos.Server.Tests.csproj"; Filter="+[Kronos.Server]*"}
+    @{Path="Tests\Kronos.AcceptanceTest\Kronos.AcceptanceTest.Tests.csproj"; Filter="+[Kronos.AcceptanceTest]*"}
 )
 
 $error = 0;
