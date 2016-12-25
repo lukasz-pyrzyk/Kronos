@@ -4,9 +4,7 @@ param (
 
 # projects to build
 $projects = @(
-    "Src\Kronos.Core",
-    "Src\Kronos.Client",
-    "Src\Kronos.Server"
+    "Kronos.sln"
 )
 
 # build function for project
