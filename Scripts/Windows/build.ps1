@@ -1,33 +1,14 @@
-param (
-    [Parameter(Mandatory=$true)][string]$version = 0
-)
-
-# projects to build
-$projects = @(
-    "Kronos.sln"
-)
-
 # build function for project
-function Build($path) {
-    dotnet build $path -c Release
-}
-
-function RestorePackages(){
-    dotnet restore
-}
-
 write-host "Build started"
-
 # restore packages
 write-host "Restoring packages"
-RestorePackages
+dotnet restore
+write-host "Restoring packages finished"
 
-# build each project
-foreach ($project in $projects){
-    write-host "Building " $project "with suffix version " $version
-    Build($project)
-}
-
+write-host "Building"
+dotnet build
+write-host "Building finished"
+	
 # Set build as failed if any error occurred
 if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode )  }
 
