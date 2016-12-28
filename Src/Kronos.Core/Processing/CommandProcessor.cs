@@ -10,7 +10,7 @@ namespace Kronos.Core.Processing
     {
         public abstract RequestType Type { get; }
 
-        public abstract byte[] Process(ref TRequest request, IStorage storage);
+        public abstract TResponse Process(ref TRequest request, IStorage storage);
 
         public async Task<TResponse> ExecuteAsync(TRequest request, IConnection service)
         {
@@ -32,11 +32,6 @@ namespace Kronos.Core.Processing
             }
 
             return await Task.WhenAll(responses);
-        }
-
-        protected byte[] Reply(TResponse response)
-        {
-            return SerializationUtils.SerializeToStreamWithLength(response);
         }
 
         protected virtual T PrepareResponse<T>(byte[] responseBytes)

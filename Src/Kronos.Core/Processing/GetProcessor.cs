@@ -17,7 +17,7 @@ namespace Kronos.Core.Processing
                 response = SerializationUtils.Serialize(RequestStatusCode.NotFound);
             }
 
-            return Reply(response);
+            return response;
         }
     }
 }

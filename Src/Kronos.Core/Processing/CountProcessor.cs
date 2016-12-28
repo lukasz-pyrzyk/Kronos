@@ -7,11 +7,11 @@ namespace Kronos.Core.Processing
     {
         public override RequestType Type { get; } = RequestType.Count;
 
-        public override byte[] Process(ref CountRequest request, IStorage storage)
+        public override int Process(ref CountRequest request, IStorage storage)
         {
             int count = storage.Count;
 
-            return Reply(count);
+            return count;
         }
     }
 }

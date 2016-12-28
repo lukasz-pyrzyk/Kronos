@@ -3,7 +3,6 @@ using System.Net;
 using System.Net.Sockets;
 using System.Threading;
 using System.Threading.Tasks;
-using Kronos.Core.Networking;
 using Kronos.Core.Processing;
 using Kronos.Server.EventArgs;
 using NLog;
@@ -44,8 +43,8 @@ namespace Kronos.Server.Listening
                 {
                     try
                     {
-                        Socket socket = await _listener.AcceptSocketAsync().ConfigureAwait(false);
-                        ProcessSocketConnection(socket);
+                        TcpClient client = await _listener.AcceptTcpClientAsync().ConfigureAwait(false);
+                        ProcessSocketConnection(client);
                     }
                     catch (Exception ex)
                     {
@@ -75,23 +74,26 @@ namespace Kronos.Server.Listening
             Stop();
         }
 
-        private async Task ProcessSocketConnection(Socket socket)
+        private async Task ProcessSocketConnection(TcpClient client)
         {
             Interlocked.Increment(ref _activeConnections);
             string id = Guid.NewGuid().ToString();
-            RequestArgs request = await _processor.ReceiveRequestAsync(socket).ConfigureAwait(false);
+            NetworkStream stream = client.GetStream();
+            RequestArgs request = await _processor.ReceiveRequestAsync(stream).ConfigureAwait(false);
             try
             {
                 _logger.Debug($"Processing new request {request.Type} with Id: {id}, {request.Received} bytes");
-                byte[] response = _requestProcessor.Handle(request.Type, request.Request, request.Received);
-                _logger.Debug($"Sending response with {response.Length} bytes to the user");
-                await SocketUtils.SendAllAsync(socket, response).ConfigureAwait(false);
-
+                _requestProcessor.Handle(request.Type, request.Request, request.Received, stream);
+                await stream.FlushAsync();
                 _logger.Debug($"Processing {id} finished");
             }
             catch (Exception ex)
             {
                 _logger.Error($"Exception on processing request {id}, {ex}");
+            }
+            finally
+            {
+                client.Dispose();
             }
 
             Interlocked.Decrement(ref _activeConnections);

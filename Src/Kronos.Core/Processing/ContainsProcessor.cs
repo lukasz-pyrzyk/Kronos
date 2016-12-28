@@ -7,11 +7,11 @@ namespace Kronos.Core.Processing
     {
         public override RequestType Type { get; } = RequestType.Contains;
 
-        public override byte[] Process(ref ContainsRequest request, IStorage storage)
+        public override bool Process(ref ContainsRequest request, IStorage storage)
         {
             bool contains = storage.Contains(request.Key);
 
-            return Reply(contains);
+            return contains;
         }
     }
 }

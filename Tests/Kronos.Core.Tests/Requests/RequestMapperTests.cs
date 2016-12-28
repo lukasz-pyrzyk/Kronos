@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Net.Sockets;
+using System.IO;
 using Kronos.Core.Processing;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
@@ -23,7 +23,7 @@ namespace Kronos.Core.Tests.Requests
 
             Exception ex =
                 Assert.Throws<InvalidOperationException>(
-                    () => processor.Handle(type, requestBytes, requestBytes.Length));
+                    () => processor.Handle(type, requestBytes, requestBytes.Length, new MemoryStream()));
 
             Assert.Equal(ex.Message, $"Cannot find processor for type {type}");
         }
@@ -37,8 +37,10 @@ namespace Kronos.Core.Tests.Requests
 
             IRequestProcessor processor = new RequestProcessor(storage);
 
-            byte[] response = processor.Handle(request.Type, requestBytes, requestBytes.Length);
-            Assert.NotNull(response);
+            var ms = new MemoryStream();
+
+            processor.Handle(request.Type, requestBytes, requestBytes.Length, ms);
+            Assert.True(ms.Position > 0);
         }
 
         public static IEnumerable<object[]> TestData()

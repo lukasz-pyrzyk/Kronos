@@ -1,8 +1,5 @@
-﻿using System.Linq;
-using System.Net.Sockets;
-using Kronos.Core.Processing;
+﻿using Kronos.Core.Processing;
 using Kronos.Core.Requests;
-using Kronos.Core.Serialization;
 using Kronos.Core.Storage;
 using NSubstitute;
 using Xunit;
@@ -16,17 +13,15 @@ namespace Kronos.Core.Tests.Processing
             // arrange
             var request = new CountRequest();
             var processor = new CountProcessor();
-            int count = 5;
+            int expected = 5;
             var storage = Substitute.For<IStorage>();
-            storage.Count.Returns(count);
-
-            byte[] expectedBytes = SerializationUtils.SerializeToStreamWithLength(count);
+            storage.Count.Returns(expected);
 
             // act
-            byte[] response = processor.Process(ref request, storage);
+            int response = processor.Process(ref request, storage);
 
             // assert
-            Assert.Equal(expectedBytes, response);
+            Assert.Equal(expected, response);
         }
     }
 }

@@ -1,9 +1,10 @@
-﻿using Kronos.Core.Requests;
+﻿using System.IO;
+using Kronos.Core.Requests;
 
 namespace Kronos.Core.Processing
 {
     public interface IRequestProcessor
     {
-        byte[] Handle(RequestType requestType, byte[] request, int received);
+        void Handle(RequestType requestType, byte[] request, int received, Stream responseStream);
     }
 }
