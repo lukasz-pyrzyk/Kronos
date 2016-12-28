@@ -5,7 +5,7 @@ using Kronos.Core.Configuration;
 
 namespace Kronos.Client
 {
-    internal class ServerProvider
+    public class ServerProvider
     {
         public int ServersCount => _clusterConfig.Servers.Length;
         public Dictionary<ushort, ServerConfig> Mappings;
