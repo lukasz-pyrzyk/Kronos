@@ -30,7 +30,7 @@ namespace Kronos.Core.Tests.Processing
             // Act
             byte[] response = processor.Process(ref request, storage);
 
-            // obj
+            // assert
             Assert.Equal(obj, response);
         }
 
