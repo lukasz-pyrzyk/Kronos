@@ -84,7 +84,7 @@ namespace Kronos.Server.Listening
             {
                 _logger.Debug($"Processing new request {request.Type} with Id: {id}, {request.Received} bytes");
                 _requestProcessor.Handle(request.Type, request.Request, request.Received, stream);
-                await stream.FlushAsync();
+                await stream.FlushAsync().ConfigureAwait(false);
                 _logger.Debug($"Processing {id} finished");
             }
             catch (Exception ex)
