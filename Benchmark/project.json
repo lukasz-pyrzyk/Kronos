@@ -1,12 +1,14 @@
-﻿{
+{
   "version": "1.0.0-*",
   "buildOptions": {
     "emitEntryPoint": true,
     "optimize": true
   },
   "dependencies": {
+    "BenchmarkDotNet": "0.10.1",
     "Kronos.Client": "1.1.2",
-    "Kronos.Core": "1.1.2"
+    "Kronos.Core": "1.1.2",
+    "StackExchange.Redis": "1.1.608"
   },
   "frameworks": {
     "netcoreapp1.1": {
