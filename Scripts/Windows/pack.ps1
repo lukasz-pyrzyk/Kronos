@@ -4,9 +4,9 @@ param (
 
 # projects to pack
 $projects = @(
-    "Src\Kronos.Core",
-    "Src\Kronos.Client",
-    "Src\Kronos.Server"
+    "Src\Kronos.Core\Kronos.Core.csproj",
+    "Src\Kronos.Client\Kronos.Client.csproj",
+    "Src\Kronos.Server\Kronos.Server.csproj"
 )
 
 # pack function for project
