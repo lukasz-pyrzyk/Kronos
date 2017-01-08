@@ -1,0 +1,23 @@
+﻿{
+  "version": "1.0.0-*",
+  "buildOptions": {
+    "emitEntryPoint": true,
+    "optimize": true
+  },
+  "dependencies": {
+    "Kronos.Client": "1.1.2",
+    "Kronos.Core": "1.1.2"
+  },
+  "frameworks": {
+    "netcoreapp1.1": {
+      "dependencies": {
+        "Microsoft.NETCore.App": {
+          "type": "platform",
+          "version": "1.1.0"
+        }
+      },
+      "imports": "dnxcore50"
+    },
+    "net461": {}
+  }
+}
