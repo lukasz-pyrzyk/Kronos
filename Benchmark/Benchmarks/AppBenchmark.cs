@@ -6,32 +6,26 @@ using StackExchange.Redis;
 
 namespace ClusterBenchmark.Benchmarks
 {
-    public class AppBenchmark
+    public class AppBenchmark : DefaultBenchmark
     {
+        private static readonly byte[] data = GetData();
+
         [Benchmark]
         public async Task Kronos()
         {
-            var kronos = KronosClientFactory.CreateClient("localhost", 5000);
+            var kronos = KronosClientFactory.CreateClient(KronosConnection, 5000);
 
             string key = Guid.NewGuid().ToString();
-            byte[] data = GetData();
-            for (int i = 0; i < 1000; i++)
-            {
-                await kronos.InsertAsync(key, data, DateTime.UtcNow.AddSeconds(50));
-            }
+            await kronos.InsertAsync(key, data, DateTime.UtcNow.AddSeconds(50));
         }
 
         [Benchmark]
         public async Task Redis()
         {
-            ConnectionMultiplexer redisCacheDistributor = ConnectionMultiplexer.Connect("localhost:6379");
+            ConnectionMultiplexer redisCacheDistributor = ConnectionMultiplexer.Connect(RedisConnection);
             var redis = redisCacheDistributor.GetDatabase();
             string key = Guid.NewGuid().ToString();
-            byte[] data = GetData();
-            for (int i = 0; i < 1000; i++)
-            {
-                await redis.SetAddAsync(key, data);
-            }
+            await redis.SetAddAsync(key, data);
         }
 
         private static byte[] GetData()
