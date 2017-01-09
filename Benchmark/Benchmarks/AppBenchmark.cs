@@ -11,7 +11,7 @@ namespace ClusterBenchmark.Benchmarks
         [Benchmark]
         public async Task Kronos()
         {
-            var kronos = KronosClientFactory.CreateClient("cerber.cloudapp.net", 5000);
+            var kronos = KronosClientFactory.CreateClient("localhost", 5000);
 
             string key = Guid.NewGuid().ToString();
             byte[] data = GetData();
@@ -24,7 +24,7 @@ namespace ClusterBenchmark.Benchmarks
         [Benchmark]
         public async Task Redis()
         {
-            ConnectionMultiplexer redisCacheDistributor = ConnectionMultiplexer.Connect("cerber.cloudapp.net:6379");
+            ConnectionMultiplexer redisCacheDistributor = ConnectionMultiplexer.Connect("localhost:6379");
             var redis = redisCacheDistributor.GetDatabase();
             string key = Guid.NewGuid().ToString();
             byte[] data = GetData();
