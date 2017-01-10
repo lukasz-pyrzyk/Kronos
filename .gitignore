@@ -214,3 +214,4 @@ ModelManifest.xml
 # BenchmarkDotNet
 BenchmarkDotNet.Artifacts
 Benchmark_*
+/BDN.Generated
