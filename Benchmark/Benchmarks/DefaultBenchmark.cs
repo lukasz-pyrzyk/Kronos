@@ -1,5 +1,8 @@
-﻿namespace ClusterBenchmark.Benchmarks
+﻿using BenchmarkDotNet.Attributes;
+
+namespace ClusterBenchmark.Benchmarks
 {
+    [Config(typeof(BenchmarkConfig))]
     public abstract class DefaultBenchmark
     {
         private const string Domain = "localhost";
