@@ -18,7 +18,7 @@ namespace ClusterBenchmark.Benchmarks
         [Setup]
         public void Setup()
         {
-            KronosClient = KronosClientFactory.CreateClientFromIp(KronosConnection, 5000);
+            KronosClient = KronosClientFactory.FromIp(KronosConnection, 5000);
 
             ConnectionMultiplexer redisCacheDistributor = ConnectionMultiplexer.Connect(RedisConnection);
             RedisClient = redisCacheDistributor.GetDatabase();

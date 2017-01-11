@@ -17,7 +17,7 @@ namespace ClientSample
         {
             string configPath = "KronosConfig.json";
 
-            IKronosClient client = KronosClientFactory.CreateClient(configPath);
+            IKronosClient client = KronosClientFactory.FromFile(configPath);
 
             var watch = Stopwatch.StartNew();
             byte[] package = new byte[1024 * 9];
@@ -60,7 +60,7 @@ namespace ClientSample
             const string directory = @"path";
             string configPath = "KronosConfig.json";
 
-            IKronosClient client = KronosClientFactory.CreateClient(configPath);
+            IKronosClient client = KronosClientFactory.FromFile(configPath);
 
             foreach (string file in Directory.EnumerateFiles(directory, "*.*", SearchOption.AllDirectories))
             {

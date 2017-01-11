@@ -6,7 +6,7 @@ namespace Kronos.Client
 {
     public static class KronosClientFactory
     {
-        public static IKronosClient CreateClient(string configFilePath)
+        public static IKronosClient FromFile(string configFilePath)
         {
             string configContent = File.ReadAllText(configFilePath);
 
@@ -15,12 +15,12 @@ namespace Kronos.Client
             return new KronosClient(config);
         }
 
-        public static IKronosClient CreateClient(string domain, int port)
+        public static IKronosClient FromDomain(string domain, int port)
         {
             return CreateInternal(domain, null, port);
         }
 
-        public static IKronosClient CreateClientFromIp(string ip, int port)
+        public static IKronosClient FromIp(string ip, int port)
         {
             return CreateInternal(null, ip, port);
         }

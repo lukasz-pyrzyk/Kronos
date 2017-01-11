@@ -12,7 +12,7 @@ namespace Kronos.Client.Tests
             const int port = 500;
 
             // Act
-            IKronosClient client = KronosClientFactory.CreateClientFromIp(ip, port);
+            IKronosClient client = KronosClientFactory.FromIp(ip, port);
 
             // Assert
             Assert.NotNull(client);
@@ -26,7 +26,7 @@ namespace Kronos.Client.Tests
             const int port = 500;
 
             // Act
-            IKronosClient client = KronosClientFactory.CreateClient(localHost, port);
+            IKronosClient client = KronosClientFactory.FromDomain(localHost, port);
 
             // Assert
             Assert.NotNull(client);
