@@ -10,15 +10,14 @@ namespace ClusterBenchmark.Benchmarks
         public int Kb { get; set; }
 
         private byte[] data;
-
-        [Setup]
-        public void FillData()
+        
+        protected override void AdditionalSetup()
         {
             data = new byte[Kb];
             var random = new Random();
             random.NextBytes(data);
         }
-        
+
         [Benchmark]
         public async Task Kronos()
         {

@@ -22,6 +22,10 @@ namespace ClusterBenchmark.Benchmarks
 
             ConnectionMultiplexer redisCacheDistributor = ConnectionMultiplexer.Connect(RedisConnection);
             RedisClient = redisCacheDistributor.GetDatabase();
+
+            AdditionalSetup();
         }
+
+        protected virtual void AdditionalSetup() { }
     }
 }
