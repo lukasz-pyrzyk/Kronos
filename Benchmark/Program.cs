@@ -10,7 +10,10 @@ namespace ClusterBenchmark
             var switcher = BenchmarkSwitcher.FromTypes(new[]
             {
                 typeof(Add),
+                typeof(Contains)
             });
+
+            switcher.RunAll();
         }
     }
 }
