@@ -4,32 +4,32 @@ using BenchmarkDotNet.Attributes;
 
 namespace ClusterBenchmark.Benchmarks
 {
-    public class AppBenchmark : DefaultBenchmark
+    public class Add : Default
     {
-        [Params(1, 512, 1024, 4048)]
+        [Params(Size.Kb, Size.Kbx250, Size.Mb, Size.Mbx2)]
         public int Kb { get; set; }
 
-        private byte[] data;
-        
+        private byte[] _data;
+
         protected override void AdditionalSetup()
         {
-            data = new byte[Kb];
+            _data = new byte[Kb];
             var random = new Random();
-            random.NextBytes(data);
+            random.NextBytes(_data);
         }
 
         [Benchmark]
         public async Task Kronos()
         {
             string key = Guid.NewGuid().ToString();
-            await KronosClient.InsertAsync(key, data, DateTime.UtcNow.AddSeconds(50));
+            await KronosClient.InsertAsync(key, _data, DateTime.UtcNow.AddSeconds(50));
         }
 
         [Benchmark]
         public async Task Redis()
         {
             string key = Guid.NewGuid().ToString();
-            await RedisClient.SetAddAsync(key, data);
+            await RedisClient.SetAddAsync(key, _data);
         }
     }
 }

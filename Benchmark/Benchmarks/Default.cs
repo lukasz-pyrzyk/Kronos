@@ -4,8 +4,8 @@ using StackExchange.Redis;
 
 namespace ClusterBenchmark.Benchmarks
 {
-    [Config(typeof(BenchmarkConfig))]
-    public abstract class DefaultBenchmark
+    [Config(typeof(KronosBenchmarkConfig))]
+    public abstract class Default
     {
         private const string Domain = "192.168.0.1";
 

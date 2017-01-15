@@ -5,12 +5,12 @@ using BenchmarkDotNet.Diagnosers;
 using BenchmarkDotNet.Exporters;
 using BenchmarkDotNet.Order;
 
-namespace ClusterBenchmark.Benchmarks
+namespace ClusterBenchmark
 {
     [OrderProvider(SummaryOrderPolicy.FastestToSlowest)]
-    public class BenchmarkConfig : ManualConfig
+    public class KronosBenchmarkConfig : ManualConfig
     {
-        public BenchmarkConfig()
+        public KronosBenchmarkConfig()
         {
             Add(StatisticColumn.Min);
             Add(StatisticColumn.Max);

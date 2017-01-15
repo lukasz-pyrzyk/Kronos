@@ -7,7 +7,10 @@ namespace ClusterBenchmark
     {
         public static void Main(string[] args)
         {
-            BenchmarkRunner.Run<AppBenchmark>();
+            var switcher = BenchmarkSwitcher.FromTypes(new[]
+            {
+                typeof(Add),
+            });
         }
     }
 }
