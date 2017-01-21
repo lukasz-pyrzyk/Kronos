@@ -1,6 +1,4 @@
-﻿using System.Linq;
-using System.Net.Sockets;
-using System.Text;
+﻿using System.Text;
 using Kronos.Core.Networking;
 using Kronos.Core.Processing;
 using Kronos.Core.Requests;
@@ -29,13 +27,11 @@ namespace Kronos.Core.Tests.Processing
                 return expected;
             });
 
-            byte[] expectedBytes = SerializationUtils.SerializeToStreamWithLength(obj);
-
             // Act
             byte[] response = processor.Process(ref request, storage);
 
             // assert
-            Assert.Equal(expectedBytes, response);
+            Assert.Equal(obj, response);
         }
 
         public void Handle_ReturnsNotFoundWhenObjectIsNotInTheCache()
@@ -54,13 +50,11 @@ namespace Kronos.Core.Tests.Processing
                 return expected;
             });
 
-            byte[] expectedBytes = SerializationUtils.SerializeToStreamWithLength(obj);
-
             // Act
             byte[] response = processor.Process(ref request, storage);
 
             // assert
-            Assert.Equal(expectedBytes, response);
+            Assert.Equal(obj, response);
         }
     }
 }

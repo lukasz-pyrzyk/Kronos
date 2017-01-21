@@ -6,6 +6,6 @@ namespace Kronos.Server.Listening
 {
     public interface IProcessor
     {
-        Task<RequestArgs> ReceiveRequestAsync(Socket client);
+        Task<RequestArgs> ReceiveRequestAsync(NetworkStream stream);
     }
 }

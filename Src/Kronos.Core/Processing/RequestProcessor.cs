@@ -1,4 +1,5 @@
 using System;
+using System.IO;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Kronos.Core.Storage;
@@ -37,25 +38,35 @@ namespace Kronos.Core.Processing
             _containsProcessor = containsProcessor;
         }
 
-        public byte[] Handle(RequestType requestType, byte[] request, int receivedBytes)
+        public void Handle(RequestType requestType, byte[] request, int receivedBytes, Stream responseStream)
         {
             switch (requestType)
             {
                 case RequestType.Insert:
                     var insertRequest = SerializationUtils.Deserialize<InsertRequest>(request, receivedBytes);
-                    return _insertProcessor.Process(ref insertRequest, _storage);
+                    bool insertResult = _insertProcessor.Process(ref insertRequest, _storage);
+                    SerializationUtils.SerializeToStreamWithLength(responseStream, insertResult);
+                    break;
                 case RequestType.Get:
                     var getRequest = SerializationUtils.Deserialize<GetRequest>(request, receivedBytes);
-                    return _getProcessor.Process(ref getRequest, _storage);
+                    byte[] getResult = _getProcessor.Process(ref getRequest, _storage);
+                    SerializationUtils.SerializeToStreamWithLength(responseStream, getResult);
+                    break;
                 case RequestType.Delete:
                     var deleteRequest = SerializationUtils.Deserialize<DeleteRequest>(request, receivedBytes);
-                    return _deleteProcessor.Process(ref deleteRequest, _storage);
+                    bool deleteResult = _deleteProcessor.Process(ref deleteRequest, _storage);
+                    SerializationUtils.SerializeToStreamWithLength(responseStream, deleteResult);
+                    break;
                 case RequestType.Count:
                     var countRequest = SerializationUtils.Deserialize<CountRequest>(request, receivedBytes);
-                    return _countProcessor.Process(ref countRequest, _storage);
+                    int countResult = _countProcessor.Process(ref countRequest, _storage);
+                    SerializationUtils.SerializeToStreamWithLength(responseStream, countResult);
+                    break;
                 case RequestType.Contains:
                     var containsRequest = SerializationUtils.Deserialize<ContainsRequest>(request, receivedBytes);
-                    return _containsProcessor.Process(ref containsRequest, _storage);
+                    bool containsResult = _containsProcessor.Process(ref containsRequest, _storage);
+                    SerializationUtils.SerializeToStreamWithLength(responseStream, containsResult);
+                    break;
                 default:
                     throw new InvalidOperationException($"Cannot find processor for type {requestType}");
             }

@@ -35,5 +35,18 @@ namespace Kronos.Core.Networking
                 Debug.Assert(position <= count);
             }
         }
+
+        public static async Task ReceiveAllAsync(NetworkStream stream, byte[] data, int count)
+        {
+            int position = 0;
+            while (position != count)
+            {
+                int size = Math.Min(count - position, BufferSize);
+                int received = await stream.ReadAsync(data, position, size).ConfigureAwait(false);
+                position += received;
+
+                Debug.Assert(position <= count);
+            }
+        }
     }
 }

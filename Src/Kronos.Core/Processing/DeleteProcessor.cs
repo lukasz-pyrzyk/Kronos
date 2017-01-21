@@ -7,11 +7,11 @@ namespace Kronos.Core.Processing
     {
         public override RequestType Type { get; } = RequestType.Delete;
 
-        public override byte[] Process(ref DeleteRequest request, IStorage storage)
+        public override bool Process(ref DeleteRequest request, IStorage storage)
         {
             bool deleted = storage.TryRemove(request.Key);
 
-            return Reply(deleted);
+            return deleted;
         }
     }
 }

@@ -1,5 +1,4 @@
-﻿using System.Net.Sockets;
-using System.Text;
+﻿using System.Text;
 using Kronos.Core.Requests;
 using Kronos.Server.EventArgs;
 using Xunit;
@@ -16,7 +15,7 @@ namespace Kronos.Server.Tests.Listener
             byte[] data = Encoding.UTF8.GetBytes("lorem ipsum");
 
             // Act
-            var message = new RequestArgs(type, data, data.Length, new Socket(SocketType.Stream, ProtocolType.IP));
+            var message = new RequestArgs(type, data, data.Length);
 
             // Assert
             Assert.Equal(message.Type, type);

@@ -1,5 +1,4 @@
-﻿using System;
-using System.IO;
+﻿using System.IO;
 using ProtoBuf;
 
 namespace Kronos.Core.Serialization
@@ -19,25 +18,14 @@ namespace Kronos.Core.Serialization
             return buffer;
         }
 
-        public static byte[] SerializeToStreamWithLength<T>(T obj)
-        {
-            byte[] buffer;
-            using (MemoryStream ms = new MemoryStream())
-            {
-                SerializeToStreamWithLength(ms, obj, Style);
-                buffer = ms.ToArray();
-            }
-            return buffer;
-        }
-
         public static void SerializeToStream<T>(Stream stream, T obj)
         {
             Serializer.Serialize(stream, obj);
         }
 
-        public static void SerializeToStreamWithLength<T>(Stream stream, T obj, PrefixStyle style)
+        public static void SerializeToStreamWithLength<T>(Stream stream, T obj)
         {
-            Serializer.SerializeWithLengthPrefix(stream, obj, style);
+            Serializer.SerializeWithLengthPrefix(stream, obj, Style);
         }
 
         public static T Deserialize<T>(byte[] buffer, int? count = null)

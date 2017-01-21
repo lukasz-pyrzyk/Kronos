@@ -7,11 +7,11 @@ namespace Kronos.Core.Processing
     {
         public override RequestType Type { get; } = RequestType.Insert;
 
-        public override byte[] Process(ref InsertRequest request, IStorage storage)
+        public override bool Process(ref InsertRequest request, IStorage storage)
         {
             storage.AddOrUpdate(request.Key, request.ExpiryDate, request.Object);
 
-            return Reply(true);
+            return true;
         }
     }
 }
