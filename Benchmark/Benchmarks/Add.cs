@@ -6,7 +6,7 @@ namespace ClusterBenchmark.Benchmarks
 {
     public class Add : Default
     {
-        [Params(Size.Kb, Size.Kbx250, Size.Mb, Size.Mbx2)]
+        [Params(Size.Mb, Size.Mb * 4)]
         public int Kb { get; set; }
 
         private byte[] _data;
