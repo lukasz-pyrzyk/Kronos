@@ -13,7 +13,7 @@ namespace ClusterBenchmark
                 typeof(Contains)
             });
 
-            switcher.RunAll();
+            switcher.Run(args);
         }
     }
 }
