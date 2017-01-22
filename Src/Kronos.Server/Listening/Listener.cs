@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Net;
 using System.Net.Sockets;
+using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
 using Kronos.Core.Networking;
@@ -28,9 +29,10 @@ namespace Kronos.Server.Listening
 
         public void Start()
         {
-            _logger.Info("Starting Kronos Server");
+            _logger.Info("Starting server");
             _listener.Start();
-            _logger.Info($"Kronos has been started on {_listener.LocalEndpoint}");
+            string version = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
+            _logger.Info($"Server started on {_listener.LocalEndpoint}. Kronos version {version}");
 
             CancellationToken token = _cancel.Token;
 
