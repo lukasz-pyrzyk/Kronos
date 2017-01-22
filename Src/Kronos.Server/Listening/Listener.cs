@@ -12,10 +12,6 @@ namespace Kronos.Server.Listening
 {
     public class Listener : IListener
     {
-        public int ActiveConnections => _activeConnections;
-
-        private int _activeConnections;
-
         private readonly TcpListener _listener;
         private readonly IProcessor _processor;
         private readonly IRequestProcessor _requestProcessor;
@@ -77,7 +73,6 @@ namespace Kronos.Server.Listening
 
         private async Task ProcessSocketConnection(Socket socket)
         {
-            Interlocked.Increment(ref _activeConnections);
             string id = Guid.NewGuid().ToString();
             RequestArgs request = await _processor.ReceiveRequestAsync(socket).ConfigureAwait(false);
             try
@@ -93,8 +88,6 @@ namespace Kronos.Server.Listening
             {
                 _logger.Error($"Exception on processing request {id}, {ex}");
             }
-
-            Interlocked.Decrement(ref _activeConnections);
         }
     }
 }
