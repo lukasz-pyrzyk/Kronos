@@ -36,26 +36,6 @@ namespace Kronos.Server
             Task.WaitAll(StartAsync(port));
         }
 
-        private static void PrintLogo()
-        {
-            PrintLogoLine("");
-            PrintLogoLine("  _  __  _____     ____    _   _    ____     _____ ");
-            PrintLogoLine(@" | |/ / |  __ \   / __ \  | \ | |  / __ \   / ____|");
-            PrintLogoLine(@" | ' /  | |__) | | |  | | |  \| | | |  | | | (___  ");
-            PrintLogoLine(@" |  <   |  _  /  | |  | | | . ` | | |  | |  \___ \ ");
-            PrintLogoLine(@" | . \  | | \ \  | |__| | | |\  | | |__| |  ____) |");
-            PrintLogoLine(@" |_|\_\ |_|  \_\  \____/  |_| \_|  \____/  |_____/ ");
-            PrintLogoLine("");
-            PrintLogoLine("");
-            PrintLogoLine("");
-        }
-
-        private static void PrintLogoLine(string line)
-        {
-            Console.SetCursorPosition((Console.WindowWidth - line.Length) / 2, Console.CursorTop);
-            Console.WriteLine(line);
-        }
-
         public static async Task StartAsync(int port)
         {
             IPAddress localAddr = await EndpointUtils.GetIPAsync();
@@ -80,6 +60,26 @@ namespace Kronos.Server
             // dispose components
             storage.Dispose();
             server.Dispose();
+        }
+
+        private static void PrintLogo()
+        {
+            PrintLogoLine("");
+            PrintLogoLine("  _  __  _____     ____    _   _    ____     _____ ");
+            PrintLogoLine(@" | |/ / |  __ \   / __ \  | \ | |  / __ \   / ____|");
+            PrintLogoLine(@" | ' /  | |__) | | |  | | |  \| | | |  | | | (___  ");
+            PrintLogoLine(@" |  <   |  _  /  | |  | | | . ` | | |  | |  \___ \ ");
+            PrintLogoLine(@" | . \  | | \ \  | |__| | | |\  | | |__| |  ____) |");
+            PrintLogoLine(@" |_|\_\ |_|  \_\  \____/  |_| \_|  \____/  |_____/ ");
+            PrintLogoLine("");
+            PrintLogoLine("");
+            PrintLogoLine("");
+        }
+
+        private static void PrintLogoLine(string line)
+        {
+            Console.SetCursorPosition((Console.WindowWidth - line.Length) / 2, Console.CursorTop);
+            Console.WriteLine(line);
         }
     }
 }
