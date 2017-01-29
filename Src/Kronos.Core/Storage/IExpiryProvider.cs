@@ -1,10 +1,10 @@
-using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading;
 
 namespace Kronos.Core.Storage
 {
     public interface IExpiryProvider
     {
-        void Start(ConcurrentDictionary<NodeMetatada, byte[]> nodes, CancellationToken token);
+        void Start(Dictionary<NodeMetatada, byte[]> nodes, CancellationToken token);
     }
 }

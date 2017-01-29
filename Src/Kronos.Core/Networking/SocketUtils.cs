@@ -9,6 +9,19 @@ namespace Kronos.Core.Networking
     {
         private const int BufferSize = 8 * 1024;
 
+        public static void SendAll(Socket socket, byte[] data)
+        {
+            int position = 0;
+            while (position != data.Length)
+            {
+                int size = Math.Min(data.Length - position, BufferSize);
+                int sent = socket.Send(data, position, size, SocketFlags.None);
+                position += sent;
+
+                Debug.Assert(position <= data.Length);
+            }
+        }
+
         public static async Task SendAllAsync(Socket socket, byte[] data)
         {
             int position = 0;
@@ -19,6 +32,19 @@ namespace Kronos.Core.Networking
                 position += sent;
 
                 Debug.Assert(position <= data.Length);
+            }
+        }
+
+        public static void ReceiveAll(Socket socket, byte[] data, int count)
+        {
+            int position = 0;
+            while (position != count)
+            {
+                int size = Math.Min(count - position, BufferSize);
+                int received = socket.Receive(data, position, size, SocketFlags.None);
+                position += received;
+
+                Debug.Assert(position <= count);
             }
         }
 
