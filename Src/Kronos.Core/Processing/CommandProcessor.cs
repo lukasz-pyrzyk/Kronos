@@ -8,8 +8,6 @@ namespace Kronos.Core.Processing
 {
     public abstract class CommandProcessor<TRequest, TResponse> where TRequest : IRequest
     {
-        public abstract RequestType Type { get; }
-
         public abstract byte[] Process(ref TRequest request, IStorage storage);
 
         public async Task<TResponse> ExecuteAsync(TRequest request, IConnection service)

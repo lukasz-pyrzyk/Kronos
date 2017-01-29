@@ -7,8 +7,6 @@ namespace Kronos.Core.Processing
 {
     public class GetProcessor : CommandProcessor<GetRequest, byte[]>
     {
-        public override RequestType Type { get; } = RequestType.Get;
-
         public override byte[] Process(ref GetRequest request, IStorage storage)
         {
             byte[] response;
