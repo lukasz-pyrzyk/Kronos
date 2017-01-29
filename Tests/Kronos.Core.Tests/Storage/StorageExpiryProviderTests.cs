@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
 using Kronos.Core.Storage;
@@ -12,7 +12,7 @@ namespace Kronos.Core.Tests.Storage
         [Fact]
         public async Task Start_CanDeleteObjectsFromStorage()
         {
-            var data = new ConcurrentDictionary<NodeMetatada, byte[]>
+            var data = new Dictionary<NodeMetatada, byte[]>
             {
                 [new NodeMetatada("one", DateTime.UtcNow)] = new byte[0],
                 [new NodeMetatada("two", DateTime.MaxValue)] = new byte[0]

@@ -1,5 +1,5 @@
 ﻿using System;
-using System.Collections.Concurrent;
+using System.Collections.Generic;
 using System.Threading;
 using NLog;
 
@@ -10,8 +10,8 @@ namespace Kronos.Core.Storage
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly IExpiryProvider _expiryProvider;
 
-        private readonly ConcurrentDictionary<NodeMetatada, byte[]> _storage =
-            new ConcurrentDictionary<NodeMetatada, byte[]>(new NodeComparer());
+        private readonly Dictionary<NodeMetatada, byte[]> _storage =
+            new Dictionary<NodeMetatada, byte[]>(new NodeComparer());
 
         private readonly CancellationTokenSource _cancelToken = new CancellationTokenSource();
 
@@ -26,7 +26,8 @@ namespace Kronos.Core.Storage
         public void AddOrUpdate(string key, DateTime expiryDate, byte[] obj)
         {
             var metaData = new NodeMetatada(key, expiryDate);
-            _storage.AddOrUpdate(metaData, obj, (s, bytes) => obj);
+
+            _storage[metaData] = obj;
         }
 
         public bool TryGet(string key, out byte[] obj)
@@ -38,9 +39,8 @@ namespace Kronos.Core.Storage
 
         public bool TryRemove(string key)
         {
-            byte[] obj;
             var metaData = new NodeMetatada(key);
-            return _storage.TryRemove(metaData, out obj);
+            return _storage.Remove(metaData);
         }
 
         public bool Contains(string key)

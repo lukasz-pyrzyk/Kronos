@@ -73,16 +73,16 @@ namespace Kronos.Server.Listening
             Stop();
         }
 
-        private async Task ProcessSocketConnection(Socket socket)
+        private void ProcessSocketConnection(Socket socket)
         {
             string id = Guid.NewGuid().ToString();
-            RequestArgs request = await _processor.ReceiveRequestAsync(socket).ConfigureAwait(false);
+            RequestArgs request = _processor.ReceiveRequest(socket);
             try
             {
                 _logger.Debug($"Processing new request {request.Type} with Id: {id}, {request.Received} bytes");
                 byte[] response = _requestProcessor.Handle(request.Type, request.Request, request.Received);
                 _logger.Debug($"Sending response with {response.Length} bytes to the user");
-                await SocketUtils.SendAllAsync(socket, response).ConfigureAwait(false);
+                SocketUtils.SendAll(socket, response);
 
                 _logger.Debug($"Processing {id} finished");
             }
