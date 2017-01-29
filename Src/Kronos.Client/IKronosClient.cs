@@ -41,5 +41,11 @@ namespace Kronos.Client
         /// </summary>
         /// <returns></returns>
         Task<bool> ContainsAsync(string key);
+
+        /// <summary>
+        /// Clears the database
+        /// </summary>
+        /// <returns></returns>
+        Task ClearAsync();
     }
 }

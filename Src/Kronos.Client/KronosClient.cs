@@ -26,6 +26,8 @@ namespace Kronos.Client
         private readonly DeleteProcessor _deleteProcessor = new DeleteProcessor();
         private readonly CountProcessor _countProcessor = new CountProcessor();
         private readonly ContainsProcessor _containsProcessor = new ContainsProcessor();
+        private readonly ClearProcessor _clearProcessor = new ClearProcessor();
+        private readonly IConnection[] _allConnections;
 
         public KronosClient(KronosConfig config) : this(config, endpoint => new Connection(endpoint))
         {
@@ -35,6 +37,7 @@ namespace Kronos.Client
         {
             _serverProvider = new ServerProvider(config.ClusterConfig);
             _connectionResolver = connectionResolver;
+            _allConnections = _serverProvider.SelectServers().Select(x => _connectionResolver(x.EndPoint)).ToArray();
         }
 
         public async Task InsertAsync(string key, byte[] package, DateTime expiryDate)
@@ -77,10 +80,9 @@ namespace Kronos.Client
         {
             Debug.WriteLine("New count request");
 
-            ServerConfig[] servers = _serverProvider.SelectServers();
 
             var request = new CountRequest();
-            int[] results = await _countProcessor.ExecuteAsync(request, servers.Select(x => _connectionResolver(x.EndPoint)).ToArray());
+            int[] results = await _countProcessor.ExecuteAsync(request, _allConnections);
 
             return results.Sum();
         }
@@ -95,6 +97,14 @@ namespace Kronos.Client
             bool contains = await _containsProcessor.ExecuteAsync(request, connection);
 
             return contains;
+        }
+
+        public async Task ClearAsync()
+        {
+            Debug.WriteLine("New clear request");
+
+            var request = new ClearRequest();
+            await _clearProcessor.ExecuteAsync(request, _allConnections);
         }
 
         private IConnection SelectServerAndCreateConnection(string key)

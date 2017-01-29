@@ -21,6 +21,9 @@ namespace Kronos.Core.Requests
         Count = 4,
 
         [ProtoEnum]
-        Contains = 5
+        Contains = 5,
+
+        [ProtoEnum]
+        Clear = 6
     }
 }

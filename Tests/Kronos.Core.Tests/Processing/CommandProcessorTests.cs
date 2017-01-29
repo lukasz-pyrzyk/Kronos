@@ -49,8 +49,6 @@ namespace Kronos.Core.Tests.Processing
 
         internal class FakeProcessor : CommandProcessor<InsertRequest, bool>
         {
-            public override RequestType Type { get; }
-
             public override byte[] Process(ref InsertRequest request, IStorage storage)
             {
                 return Reply(true);

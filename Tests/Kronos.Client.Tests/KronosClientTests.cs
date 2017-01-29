@@ -118,6 +118,21 @@ namespace Kronos.Client.Tests
             await connectionMock.Received(1).SendAsync(Arg.Any<ContainsRequest>());
         }
 
+        [Fact]
+        public async Task Clear_CallsSendToServerAsync()
+        {
+            var connectionMock = Substitute.For<IConnection>();
+            connectionMock.SendAsync(Arg.Any<ClearRequest>())
+                .Returns(SerializationUtils.Serialize(true));
+
+            KronosConfig config = LoadTestConfiguration();
+            IKronosClient client = new KronosClient(config, endpoint => connectionMock);
+
+            await client.ClearAsync();
+
+            await connectionMock.Received(1).SendAsync(Arg.Any<ClearRequest>());
+        }
+
         private static KronosConfig LoadTestConfiguration()
         {
             var server = new ServerConfig
