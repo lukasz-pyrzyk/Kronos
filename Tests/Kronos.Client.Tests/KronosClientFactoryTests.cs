@@ -31,5 +31,17 @@ namespace Kronos.Client.Tests
             // Assert
             Assert.NotNull(client);
         }
+
+        [Fact]
+        public void CreateClient_FromLocalhost()
+        {
+            const int port = 500;
+
+            // Act
+            IKronosClient client = KronosClientFactory.FromLocalhost(port);
+
+            // Assert
+            Assert.NotNull(client);
+        }
     }
 }

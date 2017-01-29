@@ -15,6 +15,11 @@ namespace Kronos.Client
             return new KronosClient(config);
         }
 
+        public static IKronosClient FromLocalhost(int port)
+        {
+            return FromDomain("localhost", port);
+        }
+
         public static IKronosClient FromDomain(string domain, int port)
         {
             return CreateInternal(domain, null, port);
