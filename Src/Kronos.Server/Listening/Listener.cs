@@ -13,6 +13,8 @@ namespace Kronos.Server.Listening
 {
     public class Listener : IListener
     {
+        private const int Backlog = 100;
+
         private readonly TcpListener _listener;
         private readonly IProcessor _processor;
         private readonly IRequestProcessor _requestProcessor;
@@ -30,7 +32,7 @@ namespace Kronos.Server.Listening
         public void Start()
         {
             _logger.Info("Starting server");
-            _listener.Start();
+            _listener.Start(Backlog);
             string version = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
             _logger.Info($"Server started on {_listener.LocalEndpoint}. Kronos version {version}");
 
