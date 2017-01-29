@@ -78,7 +78,12 @@ namespace Kronos.Server
 
         private static void PrintLogoLine(string line)
         {
-            Console.SetCursorPosition((Console.WindowWidth - line.Length) / 2, Console.CursorTop);
+            int centerPosition = (Console.WindowWidth - line.Length) / 2;
+            if(centerPosition > 0) // if it's Docker console, it might be less than zero
+            {
+                Console.SetCursorPosition(centerPosition, Console.CursorTop);
+            }
+
             Console.WriteLine(line);
         }
     }
