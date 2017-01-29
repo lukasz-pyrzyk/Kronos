@@ -19,11 +19,6 @@ namespace ClusterBenchmark
             Add(MarkdownExporter.GitHub);
             Add(PlainExporter.Default);
             Add(AsciiDocExporter.Default);
-            Add(
-               new Job("ClassicJob", RunMode.Default, EnvMode.Default)
-               {
-                   Run = { LaunchCount = 1, WarmupCount = 1, TargetCount = 5}
-               });
         }
     }
 }
