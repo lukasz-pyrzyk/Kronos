@@ -4,7 +4,7 @@ using BenchmarkDotNet.Attributes;
 
 namespace ClusterBenchmark.Benchmarks
 {
-    public class Add : Default
+    public class AddAndRemove : Default
     {
         [Params(Size.Mb, Size.Mb * 4)]
         public int Kb { get; set; }
@@ -16,9 +16,6 @@ namespace ClusterBenchmark.Benchmarks
             _data = new byte[Kb];
             var random = new Random();
             random.NextBytes(_data);
-
-            RedisServer.FlushAllDatabases();
-            KronosClient.ClearAsync().Wait();
         }
 
         [Benchmark]
@@ -26,6 +23,7 @@ namespace ClusterBenchmark.Benchmarks
         {
             string key = Guid.NewGuid().ToString();
             await KronosClient.InsertAsync(key, _data, DateTime.UtcNow.AddSeconds(50));
+            await KronosClient.DeleteAsync(key);
         }
 
         [Benchmark]
@@ -33,6 +31,7 @@ namespace ClusterBenchmark.Benchmarks
         {
             string key = Guid.NewGuid().ToString();
             await RedisClient.SetAddAsync(key, _data);
+            await RedisClient.KeyDeleteAsync(key);
         }
     }
 }
