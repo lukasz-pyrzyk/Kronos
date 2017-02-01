@@ -117,7 +117,7 @@ namespace Kronos.Client.Tests
 
             // Act
             ServerProvider provider = new ServerProvider(config);
-            ServerConfig[] servers = provider.SelectServers();
+            ServerConfig[] servers = provider.Servers;
 
             // Assert
             Assert.Equal(config.Servers, servers);
