@@ -16,6 +16,9 @@ namespace ClusterBenchmark.Benchmarks
             _data = new byte[Kb];
             var random = new Random();
             random.NextBytes(_data);
+
+            RedisServer.FlushAllDatabases();
+            KronosClient.ClearAsync().Wait();
         }
 
         [Benchmark]
