@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Linq;
 using Kronos.Core.Configuration;
 
 namespace Kronos.Client
@@ -8,6 +7,8 @@ namespace Kronos.Client
     internal class ServerProvider
     {
         public int ServersCount => _clusterConfig.Servers.Length;
+        public ServerConfig[] Servers => _clusterConfig.Servers;
+
         public Dictionary<ushort, ServerConfig> Mappings;
 
         private readonly ClusterConfig _clusterConfig;
@@ -25,11 +26,6 @@ namespace Kronos.Client
             return Mappings[lastTwoDigits];
         }
 
-        public ServerConfig[] SelectServers()
-        {
-            return Mappings.Select(x => x.Value).Distinct().ToArray();
-        }
-
         private void InitializeMappings()
         {
             const ushort hashCodeRange = 100; // (0:99).
@@ -43,13 +39,13 @@ namespace Kronos.Client
             {
                 for (ushort j = 0; j < rangePerServer; j++)
                 {
-                    Mappings[position] = _clusterConfig.Servers.ElementAt(i);
+                    Mappings[position] = _clusterConfig.Servers[i];
                     position++;
                 }
 
                 if (modulo != 0)
                 {
-                    Mappings[position] = _clusterConfig.Servers.ElementAt(i);
+                    Mappings[position] = _clusterConfig.Servers[i];
                     modulo--;
                     position++;
                 }
