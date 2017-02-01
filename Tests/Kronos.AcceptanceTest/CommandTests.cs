@@ -161,5 +161,36 @@ namespace Kronos.AcceptanceTest
             Assert.False(containsFromClientApi);
             Assert.Equal(containsFromClientApi, containsFromStorage);
         }
+
+        [Fact]
+        public async Task Clear_ClearsData()
+        {
+            const int port = 9994;
+
+            int countBefore;
+            int countAfter;
+            IExpiryProvider expiryProvider = new StorageExpiryProvider();
+            using (IStorage storage = new InMemoryStorage(expiryProvider))
+            {
+                storage.AddOrUpdate("a", DateTime.MaxValue, new byte[0]);
+                storage.AddOrUpdate("b", DateTime.MaxValue, new byte[0]);
+                countBefore = storage.Count;
+
+
+                var processor = new SocketProcessor();
+                var requestProcessor = new RequestProcessor(storage);
+                using (IListener server = new Listener(IPAddress.Any, port, processor, requestProcessor))
+                {
+                    server.Start();
+                    IKronosClient client = KronosClientFactory.FromLocalhost(port);
+
+                    await client.ClearAsync();
+                    countAfter = storage.Count;
+                }
+            }
+
+            Assert.Equal(countBefore, 2);
+            Assert.Equal(countAfter, 0);
+        }
     }
 }

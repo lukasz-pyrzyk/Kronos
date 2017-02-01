@@ -124,6 +124,19 @@ namespace Kronos.Core.Tests.Storage
         }
 
         [Fact]
+        public void Clear_ClearsTheData()
+        {
+            var expiryProvider = Substitute.For<IExpiryProvider>();
+            IStorage storage = new InMemoryStorage(expiryProvider);
+
+            storage.AddOrUpdate("first", DateTime.MaxValue, new byte[0]);
+            storage.AddOrUpdate("second", DateTime.MaxValue, new byte[0]);
+
+            storage.Clear();
+            Assert.Equal(storage.Count, 0);
+        }
+
+        [Fact]
         public void ReturnsNullWhenObjectDoesNotExist()
         {
             IExpiryProvider expiryProvider = Substitute.For<IExpiryProvider>();

@@ -5,8 +5,6 @@ namespace Kronos.Core.Processing
 {
     public class InsertProcessor : CommandProcessor<InsertRequest, bool>
     {
-        public override RequestType Type { get; } = RequestType.Insert;
-
         public override byte[] Process(ref InsertRequest request, IStorage storage)
         {
             storage.AddOrUpdate(request.Key, request.ExpiryDate, request.Object);

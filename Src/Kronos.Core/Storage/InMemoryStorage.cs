@@ -48,12 +48,18 @@ namespace Kronos.Core.Storage
             return _storage.ContainsKey(new NodeMetatada(key));
         }
 
+        public void Clear()
+        {
+            _logger.Info("Clearing storage");
+            _storage.Clear();
+        }
+
         public void Dispose()
         {
             _logger.Info("Disposing storage");
 
             _cancelToken.Cancel();
-            _storage.Clear();
+            Clear();
         }
     }
 }
