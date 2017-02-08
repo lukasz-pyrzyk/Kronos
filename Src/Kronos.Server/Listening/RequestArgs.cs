@@ -3,19 +3,19 @@ using Kronos.Core.Requests;
 
 namespace Kronos.Server.Listening
 {
-    public class RequestArgs : System.EventArgs
+    public struct RequestArg
     {
-        public RequestArgs(RequestType type, byte[] request, int received, Socket client)
+        public void Assign(RequestType type, byte[] request, int received, Socket client)
         {
             Type = type;
-            Request = request;
-            Received = received;
+            Bytes = request;
+            Count = received;
             Client = client;
         }
 
-        public RequestType Type { get; }
-        public int Received { get; }
-        public Socket Client { get; }
-        public byte[] Request { get; }
+        public RequestType Type { get; private set; }
+        public byte[] Bytes { get; private set; }
+        public int Count { get; private set; }
+        public Socket Client { get; private set; }
     }
 }
