@@ -5,7 +5,6 @@ using System.Net.Sockets;
 using Kronos.Core.Networking;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
-using Kronos.Server.EventArgs;
 
 namespace Kronos.Server.Listening
 {

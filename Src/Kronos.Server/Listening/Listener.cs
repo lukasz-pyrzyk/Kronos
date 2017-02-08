@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Kronos.Core.Networking;
 using Kronos.Core.Processing;
-using Kronos.Server.EventArgs;
 using NLog;
 
 namespace Kronos.Server.Listening

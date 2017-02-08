@@ -1,7 +1,7 @@
 ﻿using System.Net.Sockets;
 using Kronos.Core.Requests;
 
-namespace Kronos.Server.EventArgs
+namespace Kronos.Server.Listening
 {
     public class RequestArgs : System.EventArgs
     {

@@ -1,5 +1,4 @@
 ﻿using System;
-using Kronos.Server.EventArgs;
 
 namespace Kronos.Server.Listening
 {

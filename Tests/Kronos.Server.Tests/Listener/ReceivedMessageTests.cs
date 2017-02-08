@@ -1,7 +1,7 @@
 ﻿using System.Net.Sockets;
 using System.Text;
 using Kronos.Core.Requests;
-using Kronos.Server.EventArgs;
+using Kronos.Server.Listening;
 using Xunit;
 
 namespace Kronos.Server.Tests.Listener
