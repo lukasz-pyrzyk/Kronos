@@ -6,21 +6,23 @@ using Xunit;
 
 namespace Kronos.Server.Tests.Listener
 {
-    public class ReceivedMessageTests
+    public class RequestArgsTests
     {
         [Fact]
-        public void Ctor_AssignsValues()
+        public void Reuse_AssignsValues()
         {
             // Arrange
             RequestType type = RequestType.Get;
             byte[] data = Encoding.UTF8.GetBytes("lorem ipsum");
 
             // Act
-            var message = new RequestArgs(type, data, data.Length, new Socket(SocketType.Stream, ProtocolType.IP));
+            var message = new RequestArg();
+            message.Assign(type, data, data.Length, new Socket(SocketType.Stream, ProtocolType.IP));
 
             // Assert
             Assert.Equal(message.Type, type);
-            Assert.Equal(message.Request, data);
+            Assert.Equal(message.Bytes, data);
+            Assert.Equal(message.Count, data.Length);
         }
     }
 }

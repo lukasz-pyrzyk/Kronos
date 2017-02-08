@@ -4,6 +4,6 @@ namespace Kronos.Server.Listening
 {
     public interface IProcessor
     {
-        RequestArgs ReceiveRequest(Socket client);
+        void ReceiveRequest(Socket client, ref RequestArg args);
     }
 }
