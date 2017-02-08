@@ -13,6 +13,8 @@ namespace Kronos.Core.Storage
         private readonly Dictionary<NodeMetatada, byte[]> _storage =
             new Dictionary<NodeMetatada, byte[]>(new NodeComparer());
 
+        private readonly NodesPool _pool = new NodesPool();
+
         private readonly CancellationTokenSource _cancelToken = new CancellationTokenSource();
 
         public int Count => _storage.Count;
@@ -25,27 +27,40 @@ namespace Kronos.Core.Storage
 
         public void AddOrUpdate(string key, DateTime expiryDate, byte[] obj)
         {
-            var metaData = new NodeMetatada(key, expiryDate);
+            var metaData = _pool.Rent();
+            metaData.Reuse(key, expiryDate);
 
             _storage[metaData] = obj;
         }
 
         public bool TryGet(string key, out byte[] obj)
         {
-            var metaData = new NodeMetatada(key);
+            var metaData = _pool.Rent();
+            metaData.Reuse(key);
 
-            return _storage.TryGetValue(metaData, out obj);
+            bool found = _storage.TryGetValue(metaData, out obj);
+            _pool.Return(metaData);
+            return found;
         }
 
         public bool TryRemove(string key)
         {
-            var metaData = new NodeMetatada(key);
-            return _storage.Remove(metaData);
+            var metaData = _pool.Rent();
+            metaData.Reuse(key);
+
+            bool removed = _storage.Remove(metaData);
+            _pool.Return(metaData);
+            return removed;
         }
 
         public bool Contains(string key)
         {
-            return _storage.ContainsKey(new NodeMetatada(key));
+            var metaData = _pool.Rent();
+            metaData.Reuse(key);
+
+            bool contains = _storage.ContainsKey(metaData);
+            _pool.Return(metaData);
+            return contains;
         }
 
         public void Clear()
