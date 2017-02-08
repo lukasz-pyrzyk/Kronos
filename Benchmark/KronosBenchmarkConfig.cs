@@ -3,7 +3,6 @@ using BenchmarkDotNet.Columns;
 using BenchmarkDotNet.Configs;
 using BenchmarkDotNet.Diagnosers;
 using BenchmarkDotNet.Exporters;
-using BenchmarkDotNet.Jobs;
 using BenchmarkDotNet.Order;
 
 namespace ClusterBenchmark
@@ -19,11 +18,6 @@ namespace ClusterBenchmark
             Add(MarkdownExporter.GitHub);
             Add(PlainExporter.Default);
             Add(AsciiDocExporter.Default);
-            Add(
-               new Job("ClassicJob", RunMode.Default, EnvMode.Default)
-               {
-                   Run = { LaunchCount = 2, WarmupCount = 1, TargetCount = 5 }
-               });
         }
     }
 }

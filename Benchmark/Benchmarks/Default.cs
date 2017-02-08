@@ -22,7 +22,7 @@ namespace ClusterBenchmark.Benchmarks
             KronosClient = KronosClientFactory.FromIp(KronosConnection, 5000);
 
             ConnectionMultiplexer redisCacheDistributor = ConnectionMultiplexer.Connect(RedisConnection);
-            redisCacheDistributor.GetServer(RedisConnection);
+            RedisServer = redisCacheDistributor.GetServer(RedisConnection);
             RedisClient = redisCacheDistributor.GetDatabase();
 
             AdditionalSetup();
