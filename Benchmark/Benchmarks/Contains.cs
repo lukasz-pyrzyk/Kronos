@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
+using ClusterBenchmark.Utils;
 
 namespace ClusterBenchmark.Benchmarks
 {
@@ -9,14 +10,14 @@ namespace ClusterBenchmark.Benchmarks
         [Benchmark]
         public async Task Kronos()
         {
-            string key = Guid.NewGuid().ToString();
+            string key = Prepare.Key();
             await KronosClient.ContainsAsync(key);
         }
 
         [Benchmark]
         public async Task Redis()
         {
-            string key = Guid.NewGuid().ToString();
+            string key = Prepare.Key();
             await RedisClient.SetContainsAsync(key, "");
         }
     }

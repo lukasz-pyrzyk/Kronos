@@ -7,7 +7,7 @@ namespace ClusterBenchmark.Utils
         public static byte[] Bytes(int count)
         {
             var data = new byte[count];
-            new System.Random().NextBytes(data);
+            new Random().NextBytes(data);
             return data;
         }
 
