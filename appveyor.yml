@@ -1,7 +1,6 @@
 version: 1.1.2-rc-{build}
 image: Visual Studio 2015
 nuget:
-  account_feed: true
   project_feed: true
   disable_publish_on_pr: true
 build_script:
