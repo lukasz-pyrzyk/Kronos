@@ -1,11 +1,11 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Benchmark.Config;
+using Benchmark.Utils;
 using BenchmarkDotNet.Attributes;
-using ClusterBenchmark.Utils;
 
-namespace ClusterBenchmark.Benchmarks
+namespace Benchmark.Types
 {
-    public class Contains : Default
+    public class Contains : BaseBenchmark
     {
         [Benchmark]
         public async Task Kronos()

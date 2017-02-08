@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace ClusterBenchmark.Utils
+namespace Benchmark.Utils
 {
     public static class Prepare
     {

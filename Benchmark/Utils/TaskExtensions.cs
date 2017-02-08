@@ -1,6 +1,6 @@
 using System.Threading.Tasks;
 
-namespace ClusterBenchmark.Utils
+namespace Benchmark.Utils
 {
     public static class TaskExtensions
     {

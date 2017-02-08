@@ -1,7 +1,7 @@
+using Benchmark.Types;
 using BenchmarkDotNet.Running;
-using ClusterBenchmark.Benchmarks;
 
-namespace ClusterBenchmark
+namespace Benchmark
 {
     public class Program
     {

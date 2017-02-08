@@ -1,11 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Benchmark.Config;
+using Benchmark.Utils;
 using BenchmarkDotNet.Attributes;
-using ClusterBenchmark.Utils;
 
-namespace ClusterBenchmark.Benchmarks
+namespace Benchmark.Types
 {
-    public class AddAndRemove : Default
+    public class AddAndRemove : BaseBenchmark
     {
         [Params(Size.Mb, Size.Mb * 4)]
         public int PackageSize { get; set; }

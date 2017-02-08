@@ -1,4 +1,4 @@
-﻿namespace ClusterBenchmark
+﻿namespace Benchmark.Utils
 {
     public static class Size
     {
