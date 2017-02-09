@@ -13,22 +13,22 @@ namespace Kronos.Server.Listening
         private const int IntSize = sizeof(int);
         private const int RequestTypeSize = sizeof(ushort);
 
-        public void ReceiveRequest(Socket client, ref RequestArg args)
+        public void ReceiveRequest(Socket client, ref RequestArg args, ArrayPool<byte> pool)
         {
-            byte[] lengthBuffer = ArrayPool<byte>.Shared.Rent(IntSize); // TODO stackalloc
+            byte[] lengthBuffer = pool.Rent(IntSize); // TODO stackalloc
             SocketUtils.ReceiveAll(client, lengthBuffer, IntSize);
             int dataLength = BitConverter.ToInt32(lengthBuffer, 0);
-            ArrayPool<byte>.Shared.Return(lengthBuffer);
+            pool.Return(lengthBuffer);
             Debug.Assert(dataLength != 0);
 
-            byte[] typeBuffer = ArrayPool<byte>.Shared.Rent(RequestTypeSize); // todo stackalloc;
+            byte[] typeBuffer = pool.Rent(RequestTypeSize); // todo stackalloc;
             SocketUtils.ReceiveAll(client, typeBuffer, RequestTypeSize);
             RequestType requestType = SerializationUtils.Deserialize<RequestType>(typeBuffer, RequestTypeSize);
-            ArrayPool<byte>.Shared.Return(typeBuffer);
+            pool.Return(typeBuffer);
             Debug.Assert(requestType != RequestType.Unknown);
 
             int packageSize = dataLength - RequestTypeSize;
-            byte[] data = ArrayPool<byte>.Shared.Rent(packageSize);
+            byte[] data = pool.Rent(packageSize);
             SocketUtils.ReceiveAll(client, data, packageSize);
 
             args.Assign(requestType, data, packageSize, client);
