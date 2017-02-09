@@ -27,7 +27,6 @@ namespace Kronos.Core.Tests.Storage
 
         public static IEnumerable<object[]> ArgumentsData => new[]
         {
-            new object[] { default(Key), default(Key), false },
             new object[] { default(Key), new Key("key"), false },
             new object[] { new Key("key"), default(Key), false },
             new object[] { new Key("key"), new Key("key1"), false },
