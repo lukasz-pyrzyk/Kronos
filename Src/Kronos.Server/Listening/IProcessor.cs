@@ -1,11 +1,10 @@
 ﻿using System.Buffers;
 using System.Net.Sockets;
-using Kronos.Server.EventArgs;
 
 namespace Kronos.Server.Listening
 {
     public interface IProcessor
     {
-        RequestArgs ReceiveRequest(Socket client, ArrayPool<byte> pool);
+        void ReceiveRequest(Socket client, ref RequestArg args, ArrayPool<byte> pool);
     }
 }

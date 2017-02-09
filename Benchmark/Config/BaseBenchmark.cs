@@ -2,10 +2,10 @@
 using Kronos.Client;
 using StackExchange.Redis;
 
-namespace ClusterBenchmark.Benchmarks
+namespace Benchmark.Config
 {
-    [Config(typeof(KronosBenchmarkConfig))]
-    public abstract class Default
+    [Config(typeof(CustomConfig))]
+    public abstract class BaseBenchmark
     {
         private const string Domain = "192.168.0.1";
 
@@ -22,7 +22,7 @@ namespace ClusterBenchmark.Benchmarks
             KronosClient = KronosClientFactory.FromIp(KronosConnection, 5000);
 
             ConnectionMultiplexer redisCacheDistributor = ConnectionMultiplexer.Connect(RedisConnection);
-            redisCacheDistributor.GetServer(RedisConnection);
+            RedisServer = redisCacheDistributor.GetServer(RedisConnection);
             RedisClient = redisCacheDistributor.GetDatabase();
 
             AdditionalSetup();

@@ -5,7 +5,6 @@ using System.Net.Sockets;
 using Kronos.Core.Networking;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
-using Kronos.Server.EventArgs;
 
 namespace Kronos.Server.Listening
 {
@@ -14,7 +13,7 @@ namespace Kronos.Server.Listening
         private const int IntSize = sizeof(int);
         private const int RequestTypeSize = sizeof(ushort);
 
-        public RequestArgs ReceiveRequest(Socket client, ArrayPool<byte> pool)
+        public void ReceiveRequest(Socket client, ref RequestArg args, ArrayPool<byte> pool)
         {
             byte[] lengthBuffer = pool.Rent(IntSize); // TODO stackalloc
             SocketUtils.ReceiveAll(client, lengthBuffer, IntSize);
@@ -31,7 +30,8 @@ namespace Kronos.Server.Listening
             int packageSize = dataLength - RequestTypeSize;
             byte[] data = pool.Rent(packageSize);
             SocketUtils.ReceiveAll(client, data, packageSize);
-            return new RequestArgs(requestType, data, packageSize, client);
+
+            args.Assign(requestType, data, packageSize, client);
         }
     }
 }

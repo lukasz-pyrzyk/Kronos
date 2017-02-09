@@ -7,7 +7,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Kronos.Core.Networking;
 using Kronos.Core.Processing;
-using Kronos.Server.EventArgs;
 using NLog;
 
 namespace Kronos.Server.Listening
@@ -80,11 +79,12 @@ namespace Kronos.Server.Listening
         private void ProcessSocketConnection(Socket socket)
         {
             string id = Guid.NewGuid().ToString();
-            RequestArgs request = _processor.ReceiveRequest(socket, _pool);
+            RequestArg args = new RequestArg();
+            _processor.ReceiveRequest(socket, ref args, _pool);
             try
             {
-                _logger.Debug($"Processing new request {request.Type} with Id: {id}, {request.Received} bytes");
-                byte[] response = _requestProcessor.Handle(request.Type, request.Request, request.Received);
+                _logger.Debug($"Processing new request {args.Type} with Id: {id}, {args.Count} bytes");
+                byte[] response = _requestProcessor.Handle(args.Type, args.Bytes, args.Count);
                 _logger.Debug($"Sending response with {response.Length} bytes to the user");
                 SocketUtils.SendAll(socket, response);
 
@@ -96,7 +96,7 @@ namespace Kronos.Server.Listening
             }
             finally
             {
-                _pool.Return(request.Request);
+                _pool.Return(args.Bytes);
             }
         }
     }
