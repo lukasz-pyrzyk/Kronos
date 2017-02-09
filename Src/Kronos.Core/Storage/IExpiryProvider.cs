@@ -5,6 +5,6 @@ namespace Kronos.Core.Storage
 {
     public interface IExpiryProvider
     {
-        void Start(Dictionary<NodeMetatada, byte[]> nodes, CancellationToken token);
+        void Start(Dictionary<Key, byte[]> nodes, CancellationToken token);
     }
 }

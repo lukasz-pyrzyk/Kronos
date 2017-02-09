@@ -12,10 +12,10 @@ namespace Kronos.Core.Tests.Storage
         [Fact]
         public async Task Start_CanDeleteObjectsFromStorage()
         {
-            var data = new Dictionary<NodeMetatada, byte[]>
+            var data = new Dictionary<Key, byte[]>
             {
-                [new NodeMetatada("one", DateTime.UtcNow)] = new byte[0],
-                [new NodeMetatada("two", DateTime.MaxValue)] = new byte[0]
+                [new Key("one", DateTime.UtcNow)] = new byte[0],
+                [new Key("two", DateTime.MaxValue)] = new byte[0]
             };
 
             StorageExpiryProvider provider = new StorageExpiryProvider();

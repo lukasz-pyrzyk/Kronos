@@ -5,43 +5,43 @@ using Xunit;
 
 namespace Kronos.Core.Tests.Storage
 {
-    public class NodeMetadataTests
+    public class KeyTests
     {
         [Theory]
         [MemberData(nameof(ArgumentsData))]
-        public void Ctor_AssignsProperties(string key, DateTime expiryDate)
+        public void Ctor_AssignsProperties(string value, DateTime expiryDate)
         {
-            var metadata = new NodeMetatada(key, expiryDate);
+            var metadata = new Key(value, expiryDate);
 
-            Assert.Equal(key, metadata.Key);
+            Assert.Equal(value, metadata.Value);
             Assert.Equal(expiryDate.Ticks, metadata.ExpiryDate.Ticks);
         }
 
         [Fact]
         public void ToString_ContainsInformationAboutKeyAndExpiry()
         {
-            string key = "key";
+            string value = "value";
             DateTime expiryDate = DateTime.Now;
-            var metadata = new NodeMetatada(key, expiryDate);
+            var metadata = new Key(value, expiryDate);
             string message = metadata.ToString();
 
-            Assert.Equal($"{key}|{expiryDate:s}", message);
+            Assert.Equal($"{value}|{expiryDate:s}", message);
         }
 
         [Fact]
         public void HashCode_ReturnsHashCodeFromKey()
         {
-            string key = "key";
-            var metadata = new NodeMetatada(key);
+            string value = "value";
+            var metadata = new Key(value);
 
-            Assert.Equal(key.GetHashCode(), metadata.GetHashCode());
+            Assert.Equal(value.GetHashCode(), metadata.GetHashCode());
         }
 
 
         public static IEnumerable<object[]> ArgumentsData => new[]
         {
-            new object[] { "key", DateTime.Now },
-            new object[] { "key", null }
+            new object[] { "value", DateTime.Now },
+            new object[] { "value", null }
         };
     }
 }
