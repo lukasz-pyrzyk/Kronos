@@ -12,7 +12,7 @@ namespace Kronos.Core.Tests.Storage
         [MemberData(nameof(ArgumentsData))]
         public void Equals_ReturnsFalse_WhenNullIsPassed(NodeMetatada x, NodeMetatada y, bool result)
         {
-            IEqualityComparer<NodeMetatada> comparer = new NodeComparer();
+            IEqualityComparer<NodeMetatada> comparer = new KeyComperer();
             bool comparisonResult = comparer.Equals(x, y);
 
             Assert.Equal(result, comparisonResult);
