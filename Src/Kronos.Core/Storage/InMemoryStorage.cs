@@ -13,7 +13,7 @@ namespace Kronos.Core.Storage
         private readonly Dictionary<NodeMetatada, byte[]> _storage =
             new Dictionary<NodeMetatada, byte[]>(new NodeComparer());
 
-        private readonly NodesPool _pool = new NodesPool();
+        private readonly Pool<NodeMetatada> _pool = new Pool<NodeMetatada>();
 
         private readonly CancellationTokenSource _cancelToken = new CancellationTokenSource();
 
