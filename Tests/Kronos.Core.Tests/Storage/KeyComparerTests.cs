@@ -1,6 +1,4 @@
-﻿using System;
-using System.Collections;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Kronos.Core.Storage;
 using Xunit;
 
@@ -29,9 +27,9 @@ namespace Kronos.Core.Tests.Storage
 
         public static IEnumerable<object[]> ArgumentsData => new[]
         {
-            new object[] { null, null, false },
-            new object[] { null, new Key("key"), false },
-            new object[] { new Key("key"), null, false },
+            new object[] { default(Key), default(Key), false },
+            new object[] { default(Key), new Key("key"), false },
+            new object[] { new Key("key"), default(Key), false },
             new object[] { new Key("key"), new Key("key1"), false },
             new object[] { new Key("key"), new Key("key"), true},
         };
