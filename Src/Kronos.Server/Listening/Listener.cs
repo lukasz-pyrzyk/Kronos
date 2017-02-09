@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
@@ -19,6 +20,7 @@ namespace Kronos.Server.Listening
         private readonly IProcessor _processor;
         private readonly IRequestProcessor _requestProcessor;
         private readonly CancellationTokenSource _cancel = new CancellationTokenSource();
+        private readonly ArrayPool<byte> _pool = ArrayPool<byte>.Create();
 
         private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
@@ -78,7 +80,7 @@ namespace Kronos.Server.Listening
         private void ProcessSocketConnection(Socket socket)
         {
             string id = Guid.NewGuid().ToString();
-            RequestArgs request = _processor.ReceiveRequest(socket);
+            RequestArgs request = _processor.ReceiveRequest(socket, _pool);
             try
             {
                 _logger.Debug($"Processing new request {request.Type} with Id: {id}, {request.Received} bytes");
@@ -91,6 +93,10 @@ namespace Kronos.Server.Listening
             catch (Exception ex)
             {
                 _logger.Error($"Exception on processing request {id}, {ex}");
+            }
+            finally
+            {
+                _pool.Return(request.Request);
             }
         }
     }
