@@ -14,25 +14,15 @@ namespace Kronos.Client.Transfer
 {
     public class Connection : IConnection
     {
-        public int RetryCount => _timeSpans.Length;
-
         private readonly IPEndPoint _host;
-
-        private readonly TimeSpan[] _timeSpans;
         private readonly Policy _policy;
-
-        private const int IntSize = sizeof(int);
 
         public Connection(IPEndPoint host, int retryCount = 2)
         {
             _host = host;
-            var spans = new TimeSpan[retryCount];
-            for (int i = 0; i < retryCount; i++)
-            {
-                spans[i] = new TimeSpan(3 * retryCount);
-            }
-            _timeSpans = spans;
-            _policy = Policy.Handle<Exception>().WaitAndRetryAsync(_timeSpans);
+
+            TimeSpan[] spans = CreateExponentialBackoff(retryCount);
+            _policy = Policy.Handle<Exception>().WaitAndRetryAsync(spans);
         }
 
         public async Task<byte[]> SendAsync<TRequest>(TRequest request) where TRequest : IRequest
@@ -79,7 +69,7 @@ namespace Kronos.Client.Transfer
                 data = ms.ToArray();
             }
 
-            byte[] lengthBytes = new byte[IntSize]; // stackalloc
+            byte[] lengthBytes = new byte[sizeof(int)]; // stackalloc
             NoAllocBitConverter.GetBytes(data.Length, lengthBytes);
 
             await SocketUtils.SendAllAsync(server, lengthBytes).ConfigureAwait(false);
@@ -89,7 +79,7 @@ namespace Kronos.Client.Transfer
         private static async Task<byte[]> ReceiveAsync(Socket socket)
         {
             // todo array pool and stackalloc
-            byte[] sizeBytes = new byte[IntSize];
+            byte[] sizeBytes = new byte[sizeof(int)];
             await SocketUtils.ReceiveAllAsync(socket, sizeBytes, sizeBytes.Length).ConfigureAwait(false);
             int size = BitConverter.ToInt32(sizeBytes, 0);
 
@@ -97,6 +87,17 @@ namespace Kronos.Client.Transfer
             await SocketUtils.ReceiveAllAsync(socket, requestBytes, requestBytes.Length).ConfigureAwait(false);
 
             return requestBytes;
+        }
+
+        private static TimeSpan[] CreateExponentialBackoff(int retryCount)
+        {
+            var spans = new TimeSpan[retryCount];
+            for (int i = 0; i < retryCount; i++)
+            {
+                spans[i] = new TimeSpan(3 * retryCount);
+            }
+
+            return spans;
         }
     }
 }

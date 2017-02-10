@@ -13,7 +13,7 @@ namespace Kronos.Core.Storage
 
         private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
-        public void Start(Dictionary<NodeMetatada, byte[]> nodes, CancellationToken token)
+        public void Start(Dictionary<Key, byte[]> nodes, CancellationToken token)
         {
             Task.Factory.StartNew(async () =>
             {
@@ -21,7 +21,7 @@ namespace Kronos.Core.Storage
                 {
                     long ticks = DateTime.UtcNow.Ticks;
                     ulong deleted = 0;
-                    foreach (KeyValuePair<NodeMetatada, byte[]> node in nodes)
+                    foreach (KeyValuePair<Key, byte[]> node in nodes)
                     {
                         if (node.Key.ExpiryDate.Ticks < ticks)
                         {

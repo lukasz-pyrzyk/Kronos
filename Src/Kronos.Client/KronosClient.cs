@@ -19,16 +19,16 @@ namespace Kronos.Client
     internal class KronosClient : IKronosClient
     {
         private readonly ServerProvider _serverProvider;
-        private readonly Func<IPEndPoint, IConnection> _connectionResolver;
+        private readonly Func<IPEndPoint, IConnection> _createConnection;
 
         public KronosClient(KronosConfig config) : this(config, endpoint => new Connection(endpoint))
         {
         }
 
-        internal KronosClient(KronosConfig config, Func<IPEndPoint, IConnection> connectionResolver)
+        internal KronosClient(KronosConfig config, Func<IPEndPoint, IConnection> createConnection)
         {
             _serverProvider = new ServerProvider(config.ClusterConfig);
-            _connectionResolver = connectionResolver;
+            _createConnection = createConnection;
         }
 
         public async Task InsertAsync(string key, byte[] package, DateTime expiryDate)
@@ -70,7 +70,7 @@ namespace Kronos.Client
         public async Task<int> CountAsync()
         {
             Debug.WriteLine("New count request");
-            
+
             var request = new CountRequest();
             int[] results = await new CountProcessor().ExecuteAsync(request, SelectAllServers());
 
@@ -101,13 +101,13 @@ namespace Kronos.Client
         {
             ServerConfig server = _serverProvider.SelectServer(key.GetHashCode());
             Debug.WriteLine($"Selected server {server}");
-            IConnection connection = _connectionResolver(server.EndPoint);
+            IConnection connection = _createConnection(server.EndPoint);
             return connection;
         }
 
         private IConnection[] SelectAllServers()
         {
-            return _serverProvider.Servers.Select(x => _connectionResolver(x.EndPoint)).ToArray();
+            return _serverProvider.Servers.Select(x => _createConnection(x.EndPoint)).ToArray();
         }
     }
 }
