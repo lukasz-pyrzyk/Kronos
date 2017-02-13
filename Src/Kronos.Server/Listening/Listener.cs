@@ -41,14 +41,23 @@ namespace Kronos.Server.Listening
             {
                 while (!token.IsCancellationRequested)
                 {
+                    Socket socket = null;
                     try
                     {
-                        Socket socket = await _listener.AcceptSocketAsync().ConfigureAwait(false);
+                        socket = await _listener.AcceptSocketAsync().ConfigureAwait(false);
                         ProcessSocketConnection(socket);
                     }
                     catch (Exception ex)
                     {
                         _logger.Error($"Exception during accepting new request {ex}");
+                    }
+                    finally
+                    {
+                        if (socket != null)
+                        {
+                            socket.Shutdown(SocketShutdown.Both);
+                            socket.Dispose();
+                        }
                     }
                 }
             }, token, TaskCreationOptions.LongRunning, TaskScheduler.Current);
