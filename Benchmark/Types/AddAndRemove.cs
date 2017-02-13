@@ -16,6 +16,10 @@ namespace Benchmark.Types
         protected override void AdditionalSetup()
         {
             _data = Prepare.Bytes(PackageSize);
+
+            Task kronos = KronosClient.ClearAsync();
+            Task redis = RedisServer.FlushAllDatabasesAsync();
+            Task.WaitAll(kronos, redis);
         }
 
         [Benchmark]
