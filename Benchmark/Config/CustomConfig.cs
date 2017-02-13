@@ -12,12 +12,7 @@ namespace Benchmark.Config
     {
         public CustomConfig()
         {
-            Add(StatisticColumn.Min);
-            Add(StatisticColumn.Max);
-            Add(MemoryDiagnoser.Default);
             Add(MarkdownExporter.GitHub);
-            Add(PlainExporter.Default);
-            Add(AsciiDocExporter.Default);
         }
     }
 }
