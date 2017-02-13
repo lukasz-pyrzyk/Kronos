@@ -44,7 +44,7 @@ namespace Kronos.Client.Tests.Transfer
 
             var ipEndpoint = new IPEndPoint(IPAddress.Any, 500);
 
-            var service = new Connection(ipEndpoint, 0);
+            var service = new Connection(ipEndpoint);
 
             //  act and assert
             await Assert.ThrowsAsync(typeof(ArgumentNullException), async () => await service.SendAsync(request));

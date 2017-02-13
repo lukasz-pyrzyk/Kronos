@@ -14,15 +14,15 @@ namespace Kronos.Client.Transfer
 {
     public class Connection : IConnection
     {
+        private static readonly TimeSpan[] TimeSpans = CreateExponentialBackoff(2);
+
         private readonly IPEndPoint _host;
         private readonly Policy _policy;
 
-        public Connection(IPEndPoint host, int retryCount = 2)
+        public Connection(IPEndPoint host)
         {
             _host = host;
-
-            TimeSpan[] spans = CreateExponentialBackoff(retryCount);
-            _policy = Policy.Handle<Exception>().WaitAndRetryAsync(spans);
+            _policy = Policy.Handle<Exception>().WaitAndRetryAsync(TimeSpans);
         }
 
         public async Task<byte[]> SendAsync<TRequest>(TRequest request) where TRequest : IRequest
