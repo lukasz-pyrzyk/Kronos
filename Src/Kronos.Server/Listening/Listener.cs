@@ -16,6 +16,7 @@ namespace Kronos.Server.Listening
         private readonly TcpListener _listener;
         private readonly IProcessor _processor;
         private readonly IRequestProcessor _requestProcessor;
+        private readonly ArrayPool<byte> _pool = ArrayPool<byte>.Create();
         private readonly CancellationTokenSource _cancel = new CancellationTokenSource();
         private readonly ArrayPool<byte> _pool = ArrayPool<byte>.Create();
 
