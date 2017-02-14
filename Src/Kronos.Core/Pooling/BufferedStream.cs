@@ -3,11 +3,11 @@ using System.Buffers;
 using System.IO;
 using Kronos.Core.Serialization;
 
-namespace Kronos.Core.Storage
+namespace Kronos.Core.Pooling
 {
     public class BufferedStream : Stream
     {
-        public byte[] Pool => _pool;
+        public byte[] RawBytes => _pool;
 
         private byte[] _pool;
         private int _length;
@@ -17,9 +17,7 @@ namespace Kronos.Core.Storage
         {
             _pool = ArrayPool<byte>.Shared.Rent(_reserve);
 
-            // Skip first sizeof(int) bytes, because they are reserved for the size
-            _length = sizeof(int);
-            Position = sizeof(int);
+            Clean(false);
         }
 
         public override bool CanRead => true;
@@ -107,5 +105,16 @@ namespace Kronos.Core.Storage
         private static byte[] Rent(int count) => ArrayPool<byte>.Shared.Rent(count);
 
         private static void Return(byte[] bytes) => ArrayPool<byte>.Shared.Return(bytes);
+
+        public void Clean(bool clear = true)
+        {
+            if (clear)
+            {
+                Array.Clear(_pool, 0, _pool.Length);
+            }
+
+            _length = sizeof(int);
+            Position = sizeof(int);
+        }
     }
 }
