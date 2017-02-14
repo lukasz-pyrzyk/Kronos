@@ -53,11 +53,7 @@ namespace Kronos.Server.Listening
                     }
                     finally
                     {
-                        if (socket != null)
-                        {
-                            socket.Shutdown(SocketShutdown.Both);
-                            socket.Dispose();
-                        }
+                        socket?.Shutdown(SocketShutdown.Send);
                     }
                 }
             }, token, TaskCreationOptions.LongRunning, TaskScheduler.Current);
