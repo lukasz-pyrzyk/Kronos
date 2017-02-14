@@ -27,6 +27,18 @@ namespace Kronos.Core.Pooling
         public override long Length => _length;
         public override long Position { get; set; }
 
+        public void Clean(bool clear = true)
+        {
+            if (clear)
+            {
+                Array.Clear(_pool, 0, _pool.Length);
+                // TODO - Remove it. Dirty bytes should be rewritten
+            }
+
+            _length = sizeof(int);
+            Position = sizeof(int);
+        }
+
         public override void Flush()
         {
         }
@@ -106,17 +118,5 @@ namespace Kronos.Core.Pooling
         private static byte[] Rent(int count) => ArrayPool<byte>.Shared.Rent(count);
 
         private static void Return(byte[] bytes) => ArrayPool<byte>.Shared.Return(bytes);
-
-        public void Clean(bool clear = true)
-        {
-            if (clear)
-            {
-                Array.Clear(_pool, 0, _pool.Length);
-                // TODO - Remove it. Dirty bytes should be rewritten
-            }
-
-            _length = sizeof(int);
-            Position = sizeof(int);
-        }
     }
 }
