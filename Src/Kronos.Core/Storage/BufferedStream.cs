@@ -36,7 +36,7 @@ namespace Kronos.Core.Storage
         {
             int size = Math.Min(_length, count);
 
-            Buffer.BlockCopy(_pool, (int)Position, buffer, offset, size);
+            Copy(_pool, (int)Position, buffer, offset, size);
 
             Position += size;
 
@@ -59,7 +59,7 @@ namespace Kronos.Core.Storage
             CheckSize(count);
 
             // Write data to the buffer
-            Buffer.BlockCopy(buffer, offset, _pool, (int)Position, count);
+            Copy(buffer, offset, _pool, (int)Position, count);
 
             _length += count;
             Position += count;
@@ -76,7 +76,7 @@ namespace Kronos.Core.Storage
                 byte[] newArray = Rent((int)expectedSize + _reserve);
 
                 // copy bytes to new array
-                Buffer.BlockCopy(_pool, 0, newArray, 0, _length);
+                Copy(_pool, 0, newArray, 0, _length);
 
                 // return old bytes to the pool
                 Return(_pool);
@@ -97,6 +97,11 @@ namespace Kronos.Core.Storage
         protected override void Dispose(bool disposing)
         {
             Return(_pool);
+        }
+
+        private static void Copy(Array src, int srcOffset, Array dst, int dstOffset, int count)
+        {
+            Array.Copy(src, srcOffset, dst, dstOffset, count);
         }
 
         private static byte[] Rent(int count) => ArrayPool<byte>.Shared.Rent(count);
