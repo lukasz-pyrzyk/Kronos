@@ -8,6 +8,7 @@ namespace Kronos.Core.Pooling
     public class BufferedStream : Stream
     {
         public byte[] RawBytes => _pool;
+        public bool IsClean => Position == sizeof(int);
 
         private byte[] _pool;
         private int _length;
@@ -111,6 +112,7 @@ namespace Kronos.Core.Pooling
             if (clear)
             {
                 Array.Clear(_pool, 0, _pool.Length);
+                // TODO - Remove it. Dirty bytes should be rewritten
             }
 
             _length = sizeof(int);
