@@ -22,12 +22,12 @@ namespace Kronos.Core.Networking
             }
         }
 
-        public static async Task SendAllAsync(Socket socket, byte[] data)
+        public static async Task SendAllAsync(Socket socket, byte[] data, int count)
         {
             int position = 0;
-            while (position != data.Length)
+            while (position != count)
             {
-                int size = Math.Min(data.Length - position, BufferSize);
+                int size = Math.Min(count - position, BufferSize);
                 int sent = await socket.SendAsync(new ArraySegment<byte>(data, position, size), SocketFlags.None).ConfigureAwait(false);
                 position += sent;
 

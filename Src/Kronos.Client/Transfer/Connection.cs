@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -8,18 +7,19 @@ using Kronos.Core.Exceptions;
 using Kronos.Core.Networking;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
+using Kronos.Core.Storage;
 using Polly;
 
 namespace Kronos.Client.Transfer
 {
     public class Connection : IConnection
     {
-        private const int retryCount = 2;
+        private const int RetryCount = 2;
         private static readonly Policy Policy = Policy.Handle<Exception>()
-            .WaitAndRetryAsync(CreateExponentialBackoff(retryCount));
+            .WaitAndRetryAsync(CreateExponentialBackoff(RetryCount));
 
         private readonly IPEndPoint _host;
-        
+
         public Connection(IPEndPoint host)
         {
             _host = host;
@@ -61,20 +61,13 @@ namespace Kronos.Client.Transfer
 
         private static async Task SendAsync(IRequest request, Socket server)
         {
-            // todo array pool and stackalloc
-            byte[] data;
-            using (MemoryStream ms = new MemoryStream())
+            using (var stream = new BufferedStream())
             {
-                SerializationUtils.SerializeToStream(ms, request.Type);
-                SerializationUtils.SerializeToStream(ms, request);
-                data = ms.ToArray();
+                SerializationUtils.SerializeToStream(stream, request.Type);
+                SerializationUtils.SerializeToStream(stream, request);
+
+                await SocketUtils.SendAllAsync(server, stream.Pool, (int)stream.Length).ConfigureAwait(false);
             }
-
-            byte[] lengthBytes = new byte[sizeof(int)]; // stackalloc
-            NoAllocBitConverter.GetBytes(data.Length, lengthBytes);
-
-            await SocketUtils.SendAllAsync(server, lengthBytes).ConfigureAwait(false);
-            await SocketUtils.SendAllAsync(server, data).ConfigureAwait(false);
         }
 
         private static async Task<byte[]> ReceiveAsync(Socket socket)
