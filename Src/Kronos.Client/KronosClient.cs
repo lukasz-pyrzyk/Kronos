@@ -18,6 +18,13 @@ namespace Kronos.Client
     /// </summary>
     internal class KronosClient : IKronosClient
     {
+        private readonly InsertProcessor _insertProcessor = new InsertProcessor();
+        private readonly GetProcessor _getProcessor = new GetProcessor();
+        private readonly DeleteProcessor _deleteProcessor = new DeleteProcessor();
+        private readonly CountProcessor _countProcessor = new CountProcessor();
+        private readonly ContainsProcessor _containsProcessor = new ContainsProcessor();
+        private readonly ClearProcessor _clearProcessor = new ClearProcessor();
+
         private readonly ServerProvider _serverProvider;
         private readonly Func<IPEndPoint, IConnection> _createConnection;
 
@@ -37,7 +44,7 @@ namespace Kronos.Client
             InsertRequest request = new InsertRequest(key, package, expiryDate);
 
             IConnection connection = SelectServerAndCreateConnection(key);
-            bool response = await new InsertProcessor().ExecuteAsync(request, connection);
+            bool response = await _insertProcessor.ExecuteAsync(request, connection);
 
             Debug.WriteLine($"InsertRequest status: {response}");
         }
@@ -48,7 +55,7 @@ namespace Kronos.Client
             GetRequest request = new GetRequest(key);
 
             IConnection connection = SelectServerAndCreateConnection(key);
-            byte[] valueFromCache = await new GetProcessor().ExecuteAsync(request, connection);
+            byte[] valueFromCache = await _getProcessor.ExecuteAsync(request, connection);
 
             byte[] notFoundBytes = SerializationUtils.Serialize(RequestStatusCode.NotFound);
             if (valueFromCache != null && valueFromCache.SequenceEqual(notFoundBytes))
@@ -62,7 +69,7 @@ namespace Kronos.Client
             Debug.WriteLine("New delete request");
             DeleteRequest request = new DeleteRequest(key);
             IConnection connection = SelectServerAndCreateConnection(key);
-            bool status = await new DeleteProcessor().ExecuteAsync(request, connection);
+            bool status = await _deleteProcessor.ExecuteAsync(request, connection);
 
             Debug.WriteLine($"InsertRequest status: {status}");
         }
@@ -72,7 +79,7 @@ namespace Kronos.Client
             Debug.WriteLine("New count request");
 
             var request = new CountRequest();
-            int[] results = await new CountProcessor().ExecuteAsync(request, SelectAllServers());
+            int[] results = await _countProcessor.ExecuteAsync(request, SelectAllServers());
 
             return results.Sum();
         }
@@ -84,7 +91,7 @@ namespace Kronos.Client
             var request = new ContainsRequest(key);
 
             IConnection connection = SelectServerAndCreateConnection(key);
-            bool contains = await new ContainsProcessor().ExecuteAsync(request, connection);
+            bool contains = await _containsProcessor.ExecuteAsync(request, connection);
 
             return contains;
         }
@@ -94,7 +101,7 @@ namespace Kronos.Client
             Debug.WriteLine("New clear request");
 
             var request = new ClearRequest();
-            await new ClearProcessor().ExecuteAsync(request, SelectAllServers());
+            await _clearProcessor.ExecuteAsync(request, SelectAllServers());
         }
 
         private IConnection SelectServerAndCreateConnection(string key)
