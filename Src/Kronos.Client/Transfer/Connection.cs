@@ -5,9 +5,9 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using Kronos.Core.Exceptions;
 using Kronos.Core.Networking;
+using Kronos.Core.Pooling;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
-using Kronos.Core.Storage;
 using Polly;
 
 namespace Kronos.Client.Transfer
@@ -18,6 +18,7 @@ namespace Kronos.Client.Transfer
         private static readonly Policy Policy = Policy.Handle<Exception>()
             .WaitAndRetryAsync(CreateExponentialBackoff(RetryCount));
 
+        private readonly BufferedStream _stream = new BufferedStream();
         private readonly IPEndPoint _host;
 
         public Connection(IPEndPoint host)
@@ -52,6 +53,11 @@ namespace Kronos.Client.Transfer
                 }
                 finally
                 {
+                    if (!_stream.IsClean)
+                    {
+                        _stream.Clean();
+                    }
+
                     socket?.Dispose();
                 }
             }).ConfigureAwait(false);
@@ -59,15 +65,12 @@ namespace Kronos.Client.Transfer
             return response;
         }
 
-        private static async Task SendAsync(IRequest request, Socket server)
+        private async Task SendAsync(IRequest request, Socket server)
         {
-            using (var stream = new BufferedStream())
-            {
-                SerializationUtils.SerializeToStream(stream, request.Type);
-                SerializationUtils.SerializeToStream(stream, request);
+            SerializationUtils.SerializeToStream(_stream, request.Type);
+            SerializationUtils.SerializeToStream(_stream, request);
 
-                await SocketUtils.SendAllAsync(server, stream.Pool, (int)stream.Length).ConfigureAwait(false);
-            }
+            await SocketUtils.SendAllAsync(server, _stream.RawBytes, (int)_stream.Length).ConfigureAwait(false);
         }
 
         private static async Task<byte[]> ReceiveAsync(Socket socket)
