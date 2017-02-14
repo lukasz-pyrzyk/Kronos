@@ -28,7 +28,15 @@ namespace Kronos.Core.Pooling
 
         public T[] Rent(int count)
         {
-            throw new System.NotImplementedException();
+            T[] items = new T[count];
+            for (int i = 0; i < count; i++)
+            {
+                T item;
+                _nodes.TryPop(out item);
+                items[i] = item;
+            }
+
+            return items;
         }
 
         public void Return(T node)
@@ -38,15 +46,18 @@ namespace Kronos.Core.Pooling
 
         public void Return(T[] items)
         {
-            throw new System.NotImplementedException();
+            _nodes.PushRange(items);
         }
 
         private void Allocate()
         {
+            T[] items = new T[Capacity];
             for (int i = 0; i < Capacity; i++)
             {
-                _nodes.Push(new T());
+                items[i] = new T();
             }
+
+            _nodes.PushRange(items);
         }
     }
 }

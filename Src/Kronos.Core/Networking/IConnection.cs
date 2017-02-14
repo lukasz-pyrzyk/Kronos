@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Kronos.Core.Configuration;
 using Kronos.Core.Requests;
 
 namespace Kronos.Core.Networking
@@ -12,8 +13,7 @@ namespace Kronos.Core.Networking
         /// Send request to the server
         /// </summary>
         /// <param name="request">Request to process on the server</param>
-        /// <param name="host">Address of the server</param>
         /// <returns>Status code of request</returns>
-        Task<byte[]> SendAsync<TRequest>(TRequest request) where TRequest : IRequest;
+        Task<byte[]> SendAsync<TRequest>(TRequest request, ServerConfig server) where TRequest : IRequest;
     }
 }

@@ -1,8 +1,8 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using Kronos.Core.Configuration;
 using Kronos.Core.Exceptions;
 using Kronos.Core.Networking;
 using Kronos.Core.Pooling;
@@ -19,14 +19,8 @@ namespace Kronos.Client.Transfer
             .WaitAndRetryAsync(CreateExponentialBackoff(RetryCount));
 
         private readonly BufferedStream _stream = new BufferedStream();
-        private readonly IPEndPoint _host;
 
-        public Connection(IPEndPoint host)
-        {
-            _host = host;
-        }
-
-        public async Task<byte[]> SendAsync<TRequest>(TRequest request)
+        public async Task<byte[]> SendAsync<TRequest>(TRequest request, ServerConfig server)
             where TRequest : IRequest
         {
             Socket socket = null;
@@ -37,7 +31,7 @@ namespace Kronos.Client.Transfer
                 {
                     Debug.WriteLine("Connecting to the server socket");
                     socket = new Socket(SocketType.Stream, ProtocolType.IP);
-                    await socket.ConnectAsync(_host).ConfigureAwait(false);
+                    await socket.ConnectAsync(server.EndPoint).ConfigureAwait(false);
 
                     Debug.WriteLine("Sending request");
                     await SendAsync(request, socket).ConfigureAwait(false);
@@ -49,7 +43,7 @@ namespace Kronos.Client.Transfer
                 }
                 catch (Exception ex)
                 {
-                    throw new KronosCommunicationException($"Connection to the {_host} has been refused", ex);
+                    throw new KronosCommunicationException($"Connection to the {server.EndPoint} has been refused", ex);
                 }
                 finally
                 {
