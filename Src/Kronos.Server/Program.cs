@@ -14,6 +14,8 @@ namespace Kronos.Server
 {
     public class Program
     {
+        private static ManualResetEventSlim _cancelEvent = new ManualResetEventSlim();
+
         public static void LoggerSetup()
         {
             var reader = XmlReader.Create("NLog.config");
@@ -49,13 +51,10 @@ namespace Kronos.Server
 
             server.Start();
 
-            var reset = new ManualResetEventSlim();
-            Console.CancelKeyPress += (sender, e) =>
-            {
-                reset.Set();
-            };
+            Console.CancelKeyPress += (sender, args) => _cancelEvent.Set();
 
-            reset.Wait();
+            _cancelEvent.Wait();
+            _cancelEvent.Reset();
 
             // dispose components
             storage.Dispose();
@@ -85,6 +84,11 @@ namespace Kronos.Server
             }
 
             Console.WriteLine(line);
+        }
+
+        public static void Stop()
+        {
+            _cancelEvent.Set();
         }
     }
 }

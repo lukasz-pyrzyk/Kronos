@@ -1,5 +1,7 @@
 ﻿using System.IO;
+using System.Net;
 using Kronos.Core.Configuration;
+using Kronos.Core.Networking;
 using Newtonsoft.Json;
 
 namespace Kronos.Client
@@ -17,7 +19,8 @@ namespace Kronos.Client
 
         public static IKronosClient FromLocalhost(int port)
         {
-            return FromDomain("localhost", port);
+            IPAddress ip = EndpointUtils.GetIPAsync().Result;
+            return FromDomain(ip.ToString(), port);
         }
 
         public static IKronosClient FromDomain(string domain, int port)
