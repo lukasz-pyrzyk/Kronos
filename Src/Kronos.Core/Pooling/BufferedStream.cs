@@ -8,35 +8,40 @@ namespace Kronos.Core.Pooling
     public class BufferedStream : Stream
     {
         public byte[] RawBytes => _pool;
-        public bool IsClean => Position == sizeof(int);
+        public bool IsClean => Position == initialPosition; // TODO and length is initial
+
+        private const int initialPosition = sizeof(int);
 
         private byte[] _pool;
         private int _length;
+        private int _position;
         private readonly int _reserve = 4 * 1024;
 
         public BufferedStream()
         {
             _pool = ArrayPool<byte>.Shared.Rent(_reserve);
 
-            Clean(false);
+            ResetPositions();
         }
 
         public override bool CanRead => true;
         public override bool CanSeek => false;
         public override bool CanWrite => true;
         public override long Length => _length;
-        public override long Position { get; set; }
 
-        public void Clean(bool clear = true)
+        public override long Position
         {
-            if (clear)
+            get { return _position; }
+            set
             {
-                Array.Clear(_pool, 0, _pool.Length);
-                // TODO - Remove it. Dirty bytes should be rewritten
+                if (value > Length) throw new EndOfStreamException();
+                _position = (int)value;
             }
+        }
 
-            _length = sizeof(int);
-            Position = sizeof(int);
+        public void Clean()
+        {
+            ResetPositions();
         }
 
         public override void Flush()
@@ -45,13 +50,16 @@ namespace Kronos.Core.Pooling
 
         public override int Read(byte[] buffer, int offset, int count)
         {
-            int size = Math.Min(_length, count);
+            if (Position + count > _length)
+            {
+                throw new EndOfStreamException();
+            }
 
-            Copy(_pool, (int)Position, buffer, offset, size);
+            Copy(_pool, (int)Position, buffer, offset, count);
 
-            Position += size;
+            Position += count;
 
-            return size;
+            return count;
         }
 
         public override void SetLength(long value)
@@ -61,7 +69,22 @@ namespace Kronos.Core.Pooling
 
         public override long Seek(long offset, SeekOrigin origin)
         {
-            throw new NotSupportedException();
+            switch (origin)
+            {
+                case SeekOrigin.Begin:
+                    Position = initialPosition + offset;
+                    break;
+                case SeekOrigin.Current:
+                    Position += offset;
+                    break;
+                case SeekOrigin.End:
+                    Position = _length - offset;
+                    break;
+                default:
+                    throw new NotSupportedException();
+            }
+
+            return Position;
         }
 
         public override void Write(byte[] buffer, int offset, int count)
@@ -99,10 +122,16 @@ namespace Kronos.Core.Pooling
         private void WriteNewSize()
         {
             // Package size without first bytes reserved for size
-            int packageSize = _length - sizeof(int);
+            int packageSize = _length - initialPosition;
 
             // Write size to the reserved bytes without allocation
             NoAllocBitConverter.GetBytes(packageSize, _pool);
+        }
+
+        private void ResetPositions()
+        {
+            _length = initialPosition;
+            Position = initialPosition;
         }
 
         protected override void Dispose(bool disposing)
