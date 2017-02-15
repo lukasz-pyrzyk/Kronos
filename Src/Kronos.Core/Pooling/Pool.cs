@@ -4,11 +4,12 @@ namespace Kronos.Core.Pooling
 {
     public class Pool<T> : IPool<T> where T : new()
     {
-        private const int Capacity = 100;
-        private readonly Stack<T> _nodes = new Stack<T>(Capacity);
+        private readonly int allocateSize;
+        private readonly Stack<T> _nodes = new Stack<T>();
 
-        public Pool()
+        public Pool(int preallocateCount = 100)
         {
+            allocateSize = preallocateCount;
             Allocate();
         }
 
@@ -16,17 +17,22 @@ namespace Kronos.Core.Pooling
 
         public T Rent()
         {
-            if (_nodes.Count == 0)
-            {
-                Allocate();
-            }
+            AllocateIfNecessary(1);
 
             return _nodes.Pop();
         }
 
         public T[] Rent(int count)
         {
-            throw new System.NotImplementedException();
+            AllocateIfNecessary(count);
+
+            T[] items = new T[count];
+            for (int i = 0; i < count; i++)
+            {
+                items[i] = _nodes.Pop();
+            }
+
+            return items;
         }
 
         public void Return(T node)
@@ -36,12 +42,23 @@ namespace Kronos.Core.Pooling
 
         public void Return(T[] items)
         {
-            throw new System.NotImplementedException();
+            foreach (T item in items)
+            {
+                _nodes.Push(item);
+            }
         }
 
-        private void Allocate()
+        private void AllocateIfNecessary(int count)
         {
-            for (int i = 0; i < Capacity; i++)
+            if (_nodes.Count < count)
+            {
+                Allocate(count);
+            }
+        }
+
+        private void Allocate(int requestedCount = 0)
+        {
+            for (int i = 0; i < requestedCount + allocateSize; i++)
             {
                 _nodes.Push(new T());
             }

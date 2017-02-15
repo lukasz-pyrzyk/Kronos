@@ -4,11 +4,12 @@ namespace Kronos.Core.Pooling
 {
     public class ConcurrentPool<T> : IPool<T> where T : new()
     {
-        private const int Capacity = 100;
+        private readonly int allocateSize;
         private readonly ConcurrentStack<T> _nodes = new ConcurrentStack<T>();
 
-        public ConcurrentPool()
+        public ConcurrentPool(int preallocateCount = 100)
         {
+            allocateSize = preallocateCount;
             Allocate();
         }
 
@@ -16,10 +17,7 @@ namespace Kronos.Core.Pooling
 
         public T Rent()
         {
-            if (_nodes.Count == 0)
-            {
-                Allocate();
-            }
+            AllocateIfNecessary(1);
 
             T item;
             _nodes.TryPop(out item);
@@ -28,6 +26,8 @@ namespace Kronos.Core.Pooling
 
         public T[] Rent(int count)
         {
+            AllocateIfNecessary(count);
+
             T[] items = new T[count];
             for (int i = 0; i < count; i++)
             {
@@ -49,10 +49,19 @@ namespace Kronos.Core.Pooling
             _nodes.PushRange(items);
         }
 
-        private void Allocate()
+        private void AllocateIfNecessary(int count)
         {
-            T[] items = new T[Capacity];
-            for (int i = 0; i < Capacity; i++)
+            if (_nodes.Count < count)
+            {
+                Allocate(count);
+            }
+        }
+
+        private void Allocate(int requestedCount = 0)
+        {
+            int size = requestedCount + allocateSize;
+            T[] items = new T[size];
+            for (int i = 0; i < size; i++)
             {
                 items[i] = new T();
             }
