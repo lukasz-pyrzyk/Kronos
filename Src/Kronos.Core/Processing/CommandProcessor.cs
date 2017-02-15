@@ -1,4 +1,5 @@
 ﻿using System.Threading.Tasks;
+using Kronos.Core.Configuration;
 using Kronos.Core.Networking;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
@@ -10,23 +11,24 @@ namespace Kronos.Core.Processing
     {
         public abstract byte[] Process(ref TRequest request, IStorage storage);
 
-        public async Task<TResponse> ExecuteAsync(TRequest request, IConnection service)
+        public async Task<TResponse> ExecuteAsync(TRequest request, IConnection service, ServerConfig server)
         {
-            byte[] response = await service.SendAsync(request).ConfigureAwait(false);
+            byte[] response = await service.SendAsync(request, server).ConfigureAwait(false);
 
             TResponse results = PrepareResponse<TResponse>(response);
 
             return results;
         }
 
-        public async Task<TResponse[]> ExecuteAsync(TRequest request, IConnection[] services)
+        public async Task<TResponse[]> ExecuteAsync(TRequest request, IConnection[] services, ServerConfig[] servers)
         {
             int count = services.Length;
             Task<TResponse>[] responses = new Task<TResponse>[count];
             for (int i = 0; i < count; i++)
             {
-                IConnection connection = services[i];
-                responses[i] = ExecuteAsync(request, connection);
+                IConnection con = services[i];
+                ServerConfig server = servers[i];
+                responses[i] = ExecuteAsync(request, con, server);
             }
 
             return await Task.WhenAll(responses);

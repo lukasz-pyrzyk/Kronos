@@ -1,11 +1,11 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
-using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using Kronos.Core.Configuration;
 using Kronos.Core.Exceptions;
 using Kronos.Core.Networking;
+using Kronos.Core.Pooling;
 using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Polly;
@@ -14,18 +14,13 @@ namespace Kronos.Client.Transfer
 {
     public class Connection : IConnection
     {
-        private const int retryCount = 2;
+        private const int RetryCount = 2;
         private static readonly Policy Policy = Policy.Handle<Exception>()
-            .WaitAndRetryAsync(CreateExponentialBackoff(retryCount));
+            .WaitAndRetryAsync(CreateExponentialBackoff(RetryCount));
 
-        private readonly IPEndPoint _host;
-        
-        public Connection(IPEndPoint host)
-        {
-            _host = host;
-        }
+        private readonly BufferedStream _stream = new BufferedStream();
 
-        public async Task<byte[]> SendAsync<TRequest>(TRequest request)
+        public async Task<byte[]> SendAsync<TRequest>(TRequest request, ServerConfig server)
             where TRequest : IRequest
         {
             Socket socket = null;
@@ -36,7 +31,7 @@ namespace Kronos.Client.Transfer
                 {
                     Debug.WriteLine("Connecting to the server socket");
                     socket = new Socket(SocketType.Stream, ProtocolType.IP);
-                    await socket.ConnectAsync(_host).ConfigureAwait(false);
+                    await socket.ConnectAsync(server.EndPoint).ConfigureAwait(false);
 
                     Debug.WriteLine("Sending request");
                     await SendAsync(request, socket).ConfigureAwait(false);
@@ -48,10 +43,15 @@ namespace Kronos.Client.Transfer
                 }
                 catch (Exception ex)
                 {
-                    throw new KronosCommunicationException($"Connection to the {_host} has been refused", ex);
+                    throw new KronosCommunicationException($"Connection to the {server.EndPoint} has been refused", ex);
                 }
                 finally
                 {
+                    if (!_stream.IsClean)
+                    {
+                        _stream.Clean();
+                    }
+
                     socket?.Dispose();
                 }
             }).ConfigureAwait(false);
@@ -59,22 +59,12 @@ namespace Kronos.Client.Transfer
             return response;
         }
 
-        private static async Task SendAsync(IRequest request, Socket server)
+        private async Task SendAsync(IRequest request, Socket server)
         {
-            // todo array pool and stackalloc
-            byte[] data;
-            using (MemoryStream ms = new MemoryStream())
-            {
-                SerializationUtils.SerializeToStream(ms, request.Type);
-                SerializationUtils.SerializeToStream(ms, request);
-                data = ms.ToArray();
-            }
+            SerializationUtils.SerializeToStream(_stream, request.Type);
+            SerializationUtils.SerializeToStream(_stream, request);
 
-            byte[] lengthBytes = new byte[sizeof(int)]; // stackalloc
-            NoAllocBitConverter.GetBytes(data.Length, lengthBytes);
-
-            await SocketUtils.SendAllAsync(server, lengthBytes).ConfigureAwait(false);
-            await SocketUtils.SendAllAsync(server, data).ConfigureAwait(false);
+            await SocketUtils.SendAllAsync(server, _stream.RawBytes, (int)_stream.Length).ConfigureAwait(false);
         }
 
         private static async Task<byte[]> ReceiveAsync(Socket socket)
