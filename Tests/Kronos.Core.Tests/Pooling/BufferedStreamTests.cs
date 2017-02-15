@@ -169,6 +169,25 @@ namespace Kronos.Core.Tests.Pooling
         }
 
         [Fact]
+        public void Dispose_DoesNotThrow()
+        {
+            // Arrange
+            var stream = new BufferedStream();
+
+            // Act 
+            stream.Flush();
+
+            // Assert
+            int sum = 0;
+            foreach (byte b in stream.RawBytes)
+            {
+                sum += b;
+            }
+
+            Assert.Equal(sum, 0);
+        }
+
+        [Fact]
         public void Clean_ResetsPositions()
         {
             // Arrange

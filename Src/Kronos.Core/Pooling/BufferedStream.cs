@@ -80,8 +80,6 @@ namespace Kronos.Core.Pooling
                 case SeekOrigin.End:
                     Position = _length - offset;
                     break;
-                default:
-                    throw new NotSupportedException();
             }
 
             return Position;
@@ -137,6 +135,7 @@ namespace Kronos.Core.Pooling
         protected override void Dispose(bool disposing)
         {
             Return(_pool);
+            _pool = new byte[0];
         }
 
         private static void Copy(Array src, int srcOffset, Array dst, int dstOffset, int count)
