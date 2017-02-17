@@ -2,11 +2,16 @@
 using System.Threading.Tasks;
 using Kronos.Client;
 using Xunit;
+using Xunit.Abstractions;
 
 namespace Kronos.AcceptanceTest
 {
     public class Count : Base
     {
+        public Count(ITestOutputHelper output) : base(output)
+        {
+        }
+
         protected override async Task ProcessAsync(IKronosClient client)
         {
             // Arrange
