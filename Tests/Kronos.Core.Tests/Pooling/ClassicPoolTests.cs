@@ -2,11 +2,11 @@
 
 namespace Kronos.Core.Tests.Pooling
 {
-    public class ConcurrentPoolTests : PoolTests
+    public class ClassicPoolTests : PoolTests
     {
         protected override Pool<byte> Create(int count = 100)
         {
-            return new ConcurrentPool<byte>(count);
+            return new ClassicPool<byte>(count);
         }
     }
 }

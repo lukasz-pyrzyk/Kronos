@@ -1,13 +1,13 @@
-using System.Collections.Concurrent;
+﻿using System.Collections.Generic;
 
 namespace Kronos.Core.Pooling
 {
-    public class ConcurrentPool<T> : Pool<T> where T : new()
+    public class ClassicPool<T> : Pool<T> where T : new()
     {
         private readonly int allocateSize;
-        private readonly ConcurrentStack<T> _nodes = new ConcurrentStack<T>();
+        private readonly Stack<T> _nodes = new Stack<T>();
 
-        public ConcurrentPool(int preallocateCount = 100)
+        public ClassicPool(int preallocateCount = 100)
         {
             allocateSize = preallocateCount;
             Allocate();
@@ -19,9 +19,7 @@ namespace Kronos.Core.Pooling
         {
             AllocateIfNecessary(1);
 
-            T item;
-            _nodes.TryPop(out item);
-            return item;
+            return _nodes.Pop();
         }
 
         public override T[] Rent(int count)
@@ -31,9 +29,7 @@ namespace Kronos.Core.Pooling
             T[] items = new T[count];
             for (int i = 0; i < count; i++)
             {
-                T item;
-                _nodes.TryPop(out item);
-                items[i] = item;
+                items[i] = _nodes.Pop();
             }
 
             return items;
@@ -46,19 +42,18 @@ namespace Kronos.Core.Pooling
 
         public override void Return(T[] items)
         {
-            _nodes.PushRange(items);
+            foreach (T item in items)
+            {
+                _nodes.Push(item);
+            }
         }
 
         protected sealed override void Allocate(int requestedCount = 0)
         {
-            int size = requestedCount + allocateSize;
-            T[] items = new T[size];
-            for (int i = 0; i < size; i++)
+            for (int i = 0; i < requestedCount + allocateSize; i++)
             {
-                items[i] = new T();
+                _nodes.Push(new T());
             }
-
-            _nodes.PushRange(items);
         }
     }
 }

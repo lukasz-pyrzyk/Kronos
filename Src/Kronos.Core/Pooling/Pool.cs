@@ -1,67 +1,85 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Threading.Tasks;
 
 namespace Kronos.Core.Pooling
 {
-    public class Pool<T> : IPool<T> where T : new()
+    public abstract class Pool<T> where T : new()
     {
-        private readonly int allocateSize;
-        private readonly Stack<T> _nodes = new Stack<T>();
+        public abstract int Count { get; }
 
-        public Pool(int preallocateCount = 100)
+        public abstract T Rent();
+        public abstract T[] Rent(int count);
+        public abstract void Return(T[] items);
+        public abstract void Return(T item);
+
+        public void Use(Action<T> action)
         {
-            allocateSize = preallocateCount;
-            Allocate();
-        }
-
-        public int Count => _nodes.Count;
-
-        public T Rent()
-        {
-            AllocateIfNecessary(1);
-
-            return _nodes.Pop();
-        }
-
-        public T[] Rent(int count)
-        {
-            AllocateIfNecessary(count);
-
-            T[] items = new T[count];
-            for (int i = 0; i < count; i++)
+            T item = Rent();
+            try
             {
-                items[i] = _nodes.Pop();
+                action(item);
             }
-
-            return items;
-        }
-
-        public void Return(T node)
-        {
-            _nodes.Push(node);
-        }
-
-        public void Return(T[] items)
-        {
-            foreach (T item in items)
+            finally
             {
-                _nodes.Push(item);
+                Return(item);
             }
         }
 
-        private void AllocateIfNecessary(int count)
+        public async Task<TResult> UseAsync<TResult>(Func<T, Task<TResult>> action)
         {
-            if (_nodes.Count < count)
+            T item = Rent();
+            TResult result;
+
+            try
             {
-                Allocate(count);
+                result = await action(item);
+            }
+            finally
+            {
+                Return(item);
+            }
+
+            return result;
+        }
+
+        public void Use(int count, Action<T[]> action)
+        {
+            T[] items = Rent(count);
+            try
+            {
+                action(items);
+            }
+            finally
+            {
+                Return(items);
             }
         }
 
-        private void Allocate(int requestedCount = 0)
+        public async Task<TResult> UseAsync<TResult>(int count, Func<T[], Task<TResult>> action)
         {
-            for (int i = 0; i < requestedCount + allocateSize; i++)
+            T[] items = Rent(count);
+            TResult result;
+
+            try
             {
-                _nodes.Push(new T());
+                result = await action(items);
+            }
+            finally
+            {
+                Return(items);
+            }
+
+            return result;
+        }
+
+        protected void AllocateIfNecessary(int requested)
+        {
+            if (Count < requested)
+            {
+                Allocate(requested);
             }
         }
+
+        protected abstract void Allocate(int requestedElements = 0);
     }
 }
