@@ -41,7 +41,7 @@ namespace Kronos.AcceptanceTest
             try
             {
                 output.WriteLine("Processing internal test");
-                await ProcessAsync(client);
+                await ProcessAsync(client).AwaitWithTimeout(5000);
                 output.WriteLine("Processing internal finished");
             }
             catch (Exception ex)
@@ -57,7 +57,7 @@ namespace Kronos.AcceptanceTest
                     Server.Program.Stop();
 
                     output.WriteLine("Waiting for server task to finish");
-                    await server;
+                    await server.AwaitWithTimeout(5000);
 
                     output.WriteLine("Server stopped");
                 }
@@ -70,5 +70,16 @@ namespace Kronos.AcceptanceTest
         }
 
         protected abstract Task ProcessAsync(IKronosClient client);
+    }
+
+    public static class TaskExtensions
+    {
+        public static async Task AwaitWithTimeout(this Task task, int miliseconds)
+        {
+            if (await Task.WhenAny(task, Task.Delay(miliseconds)) == task)
+            {
+                await task;
+            }
+        }
     }
 }
