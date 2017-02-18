@@ -1,6 +1,5 @@
-﻿using System.Linq;
-using System.Net.Sockets;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using Kronos.Core.Configuration;
 using Kronos.Core.Networking;
 using Kronos.Core.Processing;
 using Kronos.Core.Requests;
@@ -20,15 +19,16 @@ namespace Kronos.Core.Tests.Processing
             bool fakeResult = true;
             byte[] fakeData = SerializationUtils.Serialize(fakeResult);
             var request = new InsertRequest();
-            IConnection connection = Substitute.For<IConnection>();
-            connection.SendAsync(request).Returns(fakeData);
+            var server = new ServerConfig();
+            IConnection con = Substitute.For<IConnection>();
+            con.SendAsync(request, server).Returns(fakeData);
             var processor = new FakeProcessor();
 
             // Act
-            bool result = await processor.ExecuteAsync(request, connection);
+            bool result = await processor.ExecuteAsync(request, con, server);
 
             // Assert
-            await connection.Received(1).SendAsync(request);
+            await con.Received(1).SendAsync(request, server);
             Assert.Equal(fakeResult, result);
         }
 
