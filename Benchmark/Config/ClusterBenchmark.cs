@@ -13,7 +13,7 @@ namespace Benchmark.Config
         
         protected IKronosClient KronosClient { get; private set; }
         protected IDatabase RedisClient { get; private set; }
-        protected IServer RedisServer { get; private set; }
+        protected IServer[] RedisServers { get; private set; }
 
         [Setup]
         public void Setup()
@@ -22,7 +22,8 @@ namespace Benchmark.Config
             KronosClient = KronosClientFactory.FromConnectionString(_nodes);
 
             ConnectionMultiplexer redisCacheDistributor = ConnectionMultiplexer.Connect($"{redisConnection},allowAdmin=true");
-            RedisServer = redisCacheDistributor.GetServer(redisConnection);
+
+            RedisServers = redisConnection.Split(',').Select(x => redisCacheDistributor.GetServer(x)).ToArray();
             RedisClient = redisCacheDistributor.GetDatabase();
 
             AdditionalSetup();
@@ -32,10 +33,16 @@ namespace Benchmark.Config
         {
             StringBuilder builder = new StringBuilder();
 
-            foreach (var node in _nodes)
+            for (var i = 0; i < _nodes.Length; i++)
             {
-                string nodeCs = $"{node}:6379,";
+                var node = _nodes[i];
+                string nodeCs = $"{node}:6379";
                 builder.Append(nodeCs);
+
+                if (i != _nodes.Length - 1)
+                {
+                    builder.Append(',');
+                }
             }
 
             return builder.ToString();
