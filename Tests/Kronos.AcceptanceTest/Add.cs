@@ -1,29 +1,29 @@
-﻿//using System;
-//using System.Threading.Tasks;
-//using Kronos.Client;
-//using Xunit;
-//using Xunit.Abstractions;
+﻿using System;
+using System.Threading.Tasks;
+using Kronos.Client;
+using Xunit;
+using Xunit.Abstractions;
 
-//namespace Kronos.AcceptanceTest
-//{
-//    public class Add : Base
-//    {
-//        public Add(ITestOutputHelper output) : base(output)
-//        {
-//        }
+namespace Kronos.AcceptanceTest
+{
+    public class Add : Base
+    {
+        public Add(ITestOutputHelper output) : base(output)
+        {
+        }
 
-//        protected override async Task ProcessAsync(IKronosClient client)
-//        {
-//            // Arrange
-//            string key = Guid.NewGuid().ToString();
-//            byte[] data = new byte[1024];
+        protected override async Task ProcessAsync(IKronosClient client)
+        {
+            // Arrange
+            string key = Guid.NewGuid().ToString();
+            byte[] data = new byte[1024];
 
-//            // Act
-//            await client.InsertAsync(key, data, DateTime.UtcNow.AddDays(5));
-//            bool contains = await client.ContainsAsync(key);
+            // Act
+            await client.InsertAsync(key, data, DateTime.UtcNow.AddDays(5));
+            bool contains = await client.ContainsAsync(key);
 
-//            // Assert
-//            Assert.True(contains);
-//        }
-//    }
-//}
+            // Assert
+            Assert.True(contains);
+        }
+    }
+}
