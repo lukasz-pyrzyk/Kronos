@@ -1,13 +1,15 @@
-﻿namespace Kronos.Core.Storage
+﻿using System;
+
+namespace Kronos.Core.Storage
 {
     public struct Key
     {
         private readonly int _hashCode;
 
         public string Value { get; }
-        public ExpiryDate ExpiryDate { get; }
+        public DateTime? ExpiryDate { get; }
 
-        public Key(string value, ExpiryDate expiryDate = default(ExpiryDate))
+        public Key(string value, DateTime? expiryDate = null)
         {
             Value = value;
             ExpiryDate = expiryDate;
@@ -16,7 +18,7 @@
 
         public override string ToString()
         {
-            return $"{Value}|{ExpiryDate}";
+            return $"{Value}|{ExpiryDate:s}";
         }
 
         public override int GetHashCode()

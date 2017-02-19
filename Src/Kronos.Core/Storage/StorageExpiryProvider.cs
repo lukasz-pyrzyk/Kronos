@@ -23,7 +23,8 @@ namespace Kronos.Core.Storage
                     ulong deleted = 0;
                     foreach (KeyValuePair<Key, byte[]> node in nodes)
                     {
-                        if (node.Key.ExpiryDate.Ticks < ticks)
+                        var expiryDate = node.Key.ExpiryDate;
+                        if (expiryDate != null && expiryDate.Value.Ticks < ticks)
                         {
                             nodes.Remove(node.Key);
 
