@@ -3,7 +3,7 @@ using System.Threading;
 
 namespace Kronos.Core.Storage
 {
-    public interface IExpiryProvider
+    public interface ICleaner
     {
         void Start(Dictionary<Key, byte[]> nodes, CancellationToken token);
     }

@@ -8,7 +8,7 @@ namespace Kronos.Core.Storage
     public class InMemoryStorage : IStorage
     {
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        private readonly IExpiryProvider _expiryProvider;
+        private readonly ICleaner _cleaner;
 
         private readonly Dictionary<Key, byte[]> _storage =
             new Dictionary<Key, byte[]>(new KeyComperer());
@@ -17,10 +17,10 @@ namespace Kronos.Core.Storage
 
         public int Count => _storage.Count;
 
-        public InMemoryStorage(IExpiryProvider expiryProvider)
+        public InMemoryStorage(ICleaner cleaner)
         {
-            _expiryProvider = expiryProvider;
-            _expiryProvider.Start(_storage, _cancelToken.Token);
+            _cleaner = cleaner;
+            _cleaner.Start(_storage, _cancelToken.Token);
         }
 
         public void AddOrUpdate(string key, DateTime expiryDate, byte[] obj)

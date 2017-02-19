@@ -6,7 +6,7 @@ using NLog;
 
 namespace Kronos.Core.Storage
 {
-    public class StorageExpiryProvider : IExpiryProvider
+    public class Cleaner : ICleaner
     {
         public static readonly int Timer = 1000;
 

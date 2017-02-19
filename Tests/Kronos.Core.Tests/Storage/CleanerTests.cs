@@ -7,7 +7,7 @@ using Xunit;
 
 namespace Kronos.Core.Tests.Storage
 {
-    public class StorageExpiryProviderTests
+    public class CleanerTests
     {
         [Fact]
         public async Task Start_CanDeleteObjectsFromStorage()
@@ -18,9 +18,9 @@ namespace Kronos.Core.Tests.Storage
                 [new Key("two", DateTime.MaxValue)] = new byte[0]
             };
 
-            StorageExpiryProvider provider = new StorageExpiryProvider();
+            Cleaner provider = new Cleaner();
             provider.Start(data, CancellationToken.None);
-            await Task.Delay(StorageExpiryProvider.Timer + 100);
+            await Task.Delay(Cleaner.Timer + 100);
 
             Assert.Equal(data.Count, 1);
         }

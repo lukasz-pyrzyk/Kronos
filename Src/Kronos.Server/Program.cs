@@ -42,8 +42,8 @@ namespace Kronos.Server
         {
             IPAddress localAddr = await EndpointUtils.GetIPAsync();
 
-            IExpiryProvider expiryProvider = new StorageExpiryProvider();
-            IStorage storage = new InMemoryStorage(expiryProvider);
+            ICleaner cleaner = new Cleaner();
+            IStorage storage = new InMemoryStorage(cleaner);
 
             IRequestProcessor requestProcessor = new RequestProcessor(storage);
             IProcessor processor = new SocketProcessor();
