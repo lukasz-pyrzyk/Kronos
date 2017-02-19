@@ -39,9 +39,11 @@ namespace Kronos.Client
             InsertRequest request = new InsertRequest(key, package, expiryDate);
 
             ServerConfig server = GetServerInternal(key);
-            Connection con = _connectionPool.Rent();
-            bool response = await _insertProcessor.ExecuteAsync(request, con, server);
-            _connectionPool.Return(con);
+
+            bool response = await _connectionPool.UseAsync(con =>
+            {
+                return _insertProcessor.ExecuteAsync(request, con, server);
+            });
 
             Debug.WriteLine($"InsertRequest status: {response}");
         }
@@ -52,10 +54,11 @@ namespace Kronos.Client
             GetRequest request = new GetRequest(key);
 
             ServerConfig server = GetServerInternal(key);
-            Connection con = _connectionPool.Rent();
-            byte[] valueFromCache = await _getProcessor.ExecuteAsync(request, con, server);
 
-            _connectionPool.Return(con);
+            byte[] valueFromCache = await _connectionPool.UseAsync(con =>
+            {
+                return _getProcessor.ExecuteAsync(request, con, server);
+            });
 
             byte[] notFoundBytes = SerializationUtils.Serialize(RequestStatusCode.NotFound);
             if (valueFromCache != null && valueFromCache.SequenceEqual(notFoundBytes))
@@ -70,10 +73,12 @@ namespace Kronos.Client
             DeleteRequest request = new DeleteRequest(key);
 
             ServerConfig server = GetServerInternal(key);
-            Connection con = _connectionPool.Rent();
-            bool status = await _deleteProcessor.ExecuteAsync(request, con, server);
-            _connectionPool.Return(con);
 
+            bool status = await _connectionPool.UseAsync(con =>
+            {
+                return _deleteProcessor.ExecuteAsync(request, con, server);
+            });
+            
             Debug.WriteLine($"InsertRequest status: {status}");
         }
 
@@ -83,9 +88,11 @@ namespace Kronos.Client
 
             var request = new CountRequest();
             ServerConfig[] servers = GetServersInternal();
-            Connection[] con = _connectionPool.Rent(servers.Length);
-            int[] results = await _countProcessor.ExecuteAsync(request, con, servers);
-            _connectionPool.Return(con);
+
+            int[] results = await _connectionPool.UseAsync(servers.Length, con =>
+            {
+                return _countProcessor.ExecuteAsync(request, con, servers);
+            });
 
             return results.Sum();
         }
@@ -97,10 +104,12 @@ namespace Kronos.Client
             var request = new ContainsRequest(key);
 
             ServerConfig server = GetServerInternal(key);
-            Connection con = _connectionPool.Rent();
-            bool contains = await _containsProcessor.ExecuteAsync(request, con, server);
-            _connectionPool.Return(con);
 
+            bool contains = await _connectionPool.UseAsync(con =>
+            {
+                return _containsProcessor.ExecuteAsync(request, con, server);
+            });
+            
             return contains;
         }
 
@@ -110,9 +119,11 @@ namespace Kronos.Client
 
             var request = new ClearRequest();
             ServerConfig[] servers = GetServersInternal();
-            Connection[] con = _connectionPool.Rent(servers.Length);
-            await _clearProcessor.ExecuteAsync(request, con, servers);
-            _connectionPool.Return(con);
+
+            await _connectionPool.UseAsync(servers.Length, con =>
+            {
+                return _clearProcessor.ExecuteAsync(request, con, servers);
+            });
         }
 
         private ServerConfig GetServerInternal(string key)
