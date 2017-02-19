@@ -13,11 +13,11 @@ namespace Kronos.Core.Requests
         public byte[] Object { get; private set; }
 
         [ProtoMember(3)]
-        public DateTime ExpiryDate { get; private set; }
+        public DateTime? ExpiryDate { get; private set; }
 
         public RequestType Type => RequestType.Insert;
 
-        public InsertRequest(string key, byte[] serializedObject, DateTime expiryDate)
+        public InsertRequest(string key, byte[] serializedObject, DateTime? expiryDate = null)
         {
             Key = key;
             Object = serializedObject;

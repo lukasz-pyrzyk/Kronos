@@ -23,7 +23,7 @@ namespace Kronos.Core.Storage
             _cleaner.Start(_storage, _cancelToken.Token);
         }
 
-        public void AddOrUpdate(string key, DateTime expiryDate, byte[] obj)
+        public void AddOrUpdate(string key, DateTime? expiryDate, byte[] obj)
         {
             var metaData = new Key(key, expiryDate);
 
