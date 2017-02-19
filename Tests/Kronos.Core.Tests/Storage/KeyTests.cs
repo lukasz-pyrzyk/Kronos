@@ -35,5 +35,34 @@ namespace Kronos.Core.Tests.Storage
 
             Assert.Equal($"{value}|{expiryDate:s}", message);
         }
+        
+        [Theory]
+        [InlineData(-5, true)]
+        [InlineData(5, false)]
+        public void IsExpired_CalculatesCorrectWhenExpiryDateSet(int days, bool expected)
+        {
+            // Arrange
+            DateTime expiryDate = DateTime.UtcNow.AddDays(days);
+            var metadata = new Key("lorem ipsum", expiryDate);
+
+            // Act
+            bool expired = metadata.IsExpired(DateTime.UtcNow);
+
+            // Assert
+            Assert.Equal(expired, expected);
+        }
+
+        [Fact]
+        public void IsExpired_ReturnsFalseWhenExpiryDateIsNul()
+        {
+            // Arrange
+            var metadata = new Key("lorem ipsum");
+
+            // Act
+            bool expired = metadata.IsExpired(DateTime.UtcNow);
+
+            // Assert
+            Assert.False(expired);
+        }
     }
 }

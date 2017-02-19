@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Concurrent;
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
@@ -19,14 +18,13 @@ namespace Kronos.Core.Storage
             {
                 while (!token.IsCancellationRequested)
                 {
-                    long ticks = DateTime.UtcNow.Ticks;
+                    DateTime currentDate = DateTime.UtcNow;
                     ulong deleted = 0;
-                    foreach (KeyValuePair<Key, byte[]> node in nodes)
+                    foreach (Key key in nodes.Keys)
                     {
-                        var expiryDate = node.Key.ExpiryDate;
-                        if (expiryDate != null && expiryDate.Value.Ticks < ticks)
+                        if (key.IsExpired(currentDate))
                         {
-                            nodes.Remove(node.Key);
+                            nodes.Remove(key);
 
                             deleted++;
                         }

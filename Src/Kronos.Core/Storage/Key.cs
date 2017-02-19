@@ -16,6 +16,11 @@ namespace Kronos.Core.Storage
             _hashCode = Value.GetHashCode();
         }
 
+        public bool IsExpired(DateTime date)
+        {
+            return ExpiryDate?.Ticks < date.Ticks;
+        }
+
         public override string ToString()
         {
             return $"{Value}|{ExpiryDate:s}";
