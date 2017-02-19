@@ -1,4 +1,5 @@
-﻿using System.IO;
+﻿using System;
+using System.IO;
 using System.Net;
 using Kronos.Core.Configuration;
 using Kronos.Core.Networking;
@@ -31,6 +32,22 @@ namespace Kronos.Client
         public static IKronosClient FromIp(string ip, int port)
         {
             return CreateInternal(null, ip, port);
+        }
+
+
+        public static IKronosClient FromConnectionString(string[] connectionStrings)
+        {
+            ServerConfig[] servers = new ServerConfig[connectionStrings.Length];
+
+            for (int i = 0; i < connectionStrings.Length; i++)
+            {
+                string con = connectionStrings[i];
+                const int port = 5000;
+
+                servers[i] = new ServerConfig { Ip = con, Port = port };
+            }
+
+            return new KronosClient(new KronosConfig { ClusterConfig = new ClusterConfig { Servers = servers } });
         }
 
         private static IKronosClient CreateInternal(string domain, string ip, int port)

@@ -21,7 +21,7 @@ namespace Benchmark.Config
         {
             KronosClient = KronosClientFactory.FromIp(KronosConnection, 5000);
 
-            ConnectionMultiplexer redisCacheDistributor = ConnectionMultiplexer.Connect(RedisConnection);
+            ConnectionMultiplexer redisCacheDistributor = ConnectionMultiplexer.Connect($"{RedisConnection},allowAdmin=true");
             RedisServer = redisCacheDistributor.GetServer(RedisConnection);
             RedisClient = redisCacheDistributor.GetDatabase();
 

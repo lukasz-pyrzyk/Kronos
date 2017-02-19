@@ -10,7 +10,9 @@ namespace Benchmark
             var switcher = BenchmarkSwitcher.FromTypes(new[]
             {
                 typeof(AddAndRemove),
-                typeof(Contains)
+                typeof(ClusterAddAndRemove),
+                typeof(Contains),
+                typeof(ClusterContains)
             });
 
             switcher.Run(args);
