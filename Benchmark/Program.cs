@@ -11,6 +11,7 @@ namespace Benchmark
             {
                 typeof(AddAndRemove),
                 typeof(ClusterAddAndRemove),
+                typeof(ClusterAddAndGet),
                 typeof(Contains),
                 typeof(ClusterContains)
             });
