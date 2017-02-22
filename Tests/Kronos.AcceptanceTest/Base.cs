@@ -18,6 +18,7 @@ namespace Kronos.AcceptanceTest
             Trace.Listeners.Add(new ConsoleLogger());
         }
 
+        [Fact]
         public async Task RunAsync()
         {
             const int port = 5000;
