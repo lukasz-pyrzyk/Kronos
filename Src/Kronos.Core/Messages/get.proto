@@ -1,0 +1,5 @@
+syntax = "proto3";
+
+message GetRequest {
+    string key = 1;
+}
