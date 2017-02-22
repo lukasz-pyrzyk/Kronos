@@ -1,6 +1,5 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.Linq;
+using System.Diagnostics;
 using System.Threading.Tasks;
 using Kronos.Client;
 using Xunit;
@@ -10,16 +9,15 @@ namespace Kronos.AcceptanceTest
     [Collection("AcceptanceTest")]
     public abstract class Base
     {
-        private static readonly ConcurrentQueue<int> ports = new ConcurrentQueue<int>(Enumerable.Range(5000, 6000));
+        static Base()
+        {
+            Trace.Listeners.Add(new ConsoleLogger());
+        }
 
         [Fact]
         public async Task RunAsync()
         {
-            int port;
-            if (!ports.TryDequeue(out port))
-            {
-                throw new Exception("Available ports queue is empty");
-            }
+            const int port = 5000;
 
             LogMessage($"Creating kronos client with port {port}");
             IKronosClient client = KronosClientFactory.FromLocalhost(port);
@@ -61,9 +59,9 @@ namespace Kronos.AcceptanceTest
             }
         }
 
-        private void LogMessage(string message)
+        protected void LogMessage(string message)
         {
-            Console.WriteLine($"{DateTime.Now} - {GetType()} - {message}");
+            Trace.WriteLine($"{GetType()} - {message}");
         }
 
         protected abstract Task ProcessAsync(IKronosClient client);
