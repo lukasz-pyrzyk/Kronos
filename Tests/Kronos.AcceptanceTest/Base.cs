@@ -35,9 +35,6 @@ namespace Kronos.AcceptanceTest
             output.WriteLine($"Creating server with port {port}");
             Task server = Server.Program.StartAsync(port);
 
-            output.WriteLine($"Waiting for server warnup");
-            await Task.Delay(2000);
-
             try
             {
                 output.WriteLine("Processing internal test");

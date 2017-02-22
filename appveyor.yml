@@ -3,6 +3,8 @@ image: Visual Studio 2015
 nuget:
   project_feed: true
   disable_publish_on_pr: true
+init:
+- ps: iex ((new-object net.webclient).DownloadString('https://raw.githubusercontent.com/appveyor/ci/master/scripts/enable-rdp.ps1'))
 build_script:
 - ps: >-
     cd C:\projects\kronos
