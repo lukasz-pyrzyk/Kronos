@@ -3,6 +3,9 @@ using System.Diagnostics;
 using System.IO;
 using System.Threading.Tasks;
 using Kronos.Client;
+using NLog;
+using NLog.Config;
+using NLog.Targets;
 using Xunit;
 
 namespace Kronos.AcceptanceTest
@@ -15,21 +18,27 @@ namespace Kronos.AcceptanceTest
             Trace.Listeners.Add(new ConsoleLogger());
         }
 
-        [Fact]
         public async Task RunAsync()
         {
-            const int port = 5001;
+            const int port = 5000;
 
             LogMessage($"Creating kronos client with port {port}");
             IKronosClient client = KronosClientFactory.FromLocalhost(port);
 
             LogMessage($"Creating server with port {port}");
 
-            string loggerPath = GetLogger();
-            Task server = Server.Program.StartAsync(port, loggerPath);
+            var loggerConfig = GetLoggerConfig();
+            Task server = Server.Program.StartAsync(port, loggerConfig);
+            while (!Server.Program.IsWorking)
+            {
+                LogMessage("Waiting for server warnup...");
+                await Task.Delay(100);
 
-            LogMessage($"Waiting for server warnup");
-            await Task.Delay(2000);
+                if (server.IsFaulted)
+                {
+                    throw server.Exception;
+                }
+            }
 
             try
             {
@@ -48,9 +57,9 @@ namespace Kronos.AcceptanceTest
                 {
                     LogMessage("Stopping server");
                     Server.Program.Stop();
+                    await server;
 
                     LogMessage("Waiting for server task to finish");
-                    await server.AwaitWithTimeout(5000);
 
                     LogMessage("Server stopped");
                 }
@@ -69,14 +78,12 @@ namespace Kronos.AcceptanceTest
             }
         }
 
-        private static string GetLogger()
+        private static LoggingConfiguration GetLoggerConfig()
         {
-            const string fileName = "NLog.config";
-
-            string workingDir = Directory.GetCurrentDirectory(); // projectFolder/bin/MODE
-            DirectoryInfo workingDirParent = Directory.GetParent(workingDir); // projectFolder/bin
-            DirectoryInfo projectFolder = workingDirParent.Parent; // projectFolder
-            return $"{projectFolder.FullName}\\{fileName}";
+            var config = new LoggingConfiguration();
+            config.AddTarget("console", new ConsoleTarget());
+            config.AddRule(LogLevel.Debug, LogLevel.Fatal, "console");
+            return config;
         }
 
         protected void LogMessage(string message)

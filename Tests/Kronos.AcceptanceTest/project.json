@@ -3,11 +3,6 @@
   "commands": {
     "test": "xunit.runner.dnx"
   },
-
-  "buildOptions": {
-    "copyToOutput": [ "Nlog.config" ]
-  },
-  "copyToOutput": [ "./Nlog.config" ],
   "dependencies": {
     "NLog": "5.0.0-beta03",
     "dotnet-test-xunit": "2.2.0-preview2-build1029",
