@@ -1,7 +1,4 @@
-﻿using System.Linq;
-using System.Net.Sockets;
-using Kronos.Core.Processing;
-using Kronos.Core.Requests;
+﻿using Kronos.Core.Processing;
 using Kronos.Core.Serialization;
 using Kronos.Core.Storage;
 using NSubstitute;
@@ -22,7 +19,7 @@ namespace Kronos.Core.Tests.Processing
             storage.TryRemove(request.Key).Returns(deleted);
             byte[] expectedBytes = SerializationUtils.SerializeToStreamWithLength(deleted);
 
-            byte[] response = processor.Process(ref request, storage);
+            byte[] response = processor.Process(request, storage);
 
             // assert
             Assert.Equal(expectedBytes, response);

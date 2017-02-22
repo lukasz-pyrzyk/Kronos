@@ -3,7 +3,6 @@ using System.Buffers;
 using System.Diagnostics;
 using System.Net.Sockets;
 using Kronos.Core.Networking;
-using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 
 namespace Kronos.Server.Listening

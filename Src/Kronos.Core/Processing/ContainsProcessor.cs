@@ -1,11 +1,10 @@
-﻿using Kronos.Core.Requests;
-using Kronos.Core.Storage;
+﻿using Kronos.Core.Storage;
 
 namespace Kronos.Core.Processing
 {
     public class ContainsProcessor : CommandProcessor<ContainsRequest, bool>
     {
-        public override byte[] Process(ref ContainsRequest request, IStorage storage)
+        public override byte[] Process(ContainsRequest request, IStorage storage)
         {
             bool contains = storage.Contains(request.Key);
 

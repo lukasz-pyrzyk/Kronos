@@ -2,7 +2,6 @@
 using Kronos.Core.Configuration;
 using Kronos.Core.Networking;
 using Kronos.Core.Processing;
-using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Kronos.Core.Storage;
 using NSubstitute;
@@ -41,7 +40,7 @@ namespace Kronos.Core.Tests.Processing
             byte[] expectedBytes = SerializationUtils.SerializeToStreamWithLength(true);
 
             // Act
-            byte[] response = processor.Process(ref request, Substitute.For<IStorage>());
+            byte[] response = processor.Process(request, Substitute.For<IStorage>());
 
             // assert
             Assert.Equal(expectedBytes, response);
@@ -49,7 +48,7 @@ namespace Kronos.Core.Tests.Processing
 
         internal class FakeProcessor : CommandProcessor<InsertRequest, bool>
         {
-            public override byte[] Process(ref InsertRequest request, IStorage storage)
+            public override byte[] Process(InsertRequest request, IStorage storage)
             {
                 return Reply(true);
             }

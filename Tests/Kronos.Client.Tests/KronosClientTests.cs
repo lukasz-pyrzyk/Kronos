@@ -1,14 +1,4 @@
-﻿using System;
-using System.Text;
-using System.Threading.Tasks;
-using Kronos.Core.Configuration;
-using Kronos.Core.Networking;
-using Kronos.Core.Requests;
-using Kronos.Core.Serialization;
-using NSubstitute;
-using Xunit;
-
-namespace Kronos.Client.Tests
+﻿namespace Kronos.Client.Tests
 {
     public class KronosClientTests
     {

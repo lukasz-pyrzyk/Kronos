@@ -1,5 +1,4 @@
 ﻿using System.Net.Sockets;
-using Kronos.Core.Requests;
 
 namespace Kronos.Server.Listening
 {

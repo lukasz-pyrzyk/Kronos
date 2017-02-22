@@ -1,10 +1,4 @@
-﻿using System.Threading.Tasks;
-using Kronos.Core.Requests;
-using Kronos.Core.Serialization;
-using NSubstitute;
-using Xunit;
-
-namespace Kronos.Server.Tests.Listener
+﻿namespace Kronos.Server.Tests.Listener
 {
     public class SocketProcessorTests
     {

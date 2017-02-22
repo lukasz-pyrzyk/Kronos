@@ -1,5 +1,4 @@
 ﻿using Kronos.Core.Processing;
-using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Kronos.Core.Storage;
 using NSubstitute;
@@ -19,7 +18,7 @@ namespace Kronos.Core.Tests.Processing
             byte[] expectedBytes = SerializationUtils.SerializeToStreamWithLength(expected);
 
             // act
-            byte[] response = processor.Process(ref request, Substitute.For<IStorage>());
+            byte[] response = processor.Process(request, Substitute.For<IStorage>());
 
             // assert
             Assert.Equal(expectedBytes, response);
@@ -34,7 +33,7 @@ namespace Kronos.Core.Tests.Processing
             var storage = Substitute.For<IStorage>();
 
             // act
-            processor.Process(ref request, storage);
+            processor.Process(request, storage);
 
             // assert
             storage.Received(1).Clear();

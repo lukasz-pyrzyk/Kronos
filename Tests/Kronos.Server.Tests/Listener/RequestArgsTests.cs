@@ -1,6 +1,5 @@
 ﻿using System.Net.Sockets;
 using System.Text;
-using Kronos.Core.Requests;
 using Kronos.Server.Listening;
 using Xunit;
 
