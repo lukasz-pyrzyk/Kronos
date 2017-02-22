@@ -29,14 +29,14 @@ namespace Kronos.Client.Transfer
             {
                 try
                 {
-                    Debug.WriteLine("Connecting to the server socket");
+                    Trace.WriteLine("Connecting to the server socket");
                     socket = new Socket(SocketType.Stream, ProtocolType.IP);
                     await socket.ConnectAsync(server.EndPoint).ConfigureAwait(false);
 
-                    Debug.WriteLine("Sending request");
+                    Trace.WriteLine("Sending request");
                     await SendAsync(request, socket).ConfigureAwait(false);
 
-                    Debug.WriteLine("Waiting for response");
+                    Trace.WriteLine("Waiting for response");
                     response = await ReceiveAsync(socket).ConfigureAwait(false);
 
                     return response;
