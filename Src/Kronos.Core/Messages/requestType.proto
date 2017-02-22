@@ -1,6 +1,6 @@
 syntax = "proto3";
 
-enum RequestType {
+enum RequestTypeMessage {
   Unknown = 0;
   Insert = 1;
   Get = 2;

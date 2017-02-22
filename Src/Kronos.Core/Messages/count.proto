@@ -1,4 +1,4 @@
 syntax = "proto3";
 
-message CountRequest {
+message CountMessage {
 }

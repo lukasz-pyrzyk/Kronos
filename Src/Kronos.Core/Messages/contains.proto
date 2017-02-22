@@ -1,5 +1,5 @@
 syntax = "proto3";
 
-message ContainsRequest {
+message ContainsMessage {
     string key = 1;
 }

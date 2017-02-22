@@ -2,8 +2,8 @@ syntax = "proto3";
 
 import "google/protobuf/timestamp.proto";
 
-message InsertRequest {
+message InsertMessage {
     string key = 1;
     bytes Data = 2;
-    google.protobuf.Timestamp Expiry = 3; 
+    google.protobuf.Timestamp Expiry = 3;
 }
