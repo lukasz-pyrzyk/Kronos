@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
@@ -14,21 +15,17 @@ namespace Kronos.Server
 {
     public class Program
     {
-        private static ManualResetEventSlim _cancelEvent = new ManualResetEventSlim();
+        private static readonly ManualResetEventSlim _cancelEvent = new ManualResetEventSlim();
 
-        public static void LoggerSetup()
+        public static void LoggerSetup(string nlogConfigPath)
         {
-            var reader = XmlReader.Create("NLog.config");
+            var reader = XmlReader.Create(nlogConfigPath);
             var config = new XmlLoggingConfiguration(reader, null); //filename is not required.
             LogManager.Configuration = config;
         }
 
         public static void Main(string[] args)
         {
-            LoggerSetup();
-
-            PrintLogo();
-
             int port = 5000;
             if (args.Length == 1)
             {
@@ -38,8 +35,11 @@ namespace Kronos.Server
             Task.WaitAll(StartAsync(port));
         }
 
-        public static async Task StartAsync(int port)
+        public static async Task StartAsync(int port, string nlogConfigPath = "NLog.config")
         {
+            LoggerSetup(nlogConfigPath);
+            PrintLogo();
+            
             IPAddress localAddr = await EndpointUtils.GetIPAsync();
 
             ICleaner cleaner = new Cleaner();

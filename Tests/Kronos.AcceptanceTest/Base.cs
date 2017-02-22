@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.IO;
 using System.Threading.Tasks;
 using Kronos.Client;
 using Xunit;
@@ -17,13 +18,15 @@ namespace Kronos.AcceptanceTest
         [Fact]
         public async Task RunAsync()
         {
-            const int port = 5000;
+            const int port = 5001;
 
             LogMessage($"Creating kronos client with port {port}");
             IKronosClient client = KronosClientFactory.FromLocalhost(port);
 
             LogMessage($"Creating server with port {port}");
-            Task server = Server.Program.StartAsync(port);
+
+            string loggerPath = GetLogger();
+            Task server = Server.Program.StartAsync(port, loggerPath);
 
             LogMessage($"Waiting for server warnup");
             await Task.Delay(2000);
@@ -51,12 +54,29 @@ namespace Kronos.AcceptanceTest
 
                     LogMessage("Server stopped");
                 }
+                catch (AggregateException aex)
+                {
+                    foreach (var ex in aex.InnerExceptions)
+                    {
+                        LogMessage(ex.ToString());
+                    }
+                }
                 catch (Exception ex)
                 {
                     LogMessage($"EXCEPTION: {ex}");
                     Assert.False(true, ex.Message);
                 }
             }
+        }
+
+        private static string GetLogger()
+        {
+            const string fileName = "NLog.config";
+
+            string workingDir = Directory.GetCurrentDirectory(); // projectFolder/bin/MODE
+            DirectoryInfo workingDirParent = Directory.GetParent(workingDir); // projectFolder/bin
+            DirectoryInfo projectFolder = workingDirParent.Parent; // projectFolder
+            return $"{projectFolder.FullName}\\{fileName}";
         }
 
         protected void LogMessage(string message)
