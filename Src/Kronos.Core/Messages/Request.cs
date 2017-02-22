@@ -20,14 +20,20 @@ public static partial class RequestReflection {
   static RequestReflection() {
     byte[] descriptorData = global::System.Convert.FromBase64String(
         string.Concat(
-          "Cg1SZXF1ZXN0LnByb3RvGgxpbnNlcnQucHJvdG8iigEKB1JlcXVlc3QSJQoN",
-          "SW5zZXJ0UmVxdWVzdBgBIAEoCzIOLkluc2VydFJlcXVlc3QiWAoEVHlwZRIL",
-          "CgdVbmtub3duEAASCgoGSW5zZXJ0EAESBwoDR2V0EAISCgoGRGVsZXRlEAMS",
-          "CQoFQ291bnQQBBIMCghDb250YWlucxAFEgkKBUNsZWFyEAZiBnByb3RvMw=="));
+          "Cg1SZXF1ZXN0LnByb3RvGgxpbnNlcnQucHJvdG8aCWdldC5wcm90bxoMZGVs",
+          "ZXRlLnByb3RvGgtjb3VudC5wcm90bxoOY29udGFpbnMucHJvdG8aC2NsZWFy",
+          "LnByb3RvIscCCgdSZXF1ZXN0EiUKDUluc2VydFJlcXVlc3QYASABKAsyDi5J",
+          "bnNlcnRSZXF1ZXN0Eh8KCkdldFJlcXVlc3QYAiABKAsyCy5HZXRSZXF1ZXN0",
+          "EiUKDURlbGV0ZVJlcXVlc3QYAyABKAsyDi5EZWxldGVSZXF1ZXN0EikKD0Nv",
+          "bnRhaW5zUmVxdWVzdBgEIAEoCzIQLkNvbnRhaW5zUmVxdWVzdBIjCgxDb3Vu",
+          "dFJlcXVlc3QYBSABKAsyDS5Db3VudFJlcXVlc3QSIwoMQ2xlYXJSZXF1ZXN0",
+          "GAYgASgLMg0uQ2xlYXJSZXF1ZXN0IlgKBFR5cGUSCwoHVW5rbm93bhAAEgoK",
+          "Bkluc2VydBABEgcKA0dldBACEgoKBkRlbGV0ZRADEgkKBUNvdW50EAQSDAoI",
+          "Q29udGFpbnMQBRIJCgVDbGVhchAGYgZwcm90bzM="));
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-        new pbr::FileDescriptor[] { global::InsertReflection.Descriptor, },
+        new pbr::FileDescriptor[] { global::InsertReflection.Descriptor, global::GetReflection.Descriptor, global::DeleteReflection.Descriptor, global::CountReflection.Descriptor, global::ContainsReflection.Descriptor, global::ClearReflection.Descriptor, },
         new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-          new pbr::GeneratedClrTypeInfo(typeof(global::Request), global::Request.Parser, new[]{ "InsertRequest" }, null, new[]{ typeof(global::Request.Types.Type) }, null)
+          new pbr::GeneratedClrTypeInfo(typeof(global::Request), global::Request.Parser, new[]{ "InsertRequest", "GetRequest", "DeleteRequest", "ContainsRequest", "CountRequest", "ClearRequest" }, null, new[]{ typeof(global::Request.Types.Type) }, null)
         }));
   }
   #endregion
@@ -59,6 +65,11 @@ public sealed partial class Request : pb::IMessage<Request> {
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   public Request(Request other) : this() {
     InsertRequest = other.insertRequest_ != null ? other.InsertRequest.Clone() : null;
+    GetRequest = other.getRequest_ != null ? other.GetRequest.Clone() : null;
+    DeleteRequest = other.deleteRequest_ != null ? other.DeleteRequest.Clone() : null;
+    ContainsRequest = other.containsRequest_ != null ? other.ContainsRequest.Clone() : null;
+    CountRequest = other.countRequest_ != null ? other.CountRequest.Clone() : null;
+    ClearRequest = other.clearRequest_ != null ? other.ClearRequest.Clone() : null;
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -77,6 +88,61 @@ public sealed partial class Request : pb::IMessage<Request> {
     }
   }
 
+  /// <summary>Field number for the "GetRequest" field.</summary>
+  public const int GetRequestFieldNumber = 2;
+  private global::GetRequest getRequest_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public global::GetRequest GetRequest {
+    get { return getRequest_; }
+    set {
+      getRequest_ = value;
+    }
+  }
+
+  /// <summary>Field number for the "DeleteRequest" field.</summary>
+  public const int DeleteRequestFieldNumber = 3;
+  private global::DeleteRequest deleteRequest_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public global::DeleteRequest DeleteRequest {
+    get { return deleteRequest_; }
+    set {
+      deleteRequest_ = value;
+    }
+  }
+
+  /// <summary>Field number for the "ContainsRequest" field.</summary>
+  public const int ContainsRequestFieldNumber = 4;
+  private global::ContainsRequest containsRequest_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public global::ContainsRequest ContainsRequest {
+    get { return containsRequest_; }
+    set {
+      containsRequest_ = value;
+    }
+  }
+
+  /// <summary>Field number for the "CountRequest" field.</summary>
+  public const int CountRequestFieldNumber = 5;
+  private global::CountRequest countRequest_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public global::CountRequest CountRequest {
+    get { return countRequest_; }
+    set {
+      countRequest_ = value;
+    }
+  }
+
+  /// <summary>Field number for the "ClearRequest" field.</summary>
+  public const int ClearRequestFieldNumber = 6;
+  private global::ClearRequest clearRequest_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public global::ClearRequest ClearRequest {
+    get { return clearRequest_; }
+    set {
+      clearRequest_ = value;
+    }
+  }
+
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   public override bool Equals(object other) {
     return Equals(other as Request);
@@ -91,6 +157,11 @@ public sealed partial class Request : pb::IMessage<Request> {
       return true;
     }
     if (!object.Equals(InsertRequest, other.InsertRequest)) return false;
+    if (!object.Equals(GetRequest, other.GetRequest)) return false;
+    if (!object.Equals(DeleteRequest, other.DeleteRequest)) return false;
+    if (!object.Equals(ContainsRequest, other.ContainsRequest)) return false;
+    if (!object.Equals(CountRequest, other.CountRequest)) return false;
+    if (!object.Equals(ClearRequest, other.ClearRequest)) return false;
     return true;
   }
 
@@ -98,6 +169,11 @@ public sealed partial class Request : pb::IMessage<Request> {
   public override int GetHashCode() {
     int hash = 1;
     if (insertRequest_ != null) hash ^= InsertRequest.GetHashCode();
+    if (getRequest_ != null) hash ^= GetRequest.GetHashCode();
+    if (deleteRequest_ != null) hash ^= DeleteRequest.GetHashCode();
+    if (containsRequest_ != null) hash ^= ContainsRequest.GetHashCode();
+    if (countRequest_ != null) hash ^= CountRequest.GetHashCode();
+    if (clearRequest_ != null) hash ^= ClearRequest.GetHashCode();
     return hash;
   }
 
@@ -112,6 +188,26 @@ public sealed partial class Request : pb::IMessage<Request> {
       output.WriteRawTag(10);
       output.WriteMessage(InsertRequest);
     }
+    if (getRequest_ != null) {
+      output.WriteRawTag(18);
+      output.WriteMessage(GetRequest);
+    }
+    if (deleteRequest_ != null) {
+      output.WriteRawTag(26);
+      output.WriteMessage(DeleteRequest);
+    }
+    if (containsRequest_ != null) {
+      output.WriteRawTag(34);
+      output.WriteMessage(ContainsRequest);
+    }
+    if (countRequest_ != null) {
+      output.WriteRawTag(42);
+      output.WriteMessage(CountRequest);
+    }
+    if (clearRequest_ != null) {
+      output.WriteRawTag(50);
+      output.WriteMessage(ClearRequest);
+    }
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -119,6 +215,21 @@ public sealed partial class Request : pb::IMessage<Request> {
     int size = 0;
     if (insertRequest_ != null) {
       size += 1 + pb::CodedOutputStream.ComputeMessageSize(InsertRequest);
+    }
+    if (getRequest_ != null) {
+      size += 1 + pb::CodedOutputStream.ComputeMessageSize(GetRequest);
+    }
+    if (deleteRequest_ != null) {
+      size += 1 + pb::CodedOutputStream.ComputeMessageSize(DeleteRequest);
+    }
+    if (containsRequest_ != null) {
+      size += 1 + pb::CodedOutputStream.ComputeMessageSize(ContainsRequest);
+    }
+    if (countRequest_ != null) {
+      size += 1 + pb::CodedOutputStream.ComputeMessageSize(CountRequest);
+    }
+    if (clearRequest_ != null) {
+      size += 1 + pb::CodedOutputStream.ComputeMessageSize(ClearRequest);
     }
     return size;
   }
@@ -133,6 +244,36 @@ public sealed partial class Request : pb::IMessage<Request> {
         insertRequest_ = new global::InsertRequest();
       }
       InsertRequest.MergeFrom(other.InsertRequest);
+    }
+    if (other.getRequest_ != null) {
+      if (getRequest_ == null) {
+        getRequest_ = new global::GetRequest();
+      }
+      GetRequest.MergeFrom(other.GetRequest);
+    }
+    if (other.deleteRequest_ != null) {
+      if (deleteRequest_ == null) {
+        deleteRequest_ = new global::DeleteRequest();
+      }
+      DeleteRequest.MergeFrom(other.DeleteRequest);
+    }
+    if (other.containsRequest_ != null) {
+      if (containsRequest_ == null) {
+        containsRequest_ = new global::ContainsRequest();
+      }
+      ContainsRequest.MergeFrom(other.ContainsRequest);
+    }
+    if (other.countRequest_ != null) {
+      if (countRequest_ == null) {
+        countRequest_ = new global::CountRequest();
+      }
+      CountRequest.MergeFrom(other.CountRequest);
+    }
+    if (other.clearRequest_ != null) {
+      if (clearRequest_ == null) {
+        clearRequest_ = new global::ClearRequest();
+      }
+      ClearRequest.MergeFrom(other.ClearRequest);
     }
   }
 
@@ -149,6 +290,41 @@ public sealed partial class Request : pb::IMessage<Request> {
             insertRequest_ = new global::InsertRequest();
           }
           input.ReadMessage(insertRequest_);
+          break;
+        }
+        case 18: {
+          if (getRequest_ == null) {
+            getRequest_ = new global::GetRequest();
+          }
+          input.ReadMessage(getRequest_);
+          break;
+        }
+        case 26: {
+          if (deleteRequest_ == null) {
+            deleteRequest_ = new global::DeleteRequest();
+          }
+          input.ReadMessage(deleteRequest_);
+          break;
+        }
+        case 34: {
+          if (containsRequest_ == null) {
+            containsRequest_ = new global::ContainsRequest();
+          }
+          input.ReadMessage(containsRequest_);
+          break;
+        }
+        case 42: {
+          if (countRequest_ == null) {
+            countRequest_ = new global::CountRequest();
+          }
+          input.ReadMessage(countRequest_);
+          break;
+        }
+        case 50: {
+          if (clearRequest_ == null) {
+            clearRequest_ = new global::ClearRequest();
+          }
+          input.ReadMessage(clearRequest_);
           break;
         }
       }

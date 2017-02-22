@@ -1,6 +1,11 @@
 syntax = "proto3";
 
 import "insert.proto";
+import "get.proto";
+import "delete.proto";
+import "count.proto";
+import "contains.proto";
+import "clear.proto";
 
 message Request {
   enum Type { 
@@ -14,4 +19,9 @@ message Request {
   }
 
   InsertRequest InsertRequest = 1;
+  GetRequest GetRequest = 2;
+  DeleteRequest DeleteRequest = 3;
+  ContainsRequest ContainsRequest = 4;
+  CountRequest CountRequest = 5;
+  ClearRequest ClearRequest = 6;
 }
