@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+message GetRequest {
+    string key = 1;
+}
+
+message GetResponse {
+	bool exists = 1;
+	bytes data = 2;
+}

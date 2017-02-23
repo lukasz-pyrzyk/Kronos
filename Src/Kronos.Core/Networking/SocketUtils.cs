@@ -9,12 +9,14 @@ namespace Kronos.Core.Networking
     {
         private const int BufferSize = 8 * 1024;
 
-        public static void SendAll(Socket socket, byte[] data)
+        public static void SendAll(Socket socket, byte[] data, int count = 0)
         {
+            if (count == 0) count = data.Length;
+
             int position = 0;
-            while (position != data.Length)
+            while (position != count)
             {
-                int size = Math.Min(data.Length - position, BufferSize);
+                int size = Math.Min(count - position, BufferSize);
                 int sent = socket.Send(data, position, size, SocketFlags.None);
                 position += sent;
 

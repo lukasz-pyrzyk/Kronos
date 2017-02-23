@@ -1,8 +1,6 @@
-﻿using System.Linq;
-using System.Net.Sockets;
+﻿using System;
+using Google.Protobuf;
 using Kronos.Core.Processing;
-using Kronos.Core.Requests;
-using Kronos.Core.Serialization;
 using Kronos.Core.Storage;
 using NSubstitute;
 using Xunit;
@@ -11,21 +9,22 @@ namespace Kronos.Core.Tests.Processing
 {
     public class InsertProcessorTests
     {
+        [Theory]
         [InlineData(true)]
+        [InlineData(false)]
         public void Handle_ReturnsTrueWhenElementAdded(bool added)
         {
             // arrange
             var request = new InsertRequest();
             var processor = new InsertProcessor();
             var storage = Substitute.For<IStorage>();
-            storage.TryRemove(request.Key).Returns(added);
-            byte[] expectedBytes = SerializationUtils.SerializeToStreamWithLength(added);
+            storage.Add(Arg.Any<string>(), Arg.Any<DateTime?>(), Arg.Any<ByteString>()).Returns(added);
 
             // Act
-            byte[] response = processor.Process(ref request, storage);
+            InsertResponse response = processor.Reply(request, storage);
 
             // assert
-            Assert.Equal(expectedBytes, response);
+            Assert.Equal(response.Added, added);
         }
     }
 }

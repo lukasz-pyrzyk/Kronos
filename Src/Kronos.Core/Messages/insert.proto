@@ -1,0 +1,13 @@
+syntax = "proto3";
+
+import "google/protobuf/timestamp.proto";
+
+message InsertRequest {
+    string key = 1;
+    bytes Data = 2;
+    google.protobuf.Timestamp Expiry = 3;
+}
+
+message InsertResponse {
+	bool added = 1;
+}

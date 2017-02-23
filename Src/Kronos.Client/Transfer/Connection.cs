@@ -1,13 +1,13 @@
 ﻿using System;
+using System.Buffers;
 using System.Diagnostics;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using Google.Protobuf;
 using Kronos.Core.Configuration;
 using Kronos.Core.Exceptions;
 using Kronos.Core.Networking;
-using Kronos.Core.Pooling;
-using Kronos.Core.Requests;
-using Kronos.Core.Serialization;
+using BufferedStream = Kronos.Core.Pooling.BufferedStream;
 using Polly;
 
 namespace Kronos.Client.Transfer
@@ -19,12 +19,12 @@ namespace Kronos.Client.Transfer
             .WaitAndRetryAsync(CreateExponentialBackoff(RetryCount));
 
         private readonly BufferedStream _stream = new BufferedStream();
+        private readonly byte[] _sizeBytes = new byte[sizeof(int)];
 
-        public async Task<byte[]> SendAsync<TRequest>(TRequest request, ServerConfig server)
-            where TRequest : IRequest
+        public async Task<Response> SendAsync(Request request, ServerConfig server)
         {
             Socket socket = null;
-            byte[] response = null;
+            Response response = null;
             await Policy.ExecuteAsync(async () =>
             {
                 try
@@ -37,9 +37,7 @@ namespace Kronos.Client.Transfer
                     await SendAsync(request, socket).ConfigureAwait(false);
 
                     Trace.WriteLine("Waiting for response");
-                    response = await ReceiveAsync(socket).ConfigureAwait(false);
-
-                    return response;
+                    response = await ReceiveAndDeserializeAsync(socket).ConfigureAwait(false);
                 }
                 catch (Exception ex)
                 {
@@ -59,25 +57,39 @@ namespace Kronos.Client.Transfer
             return response;
         }
 
-        private async Task SendAsync(IRequest request, Socket server)
+        private async Task SendAsync(Request request, Socket server)
         {
-            SerializationUtils.SerializeToStream(_stream, request.Type);
-            SerializationUtils.SerializeToStream(_stream, request);
+            request.WriteTo(_stream);
 
-            await SocketUtils.SendAllAsync(server, _stream.RawBytes, (int)_stream.Length).ConfigureAwait(false);
+            try
+            {
+                await SocketUtils.SendAllAsync(server, _stream.RawBytes, (int)_stream.Length).ConfigureAwait(false);
+            }
+            finally
+            {
+                _stream.Clean();
+            }
         }
 
-        private static async Task<byte[]> ReceiveAsync(Socket socket)
+        private async Task<Response> ReceiveAndDeserializeAsync(Socket socket)
         {
-            // todo array pool and stackalloc
-            byte[] sizeBytes = new byte[sizeof(int)];
-            await SocketUtils.ReceiveAllAsync(socket, sizeBytes, sizeBytes.Length).ConfigureAwait(false);
-            int size = BitConverter.ToInt32(sizeBytes, 0);
+            await SocketUtils.ReceiveAllAsync(socket, _sizeBytes, _sizeBytes.Length).ConfigureAwait(false);
+            int packageSize = BitConverter.ToInt32(_sizeBytes, 0);
+            Array.Clear(_sizeBytes, 0, _sizeBytes.Length);
 
-            byte[] requestBytes = new byte[size];
-            await SocketUtils.ReceiveAllAsync(socket, requestBytes, requestBytes.Length).ConfigureAwait(false);
+            byte[] requestBytes = ArrayPool<byte>.Shared.Rent(packageSize);
+            try
+            {
+                await SocketUtils.ReceiveAllAsync(socket, requestBytes, packageSize).ConfigureAwait(false);
+            }
+            finally
+            {
+                ArrayPool<byte>.Shared.Return(requestBytes);
+            }
 
-            return requestBytes;
+            Response response = Response.Parser.ParseFrom(new CodedInputStream(requestBytes, 0, packageSize));
+
+            return response;
         }
 
         private static TimeSpan[] CreateExponentialBackoff(int retryCount)

@@ -14,7 +14,7 @@ namespace Kronos.Client
         /// <param name="key">Package identifier</param>
         /// <param name="package">Package to save in the Kronos</param>
         /// <param name="expiryDate">Package Expiration date</param>
-        Task InsertAsync(string key, byte[] package, DateTime expiryDate);
+        Task<bool> InsertAsync(string key, byte[] package, DateTime expiryDate);
 
         /// <summary>
         /// Gets object from Kronos server

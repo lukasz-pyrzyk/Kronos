@@ -1,15 +1,19 @@
-﻿using Kronos.Core.Requests;
-using Kronos.Core.Storage;
+﻿using Kronos.Core.Storage;
 
 namespace Kronos.Core.Processing
 {
-    public class ClearProcessor : CommandProcessor<ClearRequest, bool>
+    public class ClearProcessor : CommandProcessor<ClearRequest, ClearResponse>
     {
-        public override byte[] Process(ref ClearRequest request, IStorage storage)
+        public override ClearResponse Reply(ClearRequest request, IStorage storage)
         {
-            storage.Clear();
+            int deleted = storage.Clear();
 
-            return Reply(true);
+            return new ClearResponse { Deleted = deleted };
+        }
+
+        protected override ClearResponse ParseResponse(Response response)
+        {
+            return response.ClearResponse;
         }
     }
 }

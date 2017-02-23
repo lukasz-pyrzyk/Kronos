@@ -1,4 +1,5 @@
 ﻿using System;
+using Google.Protobuf;
 
 namespace Kronos.Core.Storage
 {
@@ -6,10 +7,11 @@ namespace Kronos.Core.Storage
     {
         int Count { get; }
 
-        void AddOrUpdate(string value, DateTime? expiryDate, byte[] obj);
-        bool TryGet(string key, out byte[] obj);
+        bool Add(string value, DateTime? expiryDate, ByteString obj);
+        void AddOrUpdate(string value, DateTime? expiryDate, ByteString obj);
+        bool TryGet(string key, out ByteString obj);
         bool TryRemove(string key);
         bool Contains(string key);
-        void Clear();
+        int Clear();
     }
 }

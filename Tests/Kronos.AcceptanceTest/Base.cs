@@ -10,16 +10,16 @@ using Xunit;
 
 namespace Kronos.AcceptanceTest
 {
-    [Collection("AcceptanceTest")]
     public abstract class Base
     {
+        public abstract Task RunAsync();
+
         static Base()
         {
             Trace.Listeners.Add(new ConsoleLogger());
         }
 
-        [Fact]
-        public async Task RunAsync()
+        public async Task RunInternalAsync()
         {
             const int port = 5000;
 

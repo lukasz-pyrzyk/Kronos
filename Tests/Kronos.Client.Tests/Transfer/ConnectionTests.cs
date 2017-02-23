@@ -1,15 +1,4 @@
-﻿using System;
-using System.IO;
-using System.Net;
-using System.Net.Sockets;
-using System.Threading.Tasks;
-using Kronos.Client.Transfer;
-using Kronos.Core.Requests;
-using Kronos.Core.Serialization;
-using NSubstitute;
-using Xunit;
-
-namespace Kronos.Client.Tests.Transfer
+﻿namespace Kronos.Client.Tests.Transfer
 {
     public class ConnectionTests
     {
