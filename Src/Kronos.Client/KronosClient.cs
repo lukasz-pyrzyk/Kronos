@@ -89,7 +89,7 @@ namespace Kronos.Client
                 return _deleteProcessor.ExecuteAsync(request, con, server);
             });
 
-            Debug.WriteLine($"InsertRequest status: {status}");
+            Debug.WriteLine($"InsertRequest status: {response.Deleted}");
         }
 
         public async Task<int> CountAsync()
