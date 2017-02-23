@@ -11,7 +11,7 @@ namespace Kronos.Server.Tests.Listener
         public void Reuse_AssignsValues()
         {
             // Arrange
-            RequestType type = RequestType.Get;
+            var type = RequestType.Get;;
             byte[] data = Encoding.UTF8.GetBytes("lorem ipsum");
 
             // Act

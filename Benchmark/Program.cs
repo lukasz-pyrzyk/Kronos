@@ -15,8 +15,7 @@ namespace Benchmark
                 typeof(ClusterAddAndGet),
                 typeof(ClusterAddAndRemove),
                 typeof(ClusterContains),
-                typeof(HashingAlgorithms),
-                typeof(ProtobufVsProtobufNet)
+                typeof(HashingAlgorithms)
             });
 
             switcher.Run(args);

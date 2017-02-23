@@ -1,8 +1,9 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using Google.Protobuf;
 using Kronos.Core.Configuration;
 using Kronos.Core.Networking;
 using Kronos.Core.Processing;
-using Kronos.Core.Serialization;
 using Kronos.Core.Storage;
 using NSubstitute;
 using Xunit;
@@ -16,7 +17,7 @@ namespace Kronos.Core.Tests.Processing
         {
             // Arrange
             bool fakeResult = true;
-            byte[] fakeData = SerializationUtils.Serialize(fakeResult);
+            byte[] fakeData = BitConverter.GetBytes(fakeResult);
             var request = new InsertRequest();
             var server = new ServerConfig();
             IConnection con = Substitute.For<IConnection>();
@@ -37,7 +38,7 @@ namespace Kronos.Core.Tests.Processing
             // Arrange
             var request = new InsertRequest();
             var processor = new FakeProcessor();
-            byte[] expectedBytes = SerializationUtils.SerializeToStreamWithLength(true);
+            byte[] expectedBytes = request.ToByteArray();
 
             // Act
             byte[] response = processor.Process(request, Substitute.For<IStorage>());

@@ -62,9 +62,9 @@ namespace Kronos.Client.Transfer
         private async Task SendAsync(IMessage request, Socket server)
         {
             // SerializationUtils.SerializeToStream(_stream, request.Type); // todo send type
-            SerializationUtils.SerializeToStream(_stream, request);
+            byte[] package = request.ToByteArray();
 
-            await SocketUtils.SendAllAsync(server, _stream.RawBytes, (int)_stream.Length).ConfigureAwait(false);
+            await SocketUtils.SendAllAsync(server, package, package.Length).ConfigureAwait(false);
         }
 
         private static async Task<byte[]> ReceiveAsync(Socket socket)

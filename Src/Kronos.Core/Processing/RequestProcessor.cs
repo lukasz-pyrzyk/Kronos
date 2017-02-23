@@ -1,5 +1,5 @@
 using System;
-using Kronos.Core.Serialization;
+using Google.Protobuf;
 using Kronos.Core.Storage;
 
 namespace Kronos.Core.Processing
@@ -39,30 +39,24 @@ namespace Kronos.Core.Processing
             _clearProcessor = clearProcessor;
         }
 
-        public byte[] Handle(RequestType requestType, byte[] request, int receivedBytes)
+        public byte[] Handle(Request request)
         {
-            switch (requestType)
+            switch (request.Type)
             {
                 case RequestType.Insert:
-                    var insertRequest = SerializationUtils.Deserialize<InsertRequest>(request, receivedBytes);
-                    return _insertProcessor.Process(insertRequest, _storage);
+                    return _insertProcessor.Process(request.InsertRequest, _storage);
                 case RequestType.Get:
-                    var getRequest = SerializationUtils.Deserialize<GetRequest>(request, receivedBytes);
-                    return _getProcessor.Process(getRequest, _storage);
+                    return _getProcessor.Process(request.GetRequest, _storage);
                 case RequestType.Delete:
-                    var deleteRequest = SerializationUtils.Deserialize<DeleteRequest>(request, receivedBytes);
-                    return _deleteProcessor.Process(deleteRequest, _storage);
+                    return _deleteProcessor.Process(request.DeleteRequest, _storage);
                 case RequestType.Count:
-                    var countRequest = SerializationUtils.Deserialize<CountRequest>(request, receivedBytes);
-                    return _countProcessor.Process(countRequest, _storage);
+                    return _countProcessor.Process(request.CountRequest, _storage);
                 case RequestType.Contains:
-                    var containsRequest = SerializationUtils.Deserialize<ContainsRequest>(request, receivedBytes);
-                    return _containsProcessor.Process(containsRequest, _storage);
+                    return _containsProcessor.Process(request.ContainsRequest, _storage);
                 case RequestType.Clear:
-                    var clearRequest = SerializationUtils.Deserialize<ClearRequest>(request, receivedBytes);
-                    return _clearProcessor.Process(clearRequest, _storage);
+                    return _clearProcessor.Process(request.ClearRequest, _storage);
                 default:
-                    throw new InvalidOperationException($"Cannot find processor for type {requestType}");
+                    throw new InvalidOperationException($"Cannot find processor for type {request.Type}");
             }
         }
     }

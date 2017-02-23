@@ -2,6 +2,6 @@
 {
     public interface IRequestProcessor
     {
-        byte[] Handle(RequestType requestType, byte[] request, int received);
+        byte[] Handle(Request request);
     }
 }
