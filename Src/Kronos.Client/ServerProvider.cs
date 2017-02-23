@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using Kronos.Core.Configuration;
 
 namespace Kronos.Client
@@ -9,7 +8,7 @@ namespace Kronos.Client
         public int ServersCount => _clusterConfig.Servers.Length;
         public ServerConfig[] Servers => _clusterConfig.Servers;
 
-        public Dictionary<ushort, ServerConfig> Mappings;
+        public Dictionary<byte, ServerConfig> Mappings;
 
         private readonly ClusterConfig _clusterConfig;
 
@@ -21,31 +20,32 @@ namespace Kronos.Client
 
         public ServerConfig SelectServer(int keyHashcode)
         {
-            string stringHashCode = keyHashcode.ToString();
-            ushort lastTwoDigits = Convert.ToUInt16(stringHashCode.Substring(stringHashCode.Length - 2, 2));
-            return Mappings[lastTwoDigits];
+            // get last two numbers, for example get 51 from 1989858951
+            byte lastNumbers = (byte)(keyHashcode % 100);
+            return Mappings[lastNumbers];
         }
 
         private void InitializeMappings()
         {
-            const ushort hashCodeRange = 100; // (0:99).
-            Mappings = new Dictionary<ushort, ServerConfig>(hashCodeRange);
+            const ushort hashCodeRange = 100; // numbers in range (0:99).
+            Mappings = new Dictionary<byte, ServerConfig>(hashCodeRange);
 
-            ushort rangePerServer = (ushort)(hashCodeRange / ServersCount);
-            ushort modulo = (ushort)(hashCodeRange % ServersCount);
+            ushort rangePerServer = (byte)(hashCodeRange / ServersCount);
+            ushort modulo = (byte)(hashCodeRange % ServersCount);
 
-            ushort position = 0;
-            for (ushort i = 0; i < ServersCount; i++)
+            byte position = 0;
+            foreach (ServerConfig server in Servers)
             {
-                for (ushort j = 0; j < rangePerServer; j++)
+                // Assing range to the server
+                for (int j = 0; j < rangePerServer; j++)
                 {
-                    Mappings[position] = _clusterConfig.Servers[i];
+                    Mappings[position] = server;
                     position++;
                 }
-
+                
                 if (modulo != 0)
                 {
-                    Mappings[position] = _clusterConfig.Servers[i];
+                    Mappings[position] = server;
                     modulo--;
                     position++;
                 }
