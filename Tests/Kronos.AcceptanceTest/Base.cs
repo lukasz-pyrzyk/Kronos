@@ -1,72 +1,95 @@
 ﻿using System;
-using System.Collections.Concurrent;
-using System.Linq;
+using System.Diagnostics;
+using System.IO;
 using System.Threading.Tasks;
 using Kronos.Client;
+using NLog;
+using NLog.Config;
+using NLog.Targets;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Kronos.AcceptanceTest
 {
     [Collection("AcceptanceTest")]
     public abstract class Base
     {
-        protected readonly ITestOutputHelper output;
-
-        protected Base(ITestOutputHelper output)
+        static Base()
         {
-            this.output = output;
+            Trace.Listeners.Add(new ConsoleLogger());
         }
-
-        private static readonly ConcurrentQueue<int> ports = new ConcurrentQueue<int>(Enumerable.Range(5000, 6000));
 
         [Fact]
         public async Task RunAsync()
         {
-            int port;
-            if (!ports.TryDequeue(out port))
-            {
-                throw new Exception("Available ports queue is empty");
-            }
+            const int port = 5000;
 
-            output.WriteLine($"Creating client with port {port}");
+            LogMessage($"Creating kronos client with port {port}");
             IKronosClient client = KronosClientFactory.FromLocalhost(port);
 
-            output.WriteLine($"Creating server with port {port}");
-            Task server = Server.Program.StartAsync(port);
+            LogMessage($"Creating server with port {port}");
 
-            output.WriteLine($"Waiting for server warnup");
-            await Task.Delay(2000);
+            var loggerConfig = GetLoggerConfig();
+            Task server = Server.Program.StartAsync(port, loggerConfig);
+            while (!Server.Program.IsWorking)
+            {
+                LogMessage("Waiting for server warnup...");
+                await Task.Delay(100);
+
+                if (server.IsFaulted)
+                {
+                    throw server.Exception;
+                }
+            }
 
             try
             {
-                output.WriteLine("Processing internal test");
+                LogMessage("Processing internal test");
                 await ProcessAsync(client).AwaitWithTimeout(5000);
-                output.WriteLine("Processing internal finished");
+                LogMessage("Processing internal finished");
             }
             catch (Exception ex)
             {
-                output.WriteLine($"EXCEPTION: {ex}");
+                LogMessage($"EXCEPTION: {ex}");
                 Assert.False(true, ex.Message);
             }
             finally
             {
                 try
                 {
-                    output.WriteLine("Stopping server");
+                    LogMessage("Stopping server");
                     Server.Program.Stop();
+                    await server;
 
-                    output.WriteLine("Waiting for server task to finish");
-                    await server.AwaitWithTimeout(5000);
+                    LogMessage("Waiting for server task to finish");
 
-                    output.WriteLine("Server stopped");
+                    LogMessage("Server stopped");
+                }
+                catch (AggregateException aex)
+                {
+                    foreach (var ex in aex.InnerExceptions)
+                    {
+                        LogMessage(ex.ToString());
+                    }
                 }
                 catch (Exception ex)
                 {
-                    output.WriteLine($"EXCEPTION: {ex}");
+                    LogMessage($"EXCEPTION: {ex}");
                     Assert.False(true, ex.Message);
                 }
             }
+        }
+
+        private static LoggingConfiguration GetLoggerConfig()
+        {
+            var config = new LoggingConfiguration();
+            config.AddTarget("console", new ConsoleTarget());
+            config.AddRule(LogLevel.Debug, LogLevel.Fatal, "console");
+            return config;
+        }
+
+        protected void LogMessage(string message)
+        {
+            Trace.WriteLine($"{GetType()} - {message}");
         }
 
         protected abstract Task ProcessAsync(IKronosClient client);

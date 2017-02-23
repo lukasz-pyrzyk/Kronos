@@ -20,7 +20,7 @@ namespace Kronos.Client
         public static IKronosClient FromLocalhost(int port)
         {
             IPAddress ip = EndpointUtils.GetIPAsync().Result;
-            return FromDomain(ip.ToString(), port);
+            return FromIp(ip.ToString(), port);
         }
 
         public static IKronosClient FromDomain(string domain, int port)

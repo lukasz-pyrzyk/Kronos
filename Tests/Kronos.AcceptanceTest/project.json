@@ -4,6 +4,7 @@
     "test": "xunit.runner.dnx"
   },
   "dependencies": {
+    "NLog": "5.0.0-beta03",
     "dotnet-test-xunit": "2.2.0-preview2-build1029",
     "Kronos.Client": "1.1.2",
     "Kronos.Core": "1.1.2",

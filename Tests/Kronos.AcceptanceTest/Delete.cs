@@ -2,16 +2,11 @@
 using System.Threading.Tasks;
 using Kronos.Client;
 using Xunit;
-using Xunit.Abstractions;
 
 namespace Kronos.AcceptanceTest
 {
     public class Delete : Base
     {
-        public Delete(ITestOutputHelper output) : base(output)
-        {
-        }
-
         protected override async Task ProcessAsync(IKronosClient client)
         {
             // Arrange

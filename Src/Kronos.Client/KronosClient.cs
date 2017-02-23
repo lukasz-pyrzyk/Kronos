@@ -35,7 +35,7 @@ namespace Kronos.Client
 
         public async Task InsertAsync(string key, byte[] package, DateTime expiryDate)
         {
-            Debug.WriteLine("New insert request");
+            Trace.WriteLine("New insert request");
             InsertRequest request = new InsertRequest
             {
                 Key = key,
@@ -50,12 +50,12 @@ namespace Kronos.Client
                 return _insertProcessor.ExecuteAsync(request, con, server);
             });
 
-            Debug.WriteLine($"InsertRequest status: {response}");
+            Trace.WriteLine($"InsertRequest status: {response}");
         }
 
         public async Task<byte[]> GetAsync(string key)
         {
-            Debug.WriteLine("New get request");
+            Trace.WriteLine("New get request");
             GetRequest request = new GetRequest
             {
                 Key = key
@@ -76,7 +76,7 @@ namespace Kronos.Client
 
         public async Task DeleteAsync(string key)
         {
-            Debug.WriteLine("New delete request");
+            Trace.WriteLine("New delete request");
             DeleteRequest request = new DeleteRequest
             {
                 Key = key
@@ -89,12 +89,12 @@ namespace Kronos.Client
                 return _deleteProcessor.ExecuteAsync(request, con, server);
             });
 
-            Debug.WriteLine($"InsertRequest status: {response.Deleted}");
+            Debug.WriteLine($"InsertRequest status: {status}");
         }
 
         public async Task<int> CountAsync()
         {
-            Debug.WriteLine("New count request");
+            Trace.WriteLine("New count request");
 
             var request = new CountRequest();
             ServerConfig[] servers = GetServersInternal();
@@ -109,7 +109,7 @@ namespace Kronos.Client
 
         public async Task<bool> ContainsAsync(string key)
         {
-            Debug.WriteLine("New contains request");
+            Trace.WriteLine("New contains request");
 
             var request = new ContainsRequest
             {
@@ -128,7 +128,7 @@ namespace Kronos.Client
 
         public async Task ClearAsync()
         {
-            Debug.WriteLine("New clear request");
+            Trace.WriteLine("New clear request");
 
             var request = new ClearRequest();
             ServerConfig[] servers = GetServersInternal();

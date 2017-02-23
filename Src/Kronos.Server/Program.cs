@@ -14,19 +14,12 @@ namespace Kronos.Server
 {
     public class Program
     {
-        private static ManualResetEventSlim _cancelEvent = new ManualResetEventSlim();
+        public static bool IsWorking { get; private set; }
 
-        public static void LoggerSetup()
-        {
-            var reader = XmlReader.Create("NLog.config");
-            var config = new XmlLoggingConfiguration(reader, null); //filename is not required.
-            LogManager.Configuration = config;
-        }
+        private static readonly ManualResetEventSlim _cancelEvent = new ManualResetEventSlim();
 
         public static void Main(string[] args)
         {
-            LoggerSetup();
-
             PrintLogo();
 
             int port = 5000;
@@ -35,11 +28,14 @@ namespace Kronos.Server
                 int.TryParse(args[0], out port);
             }
 
-            Task.WaitAll(StartAsync(port));
+            var config = LoggerSetup();
+            Task.WaitAll(StartAsync(port, config));
         }
 
-        public static async Task StartAsync(int port)
+        public static async Task StartAsync(int port, LoggingConfiguration config)
         {
+            LogManager.Configuration = config;
+
             IPAddress localAddr = await EndpointUtils.GetIPAsync();
 
             ICleaner cleaner = new Cleaner();
@@ -50,8 +46,9 @@ namespace Kronos.Server
             IListener server = new Listener(localAddr, port, processor, requestProcessor);
 
             server.Start();
+            IsWorking = true;
 
-            Console.CancelKeyPress += (sender, args) => _cancelEvent.Set();
+            Console.CancelKeyPress += (sender, args) => Stop();
 
             _cancelEvent.Wait();
             _cancelEvent.Reset();
@@ -59,6 +56,12 @@ namespace Kronos.Server
             // dispose components
             storage.Dispose();
             server.Dispose();
+        }
+
+        public static void Stop()
+        {
+            _cancelEvent.Set();
+            IsWorking = true;
         }
 
         private static void PrintLogo()
@@ -78,7 +81,7 @@ namespace Kronos.Server
         private static void PrintLogoLine(string line)
         {
             int centerPosition = (Console.WindowWidth - line.Length) / 2;
-            if(centerPosition > 0) // if it's Docker console, it might be less than zero
+            if (centerPosition > 0) // if it's Docker console, it might be less than zero
             {
                 Console.SetCursorPosition(centerPosition, Console.CursorTop);
             }
@@ -86,9 +89,10 @@ namespace Kronos.Server
             Console.WriteLine(line);
         }
 
-        public static void Stop()
+        private static XmlLoggingConfiguration LoggerSetup()
         {
-            _cancelEvent.Set();
+            var reader = XmlReader.Create("NLog.config");
+            return new XmlLoggingConfiguration(reader, null);
         }
     }
 }
