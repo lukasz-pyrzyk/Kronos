@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Kronos.Core.Configuration;
 
 namespace Kronos.Client
@@ -21,7 +22,7 @@ namespace Kronos.Client
         public ServerConfig SelectServer(int keyHashcode)
         {
             // get last two numbers, for example get 51 from 1989858951
-            byte lastNumbers = (byte)(keyHashcode % 100);
+            byte lastNumbers = (byte)Math.Abs(keyHashcode % 100);
             return Mappings[lastNumbers];
         }
 
@@ -30,8 +31,8 @@ namespace Kronos.Client
             const ushort hashCodeRange = 100; // numbers in range (0:99).
             Mappings = new Dictionary<byte, ServerConfig>(hashCodeRange);
 
-            ushort rangePerServer = (byte)(hashCodeRange / ServersCount);
-            ushort modulo = (byte)(hashCodeRange % ServersCount);
+            byte rangePerServer = (byte)(hashCodeRange / ServersCount);
+            byte modulo = (byte)(hashCodeRange % ServersCount);
 
             byte position = 0;
             foreach (ServerConfig server in Servers)
