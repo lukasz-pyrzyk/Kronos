@@ -20,4 +20,73 @@ namespace Kronos.Core.Messages
             };
         }
     }
+
+    public partial class GetRequest
+    {
+        public static Request New(string key)
+        {
+            return new Request
+            {
+                GetRequest = new GetRequest
+                {
+                    Key = key
+                },
+                Type = RequestType.Get
+            };
+        }
+    }
+
+    public partial class DeleteRequest
+    {
+        public static Request New(string key)
+        {
+            return new Request
+            {
+                DeleteRequest = new DeleteRequest
+                {
+                    Key = key
+                },
+                Type = RequestType.Delete
+            };
+        }
+    }
+
+    public partial class CountRequest
+    {
+        public static Request New()
+        {
+            return new Request
+            {
+                CountRequest = new CountRequest(),
+                Type = RequestType.Count
+            };
+        }
+    }
+
+    public partial class ContainsRequest
+    {
+        public static Request New(string key)
+        {
+            return new Request
+            {
+                ContainsRequest = new ContainsRequest
+                {
+                    Key = key
+                },
+                Type = RequestType.Contains
+            };
+        }
+    }
+
+    public partial class ClearRequest
+    {
+        public static Request New()
+        {
+            return new Request
+            {
+                ClearRequest = new ClearRequest(),
+                Type = RequestType.Clear
+            };
+        }
+    }
 }

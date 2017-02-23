@@ -2,8 +2,6 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Google.Protobuf;
-using Google.Protobuf.WellKnownTypes;
 using Kronos.Client.Transfer;
 using Kronos.Core.Configuration;
 using Kronos.Core.Messages;
@@ -55,14 +53,7 @@ namespace Kronos.Client
         {
             Trace.WriteLine("New get request");
 
-            Request request = new Request
-            {
-                GetRequest = new GetRequest
-                {
-                    Key = key
-                },
-                Type = RequestType.Get
-            };
+            Request request = GetRequest.New(key);
 
             ServerConfig server = GetServerInternal(key);
 
@@ -81,14 +72,7 @@ namespace Kronos.Client
         {
             Trace.WriteLine("New delete request");
 
-            Request request = new Request
-            {
-                DeleteRequest = new DeleteRequest
-                {
-                    Key = key
-                },
-                Type = RequestType.Delete
-            };
+            Request request = DeleteRequest.New(key);
 
             ServerConfig server = GetServerInternal(key);
 
@@ -104,11 +88,7 @@ namespace Kronos.Client
         {
             Trace.WriteLine("New count request");
 
-            Request request = new Request
-            {
-                CountRequest = new CountRequest(),
-                Type = RequestType.Count
-            };
+            Request request = CountRequest.New();
 
             ServerConfig[] servers = GetServersInternal();
 
@@ -124,11 +104,7 @@ namespace Kronos.Client
         {
             Trace.WriteLine("New contains request");
 
-            Request request = new Request
-            {
-                ContainsRequest = new ContainsRequest {Key = key},
-                Type = RequestType.Contains
-            };
+            Request request = ContainsRequest.New(key);
 
             ServerConfig server = GetServerInternal(key);
 
@@ -144,11 +120,7 @@ namespace Kronos.Client
         {
             Trace.WriteLine("New clear request");
 
-            Request request = new Request
-            {
-                ClearRequest = new ClearRequest(),
-                Type = RequestType.Clear
-            };
+            Request request = ClearRequest.New();
 
             ServerConfig[] servers = GetServersInternal();
 
