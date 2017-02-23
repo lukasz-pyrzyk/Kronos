@@ -1,4 +1,5 @@
 syntax = "proto3";
+option csharp_namespace = "Kronos.Core.Messages";
 
 import "google/protobuf/timestamp.proto";
 

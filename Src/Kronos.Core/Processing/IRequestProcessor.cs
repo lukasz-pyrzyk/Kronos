@@ -1,4 +1,6 @@
-﻿namespace Kronos.Core.Processing
+﻿using Kronos.Core.Messages;
+
+namespace Kronos.Core.Processing
 {
     public interface IRequestProcessor
     {

@@ -7,41 +7,45 @@ using pb = global::Google.Protobuf;
 using pbc = global::Google.Protobuf.Collections;
 using pbr = global::Google.Protobuf.Reflection;
 using scg = global::System.Collections.Generic;
-/// <summary>Holder for reflection information generated from RequestType.proto</summary>
-public static partial class RequestTypeReflection {
+namespace Kronos.Core.Messages {
 
-  #region Descriptor
-  /// <summary>File descriptor for RequestType.proto</summary>
-  public static pbr::FileDescriptor Descriptor {
-    get { return descriptor; }
-  }
-  private static pbr::FileDescriptor descriptor;
+  /// <summary>Holder for reflection information generated from RequestType.proto</summary>
+  public static partial class RequestTypeReflection {
 
-  static RequestTypeReflection() {
-    byte[] descriptorData = global::System.Convert.FromBase64String(
-        string.Concat(
-          "ChFSZXF1ZXN0VHlwZS5wcm90bypfCgtSZXF1ZXN0VHlwZRILCgdVbmtub3du",
-          "EAASCgoGSW5zZXJ0EAESBwoDR2V0EAISCgoGRGVsZXRlEAMSCQoFQ291bnQQ",
-          "BBIMCghDb250YWlucxAFEgkKBUNsZWFyEAZiBnByb3RvMw=="));
-    descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-        new pbr::FileDescriptor[] { },
-        new pbr::GeneratedClrTypeInfo(new[] {typeof(global::RequestType), }, null));
+    #region Descriptor
+    /// <summary>File descriptor for RequestType.proto</summary>
+    public static pbr::FileDescriptor Descriptor {
+      get { return descriptor; }
+    }
+    private static pbr::FileDescriptor descriptor;
+
+    static RequestTypeReflection() {
+      byte[] descriptorData = global::System.Convert.FromBase64String(
+          string.Concat(
+            "ChFSZXF1ZXN0VHlwZS5wcm90bypfCgtSZXF1ZXN0VHlwZRILCgdVbmtub3du",
+            "EAASCgoGSW5zZXJ0EAESBwoDR2V0EAISCgoGRGVsZXRlEAMSCQoFQ291bnQQ",
+            "BBIMCghDb250YWlucxAFEgkKBUNsZWFyEAZCF6oCFEtyb25vcy5Db3JlLk1l",
+            "c3NhZ2VzYgZwcm90bzM="));
+      descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
+          new pbr::FileDescriptor[] { },
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Kronos.Core.Messages.RequestType), }, null));
+    }
+    #endregion
+
   }
+  #region Enums
+  public enum RequestType {
+    [pbr::OriginalName("Unknown")] Unknown = 0,
+    [pbr::OriginalName("Insert")] Insert = 1,
+    [pbr::OriginalName("Get")] Get = 2,
+    [pbr::OriginalName("Delete")] Delete = 3,
+    [pbr::OriginalName("Count")] Count = 4,
+    [pbr::OriginalName("Contains")] Contains = 5,
+    [pbr::OriginalName("Clear")] Clear = 6,
+  }
+
   #endregion
 
 }
-#region Enums
-public enum RequestType {
-  [pbr::OriginalName("Unknown")] Unknown = 0,
-  [pbr::OriginalName("Insert")] Insert = 1,
-  [pbr::OriginalName("Get")] Get = 2,
-  [pbr::OriginalName("Delete")] Delete = 3,
-  [pbr::OriginalName("Count")] Count = 4,
-  [pbr::OriginalName("Contains")] Contains = 5,
-  [pbr::OriginalName("Clear")] Clear = 6,
-}
-
-#endregion
-
 
 #endregion Designer generated code

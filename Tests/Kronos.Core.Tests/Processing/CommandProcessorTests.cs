@@ -1,5 +1,6 @@
 ﻿using System.Threading.Tasks;
 using Kronos.Core.Configuration;
+using Kronos.Core.Messages;
 using Kronos.Core.Networking;
 using Kronos.Core.Processing;
 using Kronos.Core.Storage;

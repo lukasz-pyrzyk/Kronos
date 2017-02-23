@@ -1,4 +1,5 @@
 syntax = "proto3";
+option csharp_namespace = "Kronos.Core.Messages";
 
 message GetRequest {
     string key = 1;

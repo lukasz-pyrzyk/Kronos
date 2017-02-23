@@ -6,6 +6,7 @@ using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Kronos.Client.Transfer;
 using Kronos.Core.Configuration;
+using Kronos.Core.Messages;
 using Kronos.Core.Pooling;
 using Kronos.Core.Processing;
 
@@ -36,16 +37,7 @@ namespace Kronos.Client
         {
             Trace.WriteLine("New insert request");
 
-            Request request = new Request
-            {
-                InsertRequest = new InsertRequest
-                {
-                    Key = key,
-                    Data = ByteString.CopyFrom(package),
-                    Expiry = Timestamp.FromDateTime(expiryDate)
-                },
-                Type = RequestType.Insert
-            };
+            Request request = InsertRequest.New(key, package, expiryDate);
 
             ServerConfig server = GetServerInternal(key);
 

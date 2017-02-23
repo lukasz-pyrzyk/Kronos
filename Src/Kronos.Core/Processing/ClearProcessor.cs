@@ -1,4 +1,5 @@
-﻿using Kronos.Core.Storage;
+﻿using Kronos.Core.Messages;
+using Kronos.Core.Storage;
 
 namespace Kronos.Core.Processing
 {

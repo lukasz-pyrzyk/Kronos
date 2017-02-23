@@ -6,6 +6,7 @@ using System.Threading.Tasks;
 using Google.Protobuf;
 using Kronos.Core.Configuration;
 using Kronos.Core.Exceptions;
+using Kronos.Core.Messages;
 using Kronos.Core.Networking;
 using BufferedStream = Kronos.Core.Pooling.BufferedStream;
 using Polly;

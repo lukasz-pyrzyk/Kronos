@@ -2,6 +2,7 @@
 using System.Buffers;
 using System.Net.Sockets;
 using Google.Protobuf;
+using Kronos.Core.Messages;
 using Kronos.Core.Networking;
 using Kronos.Core.Pooling;
 

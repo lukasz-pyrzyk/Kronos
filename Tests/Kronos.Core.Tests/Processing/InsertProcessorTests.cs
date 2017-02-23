@@ -1,5 +1,6 @@
 ﻿using System;
 using Google.Protobuf;
+using Kronos.Core.Messages;
 using Kronos.Core.Processing;
 using Kronos.Core.Storage;
 using NSubstitute;
