@@ -137,7 +137,7 @@ namespace Kronos.Client
 
         private ServerConfig[] GetServersInternal()
         {
-            return _serverProvider.Servers.ToArray();
+            return _serverProvider.Servers;
         }
     }
 }
