@@ -8,7 +8,7 @@ namespace Kronos.Core.Processing
         {
             bool contains = storage.Contains(request.Key);
 
-            return new ContainsResponse(); // todo use real response
+            return new ContainsResponse {Contains = contains};
         }
 
         protected override ContainsResponse ParseResponse(Response response)

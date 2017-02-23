@@ -1,5 +1,4 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
 using Google.Protobuf;
 using Kronos.Core.Configuration;
 using Kronos.Core.Networking;
@@ -16,7 +15,7 @@ namespace Kronos.Core.Tests.Processing
         public async Task ExecuteAsync_CallsService()
         {
             // Arrange
-            var fakeResult = new InsertResponse();
+            var fakeResult = new Response { InsertResponse = new InsertResponse { Added = true } };
             byte[] fakeData = fakeResult.ToByteArray();
             var request = new InsertRequest();
             var server = new ServerConfig();
@@ -25,11 +24,11 @@ namespace Kronos.Core.Tests.Processing
             var processor = new FakeProcessor();
 
             // Act
-            var result = await processor.ExecuteAsync(request, con, server);
+            InsertResponse response = await processor.ExecuteAsync(request, con, server);
 
             // Assert
             await con.Received(1).SendAsync(request, server);
-            Assert.Equal(fakeResult, result);
+            Assert.Equal(fakeResult.InsertResponse, response);
         }
 
         [Fact]
