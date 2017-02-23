@@ -10,7 +10,7 @@ namespace Kronos.Server.Listening
     public class SocketProcessor : IProcessor
     {
         private const int IntSize = sizeof(int);
-        private readonly byte[] sizeBuffer = new byte[sizeof(int)];
+        private readonly byte[] _sizeBuffer = new byte[sizeof(int)];
 
         private readonly ArrayPool<byte> _pool = ArrayPool<byte>.Create();
         private readonly BufferedStream _stream = new BufferedStream();
@@ -18,9 +18,9 @@ namespace Kronos.Server.Listening
         public RequestArg ReceiveRequest(Socket client)
         {
             int packageSize;
-            SocketUtils.ReceiveAll(client, sizeBuffer, IntSize);
-            packageSize = BitConverter.ToInt32(sizeBuffer, 0);
-            Array.Clear(sizeBuffer, 0, 0);
+            SocketUtils.ReceiveAll(client, _sizeBuffer, IntSize);
+            packageSize = BitConverter.ToInt32(_sizeBuffer, 0);
+            Array.Clear(_sizeBuffer, 0, _sizeBuffer.Length);
 
             byte[] data = _pool.Rent(packageSize);
             Request response;

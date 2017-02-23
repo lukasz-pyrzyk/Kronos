@@ -14,12 +14,11 @@ namespace Kronos.Core.Processing
 
         public async Task<TResponse> ExecuteAsync(Request request, IConnection service, ServerConfig server)
         {
-            byte[] package = await service.SendAsync(request, server).ConfigureAwait(false);
-            Response response = Response.Parser.ParseFrom(package);
+            Response respnse = await service.SendAsync(request, server).ConfigureAwait(false);
 
-            TResponse results = ParseResponse(response);
+            TResponse selectedResponse = ParseResponse(respnse);
 
-            return results;
+            return selectedResponse;
         }
 
         public async Task<TResponse[]> ExecuteAsync(Request request, IConnection[] services, ServerConfig[] servers)
