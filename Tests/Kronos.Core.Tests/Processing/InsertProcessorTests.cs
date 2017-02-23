@@ -1,4 +1,5 @@
-﻿using Kronos.Core.Processing;
+﻿using System;
+using Kronos.Core.Processing;
 using Kronos.Core.Storage;
 using NSubstitute;
 using Xunit;
@@ -16,7 +17,7 @@ namespace Kronos.Core.Tests.Processing
             var request = new InsertRequest();
             var processor = new InsertProcessor();
             var storage = Substitute.For<IStorage>();
-            storage.TryRemove(request.Key).Returns(added);
+            storage.Add(Arg.Any<string>(), Arg.Any<DateTime?>(), Arg.Any<byte[]>()).Returns(added);
 
             // Act
             InsertResponse response = processor.Reply(request, storage);

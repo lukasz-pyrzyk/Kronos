@@ -14,7 +14,9 @@ namespace Kronos.Core.Tests.Storage
             string key = "key";
             string objectWord = "lorem ipsum";
             ICleaner cleaner = Substitute.For<ICleaner>();
-            IStorage storage = new InMemoryStorage(cleaner); storage.AddOrUpdate(key, DateTime.MaxValue, Encoding.UTF8.GetBytes(objectWord));
+            IStorage storage = new InMemoryStorage(cleaner);
+
+            storage.AddOrUpdate(key, DateTime.MaxValue, Encoding.UTF8.GetBytes(objectWord));
 
             byte[] objFromBytes;
             bool success = storage.TryGet(key, out objFromBytes);
@@ -22,6 +24,41 @@ namespace Kronos.Core.Tests.Storage
 
             Assert.True(success);
             Assert.Equal(objectWord, stringFromBytes);
+        }
+
+        [Fact]
+        public void Add_ReturnsTrue()
+        {
+            // Arrange
+            string key = "key";
+            string objectWord = "lorem ipsum";
+            ICleaner cleaner = Substitute.For<ICleaner>();
+            IStorage storage = new InMemoryStorage(cleaner);
+
+            // Act
+            bool added = storage.Add(key, DateTime.MaxValue, Encoding.UTF8.GetBytes(objectWord));
+
+            // Assert
+            Assert.Equal(storage.Count, 1);
+            Assert.True(added);
+        }
+
+        [Fact]
+        public void Add_ReturnsFalse_WhenKeyAlreadyExists()
+        {
+            // Arrange
+            string key = "key";
+            string objectWord = "lorem ipsum";
+            ICleaner cleaner = Substitute.For<ICleaner>();
+            IStorage storage = new InMemoryStorage(cleaner);
+
+            // Act
+            storage.Add(key, DateTime.MaxValue, Encoding.UTF8.GetBytes(objectWord));
+            bool added = storage.Add(key, DateTime.MaxValue, Encoding.UTF8.GetBytes(objectWord));
+
+            // Assert
+            Assert.Equal(storage.Count, 1);
+            Assert.False(added);
         }
 
         [Fact]
@@ -123,17 +160,23 @@ namespace Kronos.Core.Tests.Storage
             Assert.Equal(storage.Count, 0);
         }
 
-        [Fact]
-        public void Clear_ClearsTheData()
+        [Theory]
+        [InlineData(1)]
+        [InlineData(50)]
+        public void Clear_ClearsTheData(int count)
         {
             var expiryProvider = Substitute.For<ICleaner>();
             IStorage storage = new InMemoryStorage(expiryProvider);
 
-            storage.AddOrUpdate("first", DateTime.MaxValue, new byte[0]);
-            storage.AddOrUpdate("second", DateTime.MaxValue, new byte[0]);
 
-            storage.Clear();
+            for (int i = 0; i < count; i++)
+            {
+                storage.AddOrUpdate(Guid.NewGuid().ToString(), DateTime.MaxValue, new byte[0]);
+            }
+
+            int deleted = storage.Clear();
             Assert.Equal(storage.Count, 0);
+            Assert.Equal(deleted, count);
         }
 
         [Fact]

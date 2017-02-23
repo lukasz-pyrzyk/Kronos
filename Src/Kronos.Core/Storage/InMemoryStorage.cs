@@ -23,6 +23,16 @@ namespace Kronos.Core.Storage
             _cleaner.Start(_storage, _cancelToken.Token);
         }
 
+        public bool Add(string key, DateTime? expiryDate, byte[] obj)
+        {
+            var metaData = new Key(key, expiryDate);
+            if (_storage.ContainsKey(metaData))
+                return false;
+
+            _storage[metaData] = obj;
+            return true;
+        }
+
         public void AddOrUpdate(string key, DateTime? expiryDate, byte[] obj)
         {
             var metaData = new Key(key, expiryDate);
@@ -48,10 +58,14 @@ namespace Kronos.Core.Storage
             return _storage.ContainsKey(metaData);
         }
 
-        public void Clear()
+        public int Clear()
         {
             _logger.Info("Clearing storage");
+
+            int count = Count;
             _storage.Clear();
+
+            return count;
         }
 
         public void Dispose()

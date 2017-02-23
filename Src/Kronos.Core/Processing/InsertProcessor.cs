@@ -9,9 +9,9 @@ namespace Kronos.Core.Processing
             // TODO remove ToDateTime
             // TODO remove ToByteArray
             // TODO rename properties...
-            storage.AddOrUpdate(request.Key, request.Expiry.ToDateTime(), request.Data.ToByteArray());
+            bool added = storage.Add(request.Key, request.Expiry?.ToDateTime(), request.Data.ToByteArray());
 
-            return new InsertResponse(); // todo new response...
+            return new InsertResponse { Added = added };
         }
 
         protected override InsertResponse ParseResponse(Response response)

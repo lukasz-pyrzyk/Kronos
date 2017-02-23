@@ -8,7 +8,7 @@ namespace Kronos.Core.Processing
         {
             bool deleted = storage.TryRemove(request.Key);
 
-            return new DeleteResponse(); // todo use real response
+            return new DeleteResponse { Deleted = deleted };
         }
 
         protected override DeleteResponse ParseResponse(Response response)

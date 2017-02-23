@@ -1,5 +1,4 @@
-﻿using Google.Protobuf;
-using Kronos.Core.Processing;
+﻿using Kronos.Core.Processing;
 using Kronos.Core.Storage;
 using NSubstitute;
 using Xunit;
@@ -8,6 +7,7 @@ namespace Kronos.Core.Tests.Processing
 {
     public class DeleteProcessorTests
     {
+        [Theory]
         [InlineData(true)]
         [InlineData(false)]
         public void Handle_ReturnsTrueOrFalseIfElementWasDeleted(bool deleted)

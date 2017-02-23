@@ -6,9 +6,9 @@ namespace Kronos.Core.Processing
     {
         public override ClearResponse Reply(ClearRequest request, IStorage storage)
         {
-            storage.Clear();
+            int deleted = storage.Clear();
 
-            return new ClearResponse(); // todo use response...
+            return new ClearResponse { Deleted = deleted };
         }
 
         protected override ClearResponse ParseResponse(Response response)

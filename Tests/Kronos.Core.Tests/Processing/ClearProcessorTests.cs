@@ -8,14 +8,14 @@ namespace Kronos.Core.Tests.Processing
     public class ClearProcessorTests
     {
         [Fact]
-        public void Process_ReturnsTrueOrFalseIfElementIsInTheStorage()
+        public void Process_ReturnsNumberOfDeleted()
         {
             // arrange
             var request = new ClearRequest();
             var processor = new ClearProcessor();
             var deletedCount = 5;
             var storage = Substitute.For<IStorage>();
-            storage.Clear();
+            storage.Clear().Returns(deletedCount);
 
             // act
             ClearResponse response = processor.Reply(request, storage);
