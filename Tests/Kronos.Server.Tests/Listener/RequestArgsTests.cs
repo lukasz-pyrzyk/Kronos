@@ -7,7 +7,7 @@ namespace Kronos.Server.Tests.Listener
     public class RequestArgsTests
     {
         [Fact]
-        public void Reuse_AssignsValues()
+        public void Ctor_AssignsValues()
         {
             // Arrange
             var request = new Request();
