@@ -8,7 +8,7 @@ namespace Kronos.Core.Processing
         {
             int count = storage.Count;
 
-            return new CountResponse(); // todo use real response
+            return new CountResponse { Count = count };
         }
 
         protected override CountResponse ParseResponse(Response response)

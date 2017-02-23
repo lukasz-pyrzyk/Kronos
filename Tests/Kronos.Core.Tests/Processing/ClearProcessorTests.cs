@@ -1,5 +1,4 @@
-﻿using Google.Protobuf;
-using Kronos.Core.Processing;
+﻿using Kronos.Core.Processing;
 using Kronos.Core.Storage;
 using NSubstitute;
 using Xunit;

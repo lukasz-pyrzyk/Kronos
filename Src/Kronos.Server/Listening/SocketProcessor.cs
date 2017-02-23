@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Buffers;
-using System.Diagnostics;
 using System.Net.Sockets;
 using Google.Protobuf;
 using Kronos.Core.Networking;
@@ -13,7 +12,6 @@ namespace Kronos.Server.Listening
         private const int RequestTypeSize = sizeof(ushort);
 
         private readonly ArrayPool<byte> _pool = ArrayPool<byte>.Create();
-
 
         public RequestArg ReceiveRequest(Socket client)
         {

@@ -1,5 +1,4 @@
-﻿using Google.Protobuf;
-using Kronos.Core.Processing;
+﻿using Kronos.Core.Processing;
 using Kronos.Core.Storage;
 using NSubstitute;
 using Xunit;
@@ -17,8 +16,6 @@ namespace Kronos.Core.Tests.Processing
             int count = 5;
             var storage = Substitute.For<IStorage>();
             storage.Count.Returns(count);
-
-            byte[] expectedBytes = request.ToByteArray();
 
             // act
             CountResponse response = processor.Reply(request, storage);
