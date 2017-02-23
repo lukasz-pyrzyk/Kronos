@@ -3,6 +3,7 @@ using System.Buffers;
 using System.Net.Sockets;
 using Google.Protobuf;
 using Kronos.Core.Networking;
+using Kronos.Core.Pooling;
 
 namespace Kronos.Server.Listening
 {
@@ -12,6 +13,7 @@ namespace Kronos.Server.Listening
         private readonly byte[] sizeBuffer = new byte[sizeof(int)];
 
         private readonly ArrayPool<byte> _pool = ArrayPool<byte>.Create();
+        private readonly BufferedStream _stream = new BufferedStream();
 
         public RequestArg ReceiveRequest(Socket client)
         {
@@ -33,6 +35,20 @@ namespace Kronos.Server.Listening
             }
 
             return new RequestArg(response, client);
+        }
+
+        public void SendResponse(Socket client, Response response)
+        {
+            response.WriteTo(_stream);
+
+            try
+            {
+                SocketUtils.SendAll(client, _stream.RawBytes, (int)_stream.Length);
+            }
+            finally
+            {
+                _stream.Clean();
+            }
         }
     }
 }

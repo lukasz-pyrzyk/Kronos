@@ -79,20 +79,17 @@ namespace Kronos.Server.Listening
             Stop();
         }
 
-        private void ProcessSocketConnection(Socket socket)
+        private void ProcessSocketConnection(Socket client)
         {
             string id = Guid.NewGuid().ToString();
             try
             {
-                RequestArg args = _processor.ReceiveRequest(socket);
+                RequestArg args = _processor.ReceiveRequest(client);
+
                 _logger.Debug($"Processing new request {args.Request.Type} with Id: {id}");
                 Response response = _requestProcessor.Handle(args.Request);
-                byte[] package = response.ToByteArray();
 
-                byte[] size = BitConverter.GetBytes(package.Length);
-                SocketUtils.SendAll(socket, size);
-                SocketUtils.SendAll(socket, package);
-
+                _processor.SendResponse(client, response);
                 _logger.Debug($"Processing {id} finished");
             }
             catch (Exception ex)
