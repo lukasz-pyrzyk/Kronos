@@ -88,10 +88,10 @@ namespace Kronos.Server.Listening
             string id = Guid.NewGuid().ToString();
             try
             {
-                RequestArg args = _processor.ReceiveRequest(client);
+                Request request = _processor.ReceiveRequest(client);
 
-                _logger.Debug($"Processing new request {args.Request.Type} with Id: {id}");
-                Response response = _requestProcessor.Handle(args.Request);
+                _logger.Debug($"Processing new request {request.Type} with Id: {id}");
+                Response response = _requestProcessor.Handle(request);
 
                 _processor.SendResponse(client, response);
                 _logger.Debug($"Processing {id} finished");

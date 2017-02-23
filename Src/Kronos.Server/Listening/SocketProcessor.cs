@@ -15,7 +15,7 @@ namespace Kronos.Server.Listening
         private readonly ArrayPool<byte> _pool = ArrayPool<byte>.Create();
         private readonly BufferedStream _stream = new BufferedStream();
 
-        public RequestArg ReceiveRequest(Socket client)
+        public Request ReceiveRequest(Socket client)
         {
             int packageSize;
             SocketUtils.ReceiveAll(client, _sizeBuffer, IntSize);
@@ -23,18 +23,18 @@ namespace Kronos.Server.Listening
             Array.Clear(_sizeBuffer, 0, _sizeBuffer.Length);
 
             byte[] data = _pool.Rent(packageSize);
-            Request response;
+            Request request;
             try
             {
                 SocketUtils.ReceiveAll(client, data, packageSize);
-                response = Request.Parser.ParseFrom(new CodedInputStream(data, 0, packageSize));
+                request = Request.Parser.ParseFrom(new CodedInputStream(data, 0, packageSize));
             }
             finally
             {
                 _pool.Return(data);
             }
 
-            return new RequestArg(response, client);
+            return request;
         }
 
         public void SendResponse(Socket client, Response response)
