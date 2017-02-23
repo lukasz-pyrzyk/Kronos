@@ -1,15 +1,13 @@
 ﻿using System.Threading.Tasks;
 using Kronos.Core.Configuration;
 using Kronos.Core.Networking;
-using Kronos.Core.Requests;
-using Kronos.Core.Serialization;
 using Kronos.Core.Storage;
 
 namespace Kronos.Core.Processing
 {
-    public abstract class CommandProcessor<TRequest, TResponse> where TRequest : IRequest
+    public abstract class CommandProcessor<TRequest, TResponse> where TRequest : Google.Protobuf.IMessage
     {
-        public abstract byte[] Process(ref TRequest request, IStorage storage);
+        public abstract byte[] Process(TRequest request, IStorage storage);
 
         public async Task<TResponse> ExecuteAsync(TRequest request, IConnection service, ServerConfig server)
         {

@@ -1,8 +1,6 @@
 ﻿using System;
-using System.Collections;
 using Kronos.Core.Serialization;
 using Xunit;
-using System.Collections.Generic;
 
 namespace Kronos.Core.Tests.Serialization
 {

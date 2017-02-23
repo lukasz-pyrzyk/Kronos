@@ -1,0 +1,27 @@
+syntax = "proto3";
+
+import "insert.proto";
+import "get.proto";
+import "delete.proto";
+import "count.proto";
+import "contains.proto";
+import "clear.proto";
+
+message Request {
+  enum Type { 
+	Unknown = 0; 
+	Insert = 1; 
+	Get = 2; 
+	Delete = 3; 
+	Count = 4; 
+	Contains = 5; 
+	Clear = 6;  
+  }
+
+  InsertRequest InsertRequest = 1;
+  GetRequest GetRequest = 2;
+  DeleteRequest DeleteRequest = 3;
+  ContainsRequest ContainsRequest = 4;
+  CountRequest CountRequest = 5;
+  ClearRequest ClearRequest = 6;
+}

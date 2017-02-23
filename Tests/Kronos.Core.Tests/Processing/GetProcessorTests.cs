@@ -1,9 +1,6 @@
-﻿using System.Linq;
-using System.Net.Sockets;
-using System.Text;
+﻿using System.Text;
 using Kronos.Core.Networking;
 using Kronos.Core.Processing;
-using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Kronos.Core.Storage;
 using NSubstitute;
@@ -32,7 +29,7 @@ namespace Kronos.Core.Tests.Processing
             byte[] expectedBytes = SerializationUtils.SerializeToStreamWithLength(obj);
 
             // Act
-            byte[] response = processor.Process(ref request, storage);
+            byte[] response = processor.Process(request, storage);
 
             // assert
             Assert.Equal(expectedBytes, response);
@@ -57,7 +54,7 @@ namespace Kronos.Core.Tests.Processing
             byte[] expectedBytes = SerializationUtils.SerializeToStreamWithLength(obj);
 
             // Act
-            byte[] response = processor.Process(ref request, storage);
+            byte[] response = processor.Process(request, storage);
 
             // assert
             Assert.Equal(expectedBytes, response);

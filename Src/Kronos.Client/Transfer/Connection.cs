@@ -2,11 +2,11 @@
 using System.Diagnostics;
 using System.Net.Sockets;
 using System.Threading.Tasks;
+using Google.Protobuf;
 using Kronos.Core.Configuration;
 using Kronos.Core.Exceptions;
 using Kronos.Core.Networking;
 using Kronos.Core.Pooling;
-using Kronos.Core.Requests;
 using Kronos.Core.Serialization;
 using Polly;
 
@@ -21,7 +21,7 @@ namespace Kronos.Client.Transfer
         private readonly BufferedStream _stream = new BufferedStream();
 
         public async Task<byte[]> SendAsync<TRequest>(TRequest request, ServerConfig server)
-            where TRequest : IRequest
+            where TRequest : IMessage
         {
             Socket socket = null;
             byte[] response = null;
@@ -59,9 +59,9 @@ namespace Kronos.Client.Transfer
             return response;
         }
 
-        private async Task SendAsync(IRequest request, Socket server)
+        private async Task SendAsync(IMessage request, Socket server)
         {
-            SerializationUtils.SerializeToStream(_stream, request.Type);
+            // SerializationUtils.SerializeToStream(_stream, request.Type); // todo send type
             SerializationUtils.SerializeToStream(_stream, request);
 
             await SocketUtils.SendAllAsync(server, _stream.RawBytes, (int)_stream.Length).ConfigureAwait(false);
