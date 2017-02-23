@@ -82,12 +82,15 @@ namespace Kronos.Server.Listening
         private void ProcessSocketConnection(Socket socket)
         {
             string id = Guid.NewGuid().ToString();
-            RequestArg args = _processor.ReceiveRequest(socket);
             try
             {
+                RequestArg args = _processor.ReceiveRequest(socket);
                 _logger.Debug($"Processing new request {args.Request.Type} with Id: {id}");
                 Response response = _requestProcessor.Handle(args.Request);
                 byte[] package = response.ToByteArray();
+
+                byte[] size = BitConverter.GetBytes(package.Length);
+                SocketUtils.SendAll(socket, size);
                 SocketUtils.SendAll(socket, package);
 
                 _logger.Debug($"Processing {id} finished");

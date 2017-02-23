@@ -1,4 +1,5 @@
 ﻿using System.Text;
+using Google.Protobuf;
 using Kronos.Core.Processing;
 using Kronos.Core.Storage;
 using NSubstitute;
@@ -12,9 +13,9 @@ namespace Kronos.Core.Tests.Processing
         public void Handle_ReturnsObjectFromCache()
         {
             // arrange
-            byte[] obj = Encoding.UTF8.GetBytes("lorem ipsum");
+            ByteString obj = ByteString.CopyFromUtf8("lorem ipsum");
             bool expected = true;
-            byte[] dummy;
+            ByteString dummy;
             var request = new GetRequest();
             var processor = new GetProcessor();
             var storage = Substitute.For<IStorage>();
@@ -42,7 +43,7 @@ namespace Kronos.Core.Tests.Processing
             var processor = new GetProcessor();
             var storage = Substitute.For<IStorage>();
 
-            byte[] temp;
+            ByteString temp;
             storage.TryGet(request.Key, out temp).Returns(expected);
 
             // Act

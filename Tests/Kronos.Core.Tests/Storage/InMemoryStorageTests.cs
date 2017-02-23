@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Text;
+using Google.Protobuf;
 using Kronos.Core.Storage;
 using NSubstitute;
 using Xunit;
@@ -11,19 +12,19 @@ namespace Kronos.Core.Tests.Storage
         [Fact]
         public void CanInsertAndGetObject()
         {
-            string key = "key";
-            string objectWord = "lorem ipsum";
+            const string key = "key";
+
+            ByteString package = ByteString.CopyFromUtf8("lorem ipsum");
             ICleaner cleaner = Substitute.For<ICleaner>();
             IStorage storage = new InMemoryStorage(cleaner);
 
-            storage.AddOrUpdate(key, DateTime.MaxValue, Encoding.UTF8.GetBytes(objectWord));
+            storage.AddOrUpdate(key, DateTime.MaxValue, package);
 
-            byte[] objFromBytes;
+            ByteString objFromBytes;
             bool success = storage.TryGet(key, out objFromBytes);
-            string stringFromBytes = Encoding.UTF8.GetString(objFromBytes);
 
             Assert.True(success);
-            Assert.Equal(objectWord, stringFromBytes);
+            Assert.Equal(objFromBytes, package);
         }
 
         [Fact]
@@ -36,7 +37,7 @@ namespace Kronos.Core.Tests.Storage
             IStorage storage = new InMemoryStorage(cleaner);
 
             // Act
-            bool added = storage.Add(key, DateTime.MaxValue, Encoding.UTF8.GetBytes(objectWord));
+            bool added = storage.Add(key, DateTime.MaxValue, ByteString.Empty);
 
             // Assert
             Assert.Equal(storage.Count, 1);
@@ -53,8 +54,8 @@ namespace Kronos.Core.Tests.Storage
             IStorage storage = new InMemoryStorage(cleaner);
 
             // Act
-            storage.Add(key, DateTime.MaxValue, Encoding.UTF8.GetBytes(objectWord));
-            bool added = storage.Add(key, DateTime.MaxValue, Encoding.UTF8.GetBytes(objectWord));
+            storage.Add(key, DateTime.MaxValue, ByteString.Empty);
+            bool added = storage.Add(key, DateTime.MaxValue, ByteString.Empty);
 
             // Assert
             Assert.Equal(storage.Count, 1);
@@ -65,36 +66,32 @@ namespace Kronos.Core.Tests.Storage
         public void CanUpdateExistingObject()
         {
             string key = "key";
-            string first = "first";
-            string second = "second";
             ICleaner cleaner = Substitute.For<ICleaner>();
             IStorage storage = new InMemoryStorage(cleaner);
 
-            byte[] firstObject = Encoding.UTF8.GetBytes(first);
-            byte[] secondObject = Encoding.UTF8.GetBytes(second);
+            ByteString firstObject = ByteString.CopyFromUtf8("first");
+            ByteString secondObject = ByteString.CopyFromUtf8("second");
 
             storage.AddOrUpdate(key, DateTime.MaxValue, firstObject);
             storage.AddOrUpdate(key, DateTime.MaxValue, secondObject);
 
-            byte[] objFromBytes;
+            ByteString objFromBytes;
             bool success = storage.TryGet(key, out objFromBytes);
-            string stringFromBytes = Encoding.UTF8.GetString(objFromBytes);
 
             Assert.True(success);
-            Assert.Equal(stringFromBytes, second);
+            Assert.Equal(objFromBytes, secondObject);
         }
 
         [Fact]
         public void TryRemove_RemovesEntryFromStorage()
         {
-            byte[] package = Encoding.UTF8.GetBytes("lorem ipsum");
             const string firstKey = "key1";
             const string secondKey = "key2";
 
             ICleaner cleaner = Substitute.For<ICleaner>();
             IStorage storage = new InMemoryStorage(cleaner);
-            storage.AddOrUpdate(firstKey, DateTime.MaxValue, package);
-            storage.AddOrUpdate(secondKey, DateTime.MaxValue, package);
+            storage.AddOrUpdate(firstKey, DateTime.MaxValue, ByteString.Empty);
+            storage.AddOrUpdate(secondKey, DateTime.MaxValue, ByteString.Empty);
 
             bool deleted = storage.TryRemove(firstKey);
 
@@ -105,13 +102,12 @@ namespace Kronos.Core.Tests.Storage
         [Fact]
         public void TryRemove_DoestNotRemoveEntryFromStorageWhenKeyDoesNotExist()
         {
-            byte[] package = Encoding.UTF8.GetBytes("lorem ipsum");
             const string firstKey = "key1";
             const string secondKey = "key2";
 
             ICleaner cleaner = Substitute.For<ICleaner>();
             IStorage storage = new InMemoryStorage(cleaner);
-            storage.AddOrUpdate(firstKey, DateTime.MaxValue, package);
+            storage.AddOrUpdate(firstKey, DateTime.MaxValue, ByteString.Empty);
 
             bool deleted = storage.TryRemove(secondKey);
 
@@ -126,8 +122,8 @@ namespace Kronos.Core.Tests.Storage
             IStorage storage = new InMemoryStorage(cleaner);
 
             string key = "lorem ipsum";
-            storage.AddOrUpdate(key, DateTime.MaxValue, new byte[0]);
-            storage.AddOrUpdate("second", DateTime.MaxValue, new byte[0]);
+            storage.AddOrUpdate(key, DateTime.MaxValue, ByteString.Empty);
+            storage.AddOrUpdate("second", DateTime.MaxValue, ByteString.Empty);
 
             bool result = storage.Contains(key);
 
@@ -153,8 +149,8 @@ namespace Kronos.Core.Tests.Storage
             ICleaner cleaner = Substitute.For<ICleaner>();
             IStorage storage = new InMemoryStorage(cleaner);
 
-            storage.AddOrUpdate("first", DateTime.MaxValue, new byte[0]);
-            storage.AddOrUpdate("second", DateTime.MaxValue, new byte[0]);
+            storage.AddOrUpdate("first", DateTime.MaxValue, ByteString.Empty);
+            storage.AddOrUpdate("second", DateTime.MaxValue, ByteString.Empty);
 
             storage.Dispose();
             Assert.Equal(storage.Count, 0);
@@ -171,7 +167,7 @@ namespace Kronos.Core.Tests.Storage
 
             for (int i = 0; i < count; i++)
             {
-                storage.AddOrUpdate(Guid.NewGuid().ToString(), DateTime.MaxValue, new byte[0]);
+                storage.AddOrUpdate(Guid.NewGuid().ToString(), DateTime.MaxValue, ByteString.Empty);
             }
 
             int deleted = storage.Clear();
@@ -185,7 +181,7 @@ namespace Kronos.Core.Tests.Storage
             ICleaner cleaner = Substitute.For<ICleaner>();
             IStorage storage = new InMemoryStorage(cleaner);
 
-            byte[] objFromBytes;
+            ByteString objFromBytes;
             bool success = storage.TryGet("lorem ipsum", out objFromBytes);
 
             Assert.Null(objFromBytes);

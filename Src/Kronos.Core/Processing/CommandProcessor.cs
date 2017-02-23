@@ -12,7 +12,7 @@ namespace Kronos.Core.Processing
     {
         public abstract TResponse Reply(TRequest request, IStorage storage);
 
-        public async Task<TResponse> ExecuteAsync(TRequest request, IConnection service, ServerConfig server)
+        public async Task<TResponse> ExecuteAsync(Request request, IConnection service, ServerConfig server)
         {
             byte[] package = await service.SendAsync(request, server).ConfigureAwait(false);
             Response response = Response.Parser.ParseFrom(package);
@@ -22,7 +22,7 @@ namespace Kronos.Core.Processing
             return results;
         }
 
-        public async Task<TResponse[]> ExecuteAsync(TRequest request, IConnection[] services, ServerConfig[] servers)
+        public async Task<TResponse[]> ExecuteAsync(Request request, IConnection[] services, ServerConfig[] servers)
         {
             int count = services.Length;
             Task<TResponse>[] responses = new Task<TResponse>[count];

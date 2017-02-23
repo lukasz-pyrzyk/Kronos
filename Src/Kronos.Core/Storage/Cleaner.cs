@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Protobuf;
 using NLog;
 
 namespace Kronos.Core.Storage
@@ -12,7 +13,7 @@ namespace Kronos.Core.Storage
 
         private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
-        public void Start(Dictionary<Key, byte[]> nodes, CancellationToken token)
+        public void Start(Dictionary<Key, ByteString> nodes, CancellationToken token)
         {
             Task.Factory.StartNew(async () =>
             {

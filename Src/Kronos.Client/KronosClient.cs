@@ -6,7 +6,6 @@ using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Kronos.Client.Transfer;
 using Kronos.Core.Configuration;
-using Kronos.Core.Networking;
 using Kronos.Core.Pooling;
 using Kronos.Core.Processing;
 
@@ -36,11 +35,16 @@ namespace Kronos.Client
         public async Task InsertAsync(string key, byte[] package, DateTime expiryDate)
         {
             Trace.WriteLine("New insert request");
-            InsertRequest request = new InsertRequest
+
+            Request request = new Request
             {
-                Key = key,
-                Data = ByteString.CopyFrom(package),
-                Expiry = Timestamp.FromDateTime(expiryDate)
+                InsertRequest = new InsertRequest
+                {
+                    Key = key,
+                    Data = ByteString.CopyFrom(package),
+                    Expiry = Timestamp.FromDateTime(expiryDate)
+                },
+                Type = RequestType.Insert
             };
 
             ServerConfig server = GetServerInternal(key);
@@ -56,9 +60,14 @@ namespace Kronos.Client
         public async Task<byte[]> GetAsync(string key)
         {
             Trace.WriteLine("New get request");
-            GetRequest request = new GetRequest
+
+            Request request = new Request
             {
-                Key = key
+                GetRequest = new GetRequest
+                {
+                    Key = key
+                },
+                Type = RequestType.Get
             };
 
             ServerConfig server = GetServerInternal(key);
@@ -77,9 +86,14 @@ namespace Kronos.Client
         public async Task DeleteAsync(string key)
         {
             Trace.WriteLine("New delete request");
-            DeleteRequest request = new DeleteRequest
+
+            Request request = new Request
             {
-                Key = key
+                DeleteRequest = new DeleteRequest
+                {
+                    Key = key
+                },
+                Type = RequestType.Delete
             };
 
             ServerConfig server = GetServerInternal(key);
@@ -96,7 +110,12 @@ namespace Kronos.Client
         {
             Trace.WriteLine("New count request");
 
-            var request = new CountRequest();
+            Request request = new Request
+            {
+                CountRequest = new CountRequest(),
+                Type = RequestType.Count
+            };
+
             ServerConfig[] servers = GetServersInternal();
 
             var responses = await _connectionPool.UseAsync(servers.Length, con =>
@@ -111,9 +130,10 @@ namespace Kronos.Client
         {
             Trace.WriteLine("New contains request");
 
-            var request = new ContainsRequest
+            Request request = new Request
             {
-                Key = "key"
+                ContainsRequest = new ContainsRequest(),
+                Type = RequestType.Contains
             };
 
             ServerConfig server = GetServerInternal(key);
@@ -130,7 +150,12 @@ namespace Kronos.Client
         {
             Trace.WriteLine("New clear request");
 
-            var request = new ClearRequest();
+            Request request = new Request
+            {
+                ClearRequest = new ClearRequest(),
+                Type = RequestType.Clear
+            };
+
             ServerConfig[] servers = GetServersInternal();
 
             await _connectionPool.UseAsync(servers.Length, con =>

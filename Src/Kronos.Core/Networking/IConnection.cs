@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Google.Protobuf;
 using Kronos.Core.Configuration;
 
 namespace Kronos.Core.Networking
@@ -14,6 +13,6 @@ namespace Kronos.Core.Networking
         /// </summary>
         /// <param name="request">Request to process on the server</param>
         /// <returns>Status code of request</returns>
-        Task<byte[]> SendAsync<TRequest>(TRequest request, ServerConfig server) where TRequest : IMessage;
+        Task<byte[]> SendAsync(Request request, ServerConfig server);
     }
 }

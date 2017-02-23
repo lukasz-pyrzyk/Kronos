@@ -9,36 +9,28 @@ namespace Kronos.Server.Listening
     public class SocketProcessor : IProcessor
     {
         private const int IntSize = sizeof(int);
-        private const int RequestTypeSize = sizeof(ushort);
+        private readonly byte[] sizeBuffer = new byte[sizeof(int)];
 
         private readonly ArrayPool<byte> _pool = ArrayPool<byte>.Create();
 
         public RequestArg ReceiveRequest(Socket client)
         {
-            int dataLength;
-            byte[] lengthBuffer = _pool.Rent(IntSize); // TODO stackalloc
-            try
-            {
-                SocketUtils.ReceiveAll(client, lengthBuffer, IntSize);
-                dataLength = BitConverter.ToInt32(lengthBuffer, 0);
-            }
-            finally
-            {
-                _pool.Return(lengthBuffer);
-            }
+            int packageSize;
+            SocketUtils.ReceiveAll(client, sizeBuffer, IntSize);
+            packageSize = BitConverter.ToInt32(sizeBuffer, 0);
+            Array.Clear(sizeBuffer, 0, 0);
 
-            int packageSize = dataLength - RequestTypeSize;
             byte[] data = _pool.Rent(packageSize);
+            Request response;
             try
             {
                 SocketUtils.ReceiveAll(client, data, packageSize);
+                response = Request.Parser.ParseFrom(new CodedInputStream(data, 0, packageSize));
             }
             finally
             {
                 _pool.Return(data);
             }
-
-            Request response = Request.Parser.ParseFrom(ByteString.CopyFrom(data, 0, packageSize));
 
             return new RequestArg(response, client);
         }

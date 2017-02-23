@@ -17,7 +17,7 @@ namespace Kronos.Core.Tests.Processing
             // Arrange
             var fakeResult = new Response { InsertResponse = new InsertResponse { Added = true } };
             byte[] fakeData = fakeResult.ToByteArray();
-            var request = new InsertRequest();
+            var request = new Request { InsertRequest = new InsertRequest(), Type = RequestType.Insert };
             var server = new ServerConfig();
             IConnection con = Substitute.For<IConnection>();
             con.SendAsync(request, server).Returns(fakeData);

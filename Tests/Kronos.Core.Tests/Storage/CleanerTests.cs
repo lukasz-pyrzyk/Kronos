@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using System.Threading.Tasks;
+using Google.Protobuf;
 using Kronos.Core.Storage;
 using Xunit;
 
@@ -12,10 +13,10 @@ namespace Kronos.Core.Tests.Storage
         [Fact]
         public async Task Start_CanDeleteObjectsFromStorage()
         {
-            var data = new Dictionary<Key, byte[]>
+            var data = new Dictionary<Key, ByteString>
             {
-                [new Key("one", DateTime.UtcNow)] = new byte[0],
-                [new Key("two", DateTime.MaxValue)] = new byte[0]
+                [new Key("one", DateTime.UtcNow)] = ByteString.CopyFromUtf8("first"),
+                [new Key("two", DateTime.MaxValue)] = ByteString.CopyFromUtf8("second")
             };
 
             Cleaner provider = new Cleaner();
