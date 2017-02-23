@@ -1,26 +1,27 @@
 ﻿using System.Threading.Tasks;
+using Google.Protobuf;
 using Kronos.Core.Configuration;
 using Kronos.Core.Networking;
-using Kronos.Core.Requests;
-using Kronos.Core.Serialization;
 using Kronos.Core.Storage;
 
 namespace Kronos.Core.Processing
 {
-    public abstract class CommandProcessor<TRequest, TResponse> where TRequest : IRequest
+    public abstract class CommandProcessor<TRequest, TResponse>
+        where TRequest : IMessage
+        where TResponse : IMessage
     {
-        public abstract byte[] Process(ref TRequest request, IStorage storage);
+        public abstract TResponse Reply(TRequest request, IStorage storage);
 
-        public async Task<TResponse> ExecuteAsync(TRequest request, IConnection service, ServerConfig server)
+        public async Task<TResponse> ExecuteAsync(Request request, IConnection service, ServerConfig server)
         {
-            byte[] response = await service.SendAsync(request, server).ConfigureAwait(false);
+            Response respnse = await service.SendAsync(request, server).ConfigureAwait(false);
 
-            TResponse results = PrepareResponse<TResponse>(response);
+            TResponse selectedResponse = ParseResponse(respnse);
 
-            return results;
+            return selectedResponse;
         }
 
-        public async Task<TResponse[]> ExecuteAsync(TRequest request, IConnection[] services, ServerConfig[] servers)
+        public async Task<TResponse[]> ExecuteAsync(Request request, IConnection[] services, ServerConfig[] servers)
         {
             int count = services.Length;
             Task<TResponse>[] responses = new Task<TResponse>[count];
@@ -34,15 +35,6 @@ namespace Kronos.Core.Processing
             return await Task.WhenAll(responses);
         }
 
-        protected byte[] Reply(TResponse response)
-        {
-            return SerializationUtils.SerializeToStreamWithLength(response);
-        }
-
-        protected virtual T PrepareResponse<T>(byte[] responseBytes)
-        {
-            T results = SerializationUtils.Deserialize<T>(responseBytes);
-            return results;
-        }
+        protected abstract TResponse ParseResponse(Response response);
     }
 }

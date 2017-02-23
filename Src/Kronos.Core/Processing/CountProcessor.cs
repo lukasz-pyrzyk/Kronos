@@ -1,15 +1,19 @@
-﻿using Kronos.Core.Requests;
-using Kronos.Core.Storage;
+﻿using Kronos.Core.Storage;
 
 namespace Kronos.Core.Processing
 {
-    public class CountProcessor : CommandProcessor<CountRequest, int>
+    public class CountProcessor : CommandProcessor<CountRequest, CountResponse>
     {
-        public override byte[] Process(ref CountRequest request, IStorage storage)
+        public override CountResponse Reply(CountRequest request, IStorage storage)
         {
             int count = storage.Count;
 
-            return Reply(count);
+            return new CountResponse { Count = count };
+        }
+
+        protected override CountResponse ParseResponse(Response response)
+        {
+            return response.CountResponse;
         }
     }
 }

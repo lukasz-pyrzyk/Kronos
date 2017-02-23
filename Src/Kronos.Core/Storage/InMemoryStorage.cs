@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
 using System.Threading;
+using Google.Protobuf;
 using NLog;
 
 namespace Kronos.Core.Storage
@@ -10,8 +11,8 @@ namespace Kronos.Core.Storage
         private readonly Logger _logger = LogManager.GetCurrentClassLogger();
         private readonly ICleaner _cleaner;
 
-        private readonly Dictionary<Key, byte[]> _storage =
-            new Dictionary<Key, byte[]>(new KeyComperer());
+        private readonly Dictionary<Key, ByteString> _storage =
+            new Dictionary<Key, ByteString>(new KeyComperer());
 
         private readonly CancellationTokenSource _cancelToken = new CancellationTokenSource();
 
@@ -23,14 +24,24 @@ namespace Kronos.Core.Storage
             _cleaner.Start(_storage, _cancelToken.Token);
         }
 
-        public void AddOrUpdate(string key, DateTime? expiryDate, byte[] obj)
+        public bool Add(string key, DateTime? expiryDate, ByteString obj)
+        {
+            var metaData = new Key(key, expiryDate);
+            if (_storage.ContainsKey(metaData))
+                return false;
+
+            _storage[metaData] = obj;
+            return true;
+        }
+
+        public void AddOrUpdate(string key, DateTime? expiryDate, ByteString obj)
         {
             var metaData = new Key(key, expiryDate);
 
             _storage[metaData] = obj;
         }
 
-        public bool TryGet(string key, out byte[] obj)
+        public bool TryGet(string key, out ByteString obj)
         {
             var metaData = new Key(key);
             return _storage.TryGetValue(metaData, out obj);
@@ -48,10 +59,14 @@ namespace Kronos.Core.Storage
             return _storage.ContainsKey(metaData);
         }
 
-        public void Clear()
+        public int Clear()
         {
             _logger.Info("Clearing storage");
+
+            int count = Count;
             _storage.Clear();
+
+            return count;
         }
 
         public void Dispose()

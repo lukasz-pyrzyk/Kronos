@@ -1,0 +1,10 @@
+syntax = "proto3";
+
+message ContainsRequest {
+    string key = 1;
+    string Name = 2;
+}
+
+message ContainsResponse {
+	bool contains = 1;
+}

@@ -1,8 +1,4 @@
-﻿using System.Linq;
-using System.Net.Sockets;
-using Kronos.Core.Processing;
-using Kronos.Core.Requests;
-using Kronos.Core.Serialization;
+﻿using Kronos.Core.Processing;
 using Kronos.Core.Storage;
 using NSubstitute;
 using Xunit;
@@ -11,6 +7,7 @@ namespace Kronos.Core.Tests.Processing
 {
     public class DeleteProcessorTests
     {
+        [Theory]
         [InlineData(true)]
         [InlineData(false)]
         public void Handle_ReturnsTrueOrFalseIfElementWasDeleted(bool deleted)
@@ -20,12 +17,11 @@ namespace Kronos.Core.Tests.Processing
             var processor = new DeleteProcessor();
             var storage = Substitute.For<IStorage>();
             storage.TryRemove(request.Key).Returns(deleted);
-            byte[] expectedBytes = SerializationUtils.SerializeToStreamWithLength(deleted);
 
-            byte[] response = processor.Process(ref request, storage);
+            DeleteResponse response = processor.Reply(request, storage);
 
             // assert
-            Assert.Equal(expectedBytes, response);
+            Assert.Equal(response.Deleted, deleted);
         }
     }
 }

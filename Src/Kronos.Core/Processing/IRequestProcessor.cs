@@ -1,9 +1,7 @@
-﻿using Kronos.Core.Requests;
-
-namespace Kronos.Core.Processing
+﻿namespace Kronos.Core.Processing
 {
     public interface IRequestProcessor
     {
-        byte[] Handle(RequestType requestType, byte[] request, int received);
+        Response Handle(Request request);
     }
 }

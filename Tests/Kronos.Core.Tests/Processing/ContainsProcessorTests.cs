@@ -1,6 +1,4 @@
 ﻿using Kronos.Core.Processing;
-using Kronos.Core.Requests;
-using Kronos.Core.Serialization;
 using Kronos.Core.Storage;
 using NSubstitute;
 using Xunit;
@@ -9,6 +7,7 @@ namespace Kronos.Core.Tests.Processing
 {
     public class ContainsProcessorTests
     {
+        [Theory]
         [InlineData(true)]
         [InlineData(false)]
         public void Handle_ReturnsTrueOrFalseIfElementIsInTheStorage(bool contains)
@@ -18,13 +17,12 @@ namespace Kronos.Core.Tests.Processing
             var processor = new ContainsProcessor();
             var storage = Substitute.For<IStorage>();
             storage.Contains(request.Key).Returns(contains);
-            byte[] expectedBytes = SerializationUtils.SerializeToStreamWithLength(contains);
 
             // act
-            byte[] response = processor.Process(ref request, storage);
+            ContainsResponse response = processor.Reply(request, storage);
 
             // assert
-            Assert.Equal(expectedBytes, response);
+            Assert.Equal(response.Contains, contains);
         }
     }
 }

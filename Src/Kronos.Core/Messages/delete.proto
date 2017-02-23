@@ -1,0 +1,9 @@
+syntax = "proto3";
+
+message DeleteRequest {
+    string key = 1;
+}
+
+message DeleteResponse {
+	bool deleted = 1;
+}
