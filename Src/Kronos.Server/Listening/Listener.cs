@@ -47,6 +47,10 @@ namespace Kronos.Server.Listening
                         socket = await _listener.AcceptSocketAsync().ConfigureAwait(false);
                         ProcessSocketConnection(socket);
                     }
+                    catch (ObjectDisposedException)
+                    {
+                        _logger.Info("TCP listener is disposed");
+                    }
                     catch (Exception ex)
                     {
                         _logger.Error($"Exception during accepting new request {ex}");
