@@ -1,4 +1,8 @@
 syntax = "proto3";
 
-message ClearMessage {
+message ClearRequest {
+}
+
+message ClearResponse {
+	sint64 Deleted = 1;
 }

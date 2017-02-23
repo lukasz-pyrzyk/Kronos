@@ -20,20 +20,19 @@ public static partial class RequestReflection {
   static RequestReflection() {
     byte[] descriptorData = global::System.Convert.FromBase64String(
         string.Concat(
-          "Cg1SZXF1ZXN0LnByb3RvGgxpbnNlcnQucHJvdG8aCWdldC5wcm90bxoMZGVs",
-          "ZXRlLnByb3RvGgtjb3VudC5wcm90bxoOY29udGFpbnMucHJvdG8aC2NsZWFy",
-          "LnByb3RvIscCCgdSZXF1ZXN0EiUKDUluc2VydFJlcXVlc3QYASABKAsyDi5J",
-          "bnNlcnRSZXF1ZXN0Eh8KCkdldFJlcXVlc3QYAiABKAsyCy5HZXRSZXF1ZXN0",
-          "EiUKDURlbGV0ZVJlcXVlc3QYAyABKAsyDi5EZWxldGVSZXF1ZXN0EikKD0Nv",
-          "bnRhaW5zUmVxdWVzdBgEIAEoCzIQLkNvbnRhaW5zUmVxdWVzdBIjCgxDb3Vu",
-          "dFJlcXVlc3QYBSABKAsyDS5Db3VudFJlcXVlc3QSIwoMQ2xlYXJSZXF1ZXN0",
-          "GAYgASgLMg0uQ2xlYXJSZXF1ZXN0IlgKBFR5cGUSCwoHVW5rbm93bhAAEgoK",
-          "Bkluc2VydBABEgcKA0dldBACEgoKBkRlbGV0ZRADEgkKBUNvdW50EAQSDAoI",
-          "Q29udGFpbnMQBRIJCgVDbGVhchAGYgZwcm90bzM="));
+          "Cg1SZXF1ZXN0LnByb3RvGhFSZXF1ZXN0VHlwZS5wcm90bxoMaW5zZXJ0LnBy",
+          "b3RvGglnZXQucHJvdG8aDGRlbGV0ZS5wcm90bxoLY291bnQucHJvdG8aDmNv",
+          "bnRhaW5zLnByb3RvGgtjbGVhci5wcm90byKJAgoHUmVxdWVzdBIaCgRUeXBl",
+          "GAEgASgOMgwuUmVxdWVzdFR5cGUSJQoNSW5zZXJ0UmVxdWVzdBgCIAEoCzIO",
+          "Lkluc2VydFJlcXVlc3QSHwoKR2V0UmVxdWVzdBgDIAEoCzILLkdldFJlcXVl",
+          "c3QSJQoNRGVsZXRlUmVxdWVzdBgEIAEoCzIOLkRlbGV0ZVJlcXVlc3QSKQoP",
+          "Q29udGFpbnNSZXF1ZXN0GAUgASgLMhAuQ29udGFpbnNSZXF1ZXN0EiMKDENv",
+          "dW50UmVxdWVzdBgGIAEoCzINLkNvdW50UmVxdWVzdBIjCgxDbGVhclJlcXVl",
+          "c3QYByABKAsyDS5DbGVhclJlcXVlc3RiBnByb3RvMw=="));
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-        new pbr::FileDescriptor[] { global::InsertReflection.Descriptor, global::GetReflection.Descriptor, global::DeleteReflection.Descriptor, global::CountReflection.Descriptor, global::ContainsReflection.Descriptor, global::ClearReflection.Descriptor, },
+        new pbr::FileDescriptor[] { global::RequestTypeReflection.Descriptor, global::InsertReflection.Descriptor, global::GetReflection.Descriptor, global::DeleteReflection.Descriptor, global::CountReflection.Descriptor, global::ContainsReflection.Descriptor, global::ClearReflection.Descriptor, },
         new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-          new pbr::GeneratedClrTypeInfo(typeof(global::Request), global::Request.Parser, new[]{ "InsertRequest", "GetRequest", "DeleteRequest", "ContainsRequest", "CountRequest", "ClearRequest" }, null, new[]{ typeof(global::Request.Types.Type) }, null)
+          new pbr::GeneratedClrTypeInfo(typeof(global::Request), global::Request.Parser, new[]{ "Type", "InsertRequest", "GetRequest", "DeleteRequest", "ContainsRequest", "CountRequest", "ClearRequest" }, null, null, null)
         }));
   }
   #endregion
@@ -64,6 +63,7 @@ public sealed partial class Request : pb::IMessage<Request> {
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   public Request(Request other) : this() {
+    type_ = other.type_;
     InsertRequest = other.insertRequest_ != null ? other.InsertRequest.Clone() : null;
     GetRequest = other.getRequest_ != null ? other.GetRequest.Clone() : null;
     DeleteRequest = other.deleteRequest_ != null ? other.DeleteRequest.Clone() : null;
@@ -77,8 +77,19 @@ public sealed partial class Request : pb::IMessage<Request> {
     return new Request(this);
   }
 
+  /// <summary>Field number for the "Type" field.</summary>
+  public const int TypeFieldNumber = 1;
+  private global::RequestType type_ = 0;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public global::RequestType Type {
+    get { return type_; }
+    set {
+      type_ = value;
+    }
+  }
+
   /// <summary>Field number for the "InsertRequest" field.</summary>
-  public const int InsertRequestFieldNumber = 1;
+  public const int InsertRequestFieldNumber = 2;
   private global::InsertRequest insertRequest_;
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   public global::InsertRequest InsertRequest {
@@ -89,7 +100,7 @@ public sealed partial class Request : pb::IMessage<Request> {
   }
 
   /// <summary>Field number for the "GetRequest" field.</summary>
-  public const int GetRequestFieldNumber = 2;
+  public const int GetRequestFieldNumber = 3;
   private global::GetRequest getRequest_;
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   public global::GetRequest GetRequest {
@@ -100,7 +111,7 @@ public sealed partial class Request : pb::IMessage<Request> {
   }
 
   /// <summary>Field number for the "DeleteRequest" field.</summary>
-  public const int DeleteRequestFieldNumber = 3;
+  public const int DeleteRequestFieldNumber = 4;
   private global::DeleteRequest deleteRequest_;
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   public global::DeleteRequest DeleteRequest {
@@ -111,7 +122,7 @@ public sealed partial class Request : pb::IMessage<Request> {
   }
 
   /// <summary>Field number for the "ContainsRequest" field.</summary>
-  public const int ContainsRequestFieldNumber = 4;
+  public const int ContainsRequestFieldNumber = 5;
   private global::ContainsRequest containsRequest_;
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   public global::ContainsRequest ContainsRequest {
@@ -122,7 +133,7 @@ public sealed partial class Request : pb::IMessage<Request> {
   }
 
   /// <summary>Field number for the "CountRequest" field.</summary>
-  public const int CountRequestFieldNumber = 5;
+  public const int CountRequestFieldNumber = 6;
   private global::CountRequest countRequest_;
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   public global::CountRequest CountRequest {
@@ -133,7 +144,7 @@ public sealed partial class Request : pb::IMessage<Request> {
   }
 
   /// <summary>Field number for the "ClearRequest" field.</summary>
-  public const int ClearRequestFieldNumber = 6;
+  public const int ClearRequestFieldNumber = 7;
   private global::ClearRequest clearRequest_;
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   public global::ClearRequest ClearRequest {
@@ -156,6 +167,7 @@ public sealed partial class Request : pb::IMessage<Request> {
     if (ReferenceEquals(other, this)) {
       return true;
     }
+    if (Type != other.Type) return false;
     if (!object.Equals(InsertRequest, other.InsertRequest)) return false;
     if (!object.Equals(GetRequest, other.GetRequest)) return false;
     if (!object.Equals(DeleteRequest, other.DeleteRequest)) return false;
@@ -168,6 +180,7 @@ public sealed partial class Request : pb::IMessage<Request> {
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   public override int GetHashCode() {
     int hash = 1;
+    if (Type != 0) hash ^= Type.GetHashCode();
     if (insertRequest_ != null) hash ^= InsertRequest.GetHashCode();
     if (getRequest_ != null) hash ^= GetRequest.GetHashCode();
     if (deleteRequest_ != null) hash ^= DeleteRequest.GetHashCode();
@@ -184,28 +197,32 @@ public sealed partial class Request : pb::IMessage<Request> {
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   public void WriteTo(pb::CodedOutputStream output) {
+    if (Type != 0) {
+      output.WriteRawTag(8);
+      output.WriteEnum((int) Type);
+    }
     if (insertRequest_ != null) {
-      output.WriteRawTag(10);
+      output.WriteRawTag(18);
       output.WriteMessage(InsertRequest);
     }
     if (getRequest_ != null) {
-      output.WriteRawTag(18);
+      output.WriteRawTag(26);
       output.WriteMessage(GetRequest);
     }
     if (deleteRequest_ != null) {
-      output.WriteRawTag(26);
+      output.WriteRawTag(34);
       output.WriteMessage(DeleteRequest);
     }
     if (containsRequest_ != null) {
-      output.WriteRawTag(34);
+      output.WriteRawTag(42);
       output.WriteMessage(ContainsRequest);
     }
     if (countRequest_ != null) {
-      output.WriteRawTag(42);
+      output.WriteRawTag(50);
       output.WriteMessage(CountRequest);
     }
     if (clearRequest_ != null) {
-      output.WriteRawTag(50);
+      output.WriteRawTag(58);
       output.WriteMessage(ClearRequest);
     }
   }
@@ -213,6 +230,9 @@ public sealed partial class Request : pb::IMessage<Request> {
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   public int CalculateSize() {
     int size = 0;
+    if (Type != 0) {
+      size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Type);
+    }
     if (insertRequest_ != null) {
       size += 1 + pb::CodedOutputStream.ComputeMessageSize(InsertRequest);
     }
@@ -238,6 +258,9 @@ public sealed partial class Request : pb::IMessage<Request> {
   public void MergeFrom(Request other) {
     if (other == null) {
       return;
+    }
+    if (other.Type != 0) {
+      Type = other.Type;
     }
     if (other.insertRequest_ != null) {
       if (insertRequest_ == null) {
@@ -285,42 +308,46 @@ public sealed partial class Request : pb::IMessage<Request> {
         default:
           input.SkipLastField();
           break;
-        case 10: {
+        case 8: {
+          type_ = (global::RequestType) input.ReadEnum();
+          break;
+        }
+        case 18: {
           if (insertRequest_ == null) {
             insertRequest_ = new global::InsertRequest();
           }
           input.ReadMessage(insertRequest_);
           break;
         }
-        case 18: {
+        case 26: {
           if (getRequest_ == null) {
             getRequest_ = new global::GetRequest();
           }
           input.ReadMessage(getRequest_);
           break;
         }
-        case 26: {
+        case 34: {
           if (deleteRequest_ == null) {
             deleteRequest_ = new global::DeleteRequest();
           }
           input.ReadMessage(deleteRequest_);
           break;
         }
-        case 34: {
+        case 42: {
           if (containsRequest_ == null) {
             containsRequest_ = new global::ContainsRequest();
           }
           input.ReadMessage(containsRequest_);
           break;
         }
-        case 42: {
+        case 50: {
           if (countRequest_ == null) {
             countRequest_ = new global::CountRequest();
           }
           input.ReadMessage(countRequest_);
           break;
         }
-        case 50: {
+        case 58: {
           if (clearRequest_ == null) {
             clearRequest_ = new global::ClearRequest();
           }
@@ -330,23 +357,6 @@ public sealed partial class Request : pb::IMessage<Request> {
       }
     }
   }
-
-  #region Nested types
-  /// <summary>Container for nested types declared in the Request message type.</summary>
-  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-  public static partial class Types {
-    public enum Type {
-      [pbr::OriginalName("Unknown")] Unknown = 0,
-      [pbr::OriginalName("Insert")] Insert = 1,
-      [pbr::OriginalName("Get")] Get = 2,
-      [pbr::OriginalName("Delete")] Delete = 3,
-      [pbr::OriginalName("Count")] Count = 4,
-      [pbr::OriginalName("Contains")] Contains = 5,
-      [pbr::OriginalName("Clear")] Clear = 6,
-    }
-
-  }
-  #endregion
 
 }
 

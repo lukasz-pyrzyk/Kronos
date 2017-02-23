@@ -1,0 +1,21 @@
+syntax = "proto3";
+
+import "RequestType.proto";
+import "insert.proto";
+import "get.proto";
+import "delete.proto";
+import "count.proto";
+import "contains.proto";
+import "clear.proto";
+
+
+message Response {
+  RequestType Type = 1;
+
+  InsertResponse InsertResponse = 2;
+  GetResponse GetRespone = 3;
+  DeleteResponse DeleteResponse = 4;
+  ContainsResponse ContainsResponse = 5;
+  CountResponse CountResponse = 6;
+  ClearResponse ClearResponse = 7;
+}

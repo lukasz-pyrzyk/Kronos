@@ -20,12 +20,13 @@ public static partial class GetReflection {
   static GetReflection() {
     byte[] descriptorData = global::System.Convert.FromBase64String(
         string.Concat(
-          "CglnZXQucHJvdG8iGQoKR2V0UmVxdWVzdBILCgNrZXkYASABKAliBnByb3Rv",
-          "Mw=="));
+          "CglnZXQucHJvdG8iGQoKR2V0UmVxdWVzdBILCgNrZXkYASABKAkiGwoLR2V0",
+          "UmVzcG9uc2USDAoEZGF0YRgBIAEoDGIGcHJvdG8z"));
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
         new pbr::FileDescriptor[] { },
         new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-          new pbr::GeneratedClrTypeInfo(typeof(global::GetRequest), global::GetRequest.Parser, new[]{ "Key" }, null, null, null)
+          new pbr::GeneratedClrTypeInfo(typeof(global::GetRequest), global::GetRequest.Parser, new[]{ "Key" }, null, null, null),
+          new pbr::GeneratedClrTypeInfo(typeof(global::GetResponse), global::GetResponse.Parser, new[]{ "Data" }, null, null, null)
         }));
   }
   #endregion
@@ -141,6 +142,123 @@ public sealed partial class GetRequest : pb::IMessage<GetRequest> {
           break;
         case 10: {
           Key = input.ReadString();
+          break;
+        }
+      }
+    }
+  }
+
+}
+
+public sealed partial class GetResponse : pb::IMessage<GetResponse> {
+  private static readonly pb::MessageParser<GetResponse> _parser = new pb::MessageParser<GetResponse>(() => new GetResponse());
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public static pb::MessageParser<GetResponse> Parser { get { return _parser; } }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public static pbr::MessageDescriptor Descriptor {
+    get { return global::GetReflection.Descriptor.MessageTypes[1]; }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  pbr::MessageDescriptor pb::IMessage.Descriptor {
+    get { return Descriptor; }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public GetResponse() {
+    OnConstruction();
+  }
+
+  partial void OnConstruction();
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public GetResponse(GetResponse other) : this() {
+    data_ = other.data_;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public GetResponse Clone() {
+    return new GetResponse(this);
+  }
+
+  /// <summary>Field number for the "data" field.</summary>
+  public const int DataFieldNumber = 1;
+  private pb::ByteString data_ = pb::ByteString.Empty;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public pb::ByteString Data {
+    get { return data_; }
+    set {
+      data_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+    }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public override bool Equals(object other) {
+    return Equals(other as GetResponse);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public bool Equals(GetResponse other) {
+    if (ReferenceEquals(other, null)) {
+      return false;
+    }
+    if (ReferenceEquals(other, this)) {
+      return true;
+    }
+    if (Data != other.Data) return false;
+    return true;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public override int GetHashCode() {
+    int hash = 1;
+    if (Data.Length != 0) hash ^= Data.GetHashCode();
+    return hash;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public override string ToString() {
+    return pb::JsonFormatter.ToDiagnosticString(this);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public void WriteTo(pb::CodedOutputStream output) {
+    if (Data.Length != 0) {
+      output.WriteRawTag(10);
+      output.WriteBytes(Data);
+    }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public int CalculateSize() {
+    int size = 0;
+    if (Data.Length != 0) {
+      size += 1 + pb::CodedOutputStream.ComputeBytesSize(Data);
+    }
+    return size;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public void MergeFrom(GetResponse other) {
+    if (other == null) {
+      return;
+    }
+    if (other.Data.Length != 0) {
+      Data = other.Data;
+    }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public void MergeFrom(pb::CodedInputStream input) {
+    uint tag;
+    while ((tag = input.ReadTag()) != 0) {
+      switch(tag) {
+        default:
+          input.SkipLastField();
+          break;
+        case 10: {
+          Data = input.ReadBytes();
           break;
         }
       }

@@ -20,12 +20,14 @@ public static partial class ContainsReflection {
   static ContainsReflection() {
     byte[] descriptorData = global::System.Convert.FromBase64String(
         string.Concat(
-          "Cg5jb250YWlucy5wcm90byIeCg9Db250YWluc1JlcXVlc3QSCwoDa2V5GAEg",
-          "ASgJYgZwcm90bzM="));
+          "Cg5jb250YWlucy5wcm90byIsCg9Db250YWluc1JlcXVlc3QSCwoDa2V5GAEg",
+          "ASgJEgwKBE5hbWUYAiABKAkiJAoQQ29udGFpbnNSZXNwb25zZRIQCghjb250",
+          "YWlucxgBIAEoCGIGcHJvdG8z"));
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
         new pbr::FileDescriptor[] { },
         new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-          new pbr::GeneratedClrTypeInfo(typeof(global::ContainsRequest), global::ContainsRequest.Parser, new[]{ "Key" }, null, null, null)
+          new pbr::GeneratedClrTypeInfo(typeof(global::ContainsRequest), global::ContainsRequest.Parser, new[]{ "Key", "Name" }, null, null, null),
+          new pbr::GeneratedClrTypeInfo(typeof(global::ContainsResponse), global::ContainsResponse.Parser, new[]{ "Contains" }, null, null, null)
         }));
   }
   #endregion
@@ -57,6 +59,7 @@ public sealed partial class ContainsRequest : pb::IMessage<ContainsRequest> {
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   public ContainsRequest(ContainsRequest other) : this() {
     key_ = other.key_;
+    name_ = other.name_;
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -75,6 +78,17 @@ public sealed partial class ContainsRequest : pb::IMessage<ContainsRequest> {
     }
   }
 
+  /// <summary>Field number for the "Name" field.</summary>
+  public const int NameFieldNumber = 2;
+  private string name_ = "";
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public string Name {
+    get { return name_; }
+    set {
+      name_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
+    }
+  }
+
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   public override bool Equals(object other) {
     return Equals(other as ContainsRequest);
@@ -89,6 +103,7 @@ public sealed partial class ContainsRequest : pb::IMessage<ContainsRequest> {
       return true;
     }
     if (Key != other.Key) return false;
+    if (Name != other.Name) return false;
     return true;
   }
 
@@ -96,6 +111,7 @@ public sealed partial class ContainsRequest : pb::IMessage<ContainsRequest> {
   public override int GetHashCode() {
     int hash = 1;
     if (Key.Length != 0) hash ^= Key.GetHashCode();
+    if (Name.Length != 0) hash ^= Name.GetHashCode();
     return hash;
   }
 
@@ -110,6 +126,10 @@ public sealed partial class ContainsRequest : pb::IMessage<ContainsRequest> {
       output.WriteRawTag(10);
       output.WriteString(Key);
     }
+    if (Name.Length != 0) {
+      output.WriteRawTag(18);
+      output.WriteString(Name);
+    }
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
@@ -117,6 +137,9 @@ public sealed partial class ContainsRequest : pb::IMessage<ContainsRequest> {
     int size = 0;
     if (Key.Length != 0) {
       size += 1 + pb::CodedOutputStream.ComputeStringSize(Key);
+    }
+    if (Name.Length != 0) {
+      size += 1 + pb::CodedOutputStream.ComputeStringSize(Name);
     }
     return size;
   }
@@ -128,6 +151,9 @@ public sealed partial class ContainsRequest : pb::IMessage<ContainsRequest> {
     }
     if (other.Key.Length != 0) {
       Key = other.Key;
+    }
+    if (other.Name.Length != 0) {
+      Name = other.Name;
     }
   }
 
@@ -141,6 +167,127 @@ public sealed partial class ContainsRequest : pb::IMessage<ContainsRequest> {
           break;
         case 10: {
           Key = input.ReadString();
+          break;
+        }
+        case 18: {
+          Name = input.ReadString();
+          break;
+        }
+      }
+    }
+  }
+
+}
+
+public sealed partial class ContainsResponse : pb::IMessage<ContainsResponse> {
+  private static readonly pb::MessageParser<ContainsResponse> _parser = new pb::MessageParser<ContainsResponse>(() => new ContainsResponse());
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public static pb::MessageParser<ContainsResponse> Parser { get { return _parser; } }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public static pbr::MessageDescriptor Descriptor {
+    get { return global::ContainsReflection.Descriptor.MessageTypes[1]; }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  pbr::MessageDescriptor pb::IMessage.Descriptor {
+    get { return Descriptor; }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public ContainsResponse() {
+    OnConstruction();
+  }
+
+  partial void OnConstruction();
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public ContainsResponse(ContainsResponse other) : this() {
+    contains_ = other.contains_;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public ContainsResponse Clone() {
+    return new ContainsResponse(this);
+  }
+
+  /// <summary>Field number for the "contains" field.</summary>
+  public const int ContainsFieldNumber = 1;
+  private bool contains_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public bool Contains {
+    get { return contains_; }
+    set {
+      contains_ = value;
+    }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public override bool Equals(object other) {
+    return Equals(other as ContainsResponse);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public bool Equals(ContainsResponse other) {
+    if (ReferenceEquals(other, null)) {
+      return false;
+    }
+    if (ReferenceEquals(other, this)) {
+      return true;
+    }
+    if (Contains != other.Contains) return false;
+    return true;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public override int GetHashCode() {
+    int hash = 1;
+    if (Contains != false) hash ^= Contains.GetHashCode();
+    return hash;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public override string ToString() {
+    return pb::JsonFormatter.ToDiagnosticString(this);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public void WriteTo(pb::CodedOutputStream output) {
+    if (Contains != false) {
+      output.WriteRawTag(8);
+      output.WriteBool(Contains);
+    }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public int CalculateSize() {
+    int size = 0;
+    if (Contains != false) {
+      size += 1 + 1;
+    }
+    return size;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public void MergeFrom(ContainsResponse other) {
+    if (other == null) {
+      return;
+    }
+    if (other.Contains != false) {
+      Contains = other.Contains;
+    }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public void MergeFrom(pb::CodedInputStream input) {
+    uint tag;
+    while ((tag = input.ReadTag()) != 0) {
+      switch(tag) {
+        default:
+          input.SkipLastField();
+          break;
+        case 8: {
+          Contains = input.ReadBool();
           break;
         }
       }

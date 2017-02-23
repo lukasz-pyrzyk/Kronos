@@ -20,11 +20,13 @@ public static partial class ClearReflection {
   static ClearReflection() {
     byte[] descriptorData = global::System.Convert.FromBase64String(
         string.Concat(
-          "CgtjbGVhci5wcm90byIOCgxDbGVhclJlcXVlc3RiBnByb3RvMw=="));
+          "CgtjbGVhci5wcm90byIOCgxDbGVhclJlcXVlc3QiIAoNQ2xlYXJSZXNwb25z",
+          "ZRIPCgdEZWxldGVkGAEgASgSYgZwcm90bzM="));
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
         new pbr::FileDescriptor[] { },
         new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-          new pbr::GeneratedClrTypeInfo(typeof(global::ClearRequest), global::ClearRequest.Parser, null, null, null, null)
+          new pbr::GeneratedClrTypeInfo(typeof(global::ClearRequest), global::ClearRequest.Parser, null, null, null, null),
+          new pbr::GeneratedClrTypeInfo(typeof(global::ClearResponse), global::ClearResponse.Parser, new[]{ "Deleted" }, null, null, null)
         }));
   }
   #endregion
@@ -114,6 +116,123 @@ public sealed partial class ClearRequest : pb::IMessage<ClearRequest> {
         default:
           input.SkipLastField();
           break;
+      }
+    }
+  }
+
+}
+
+public sealed partial class ClearResponse : pb::IMessage<ClearResponse> {
+  private static readonly pb::MessageParser<ClearResponse> _parser = new pb::MessageParser<ClearResponse>(() => new ClearResponse());
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public static pb::MessageParser<ClearResponse> Parser { get { return _parser; } }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public static pbr::MessageDescriptor Descriptor {
+    get { return global::ClearReflection.Descriptor.MessageTypes[1]; }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  pbr::MessageDescriptor pb::IMessage.Descriptor {
+    get { return Descriptor; }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public ClearResponse() {
+    OnConstruction();
+  }
+
+  partial void OnConstruction();
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public ClearResponse(ClearResponse other) : this() {
+    deleted_ = other.deleted_;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public ClearResponse Clone() {
+    return new ClearResponse(this);
+  }
+
+  /// <summary>Field number for the "Deleted" field.</summary>
+  public const int DeletedFieldNumber = 1;
+  private long deleted_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public long Deleted {
+    get { return deleted_; }
+    set {
+      deleted_ = value;
+    }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public override bool Equals(object other) {
+    return Equals(other as ClearResponse);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public bool Equals(ClearResponse other) {
+    if (ReferenceEquals(other, null)) {
+      return false;
+    }
+    if (ReferenceEquals(other, this)) {
+      return true;
+    }
+    if (Deleted != other.Deleted) return false;
+    return true;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public override int GetHashCode() {
+    int hash = 1;
+    if (Deleted != 0L) hash ^= Deleted.GetHashCode();
+    return hash;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public override string ToString() {
+    return pb::JsonFormatter.ToDiagnosticString(this);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public void WriteTo(pb::CodedOutputStream output) {
+    if (Deleted != 0L) {
+      output.WriteRawTag(8);
+      output.WriteSInt64(Deleted);
+    }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public int CalculateSize() {
+    int size = 0;
+    if (Deleted != 0L) {
+      size += 1 + pb::CodedOutputStream.ComputeSInt64Size(Deleted);
+    }
+    return size;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public void MergeFrom(ClearResponse other) {
+    if (other == null) {
+      return;
+    }
+    if (other.Deleted != 0L) {
+      Deleted = other.Deleted;
+    }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public void MergeFrom(pb::CodedInputStream input) {
+    uint tag;
+    while ((tag = input.ReadTag()) != 0) {
+      switch(tag) {
+        default:
+          input.SkipLastField();
+          break;
+        case 8: {
+          Deleted = input.ReadSInt64();
+          break;
+        }
       }
     }
   }

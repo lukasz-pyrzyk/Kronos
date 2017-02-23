@@ -23,11 +23,12 @@ public static partial class InsertReflection {
           "CgxpbnNlcnQucHJvdG8aH2dvb2dsZS9wcm90b2J1Zi90aW1lc3RhbXAucHJv",
           "dG8iVgoNSW5zZXJ0UmVxdWVzdBILCgNrZXkYASABKAkSDAoERGF0YRgCIAEo",
           "DBIqCgZFeHBpcnkYAyABKAsyGi5nb29nbGUucHJvdG9idWYuVGltZXN0YW1w",
-          "YgZwcm90bzM="));
+          "Ih8KDkluc2VydFJlc3BvbnNlEg0KBWFkZGVkGAEgASgIYgZwcm90bzM="));
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
         new pbr::FileDescriptor[] { global::Google.Protobuf.WellKnownTypes.TimestampReflection.Descriptor, },
         new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-          new pbr::GeneratedClrTypeInfo(typeof(global::InsertRequest), global::InsertRequest.Parser, new[]{ "Key", "Data", "Expiry" }, null, null, null)
+          new pbr::GeneratedClrTypeInfo(typeof(global::InsertRequest), global::InsertRequest.Parser, new[]{ "Key", "Data", "Expiry" }, null, null, null),
+          new pbr::GeneratedClrTypeInfo(typeof(global::InsertResponse), global::InsertResponse.Parser, new[]{ "Added" }, null, null, null)
         }));
   }
   #endregion
@@ -205,6 +206,123 @@ public sealed partial class InsertRequest : pb::IMessage<InsertRequest> {
             expiry_ = new global::Google.Protobuf.WellKnownTypes.Timestamp();
           }
           input.ReadMessage(expiry_);
+          break;
+        }
+      }
+    }
+  }
+
+}
+
+public sealed partial class InsertResponse : pb::IMessage<InsertResponse> {
+  private static readonly pb::MessageParser<InsertResponse> _parser = new pb::MessageParser<InsertResponse>(() => new InsertResponse());
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public static pb::MessageParser<InsertResponse> Parser { get { return _parser; } }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public static pbr::MessageDescriptor Descriptor {
+    get { return global::InsertReflection.Descriptor.MessageTypes[1]; }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  pbr::MessageDescriptor pb::IMessage.Descriptor {
+    get { return Descriptor; }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public InsertResponse() {
+    OnConstruction();
+  }
+
+  partial void OnConstruction();
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public InsertResponse(InsertResponse other) : this() {
+    added_ = other.added_;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public InsertResponse Clone() {
+    return new InsertResponse(this);
+  }
+
+  /// <summary>Field number for the "added" field.</summary>
+  public const int AddedFieldNumber = 1;
+  private bool added_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public bool Added {
+    get { return added_; }
+    set {
+      added_ = value;
+    }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public override bool Equals(object other) {
+    return Equals(other as InsertResponse);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public bool Equals(InsertResponse other) {
+    if (ReferenceEquals(other, null)) {
+      return false;
+    }
+    if (ReferenceEquals(other, this)) {
+      return true;
+    }
+    if (Added != other.Added) return false;
+    return true;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public override int GetHashCode() {
+    int hash = 1;
+    if (Added != false) hash ^= Added.GetHashCode();
+    return hash;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public override string ToString() {
+    return pb::JsonFormatter.ToDiagnosticString(this);
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public void WriteTo(pb::CodedOutputStream output) {
+    if (Added != false) {
+      output.WriteRawTag(8);
+      output.WriteBool(Added);
+    }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public int CalculateSize() {
+    int size = 0;
+    if (Added != false) {
+      size += 1 + 1;
+    }
+    return size;
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public void MergeFrom(InsertResponse other) {
+    if (other == null) {
+      return;
+    }
+    if (other.Added != false) {
+      Added = other.Added;
+    }
+  }
+
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public void MergeFrom(pb::CodedInputStream input) {
+    uint tag;
+    while ((tag = input.ReadTag()) != 0) {
+      switch(tag) {
+        default:
+          input.SkipLastField();
+          break;
+        case 8: {
+          Added = input.ReadBool();
           break;
         }
       }
