@@ -38,8 +38,6 @@ namespace Kronos.Client.Transfer
 
                     Trace.WriteLine("Waiting for response");
                     response = await ReceiveAndDeserializeAsync(socket).ConfigureAwait(false);
-
-                    return response;
                 }
                 catch (Exception ex)
                 {

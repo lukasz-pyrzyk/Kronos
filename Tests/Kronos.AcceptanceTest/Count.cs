@@ -5,8 +5,15 @@ using Xunit;
 
 namespace Kronos.AcceptanceTest
 {
+    [Collection("AcceptanceTest")]
     public class Count : Base
     {
+        [Fact]
+        public override async Task RunAsync()
+        {
+            await RunInternalAsync();
+        }
+
         protected override async Task ProcessAsync(IKronosClient client)
         {
             // Arrange

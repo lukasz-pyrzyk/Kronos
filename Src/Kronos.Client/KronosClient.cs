@@ -32,7 +32,7 @@ namespace Kronos.Client
             _serverProvider = new ServerProvider(config.ClusterConfig);
         }
 
-        public async Task InsertAsync(string key, byte[] package, DateTime expiryDate)
+        public async Task<bool> InsertAsync(string key, byte[] package, DateTime expiryDate)
         {
             Trace.WriteLine("New insert request");
 
@@ -54,7 +54,9 @@ namespace Kronos.Client
                 return _insertProcessor.ExecuteAsync(request, con, server);
             });
 
-            Trace.WriteLine($"InsertRequest status: {response}");
+            Trace.WriteLine($"InsertRequest status: {response.Added}");
+
+            return response.Added;
         }
 
         public async Task<byte[]> GetAsync(string key)
@@ -132,7 +134,7 @@ namespace Kronos.Client
 
             Request request = new Request
             {
-                ContainsRequest = new ContainsRequest(),
+                ContainsRequest = new ContainsRequest {Key = key},
                 Type = RequestType.Contains
             };
 
