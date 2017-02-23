@@ -1,4 +1,5 @@
-﻿using Kronos.Core.Processing;
+﻿using Google.Protobuf;
+using Kronos.Core.Processing;
 using Kronos.Core.Storage;
 using NSubstitute;
 using Xunit;
@@ -13,14 +14,15 @@ namespace Kronos.Core.Tests.Processing
             // arrange
             var request = new ClearRequest();
             var processor = new ClearProcessor();
-            bool expected = true;
-            byte[] expectedBytes = SerializationUtils.SerializeToStreamWithLength(expected);
+            var deletedCount = 5;
+            var storage = Substitute.For<IStorage>();
+            storage.Clear();
 
             // act
-            byte[] response = processor.Process(request, Substitute.For<IStorage>());
+            ClearResponse response = processor.Reply(request, storage);
 
             // assert
-            Assert.Equal(expectedBytes, response);
+            Assert.Equal(response.Deleted, deletedCount);
         }
 
         [Fact]
@@ -32,7 +34,7 @@ namespace Kronos.Core.Tests.Processing
             var storage = Substitute.For<IStorage>();
 
             // act
-            processor.Process(request, storage);
+            processor.Reply(request, storage);
 
             // assert
             storage.Received(1).Clear();

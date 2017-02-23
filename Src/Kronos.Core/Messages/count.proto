@@ -4,5 +4,5 @@ message CountRequest {
 }
 
 message CountResponse {
-	sint64 Count = 1;
+	sint32 Count = 1;
 }

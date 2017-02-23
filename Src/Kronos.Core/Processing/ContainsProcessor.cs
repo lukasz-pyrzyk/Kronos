@@ -2,13 +2,18 @@
 
 namespace Kronos.Core.Processing
 {
-    public class ContainsProcessor : CommandProcessor<ContainsRequest, bool>
+    public class ContainsProcessor : CommandProcessor<ContainsRequest, ContainsResponse>
     {
-        public override byte[] Process(ContainsRequest request, IStorage storage)
+        public override ContainsResponse Reply(ContainsRequest request, IStorage storage)
         {
             bool contains = storage.Contains(request.Key);
 
-            return Reply(contains);
+            return new ContainsResponse(); // todo use real response
+        }
+
+        protected override ContainsResponse ParseResponse(Response response)
+        {
+            return response.ContainsResponse;
         }
     }
 }

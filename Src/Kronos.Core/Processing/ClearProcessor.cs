@@ -2,13 +2,18 @@
 
 namespace Kronos.Core.Processing
 {
-    public class ClearProcessor : CommandProcessor<ClearRequest, bool>
+    public class ClearProcessor : CommandProcessor<ClearRequest, ClearResponse>
     {
-        public override byte[] Process(ClearRequest request, IStorage storage)
+        public override ClearResponse Reply(ClearRequest request, IStorage storage)
         {
             storage.Clear();
 
-            return Reply(true);
+            return new ClearResponse(); // todo use response...
+        }
+
+        protected override ClearResponse ParseResponse(Response response)
+        {
+            return response.ClearResponse;
         }
     }
 }

@@ -1,5 +1,4 @@
 ﻿using System.Net.Sockets;
-using System.Text;
 using Kronos.Server.Listening;
 using Xunit;
 
@@ -11,17 +10,15 @@ namespace Kronos.Server.Tests.Listener
         public void Reuse_AssignsValues()
         {
             // Arrange
-            var type = RequestType.Get;;
-            byte[] data = Encoding.UTF8.GetBytes("lorem ipsum");
+            var request = new Request();
+            var socket = new Socket(SocketType.Stream, ProtocolType.IP);
 
             // Act
-            var message = new RequestArg();
-            message.Assign(type, data, data.Length, new Socket(SocketType.Stream, ProtocolType.IP));
+            var message = new RequestArg(request, socket);
 
             // Assert
-            Assert.Equal(message.Type, type);
-            Assert.Equal(message.Bytes, data);
-            Assert.Equal(message.Count, data.Length);
+            Assert.Equal(message.Request, request);
+            Assert.NotNull(message.Client);
         }
     }
 }

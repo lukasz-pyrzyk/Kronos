@@ -2,13 +2,18 @@
 
 namespace Kronos.Core.Processing
 {
-    public class CountProcessor : CommandProcessor<CountRequest, int>
+    public class CountProcessor : CommandProcessor<CountRequest, CountResponse>
     {
-        public override byte[] Process(CountRequest request, IStorage storage)
+        public override CountResponse Reply(CountRequest request, IStorage storage)
         {
             int count = storage.Count;
 
-            return Reply(count);
+            return new CountResponse(); // todo use real response
+        }
+
+        protected override CountResponse ParseResponse(Response response)
+        {
+            return response.CountResponse;
         }
     }
 }

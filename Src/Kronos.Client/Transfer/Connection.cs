@@ -7,7 +7,6 @@ using Kronos.Core.Configuration;
 using Kronos.Core.Exceptions;
 using Kronos.Core.Networking;
 using Kronos.Core.Pooling;
-using Kronos.Core.Serialization;
 using Polly;
 
 namespace Kronos.Client.Transfer

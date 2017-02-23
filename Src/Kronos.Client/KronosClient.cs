@@ -9,7 +9,6 @@ using Kronos.Core.Configuration;
 using Kronos.Core.Networking;
 using Kronos.Core.Pooling;
 using Kronos.Core.Processing;
-using Kronos.Core.Serialization;
 
 namespace Kronos.Client
 {
@@ -46,7 +45,7 @@ namespace Kronos.Client
 
             ServerConfig server = GetServerInternal(key);
 
-            bool response = await _connectionPool.UseAsync(con =>
+            var response = await _connectionPool.UseAsync(con =>
             {
                 return _insertProcessor.ExecuteAsync(request, con, server);
             });
@@ -64,16 +63,15 @@ namespace Kronos.Client
 
             ServerConfig server = GetServerInternal(key);
 
-            byte[] valueFromCache = await _connectionPool.UseAsync(con =>
+            var response = await _connectionPool.UseAsync(con =>
             {
                 return _getProcessor.ExecuteAsync(request, con, server);
             });
 
-            byte[] notFoundBytes = SerializationUtils.Serialize(RequestStatusCode.NotFound);
-            if (valueFromCache != null && valueFromCache.SequenceEqual(notFoundBytes))
-                return null;
+            if (response.Exists)
+                return response.Data.ToByteArray();
 
-            return valueFromCache;
+            return null;
         }
 
         public async Task DeleteAsync(string key)
@@ -86,12 +84,12 @@ namespace Kronos.Client
 
             ServerConfig server = GetServerInternal(key);
 
-            bool status = await _connectionPool.UseAsync(con =>
+            var response = await _connectionPool.UseAsync(con =>
             {
                 return _deleteProcessor.ExecuteAsync(request, con, server);
             });
 
-            Debug.WriteLine($"InsertRequest status: {status}");
+            Debug.WriteLine($"InsertRequest status: {response.Deleted}");
         }
 
         public async Task<int> CountAsync()
@@ -101,12 +99,12 @@ namespace Kronos.Client
             var request = new CountRequest();
             ServerConfig[] servers = GetServersInternal();
 
-            int[] results = await _connectionPool.UseAsync(servers.Length, con =>
+            var responses = await _connectionPool.UseAsync(servers.Length, con =>
             {
                 return _countProcessor.ExecuteAsync(request, con, servers);
             });
 
-            return results.Sum();
+            return responses.Sum(x => x.Count);
         }
 
         public async Task<bool> ContainsAsync(string key)
@@ -120,12 +118,12 @@ namespace Kronos.Client
 
             ServerConfig server = GetServerInternal(key);
 
-            bool contains = await _connectionPool.UseAsync(con =>
+            var response = await _connectionPool.UseAsync(con =>
             {
                 return _containsProcessor.ExecuteAsync(request, con, server);
             });
 
-            return contains;
+            return response.Contains;
         }
 
         public async Task ClearAsync()

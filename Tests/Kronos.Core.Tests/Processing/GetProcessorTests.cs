@@ -1,5 +1,4 @@
 ﻿using System.Text;
-using Kronos.Core.Networking;
 using Kronos.Core.Processing;
 using Kronos.Core.Storage;
 using NSubstitute;
@@ -25,19 +24,18 @@ namespace Kronos.Core.Tests.Processing
                 return expected;
             });
 
-            byte[] expectedBytes = SerializationUtils.SerializeToStreamWithLength(obj);
-
             // Act
-            byte[] response = processor.Process(request, storage);
+            GetResponse response = processor.Reply(request, storage);
 
             // assert
-            Assert.Equal(expectedBytes, response);
+            Assert.Equal(expected, response.Exists);
+            Assert.Equal(obj, response.Data);
         }
 
         public void Handle_ReturnsNotFoundWhenObjectIsNotInTheCache()
         {
             // arrange
-            byte[] obj = SerializationUtils.Serialize(RequestStatusCode.NotFound);
+            byte[] obj = Encoding.UTF8.GetBytes("lorem ipsum");
             byte[] dummy;
             bool expected = false;
             var request = new GetRequest();
@@ -50,13 +48,12 @@ namespace Kronos.Core.Tests.Processing
                 return expected;
             });
 
-            byte[] expectedBytes = SerializationUtils.SerializeToStreamWithLength(obj);
-
             // Act
-            byte[] response = processor.Process(request, storage);
+            GetResponse response = processor.Reply(request, storage);
 
             // assert
-            Assert.Equal(expectedBytes, response);
+            Assert.Equal(expected, response.Exists);
+            Assert.Equal(obj, response.Data);
         }
     }
 }

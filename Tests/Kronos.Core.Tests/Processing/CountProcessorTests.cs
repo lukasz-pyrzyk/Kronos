@@ -21,10 +21,10 @@ namespace Kronos.Core.Tests.Processing
             byte[] expectedBytes = request.ToByteArray();
 
             // act
-            byte[] response = processor.Process(request, storage);
+            CountResponse response = processor.Reply(request, storage);
 
             // assert
-            Assert.Equal(expectedBytes, response);
+            Assert.Equal(count, response.Count);
         }
     }
 }

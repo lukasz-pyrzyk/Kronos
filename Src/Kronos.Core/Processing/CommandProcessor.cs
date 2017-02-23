@@ -1,19 +1,23 @@
 ﻿using System.Threading.Tasks;
+using Google.Protobuf;
 using Kronos.Core.Configuration;
 using Kronos.Core.Networking;
 using Kronos.Core.Storage;
 
 namespace Kronos.Core.Processing
 {
-    public abstract class CommandProcessor<TRequest, TResponse> where TRequest : Google.Protobuf.IMessage
+    public abstract class CommandProcessor<TRequest, TResponse>
+        where TRequest : IMessage
+        where TResponse : IMessage
     {
-        public abstract byte[] Process(TRequest request, IStorage storage);
+        public abstract TResponse Reply(TRequest request, IStorage storage);
 
         public async Task<TResponse> ExecuteAsync(TRequest request, IConnection service, ServerConfig server)
         {
-            byte[] response = await service.SendAsync(request, server).ConfigureAwait(false);
+            byte[] package = await service.SendAsync(request, server).ConfigureAwait(false);
+            Response response = Response.Parser.ParseFrom(package);
 
-            TResponse results = PrepareResponse<TResponse>(response);
+            TResponse results = ParseResponse(response);
 
             return results;
         }
@@ -32,15 +36,6 @@ namespace Kronos.Core.Processing
             return await Task.WhenAll(responses);
         }
 
-        protected byte[] Reply(TResponse response)
-        {
-            return SerializationUtils.SerializeToStreamWithLength(response);
-        }
-
-        protected virtual T PrepareResponse<T>(byte[] responseBytes)
-        {
-            T results = SerializationUtils.Deserialize<T>(responseBytes);
-            return results;
-        }
+        protected abstract TResponse ParseResponse(Response response);
     }
 }

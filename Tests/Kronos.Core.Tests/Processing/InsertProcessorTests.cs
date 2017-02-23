@@ -7,7 +7,9 @@ namespace Kronos.Core.Tests.Processing
 {
     public class InsertProcessorTests
     {
+        [Theory]
         [InlineData(true)]
+        [InlineData(false)]
         public void Handle_ReturnsTrueWhenElementAdded(bool added)
         {
             // arrange
@@ -15,13 +17,12 @@ namespace Kronos.Core.Tests.Processing
             var processor = new InsertProcessor();
             var storage = Substitute.For<IStorage>();
             storage.TryRemove(request.Key).Returns(added);
-            byte[] expectedBytes = SerializationUtils.SerializeToStreamWithLength(added);
 
             // Act
-            byte[] response = processor.Process(request, storage);
+            InsertResponse response = processor.Reply(request, storage);
 
             // assert
-            Assert.Equal(expectedBytes, response);
+            Assert.Equal(response.Added, added);
         }
     }
 }

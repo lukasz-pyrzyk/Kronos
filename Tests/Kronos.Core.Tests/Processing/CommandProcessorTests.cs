@@ -16,8 +16,8 @@ namespace Kronos.Core.Tests.Processing
         public async Task ExecuteAsync_CallsService()
         {
             // Arrange
-            bool fakeResult = true;
-            byte[] fakeData = BitConverter.GetBytes(fakeResult);
+            var fakeResult = new InsertResponse();
+            byte[] fakeData = fakeResult.ToByteArray();
             var request = new InsertRequest();
             var server = new ServerConfig();
             IConnection con = Substitute.For<IConnection>();
@@ -25,7 +25,7 @@ namespace Kronos.Core.Tests.Processing
             var processor = new FakeProcessor();
 
             // Act
-            bool result = await processor.ExecuteAsync(request, con, server);
+            var result = await processor.ExecuteAsync(request, con, server);
 
             // Assert
             await con.Received(1).SendAsync(request, server);
@@ -38,20 +38,23 @@ namespace Kronos.Core.Tests.Processing
             // Arrange
             var request = new InsertRequest();
             var processor = new FakeProcessor();
-            byte[] expectedBytes = request.ToByteArray();
-
             // Act
-            byte[] response = processor.Process(request, Substitute.For<IStorage>());
+            var response = processor.Reply(request, Substitute.For<IStorage>());
 
             // assert
-            Assert.Equal(expectedBytes, response);
+            Assert.NotNull(response);
         }
 
-        internal class FakeProcessor : CommandProcessor<InsertRequest, bool>
+        internal class FakeProcessor : CommandProcessor<InsertRequest, InsertResponse>
         {
-            public override byte[] Process(InsertRequest request, IStorage storage)
+            public override InsertResponse Reply(InsertRequest request, IStorage storage)
             {
-                return Reply(true);
+                return new InsertResponse();
+            }
+
+            protected override InsertResponse ParseResponse(Response response)
+            {
+                return response.InsertResponse;
             }
         }
     }

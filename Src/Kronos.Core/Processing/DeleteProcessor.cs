@@ -2,13 +2,18 @@
 
 namespace Kronos.Core.Processing
 {
-    public class DeleteProcessor : CommandProcessor<DeleteRequest, bool>
+    public class DeleteProcessor : CommandProcessor<DeleteRequest, DeleteResponse>
     {
-        public override byte[] Process(DeleteRequest request, IStorage storage)
+        public override DeleteResponse Reply(DeleteRequest request, IStorage storage)
         {
             bool deleted = storage.TryRemove(request.Key);
 
-            return Reply(deleted);
+            return new DeleteResponse(); // todo use real response
+        }
+
+        protected override DeleteResponse ParseResponse(Response response)
+        {
+            return response.DeleteResponse;
         }
     }
 }

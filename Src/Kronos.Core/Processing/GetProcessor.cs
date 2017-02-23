@@ -1,20 +1,24 @@
 ﻿using Kronos.Core.Networking;
-using Kronos.Core.Serialization;
 using Kronos.Core.Storage;
 
 namespace Kronos.Core.Processing
 {
-    public class GetProcessor : CommandProcessor<GetRequest, byte[]>
+    public class GetProcessor : CommandProcessor<GetRequest, GetResponse>
     {
-        public override byte[] Process(GetRequest request, IStorage storage)
+        public override GetResponse Reply(GetRequest request, IStorage storage)
         {
-            byte[] response;
-            if (!storage.TryGet(request.Key, out response))
-            {
-                response = SerializationUtils.Serialize(RequestStatusCode.NotFound);
-            }
+            //byte[] response;
+            //if (!storage.TryGet(request.Key, out response))
+            //{
+            //    response = SerializationUtils.Serialize(RequestStatusCode.NotFound);
+            //}
 
-            return Reply(response);
+            return new GetResponse(); // todo real response
+        }
+
+        protected override GetResponse ParseResponse(Response response)
+        {
+            return response.GetRespone;
         }
     }
 }

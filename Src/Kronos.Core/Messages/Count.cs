@@ -21,7 +21,7 @@ public static partial class CountReflection {
     byte[] descriptorData = global::System.Convert.FromBase64String(
         string.Concat(
           "Cgtjb3VudC5wcm90byIOCgxDb3VudFJlcXVlc3QiHgoNQ291bnRSZXNwb25z",
-          "ZRINCgVDb3VudBgBIAEoEmIGcHJvdG8z"));
+          "ZRINCgVDb3VudBgBIAEoEWIGcHJvdG8z"));
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
         new pbr::FileDescriptor[] { },
         new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
@@ -156,9 +156,9 @@ public sealed partial class CountResponse : pb::IMessage<CountResponse> {
 
   /// <summary>Field number for the "Count" field.</summary>
   public const int CountFieldNumber = 1;
-  private long count_;
+  private int count_;
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-  public long Count {
+  public int Count {
     get { return count_; }
     set {
       count_ = value;
@@ -185,7 +185,7 @@ public sealed partial class CountResponse : pb::IMessage<CountResponse> {
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   public override int GetHashCode() {
     int hash = 1;
-    if (Count != 0L) hash ^= Count.GetHashCode();
+    if (Count != 0) hash ^= Count.GetHashCode();
     return hash;
   }
 
@@ -196,17 +196,17 @@ public sealed partial class CountResponse : pb::IMessage<CountResponse> {
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   public void WriteTo(pb::CodedOutputStream output) {
-    if (Count != 0L) {
+    if (Count != 0) {
       output.WriteRawTag(8);
-      output.WriteSInt64(Count);
+      output.WriteSInt32(Count);
     }
   }
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   public int CalculateSize() {
     int size = 0;
-    if (Count != 0L) {
-      size += 1 + pb::CodedOutputStream.ComputeSInt64Size(Count);
+    if (Count != 0) {
+      size += 1 + pb::CodedOutputStream.ComputeSInt32Size(Count);
     }
     return size;
   }
@@ -216,7 +216,7 @@ public sealed partial class CountResponse : pb::IMessage<CountResponse> {
     if (other == null) {
       return;
     }
-    if (other.Count != 0L) {
+    if (other.Count != 0) {
       Count = other.Count;
     }
   }
@@ -230,7 +230,7 @@ public sealed partial class CountResponse : pb::IMessage<CountResponse> {
           input.SkipLastField();
           break;
         case 8: {
-          Count = input.ReadSInt64();
+          Count = input.ReadSInt32();
           break;
         }
       }

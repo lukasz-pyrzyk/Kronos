@@ -20,13 +20,14 @@ public static partial class GetReflection {
   static GetReflection() {
     byte[] descriptorData = global::System.Convert.FromBase64String(
         string.Concat(
-          "CglnZXQucHJvdG8iGQoKR2V0UmVxdWVzdBILCgNrZXkYASABKAkiGwoLR2V0",
-          "UmVzcG9uc2USDAoEZGF0YRgBIAEoDGIGcHJvdG8z"));
+          "CglnZXQucHJvdG8iGQoKR2V0UmVxdWVzdBILCgNrZXkYASABKAkiKwoLR2V0",
+          "UmVzcG9uc2USDgoGZXhpc3RzGAEgASgIEgwKBGRhdGEYAiABKAxiBnByb3Rv",
+          "Mw=="));
     descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
         new pbr::FileDescriptor[] { },
         new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
           new pbr::GeneratedClrTypeInfo(typeof(global::GetRequest), global::GetRequest.Parser, new[]{ "Key" }, null, null, null),
-          new pbr::GeneratedClrTypeInfo(typeof(global::GetResponse), global::GetResponse.Parser, new[]{ "Data" }, null, null, null)
+          new pbr::GeneratedClrTypeInfo(typeof(global::GetResponse), global::GetResponse.Parser, new[]{ "Exists", "Data" }, null, null, null)
         }));
   }
   #endregion
@@ -174,6 +175,7 @@ public sealed partial class GetResponse : pb::IMessage<GetResponse> {
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   public GetResponse(GetResponse other) : this() {
+    exists_ = other.exists_;
     data_ = other.data_;
   }
 
@@ -182,8 +184,19 @@ public sealed partial class GetResponse : pb::IMessage<GetResponse> {
     return new GetResponse(this);
   }
 
+  /// <summary>Field number for the "exists" field.</summary>
+  public const int ExistsFieldNumber = 1;
+  private bool exists_;
+  [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+  public bool Exists {
+    get { return exists_; }
+    set {
+      exists_ = value;
+    }
+  }
+
   /// <summary>Field number for the "data" field.</summary>
-  public const int DataFieldNumber = 1;
+  public const int DataFieldNumber = 2;
   private pb::ByteString data_ = pb::ByteString.Empty;
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   public pb::ByteString Data {
@@ -206,6 +219,7 @@ public sealed partial class GetResponse : pb::IMessage<GetResponse> {
     if (ReferenceEquals(other, this)) {
       return true;
     }
+    if (Exists != other.Exists) return false;
     if (Data != other.Data) return false;
     return true;
   }
@@ -213,6 +227,7 @@ public sealed partial class GetResponse : pb::IMessage<GetResponse> {
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   public override int GetHashCode() {
     int hash = 1;
+    if (Exists != false) hash ^= Exists.GetHashCode();
     if (Data.Length != 0) hash ^= Data.GetHashCode();
     return hash;
   }
@@ -224,8 +239,12 @@ public sealed partial class GetResponse : pb::IMessage<GetResponse> {
 
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   public void WriteTo(pb::CodedOutputStream output) {
+    if (Exists != false) {
+      output.WriteRawTag(8);
+      output.WriteBool(Exists);
+    }
     if (Data.Length != 0) {
-      output.WriteRawTag(10);
+      output.WriteRawTag(18);
       output.WriteBytes(Data);
     }
   }
@@ -233,6 +252,9 @@ public sealed partial class GetResponse : pb::IMessage<GetResponse> {
   [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
   public int CalculateSize() {
     int size = 0;
+    if (Exists != false) {
+      size += 1 + 1;
+    }
     if (Data.Length != 0) {
       size += 1 + pb::CodedOutputStream.ComputeBytesSize(Data);
     }
@@ -243,6 +265,9 @@ public sealed partial class GetResponse : pb::IMessage<GetResponse> {
   public void MergeFrom(GetResponse other) {
     if (other == null) {
       return;
+    }
+    if (other.Exists != false) {
+      Exists = other.Exists;
     }
     if (other.Data.Length != 0) {
       Data = other.Data;
@@ -257,7 +282,11 @@ public sealed partial class GetResponse : pb::IMessage<GetResponse> {
         default:
           input.SkipLastField();
           break;
-        case 10: {
+        case 8: {
+          Exists = input.ReadBool();
+          break;
+        }
+        case 18: {
           Data = input.ReadBytes();
           break;
         }

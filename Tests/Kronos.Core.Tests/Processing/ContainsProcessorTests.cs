@@ -1,4 +1,5 @@
-﻿using Kronos.Core.Processing;
+﻿using Google.Protobuf;
+using Kronos.Core.Processing;
 using Kronos.Core.Storage;
 using NSubstitute;
 using Xunit;
@@ -16,13 +17,12 @@ namespace Kronos.Core.Tests.Processing
             var processor = new ContainsProcessor();
             var storage = Substitute.For<IStorage>();
             storage.Contains(request.Key).Returns(contains);
-            byte[] expectedBytes = SerializationUtils.SerializeToStreamWithLength(contains);
 
             // act
-            byte[] response = processor.Process(request, storage);
+            ContainsResponse response = processor.Reply(request, storage);
 
             // assert
-            Assert.Equal(expectedBytes, response);
+            Assert.Equal(response.Contains, contains);
         }
     }
 }
