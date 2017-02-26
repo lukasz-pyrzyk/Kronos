@@ -23,7 +23,11 @@
         "System.Runtime.Extensions": "4.3.0"
       }
     },
-    "net461": {}
+    "net461": {
+      "dependencies": {
+        "Farmhash.Sharp": "0.2.0"
+      }
+    }
   },
   "packOptions": {
     "iconUrl": "https://raw.githubusercontent.com/lukasz-pyrzyk/Kronos/master/SolutionItems/nugetIcon.png",

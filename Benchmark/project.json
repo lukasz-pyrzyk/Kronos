@@ -20,6 +20,9 @@
       },
       "imports": "dnxcore50"
     },
-    "net461": {}
+    "net461": {
+      "dependencies": {
+      }
+    }
   }
 }
