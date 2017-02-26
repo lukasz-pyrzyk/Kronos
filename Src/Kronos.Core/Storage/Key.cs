@@ -1,4 +1,5 @@
 ﻿using System;
+using Kronos.Core.Hashing;
 
 namespace Kronos.Core.Storage
 {
@@ -13,7 +14,7 @@ namespace Kronos.Core.Storage
         {
             Value = value;
             ExpiryDate = expiryDate;
-            _hashCode = Value.GetHashCode();
+            _hashCode = Hasher.Hash(value);
         }
 
         public bool IsExpired(DateTime date)
