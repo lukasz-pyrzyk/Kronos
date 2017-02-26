@@ -1,4 +1,5 @@
 ﻿using System.Collections.Generic;
+using Kronos.Core.Hashing;
 using Kronos.Core.Storage;
 using Xunit;
 
@@ -19,10 +20,17 @@ namespace Kronos.Core.Tests.Storage
         [Fact]
         public void GetHashcode_ReturnsKeyHashcode()
         {
-            string value = "key";
+            // Arrange
+            const string value = "key";
+            int expectedHash = Hasher.Hash(value);
             Key metatada = new Key(value);
+            KeyComperer comperer = new KeyComperer();
 
-            Assert.Equal(value.GetHashCode(), metatada.GetHashCode());
+            // Act
+            int hash = comperer.GetHashCode(metatada);
+
+            // Assert
+            Assert.Equal(expectedHash, hash);
         }
 
         public static IEnumerable<object[]> ArgumentsData => new[]

@@ -1,4 +1,5 @@
 ﻿using System;
+using Kronos.Core.Hashing;
 using Kronos.Core.Storage;
 using Xunit;
 
@@ -17,12 +18,18 @@ namespace Kronos.Core.Tests.Storage
         }
 
         [Fact]
-        public void HashCode_ReturnsHashCodeFromKey()
+        public void GetHashcode_ReturnsKeyHashcode()
         {
-            const string value = "value";
-            var metadata = new Key(value);
+            // Arrange
+            const string value = "key";
+            int expectedHash = Hasher.Hash(value);
 
-            Assert.Equal(value.GetHashCode(), metadata.GetHashCode());
+            // Act
+            Key metatada = new Key(value);
+            int hash = metatada.GetHashCode();
+
+            // Assert
+            Assert.Equal(expectedHash, hash);
         }
 
         [Fact]
