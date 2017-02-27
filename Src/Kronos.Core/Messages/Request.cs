@@ -22,20 +22,20 @@ namespace Kronos.Core.Messages {
     static RequestReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg1SZXF1ZXN0LnByb3RvGhFSZXF1ZXN0VHlwZS5wcm90bxoMaW5zZXJ0LnBy",
-            "b3RvGglnZXQucHJvdG8aDGRlbGV0ZS5wcm90bxoLY291bnQucHJvdG8aDmNv",
-            "bnRhaW5zLnByb3RvGgtjbGVhci5wcm90byKJAgoHUmVxdWVzdBIaCgRUeXBl",
-            "GAEgASgOMgwuUmVxdWVzdFR5cGUSJQoNSW5zZXJ0UmVxdWVzdBgCIAEoCzIO",
-            "Lkluc2VydFJlcXVlc3QSHwoKR2V0UmVxdWVzdBgDIAEoCzILLkdldFJlcXVl",
-            "c3QSJQoNRGVsZXRlUmVxdWVzdBgEIAEoCzIOLkRlbGV0ZVJlcXVlc3QSKQoP",
-            "Q29udGFpbnNSZXF1ZXN0GAUgASgLMhAuQ29udGFpbnNSZXF1ZXN0EiMKDENv",
-            "dW50UmVxdWVzdBgGIAEoCzINLkNvdW50UmVxdWVzdBIjCgxDbGVhclJlcXVl",
-            "c3QYByABKAsyDS5DbGVhclJlcXVlc3RCF6oCFEtyb25vcy5Db3JlLk1lc3Nh",
-            "Z2VzYgZwcm90bzM="));
+            "Cg1SZXF1ZXN0LnByb3RvGgphdXRoLnByb3RvGhFyZXF1ZXN0VHlwZS5wcm90",
+            "bxoMaW5zZXJ0LnByb3RvGglnZXQucHJvdG8aDGRlbGV0ZS5wcm90bxoLY291",
+            "bnQucHJvdG8aDmNvbnRhaW5zLnByb3RvGgtjbGVhci5wcm90byKeAgoHUmVx",
+            "dWVzdBITCgRBdXRoGAEgASgLMgUuQXV0aBIaCgRUeXBlGAIgASgOMgwuUmVx",
+            "dWVzdFR5cGUSJQoNSW5zZXJ0UmVxdWVzdBgDIAEoCzIOLkluc2VydFJlcXVl",
+            "c3QSHwoKR2V0UmVxdWVzdBgEIAEoCzILLkdldFJlcXVlc3QSJQoNRGVsZXRl",
+            "UmVxdWVzdBgFIAEoCzIOLkRlbGV0ZVJlcXVlc3QSKQoPQ29udGFpbnNSZXF1",
+            "ZXN0GAYgASgLMhAuQ29udGFpbnNSZXF1ZXN0EiMKDENvdW50UmVxdWVzdBgH",
+            "IAEoCzINLkNvdW50UmVxdWVzdBIjCgxDbGVhclJlcXVlc3QYCCABKAsyDS5D",
+            "bGVhclJlcXVlc3RCF6oCFEtyb25vcy5Db3JlLk1lc3NhZ2VzYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Kronos.Core.Messages.RequestTypeReflection.Descriptor, global::Kronos.Core.Messages.InsertReflection.Descriptor, global::Kronos.Core.Messages.GetReflection.Descriptor, global::Kronos.Core.Messages.DeleteReflection.Descriptor, global::Kronos.Core.Messages.CountReflection.Descriptor, global::Kronos.Core.Messages.ContainsReflection.Descriptor, global::Kronos.Core.Messages.ClearReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::Kronos.Core.Messages.AuthReflection.Descriptor, global::Kronos.Core.Messages.RequestTypeReflection.Descriptor, global::Kronos.Core.Messages.InsertReflection.Descriptor, global::Kronos.Core.Messages.GetReflection.Descriptor, global::Kronos.Core.Messages.DeleteReflection.Descriptor, global::Kronos.Core.Messages.CountReflection.Descriptor, global::Kronos.Core.Messages.ContainsReflection.Descriptor, global::Kronos.Core.Messages.ClearReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Kronos.Core.Messages.Request), global::Kronos.Core.Messages.Request.Parser, new[]{ "Type", "InsertRequest", "GetRequest", "DeleteRequest", "ContainsRequest", "CountRequest", "ClearRequest" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Kronos.Core.Messages.Request), global::Kronos.Core.Messages.Request.Parser, new[]{ "Auth", "Type", "InsertRequest", "GetRequest", "DeleteRequest", "ContainsRequest", "CountRequest", "ClearRequest" }, null, null, null)
           }));
     }
     #endregion
@@ -66,6 +66,7 @@ namespace Kronos.Core.Messages {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public Request(Request other) : this() {
+      Auth = other.auth_ != null ? other.Auth.Clone() : null;
       type_ = other.type_;
       InsertRequest = other.insertRequest_ != null ? other.InsertRequest.Clone() : null;
       GetRequest = other.getRequest_ != null ? other.GetRequest.Clone() : null;
@@ -80,8 +81,19 @@ namespace Kronos.Core.Messages {
       return new Request(this);
     }
 
+    /// <summary>Field number for the "Auth" field.</summary>
+    public const int AuthFieldNumber = 1;
+    private global::Kronos.Core.Messages.Auth auth_;
+    [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
+    public global::Kronos.Core.Messages.Auth Auth {
+      get { return auth_; }
+      set {
+        auth_ = value;
+      }
+    }
+
     /// <summary>Field number for the "Type" field.</summary>
-    public const int TypeFieldNumber = 1;
+    public const int TypeFieldNumber = 2;
     private global::Kronos.Core.Messages.RequestType type_ = 0;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::Kronos.Core.Messages.RequestType Type {
@@ -92,7 +104,7 @@ namespace Kronos.Core.Messages {
     }
 
     /// <summary>Field number for the "InsertRequest" field.</summary>
-    public const int InsertRequestFieldNumber = 2;
+    public const int InsertRequestFieldNumber = 3;
     private global::Kronos.Core.Messages.InsertRequest insertRequest_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::Kronos.Core.Messages.InsertRequest InsertRequest {
@@ -103,7 +115,7 @@ namespace Kronos.Core.Messages {
     }
 
     /// <summary>Field number for the "GetRequest" field.</summary>
-    public const int GetRequestFieldNumber = 3;
+    public const int GetRequestFieldNumber = 4;
     private global::Kronos.Core.Messages.GetRequest getRequest_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::Kronos.Core.Messages.GetRequest GetRequest {
@@ -114,7 +126,7 @@ namespace Kronos.Core.Messages {
     }
 
     /// <summary>Field number for the "DeleteRequest" field.</summary>
-    public const int DeleteRequestFieldNumber = 4;
+    public const int DeleteRequestFieldNumber = 5;
     private global::Kronos.Core.Messages.DeleteRequest deleteRequest_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::Kronos.Core.Messages.DeleteRequest DeleteRequest {
@@ -125,7 +137,7 @@ namespace Kronos.Core.Messages {
     }
 
     /// <summary>Field number for the "ContainsRequest" field.</summary>
-    public const int ContainsRequestFieldNumber = 5;
+    public const int ContainsRequestFieldNumber = 6;
     private global::Kronos.Core.Messages.ContainsRequest containsRequest_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::Kronos.Core.Messages.ContainsRequest ContainsRequest {
@@ -136,7 +148,7 @@ namespace Kronos.Core.Messages {
     }
 
     /// <summary>Field number for the "CountRequest" field.</summary>
-    public const int CountRequestFieldNumber = 6;
+    public const int CountRequestFieldNumber = 7;
     private global::Kronos.Core.Messages.CountRequest countRequest_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::Kronos.Core.Messages.CountRequest CountRequest {
@@ -147,7 +159,7 @@ namespace Kronos.Core.Messages {
     }
 
     /// <summary>Field number for the "ClearRequest" field.</summary>
-    public const int ClearRequestFieldNumber = 7;
+    public const int ClearRequestFieldNumber = 8;
     private global::Kronos.Core.Messages.ClearRequest clearRequest_;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::Kronos.Core.Messages.ClearRequest ClearRequest {
@@ -170,6 +182,7 @@ namespace Kronos.Core.Messages {
       if (ReferenceEquals(other, this)) {
         return true;
       }
+      if (!object.Equals(Auth, other.Auth)) return false;
       if (Type != other.Type) return false;
       if (!object.Equals(InsertRequest, other.InsertRequest)) return false;
       if (!object.Equals(GetRequest, other.GetRequest)) return false;
@@ -183,6 +196,7 @@ namespace Kronos.Core.Messages {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
+      if (auth_ != null) hash ^= Auth.GetHashCode();
       if (Type != 0) hash ^= Type.GetHashCode();
       if (insertRequest_ != null) hash ^= InsertRequest.GetHashCode();
       if (getRequest_ != null) hash ^= GetRequest.GetHashCode();
@@ -200,32 +214,36 @@ namespace Kronos.Core.Messages {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
+      if (auth_ != null) {
+        output.WriteRawTag(10);
+        output.WriteMessage(Auth);
+      }
       if (Type != 0) {
-        output.WriteRawTag(8);
+        output.WriteRawTag(16);
         output.WriteEnum((int) Type);
       }
       if (insertRequest_ != null) {
-        output.WriteRawTag(18);
+        output.WriteRawTag(26);
         output.WriteMessage(InsertRequest);
       }
       if (getRequest_ != null) {
-        output.WriteRawTag(26);
+        output.WriteRawTag(34);
         output.WriteMessage(GetRequest);
       }
       if (deleteRequest_ != null) {
-        output.WriteRawTag(34);
+        output.WriteRawTag(42);
         output.WriteMessage(DeleteRequest);
       }
       if (containsRequest_ != null) {
-        output.WriteRawTag(42);
+        output.WriteRawTag(50);
         output.WriteMessage(ContainsRequest);
       }
       if (countRequest_ != null) {
-        output.WriteRawTag(50);
+        output.WriteRawTag(58);
         output.WriteMessage(CountRequest);
       }
       if (clearRequest_ != null) {
-        output.WriteRawTag(58);
+        output.WriteRawTag(66);
         output.WriteMessage(ClearRequest);
       }
     }
@@ -233,6 +251,9 @@ namespace Kronos.Core.Messages {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
+      if (auth_ != null) {
+        size += 1 + pb::CodedOutputStream.ComputeMessageSize(Auth);
+      }
       if (Type != 0) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Type);
       }
@@ -261,6 +282,12 @@ namespace Kronos.Core.Messages {
     public void MergeFrom(Request other) {
       if (other == null) {
         return;
+      }
+      if (other.auth_ != null) {
+        if (auth_ == null) {
+          auth_ = new global::Kronos.Core.Messages.Auth();
+        }
+        Auth.MergeFrom(other.Auth);
       }
       if (other.Type != 0) {
         Type = other.Type;
@@ -311,46 +338,53 @@ namespace Kronos.Core.Messages {
           default:
             input.SkipLastField();
             break;
-          case 8: {
+          case 10: {
+            if (auth_ == null) {
+              auth_ = new global::Kronos.Core.Messages.Auth();
+            }
+            input.ReadMessage(auth_);
+            break;
+          }
+          case 16: {
             type_ = (global::Kronos.Core.Messages.RequestType) input.ReadEnum();
             break;
           }
-          case 18: {
+          case 26: {
             if (insertRequest_ == null) {
               insertRequest_ = new global::Kronos.Core.Messages.InsertRequest();
             }
             input.ReadMessage(insertRequest_);
             break;
           }
-          case 26: {
+          case 34: {
             if (getRequest_ == null) {
               getRequest_ = new global::Kronos.Core.Messages.GetRequest();
             }
             input.ReadMessage(getRequest_);
             break;
           }
-          case 34: {
+          case 42: {
             if (deleteRequest_ == null) {
               deleteRequest_ = new global::Kronos.Core.Messages.DeleteRequest();
             }
             input.ReadMessage(deleteRequest_);
             break;
           }
-          case 42: {
+          case 50: {
             if (containsRequest_ == null) {
               containsRequest_ = new global::Kronos.Core.Messages.ContainsRequest();
             }
             input.ReadMessage(containsRequest_);
             break;
           }
-          case 50: {
+          case 58: {
             if (countRequest_ == null) {
               countRequest_ = new global::Kronos.Core.Messages.CountRequest();
             }
             input.ReadMessage(countRequest_);
             break;
           }
-          case 58: {
+          case 66: {
             if (clearRequest_ == null) {
               clearRequest_ = new global::Kronos.Core.Messages.ClearRequest();
             }

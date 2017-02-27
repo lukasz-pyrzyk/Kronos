@@ -22,7 +22,7 @@ namespace Kronos.Core.Messages {
     static ResponseReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg5SZXNwb25zZS5wcm90bxoRUmVxdWVzdFR5cGUucHJvdG8aDGluc2VydC5w",
+            "Cg5SZXNwb25zZS5wcm90bxoRcmVxdWVzdFR5cGUucHJvdG8aDGluc2VydC5w",
             "cm90bxoJZ2V0LnByb3RvGgxkZWxldGUucHJvdG8aC2NvdW50LnByb3RvGg5j",
             "b250YWlucy5wcm90bxoLY2xlYXIucHJvdG8ilQIKCFJlc3BvbnNlEhoKBFR5",
             "cGUYASABKA4yDC5SZXF1ZXN0VHlwZRInCg5JbnNlcnRSZXNwb25zZRgCIAEo",

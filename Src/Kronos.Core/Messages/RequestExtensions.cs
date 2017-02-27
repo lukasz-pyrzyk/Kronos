@@ -1,12 +1,13 @@
 ﻿using System;
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
+using Kronos.Core.Configuration;
 
 namespace Kronos.Core.Messages
 {
     public partial class InsertRequest
     {
-        public static Request New(string key, byte[] package, DateTime? expiryDate)
+        public static Request New(string key, byte[] package, DateTime? expiryDate, AuthConfig auth)
         {
             return new Request
             {

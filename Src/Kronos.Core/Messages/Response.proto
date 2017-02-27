@@ -1,7 +1,7 @@
 syntax = "proto3";
 option csharp_namespace = "Kronos.Core.Messages";
 
-import "RequestType.proto";
+import "requestType.proto";
 import "insert.proto";
 import "get.proto";
 import "delete.proto";
