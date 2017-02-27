@@ -18,6 +18,9 @@ namespace Kronos.Core.Configuration
         [DataMember]
         public int Port { get; set; }
 
+        [DataMember]
+        public AuthConfig Auth { get; set; }
+
         public IPEndPoint EndPoint => _endPoint ?? (_endPoint = CreateIPEndPoint());
 
         private IPEndPoint CreateIPEndPoint()

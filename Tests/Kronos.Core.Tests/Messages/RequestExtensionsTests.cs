@@ -17,7 +17,7 @@ namespace Kronos.Core.Tests.Messages
             byte[] data = new byte[2048];
 
             // Act
-            var request = InsertRequest.New(key, data, expiry);
+            var request = InsertRequest.New(key, data, expiry, null);
 
             // Assert
             Timestamp expectedTimestamp = expiry.HasValue ? Timestamp.FromDateTime(expiry.Value) : null;
