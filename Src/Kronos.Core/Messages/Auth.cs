@@ -23,7 +23,7 @@ namespace Kronos.Core.Messages {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
             "CgphdXRoLnByb3RvIi0KBEF1dGgSDQoFbG9naW4YASABKAkSFgoOaGFzaGVk",
-            "UGFzc3dvcmQYAiABKA1CF6oCFEtyb25vcy5Db3JlLk1lc3NhZ2VzYgZwcm90",
+            "UGFzc3dvcmQYAiABKAxCF6oCFEtyb25vcy5Db3JlLk1lc3NhZ2VzYgZwcm90",
             "bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
@@ -81,12 +81,12 @@ namespace Kronos.Core.Messages {
 
     /// <summary>Field number for the "hashedPassword" field.</summary>
     public const int HashedPasswordFieldNumber = 2;
-    private uint hashedPassword_;
+    private pb::ByteString hashedPassword_ = pb::ByteString.Empty;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public uint HashedPassword {
+    public pb::ByteString HashedPassword {
       get { return hashedPassword_; }
       set {
-        hashedPassword_ = value;
+        hashedPassword_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -112,7 +112,7 @@ namespace Kronos.Core.Messages {
     public override int GetHashCode() {
       int hash = 1;
       if (Login.Length != 0) hash ^= Login.GetHashCode();
-      if (HashedPassword != 0) hash ^= HashedPassword.GetHashCode();
+      if (HashedPassword.Length != 0) hash ^= HashedPassword.GetHashCode();
       return hash;
     }
 
@@ -127,9 +127,9 @@ namespace Kronos.Core.Messages {
         output.WriteRawTag(10);
         output.WriteString(Login);
       }
-      if (HashedPassword != 0) {
-        output.WriteRawTag(16);
-        output.WriteUInt32(HashedPassword);
+      if (HashedPassword.Length != 0) {
+        output.WriteRawTag(18);
+        output.WriteBytes(HashedPassword);
       }
     }
 
@@ -139,8 +139,8 @@ namespace Kronos.Core.Messages {
       if (Login.Length != 0) {
         size += 1 + pb::CodedOutputStream.ComputeStringSize(Login);
       }
-      if (HashedPassword != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeUInt32Size(HashedPassword);
+      if (HashedPassword.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeBytesSize(HashedPassword);
       }
       return size;
     }
@@ -153,7 +153,7 @@ namespace Kronos.Core.Messages {
       if (other.Login.Length != 0) {
         Login = other.Login;
       }
-      if (other.HashedPassword != 0) {
+      if (other.HashedPassword.Length != 0) {
         HashedPassword = other.HashedPassword;
       }
     }
@@ -170,8 +170,8 @@ namespace Kronos.Core.Messages {
             Login = input.ReadString();
             break;
           }
-          case 16: {
-            HashedPassword = input.ReadUInt32();
+          case 18: {
+            HashedPassword = input.ReadBytes();
             break;
           }
         }

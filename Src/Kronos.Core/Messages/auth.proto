@@ -4,5 +4,5 @@ option csharp_namespace = "Kronos.Core.Messages";
 
 message Auth {
     string login = 1;
-    uint32 hashedPassword = 2;
+    bytes hashedPassword = 2;
 }

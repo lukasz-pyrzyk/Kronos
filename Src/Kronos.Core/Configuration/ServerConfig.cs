@@ -1,5 +1,6 @@
 ﻿using System.Net;
 using System.Runtime.Serialization;
+using Kronos.Core.Messages;
 using Kronos.Core.Networking;
 
 namespace Kronos.Core.Configuration
@@ -8,6 +9,7 @@ namespace Kronos.Core.Configuration
     public class ServerConfig
     {
         private IPEndPoint _endPoint;
+        private Auth _auth;
 
         [DataMember]
         public string Domain { get; set; }
@@ -19,7 +21,18 @@ namespace Kronos.Core.Configuration
         public int Port { get; set; }
 
         [DataMember]
-        public AuthConfig Auth { get; set; }
+        public AuthConfig AuthConfig { get; set; }
+
+        public Auth Auth => _auth ?? (_auth = PrepareAuth());
+
+        private Auth PrepareAuth()
+        {
+            if (AuthConfig != null)
+            {
+                return Auth.FromCfg(AuthConfig);
+            }
+            return Auth.Default();
+        }
 
         public IPEndPoint EndPoint => _endPoint ?? (_endPoint = CreateIPEndPoint());
 

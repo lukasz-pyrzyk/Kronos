@@ -35,14 +35,10 @@ namespace Kronos.Client
         {
             Trace.WriteLine("New insert request");
 
-            Request request = InsertRequest.New(key, package, expiryDate);
-
             ServerConfig server = GetServerInternal(key);
+            Request request = InsertRequest.New(key, package, expiryDate, server.Auth);
 
-            var response = await _connectionPool.UseAsync(con =>
-            {
-                return _insertProcessor.ExecuteAsync(request, con, server);
-            });
+            var response = await _connectionPool.UseAsync(con => _insertProcessor.ExecuteAsync(request, con, server));
 
             Trace.WriteLine($"InsertRequest status: {response.Added}");
 
@@ -53,14 +49,10 @@ namespace Kronos.Client
         {
             Trace.WriteLine("New get request");
 
-            Request request = GetRequest.New(key);
-
             ServerConfig server = GetServerInternal(key);
+            Request request = GetRequest.New(key, server.Auth);
 
-            var response = await _connectionPool.UseAsync(con =>
-            {
-                return _getProcessor.ExecuteAsync(request, con, server);
-            });
+            var response = await _connectionPool.UseAsync(con => _getProcessor.ExecuteAsync(request, con, server));
 
             if (response.Exists)
                 return response.Data.ToByteArray();
@@ -72,14 +64,10 @@ namespace Kronos.Client
         {
             Trace.WriteLine("New delete request");
 
-            Request request = DeleteRequest.New(key);
-
             ServerConfig server = GetServerInternal(key);
+            Request request = DeleteRequest.New(key, server.Auth);
 
-            var response = await _connectionPool.UseAsync(con =>
-            {
-                return _deleteProcessor.ExecuteAsync(request, con, server);
-            });
+            var response = await _connectionPool.UseAsync(con => _deleteProcessor.ExecuteAsync(request, con, server));
 
             Debug.WriteLine($"InsertRequest status: {response.Deleted}");
         }
@@ -88,13 +76,12 @@ namespace Kronos.Client
         {
             Trace.WriteLine("New count request");
 
-            Request request = CountRequest.New();
-
             ServerConfig[] servers = GetServersInternal();
+            Request[] requests = servers.Select(x => CountRequest.New(x.Auth)).ToArray();
 
             var responses = await _connectionPool.UseAsync(servers.Length, con =>
             {
-                return _countProcessor.ExecuteAsync(request, con, servers);
+                return _countProcessor.ExecuteAsync(requests, con, servers);
             });
 
             return responses.Sum(x => x.Count);
@@ -104,14 +91,10 @@ namespace Kronos.Client
         {
             Trace.WriteLine("New contains request");
 
-            Request request = ContainsRequest.New(key);
-
             ServerConfig server = GetServerInternal(key);
+            Request request = ContainsRequest.New(key, server.Auth);
 
-            var response = await _connectionPool.UseAsync(con =>
-            {
-                return _containsProcessor.ExecuteAsync(request, con, server);
-            });
+            var response = await _connectionPool.UseAsync(con => _containsProcessor.ExecuteAsync(request, con, server));
 
             return response.Contains;
         }
@@ -120,13 +103,12 @@ namespace Kronos.Client
         {
             Trace.WriteLine("New clear request");
 
-            Request request = ClearRequest.New();
-
             ServerConfig[] servers = GetServersInternal();
+            Request[] requests = servers.Select(x => ClearRequest.New(x.Auth)).ToArray();
 
             await _connectionPool.UseAsync(servers.Length, con =>
             {
-                return _clearProcessor.ExecuteAsync(request, con, servers);
+                return _clearProcessor.ExecuteAsync(requests, con, servers);
             });
         }
 
