@@ -1,6 +1,7 @@
 ﻿using System.IO;
 using System.Net;
 using Kronos.Core.Configuration;
+using Kronos.Core.Messages;
 using Kronos.Core.Networking;
 using Newtonsoft.Json;
 
@@ -17,22 +18,21 @@ namespace Kronos.Client
             return new KronosClient(config);
         }
 
-        public static IKronosClient FromLocalhost(int port)
+        public static IKronosClient FromLocalhost(int port, string login = Auth.DefaultLogin, string password = Auth.DefaultPassword)
         {
             IPAddress ip = EndpointUtils.GetIPAsync().Result;
-            return FromIp(ip.ToString(), port);
+            return FromIp(ip.ToString(), port, login, password);
         }
 
-        public static IKronosClient FromDomain(string domain, int port)
+        public static IKronosClient FromDomain(string domain, int port, string login = Auth.DefaultLogin, string password = Auth.DefaultPassword)
         {
-            return CreateInternal(domain, null, port);
+            return CreateInternal(domain, null, port, login, password);
         }
 
-        public static IKronosClient FromIp(string ip, int port)
+        public static IKronosClient FromIp(string ip, int port, string login = Auth.DefaultLogin, string password = Auth.DefaultPassword)
         {
-            return CreateInternal(null, ip, port);
+            return CreateInternal(null, ip, port, login, password);
         }
-
 
         public static IKronosClient FromConnectionString(string[] connectionStrings)
         {
@@ -49,13 +49,22 @@ namespace Kronos.Client
             return new KronosClient(new KronosConfig { ClusterConfig = new ClusterConfig { Servers = servers } });
         }
 
-        private static IKronosClient CreateInternal(string domain, string ip, int port)
+        private static IKronosClient CreateInternal(string domain, string ip, int port, string login, string password)
         {
             var config = new KronosConfig
             {
                 ClusterConfig = new ClusterConfig
                 {
-                    Servers = new[] { new ServerConfig { Domain = domain, Ip = ip, Port = port } }
+                    Servers = new[]
+                    {
+                        new ServerConfig
+                        {
+                            Domain = domain,
+                            Ip = ip,
+                            Port = port,
+                            Credentials = new AuthConfig { Login = login, Password = password }
+                        }
+                    }
                 }
             };
 

@@ -7,6 +7,9 @@ namespace Kronos.Core.Messages
 {
     public partial class Auth
     {
+        public const string DefaultLogin = "user";
+        public const string DefaultPassword = "password";
+
         public static Auth FromCfg(AuthConfig cfg)
         {
             return new Auth
@@ -20,8 +23,8 @@ namespace Kronos.Core.Messages
         {
             return FromCfg(new AuthConfig
             {
-                Login = "user",
-                Password = "password"
+                Login = DefaultLogin,
+                Password = DefaultPassword
             });
         }
 
