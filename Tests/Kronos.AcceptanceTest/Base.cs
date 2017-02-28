@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Threading;
 using System.Threading.Tasks;
 using Kronos.Client;
 using Kronos.Server;
@@ -13,8 +12,6 @@ namespace Kronos.AcceptanceTest
 {
     public abstract class Base
     {
-        private static readonly ManualResetEventSlim awaiter = new ManualResetEventSlim();
-
         public abstract Task RunAsync();
 
         static Base()
@@ -24,7 +21,6 @@ namespace Kronos.AcceptanceTest
 
         public async Task RunInternalAsync()
         {
-            awaiter.Set();
             const int port = 5000;
 
             LogMessage($"Creating kronos client with port {port}");
@@ -80,8 +76,6 @@ namespace Kronos.AcceptanceTest
                     LogMessage($"EXCEPTION: {ex}");
                     Assert.False(true, ex.Message);
                 }
-
-                awaiter.Reset();
             }
         }
 
