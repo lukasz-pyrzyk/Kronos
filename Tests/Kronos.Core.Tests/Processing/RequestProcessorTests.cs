@@ -130,7 +130,7 @@ namespace Kronos.Core.Tests.Processing
         {
             // Arrange
             var processor = new RequestProcessor(Substitute.For<IStorage>(), null, null, null, null, null, null);
-            var request = new Request() {Auth = Auth.Default(), Type = RequestType.Unknown};
+            var request = new Request { Auth = Auth.Default(), Type = RequestType.Unknown };
 
             // Act
             Response response = processor.Handle(request, Auth.Default());
