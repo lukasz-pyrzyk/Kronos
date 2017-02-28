@@ -79,9 +79,9 @@ namespace Kronos.AcceptanceTest
             }
         }
 
-        protected virtual CliArguments GetSettings()
+        protected virtual SettingsArgs GetSettings()
         {
-            return new CliArguments();
+            return new SettingsArgs();
         }
 
         private static LoggingConfiguration GetLoggerConfig()

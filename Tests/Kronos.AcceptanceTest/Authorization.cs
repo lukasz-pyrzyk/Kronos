@@ -24,7 +24,7 @@ namespace Kronos.AcceptanceTest
             Assert.IsType<KronosException>(ex);
         }
 
-        protected override CliArguments GetSettings()
+        protected override SettingsArgs GetSettings()
         {
             var currentSettings = base.GetSettings();
             currentSettings.Password = "Super secret admin password";

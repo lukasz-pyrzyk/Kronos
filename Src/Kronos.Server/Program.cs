@@ -21,7 +21,7 @@ namespace Kronos.Server
 
         public static void Main(string[] args)
         {
-            var settings = Cli.Parse<CliArguments>(args);
+            var settings = Cli.Parse<SettingsArgs>(args);
 
             PrintLogo();
 
@@ -29,7 +29,7 @@ namespace Kronos.Server
             Task.WaitAll(StartAsync(settings, config));
         }
 
-        public static async Task StartAsync(CliArguments settings, LoggingConfiguration config)
+        public static async Task StartAsync(SettingsArgs settings, LoggingConfiguration config)
         {
             LogManager.Configuration = config;
 
@@ -58,7 +58,7 @@ namespace Kronos.Server
         public static void Stop()
         {
             _cancelEvent.Set();
-            IsWorking = true;
+            IsWorking = false;
         }
 
         private static void PrintLogo()

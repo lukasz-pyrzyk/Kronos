@@ -2,9 +2,9 @@
 
 namespace Kronos.Server
 {
-    public class CliArguments : BaseCliArguments
+    public class SettingsArgs : BaseCliArguments
     {
-        public CliArguments() : base("Kronos default settings")
+        public SettingsArgs() : base("Kronos default settings")
         {
         }
 
