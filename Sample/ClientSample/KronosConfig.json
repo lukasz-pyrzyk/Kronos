@@ -3,11 +3,7 @@
     "Servers": [
       {
         "Ip": "169.254.134.255",
-        "Port": 5000,
-        "Credentials": {
-          "Login": "lpyrzyk",
-          "Password": "Random"
-        }
+        "Port": 5000
       }
     ]
   }
