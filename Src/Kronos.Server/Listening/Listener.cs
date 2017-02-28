@@ -4,6 +4,7 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Kronos.Core.Configuration;
 using Kronos.Core.Messages;
 using Kronos.Core.Processing;
 using NLog;
@@ -18,10 +19,12 @@ namespace Kronos.Server.Listening
         private readonly CancellationTokenSource _cancel = new CancellationTokenSource();
 
         private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+        private readonly Auth _auth;
 
-        public Listener(IPAddress ipAddress, int port, IProcessor processor, IRequestProcessor requestProcessor)
+        public Listener(IPAddress ipAddress, CliArguments settings, IProcessor processor, IRequestProcessor requestProcessor)
         {
-            _listener = new TcpListener(ipAddress, port);
+            _auth = Auth.FromCfg(new AuthConfig { Login = settings.Login, Password = settings.Password });
+            _listener = new TcpListener(ipAddress, settings.Port);
             _processor = processor;
             _requestProcessor = requestProcessor;
         }
@@ -89,7 +92,7 @@ namespace Kronos.Server.Listening
                 Request request = _processor.ReceiveRequest(client);
 
                 _logger.Debug($"Processing new request {request.Type} with Id: {id}");
-                Response response = _requestProcessor.Handle(request);
+                Response response = _requestProcessor.Handle(request, _auth);
 
                 _processor.SendResponse(client, response);
                 _logger.Debug($"Processing {id} finished");

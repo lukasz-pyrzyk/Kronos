@@ -21,15 +21,15 @@ namespace Kronos.Core.Configuration
         public int Port { get; set; }
 
         [DataMember]
-        public AuthConfig AuthConfig { get; set; }
+        public AuthConfig Credentials { get; set; }
 
         public Auth Auth => _auth ?? (_auth = PrepareAuth());
 
         private Auth PrepareAuth()
         {
-            if (AuthConfig != null)
+            if (Credentials != null)
             {
-                return Auth.FromCfg(AuthConfig);
+                return Auth.FromCfg(Credentials);
             }
             return Auth.Default();
         }

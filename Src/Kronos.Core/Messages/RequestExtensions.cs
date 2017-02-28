@@ -24,6 +24,11 @@ namespace Kronos.Core.Messages
                 Password = "password"
             });
         }
+
+        public bool Authorize(Auth auth)
+        {
+            return auth.Login == Login && auth.HashedPassword == HashedPassword;
+        }
     }
 
     public partial class InsertRequest
@@ -116,5 +121,10 @@ namespace Kronos.Core.Messages
                 Auth = auth
             };
         }
+    }
+
+    public partial class Response
+    {
+        public bool Success => string.IsNullOrEmpty(Exception);
     }
 }

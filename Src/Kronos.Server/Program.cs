@@ -3,6 +3,7 @@ using System.Net;
 using System.Threading;
 using System.Threading.Tasks;
 using System.Xml;
+using EntryPoint;
 using Kronos.Core.Networking;
 using Kronos.Core.Processing;
 using Kronos.Core.Storage;
@@ -20,19 +21,15 @@ namespace Kronos.Server
 
         public static void Main(string[] args)
         {
+            var settings = Cli.Parse<CliArguments>(args);
+
             PrintLogo();
 
-            int port = 5000;
-            if (args.Length == 1)
-            {
-                int.TryParse(args[0], out port);
-            }
-
             var config = LoggerSetup();
-            Task.WaitAll(StartAsync(port, config));
+            Task.WaitAll(StartAsync(settings, config));
         }
 
-        public static async Task StartAsync(int port, LoggingConfiguration config)
+        public static async Task StartAsync(CliArguments settings, LoggingConfiguration config)
         {
             LogManager.Configuration = config;
 
@@ -43,7 +40,7 @@ namespace Kronos.Server
 
             IRequestProcessor requestProcessor = new RequestProcessor(storage);
             IProcessor processor = new SocketProcessor();
-            IListener server = new Listener(localAddr, port, processor, requestProcessor);
+            IListener server = new Listener(localAddr, settings, processor, requestProcessor);
 
             server.Start();
             IsWorking = true;
