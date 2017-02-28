@@ -1,6 +1,7 @@
 ﻿using System.Threading.Tasks;
 using Google.Protobuf;
 using Kronos.Core.Configuration;
+using Kronos.Core.Exceptions;
 using Kronos.Core.Messages;
 using Kronos.Core.Networking;
 using Kronos.Core.Storage;
@@ -15,14 +16,19 @@ namespace Kronos.Core.Processing
 
         public async Task<TResponse> ExecuteAsync(Request request, IConnection service, ServerConfig server)
         {
-            Response respnse = await service.SendAsync(request, server).ConfigureAwait(false);
+            Response response = await service.SendAsync(request, server).ConfigureAwait(false);
 
-            TResponse selectedResponse = ParseResponse(respnse);
+            if (!response.Success)
+            {
+                throw new KronosException(response.Exception);
+            }
+
+            TResponse selectedResponse = ParseResponse(response);
 
             return selectedResponse;
         }
 
-        public async Task<TResponse[]> ExecuteAsync(Request request, IConnection[] services, ServerConfig[] servers)
+        public async Task<TResponse[]> ExecuteAsync(Request[] requests, IConnection[] services, ServerConfig[] servers)
         {
             int count = services.Length;
             Task<TResponse>[] responses = new Task<TResponse>[count];
@@ -30,6 +36,7 @@ namespace Kronos.Core.Processing
             {
                 IConnection con = services[i];
                 ServerConfig server = servers[i];
+                Request request = requests[i];
                 responses[i] = ExecuteAsync(request, con, server);
             }
 

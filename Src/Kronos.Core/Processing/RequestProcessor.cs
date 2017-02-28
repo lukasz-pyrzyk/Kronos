@@ -39,9 +39,17 @@ namespace Kronos.Core.Processing
             _clearProcessor = clearProcessor;
         }
 
-        public Response Handle(Request request)
+        public Response Handle(Request request, Auth auth)
         {
-            Response response = new Response();
+            var response = new Response();
+
+            bool authorized = auth.Authorize(request.Auth);
+            if (!authorized)
+            {
+                response.Exception = $"User {request.Auth.Login} is not authorized";
+                return response;
+            }
+
             switch (request.Type)
             {
                 case RequestType.Insert:
@@ -63,7 +71,8 @@ namespace Kronos.Core.Processing
                     response.ClearResponse = _clearProcessor.Reply(request.ClearRequest, _storage);
                     break;
                 default:
-                    throw new InvalidOperationException($"Cannot find processor for type {request.Type}");
+                    response.Exception = $"Request type {request.Type} is not supported";
+                    break;
             }
 
             return response;

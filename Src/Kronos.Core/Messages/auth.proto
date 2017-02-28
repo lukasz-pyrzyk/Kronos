@@ -1,0 +1,8 @@
+syntax = "proto3";
+option csharp_namespace = "Kronos.Core.Messages";
+
+
+message Auth {
+    string login = 1;
+    bytes hashedPassword = 2;
+}

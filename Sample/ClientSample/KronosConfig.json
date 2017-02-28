@@ -1,10 +1,10 @@
 ﻿{
-    "ClusterConfig": {
-        "Servers": [
-          {
-            "Ip": "192.168.0.102",
-            "Port": 5000
-          }
-        ]
-    }
+  "ClusterConfig": {
+    "Servers": [
+      {
+        "Ip": "169.254.134.255",
+        "Port": 5000
+      }
+    ]
+  }
 }

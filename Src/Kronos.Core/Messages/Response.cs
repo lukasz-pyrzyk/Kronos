@@ -22,20 +22,19 @@ namespace Kronos.Core.Messages {
     static ResponseReflection() {
       byte[] descriptorData = global::System.Convert.FromBase64String(
           string.Concat(
-            "Cg5SZXNwb25zZS5wcm90bxoRUmVxdWVzdFR5cGUucHJvdG8aDGluc2VydC5w",
-            "cm90bxoJZ2V0LnByb3RvGgxkZWxldGUucHJvdG8aC2NvdW50LnByb3RvGg5j",
-            "b250YWlucy5wcm90bxoLY2xlYXIucHJvdG8ilQIKCFJlc3BvbnNlEhoKBFR5",
-            "cGUYASABKA4yDC5SZXF1ZXN0VHlwZRInCg5JbnNlcnRSZXNwb25zZRgCIAEo",
-            "CzIPLkluc2VydFJlc3BvbnNlEiAKCkdldFJlc3BvbmUYAyABKAsyDC5HZXRS",
-            "ZXNwb25zZRInCg5EZWxldGVSZXNwb25zZRgEIAEoCzIPLkRlbGV0ZVJlc3Bv",
-            "bnNlEisKEENvbnRhaW5zUmVzcG9uc2UYBSABKAsyES5Db250YWluc1Jlc3Bv",
-            "bnNlEiUKDUNvdW50UmVzcG9uc2UYBiABKAsyDi5Db3VudFJlc3BvbnNlEiUK",
-            "DUNsZWFyUmVzcG9uc2UYByABKAsyDi5DbGVhclJlc3BvbnNlQheqAhRLcm9u",
-            "b3MuQ29yZS5NZXNzYWdlc2IGcHJvdG8z"));
+            "Cg5SZXNwb25zZS5wcm90bxoMaW5zZXJ0LnByb3RvGglnZXQucHJvdG8aDGRl",
+            "bGV0ZS5wcm90bxoLY291bnQucHJvdG8aDmNvbnRhaW5zLnByb3RvGgtjbGVh",
+            "ci5wcm90byKMAgoIUmVzcG9uc2USEQoJRXhjZXB0aW9uGAEgASgJEicKDklu",
+            "c2VydFJlc3BvbnNlGAIgASgLMg8uSW5zZXJ0UmVzcG9uc2USIAoKR2V0UmVz",
+            "cG9uZRgDIAEoCzIMLkdldFJlc3BvbnNlEicKDkRlbGV0ZVJlc3BvbnNlGAQg",
+            "ASgLMg8uRGVsZXRlUmVzcG9uc2USKwoQQ29udGFpbnNSZXNwb25zZRgFIAEo",
+            "CzIRLkNvbnRhaW5zUmVzcG9uc2USJQoNQ291bnRSZXNwb25zZRgGIAEoCzIO",
+            "LkNvdW50UmVzcG9uc2USJQoNQ2xlYXJSZXNwb25zZRgHIAEoCzIOLkNsZWFy",
+            "UmVzcG9uc2VCF6oCFEtyb25vcy5Db3JlLk1lc3NhZ2VzYgZwcm90bzM="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
-          new pbr::FileDescriptor[] { global::Kronos.Core.Messages.RequestTypeReflection.Descriptor, global::Kronos.Core.Messages.InsertReflection.Descriptor, global::Kronos.Core.Messages.GetReflection.Descriptor, global::Kronos.Core.Messages.DeleteReflection.Descriptor, global::Kronos.Core.Messages.CountReflection.Descriptor, global::Kronos.Core.Messages.ContainsReflection.Descriptor, global::Kronos.Core.Messages.ClearReflection.Descriptor, },
+          new pbr::FileDescriptor[] { global::Kronos.Core.Messages.InsertReflection.Descriptor, global::Kronos.Core.Messages.GetReflection.Descriptor, global::Kronos.Core.Messages.DeleteReflection.Descriptor, global::Kronos.Core.Messages.CountReflection.Descriptor, global::Kronos.Core.Messages.ContainsReflection.Descriptor, global::Kronos.Core.Messages.ClearReflection.Descriptor, },
           new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Kronos.Core.Messages.Response), global::Kronos.Core.Messages.Response.Parser, new[]{ "Type", "InsertResponse", "GetRespone", "DeleteResponse", "ContainsResponse", "CountResponse", "ClearResponse" }, null, null, null)
+            new pbr::GeneratedClrTypeInfo(typeof(global::Kronos.Core.Messages.Response), global::Kronos.Core.Messages.Response.Parser, new[]{ "Exception", "InsertResponse", "GetRespone", "DeleteResponse", "ContainsResponse", "CountResponse", "ClearResponse" }, null, null, null)
           }));
     }
     #endregion
@@ -66,7 +65,7 @@ namespace Kronos.Core.Messages {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public Response(Response other) : this() {
-      type_ = other.type_;
+      exception_ = other.exception_;
       InsertResponse = other.insertResponse_ != null ? other.InsertResponse.Clone() : null;
       GetRespone = other.getRespone_ != null ? other.GetRespone.Clone() : null;
       DeleteResponse = other.deleteResponse_ != null ? other.DeleteResponse.Clone() : null;
@@ -80,14 +79,14 @@ namespace Kronos.Core.Messages {
       return new Response(this);
     }
 
-    /// <summary>Field number for the "Type" field.</summary>
-    public const int TypeFieldNumber = 1;
-    private global::Kronos.Core.Messages.RequestType type_ = 0;
+    /// <summary>Field number for the "Exception" field.</summary>
+    public const int ExceptionFieldNumber = 1;
+    private string exception_ = "";
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
-    public global::Kronos.Core.Messages.RequestType Type {
-      get { return type_; }
+    public string Exception {
+      get { return exception_; }
       set {
-        type_ = value;
+        exception_ = pb::ProtoPreconditions.CheckNotNull(value, "value");
       }
     }
 
@@ -170,7 +169,7 @@ namespace Kronos.Core.Messages {
       if (ReferenceEquals(other, this)) {
         return true;
       }
-      if (Type != other.Type) return false;
+      if (Exception != other.Exception) return false;
       if (!object.Equals(InsertResponse, other.InsertResponse)) return false;
       if (!object.Equals(GetRespone, other.GetRespone)) return false;
       if (!object.Equals(DeleteResponse, other.DeleteResponse)) return false;
@@ -183,7 +182,7 @@ namespace Kronos.Core.Messages {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public override int GetHashCode() {
       int hash = 1;
-      if (Type != 0) hash ^= Type.GetHashCode();
+      if (Exception.Length != 0) hash ^= Exception.GetHashCode();
       if (insertResponse_ != null) hash ^= InsertResponse.GetHashCode();
       if (getRespone_ != null) hash ^= GetRespone.GetHashCode();
       if (deleteResponse_ != null) hash ^= DeleteResponse.GetHashCode();
@@ -200,9 +199,9 @@ namespace Kronos.Core.Messages {
 
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public void WriteTo(pb::CodedOutputStream output) {
-      if (Type != 0) {
-        output.WriteRawTag(8);
-        output.WriteEnum((int) Type);
+      if (Exception.Length != 0) {
+        output.WriteRawTag(10);
+        output.WriteString(Exception);
       }
       if (insertResponse_ != null) {
         output.WriteRawTag(18);
@@ -233,8 +232,8 @@ namespace Kronos.Core.Messages {
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public int CalculateSize() {
       int size = 0;
-      if (Type != 0) {
-        size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Type);
+      if (Exception.Length != 0) {
+        size += 1 + pb::CodedOutputStream.ComputeStringSize(Exception);
       }
       if (insertResponse_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(InsertResponse);
@@ -262,8 +261,8 @@ namespace Kronos.Core.Messages {
       if (other == null) {
         return;
       }
-      if (other.Type != 0) {
-        Type = other.Type;
+      if (other.Exception.Length != 0) {
+        Exception = other.Exception;
       }
       if (other.insertResponse_ != null) {
         if (insertResponse_ == null) {
@@ -311,8 +310,8 @@ namespace Kronos.Core.Messages {
           default:
             input.SkipLastField();
             break;
-          case 8: {
-            type_ = (global::Kronos.Core.Messages.RequestType) input.ReadEnum();
+          case 10: {
+            Exception = input.ReadString();
             break;
           }
           case 18: {
