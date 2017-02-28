@@ -1,9 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
 using System.Threading.Tasks;
 using Kronos.Client;
-using Kronos.Core.Messages;
 using Kronos.Server;
 using NLog;
 using NLog.Config;
@@ -31,7 +29,7 @@ namespace Kronos.AcceptanceTest
             LogMessage($"Creating server with port {port}");
 
             var loggerConfig = GetLoggerConfig();
-            Task server = Server.Program.StartAsync(new CliArguments(), loggerConfig);
+            Task server = Server.Program.StartAsync(GetSettings(), loggerConfig);
             while (!Server.Program.IsWorking)
             {
                 LogMessage("Waiting for server warnup...");
@@ -79,6 +77,11 @@ namespace Kronos.AcceptanceTest
                     Assert.False(true, ex.Message);
                 }
             }
+        }
+
+        protected virtual CliArguments GetSettings()
+        {
+            return new CliArguments();
         }
 
         private static LoggingConfiguration GetLoggerConfig()
