@@ -9,19 +9,19 @@ using Kronos.Core.Messages;
 using Kronos.Core.Processing;
 using NLog;
 
-namespace Kronos.Server.Listening
+namespace Kronos.Server
 {
     public class Listener : IListener
     {
         private readonly TcpListener _listener;
-        private readonly IProcessor _processor;
+        private readonly ISocketProcessor _processor;
         private readonly IRequestProcessor _requestProcessor;
         private readonly CancellationTokenSource _cancel = new CancellationTokenSource();
 
         private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
         private readonly Auth _auth;
 
-        public Listener(IPAddress ipAddress, SettingsArgs settings, IProcessor processor, IRequestProcessor requestProcessor)
+        public Listener(IPAddress ipAddress, SettingsArgs settings, ISocketProcessor processor, IRequestProcessor requestProcessor)
         {
             _auth = Auth.FromCfg(new AuthConfig { Login = settings.Login, Password = settings.Password });
             _listener = new TcpListener(ipAddress, settings.Port);

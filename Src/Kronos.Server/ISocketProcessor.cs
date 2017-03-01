@@ -1,9 +1,9 @@
 ﻿using System.Net.Sockets;
 using Kronos.Core.Messages;
 
-namespace Kronos.Server.Listening
+namespace Kronos.Server
 {
-    public interface IProcessor
+    public interface ISocketProcessor
     {
         Request ReceiveRequest(Socket client);
 

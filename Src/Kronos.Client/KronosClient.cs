@@ -2,7 +2,6 @@
 using System.Diagnostics;
 using System.Linq;
 using System.Threading.Tasks;
-using Kronos.Client.Transfer;
 using Kronos.Core.Configuration;
 using Kronos.Core.Messages;
 using Kronos.Core.Pooling;

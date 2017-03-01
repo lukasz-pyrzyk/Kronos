@@ -6,9 +6,9 @@ using Kronos.Core.Messages;
 using Kronos.Core.Networking;
 using Kronos.Core.Pooling;
 
-namespace Kronos.Server.Listening
+namespace Kronos.Server
 {
-    public class SocketProcessor : IProcessor
+    public class SocketProcessor : ISocketProcessor
     {
         private const int IntSize = sizeof(int);
         private readonly byte[] _sizeBuffer = new byte[sizeof(int)];

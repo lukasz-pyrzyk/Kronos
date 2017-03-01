@@ -8,10 +8,10 @@ using Kronos.Core.Configuration;
 using Kronos.Core.Exceptions;
 using Kronos.Core.Messages;
 using Kronos.Core.Networking;
-using BufferedStream = Kronos.Core.Pooling.BufferedStream;
 using Polly;
+using BufferedStream = Kronos.Core.Pooling.BufferedStream;
 
-namespace Kronos.Client.Transfer
+namespace Kronos.Client
 {
     public class Connection : IConnection
     {

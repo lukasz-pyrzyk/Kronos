@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace Kronos.Server.Listening
+namespace Kronos.Server
 {
     public interface IListener : IDisposable
     {

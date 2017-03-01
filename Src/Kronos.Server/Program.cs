@@ -7,7 +7,6 @@ using EntryPoint;
 using Kronos.Core.Networking;
 using Kronos.Core.Processing;
 using Kronos.Core.Storage;
-using Kronos.Server.Listening;
 using NLog;
 using NLog.Config;
 
@@ -39,7 +38,7 @@ namespace Kronos.Server
             IStorage storage = new InMemoryStorage(cleaner);
 
             IRequestProcessor requestProcessor = new RequestProcessor(storage);
-            IProcessor processor = new SocketProcessor();
+            ISocketProcessor processor = new SocketProcessor();
             IListener server = new Listener(localAddr, settings, processor, requestProcessor);
 
             server.Start();
