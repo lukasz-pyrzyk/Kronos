@@ -1,7 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
-using System.Threading.Tasks;
 using Google.Protobuf;
 using NLog;
 
@@ -9,36 +7,26 @@ namespace Kronos.Core.Storage
 {
     public class Cleaner : ICleaner
     {
-        public static readonly int Timer = 1000;
-
         private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
-        public void Start(Dictionary<Key, ByteString> nodes, CancellationToken token)
+        public void Clear(Dictionary<Key, ByteString> nodes)
         {
-            Task.Factory.StartNew(async () =>
+            DateTime currentDate = DateTime.UtcNow;
+            ulong deleted = 0;
+            foreach (Key key in nodes.Keys)
             {
-                while (!token.IsCancellationRequested)
+                if (key.IsExpired(currentDate))
                 {
-                    DateTime currentDate = DateTime.UtcNow;
-                    ulong deleted = 0;
-                    foreach (Key key in nodes.Keys)
-                    {
-                        if (key.IsExpired(currentDate))
-                        {
-                            nodes.Remove(key);
+                    nodes.Remove(key);
 
-                            deleted++;
-                        }
-                    }
-                    if (deleted > 0)
-                    {
-                        _logger.Info($"Deleted {deleted} elements from storage");
-                    }
-
-                    await Task.Delay(Timer, token);
+                    deleted++;
                 }
+            }
 
-            }, TaskCreationOptions.LongRunning);
+            if (deleted > 0)
+            {
+                _logger.Info($"Deleted {deleted} elements from storage");
+            }
         }
     }
 }

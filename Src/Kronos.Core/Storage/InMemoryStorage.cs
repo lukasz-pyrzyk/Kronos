@@ -15,10 +15,16 @@ namespace Kronos.Core.Storage
 
         private int cleanupRequested;
         private readonly Timer _timer;
+        private readonly ICleaner _cleaner;
 
-        public InMemoryStorage()
+        public InMemoryStorage() : this(new Cleaner())
+        {
+        }
+
+        public InMemoryStorage(ICleaner cleaner)
         {
             _timer = new Timer(OnCleanupTimer, null, 0, 5000);
+            _cleaner = cleaner;
         }
         
         public int Count => _storage.Count;
@@ -90,29 +96,9 @@ namespace Kronos.Core.Storage
             // check if cleanup was requested, do not change value
             if (Interlocked.CompareExchange(ref cleanupRequested, 1, 1) == 1)
             {
-                ClearStorage();
+                _cleaner.Clear(_storage);
+                Interlocked.Exchange(ref cleanupRequested, 0);
             }
-        }
-
-        private void ClearStorage()
-        {
-            DateTime currentDate = DateTime.UtcNow;
-            ulong deleted = 0;
-            foreach (Key key in _storage.Keys)
-            {
-                if (key.IsExpired(currentDate))
-                {
-                    _storage.Remove(key);
-                    deleted++;
-                }
-            }
-
-            if (deleted > 0)
-            {
-                _logger.Info($"Deleted {deleted} elements from storage");
-            }
-
-            Interlocked.Exchange(ref cleanupRequested, 0);
         }
 
         private void OnCleanupTimer(object obj)
