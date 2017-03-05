@@ -8,24 +8,25 @@ namespace Kronos.Core.Storage
 {
     public class InMemoryStorage : IStorage
     {
-        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
-        private readonly ICleaner _cleaner;
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
         private readonly Dictionary<Key, ByteString> _storage =
             new Dictionary<Key, ByteString>(new KeyComperer());
 
-        private readonly CancellationTokenSource _cancelToken = new CancellationTokenSource();
+        private int cleanupRequested;
+        private readonly Timer _timer;
 
-        public int Count => _storage.Count;
-
-        public InMemoryStorage(ICleaner cleaner)
+        public InMemoryStorage()
         {
-            _cleaner = cleaner;
-            _cleaner.Start(_storage, _cancelToken.Token);
+            _timer = new Timer(OnCleanupTimer, null, 0, 5000);
         }
+        
+        public int Count => _storage.Count;
 
         public bool Add(string key, DateTime? expiryDate, ByteString obj)
         {
+            ClearStorageIfRequested();
+
             var metaData = new Key(key, expiryDate);
             if (_storage.ContainsKey(metaData))
                 return false;
@@ -36,6 +37,8 @@ namespace Kronos.Core.Storage
 
         public void AddOrUpdate(string key, DateTime? expiryDate, ByteString obj)
         {
+            ClearStorageIfRequested();
+
             var metaData = new Key(key, expiryDate);
 
             _storage[metaData] = obj;
@@ -43,18 +46,24 @@ namespace Kronos.Core.Storage
 
         public bool TryGet(string key, out ByteString obj)
         {
+            ClearStorageIfRequested();
+
             var metaData = new Key(key);
             return _storage.TryGetValue(metaData, out obj);
         }
 
         public bool TryRemove(string key)
         {
+            ClearStorageIfRequested();
+
             var metaData = new Key(key);
             return _storage.Remove(metaData);
         }
 
         public bool Contains(string key)
         {
+            ClearStorageIfRequested();
+
             var metaData = new Key(key);
             return _storage.ContainsKey(metaData);
         }
@@ -73,8 +82,46 @@ namespace Kronos.Core.Storage
         {
             _logger.Info("Disposing storage");
 
-            _cancelToken.Cancel();
             Clear();
+        }
+
+        private void ClearStorageIfRequested()
+        {
+            // check if cleanup was requested, do not change value
+            if (Interlocked.CompareExchange(ref cleanupRequested, 1, 1) == 1)
+            {
+                ClearStorage();
+            }
+        }
+
+        private void ClearStorage()
+        {
+            DateTime currentDate = DateTime.UtcNow;
+            ulong deleted = 0;
+            foreach (Key key in _storage.Keys)
+            {
+                if (key.IsExpired(currentDate))
+                {
+                    _storage.Remove(key);
+                    deleted++;
+                }
+            }
+
+            if (deleted > 0)
+            {
+                _logger.Info($"Deleted {deleted} elements from storage");
+            }
+
+            Interlocked.Exchange(ref cleanupRequested, 0);
+        }
+
+        private void OnCleanupTimer(object obj)
+        {
+            // try to request for cleanup
+            if (Interlocked.CompareExchange(ref cleanupRequested, 1, 0) == 0)
+            {
+                _logger.Info("Storage cleanup scheduled");
+            }
         }
     }
 }
