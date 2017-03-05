@@ -96,6 +96,7 @@ namespace Kronos.Core.Storage
             // check if cleanup was requested, do not change value
             if (Interlocked.CompareExchange(ref cleanupRequested, 1, 1) == 1)
             {
+                _logger.Info("Clearing storage");
                 _cleaner.Clear(_storage);
                 Interlocked.Exchange(ref cleanupRequested, 0);
             }
