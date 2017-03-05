@@ -9,19 +9,12 @@ namespace Kronos.Core.Storage
     {
         private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
-        public void Clear(Dictionary<Key, ByteString> nodes)
+        public void Clear(PriorityQueue<Key> expiringKeys, Dictionary<Key, ByteString> nodes)
         {
             DateTime currentDate = DateTime.UtcNow;
             ulong deleted = 0;
-            foreach (Key key in nodes.Keys)
-            {
-                if (key.IsExpired(currentDate))
-                {
-                    nodes.Remove(key);
-
-                    deleted++;
-                }
-            }
+            
+            // TODO - implement
 
             if (deleted > 0)
             {

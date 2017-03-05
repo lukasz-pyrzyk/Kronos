@@ -5,6 +5,6 @@ namespace Kronos.Core.Storage
 {
     public interface ICleaner
     {
-        void Clear(Dictionary<Key, ByteString> nodes);
+        void Clear(PriorityQueue<Key> expiringKeys, Dictionary<Key, ByteString> nodes);
     }
 }

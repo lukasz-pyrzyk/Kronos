@@ -13,6 +13,8 @@ namespace Kronos.Core.Storage
         private readonly Dictionary<Key, ByteString> _storage =
             new Dictionary<Key, ByteString>(new KeyComperer());
 
+        private readonly PriorityQueue<Key> _expiringKeys = new PriorityQueue<Key>();
+
         private int cleanupRequested;
         private readonly Timer _timer;
         private readonly ICleaner _cleaner;
@@ -97,7 +99,7 @@ namespace Kronos.Core.Storage
             if (Interlocked.CompareExchange(ref cleanupRequested, 1, 1) == 1)
             {
                 _logger.Info("Clearing storage");
-                _cleaner.Clear(_storage);
+                _cleaner.Clear(_expiringKeys, _storage);
                 Interlocked.Exchange(ref cleanupRequested, 0);
             }
         }
