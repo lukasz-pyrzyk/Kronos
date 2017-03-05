@@ -8,6 +8,8 @@ namespace Kronos.Core.Storage
     {
         private readonly LinkedList<T> _nodes = new LinkedList<T>();
 
+        public int Count => _nodes.Count;
+
         public void Add(T item)
         {
             if (_nodes.Count == 0)

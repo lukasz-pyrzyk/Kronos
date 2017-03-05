@@ -6,6 +6,7 @@ namespace Kronos.Core.Storage
     public interface IStorage : IDisposable
     {
         int Count { get; }
+        int ExpiringCount { get; }
 
         bool Add(string value, DateTime? expiryDate, ByteString obj);
         void AddOrUpdate(string value, DateTime? expiryDate, ByteString obj);

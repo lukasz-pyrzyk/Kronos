@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Text;
 using Google.Protobuf;
 using Kronos.Core.Storage;
 using NSubstitute;
@@ -28,7 +27,7 @@ namespace Kronos.Core.Tests.Storage
         }
 
         [Fact]
-        public void Add_ReturnsTrue()
+        public void Add_ReturnsTrue_WhenElementWasAdded()
         {
             // Arrange
             string key = "key";
@@ -41,7 +40,25 @@ namespace Kronos.Core.Tests.Storage
 
             // Assert
             Assert.Equal(storage.Count, 1);
+            Assert.Equal(storage.ExpiringCount, 1);
             Assert.True(added);
+        }
+
+        [Fact]
+        public void AddOrUpdate_AddsElement()
+        {
+            // Arrange
+            string key = "key";
+            string objectWord = "lorem ipsum";
+            ICleaner cleaner = Substitute.For<ICleaner>();
+            IStorage storage = new InMemoryStorage(cleaner);
+
+            // Act
+            storage.AddOrUpdate(key, DateTime.MaxValue, ByteString.Empty);
+
+            // Assert
+            Assert.Equal(storage.Count, 1);
+            Assert.Equal(storage.ExpiringCount, 1);
         }
 
         [Fact]
@@ -58,7 +75,6 @@ namespace Kronos.Core.Tests.Storage
             bool added = storage.Add(key, DateTime.MaxValue, ByteString.Empty);
 
             // Assert
-            Assert.Equal(storage.Count, 1);
             Assert.False(added);
         }
 

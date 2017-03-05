@@ -30,16 +30,20 @@ namespace Kronos.Core.Storage
         }
         
         public int Count => _storage.Count;
+        public int ExpiringCount => _expiringKeys.Count;
 
         public bool Add(string key, DateTime? expiryDate, ByteString obj)
         {
             ClearStorageIfRequested();
 
             var metaData = new Key(key, expiryDate);
+
             if (_storage.ContainsKey(metaData))
                 return false;
 
             _storage[metaData] = obj;
+            _expiringKeys.Add(metaData);
+
             return true;
         }
 
@@ -50,6 +54,7 @@ namespace Kronos.Core.Storage
             var metaData = new Key(key, expiryDate);
 
             _storage[metaData] = obj;
+            _expiringKeys.Add(metaData);
         }
 
         public bool TryGet(string key, out ByteString obj)
