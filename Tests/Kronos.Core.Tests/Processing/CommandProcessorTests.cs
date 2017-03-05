@@ -50,7 +50,7 @@ namespace Kronos.Core.Tests.Processing
                 return new InsertResponse();
             }
 
-            protected override InsertResponse ParseResponse(Response response)
+            protected override InsertResponse SelectResponse(Response response)
             {
                 return response.InsertResponse;
             }

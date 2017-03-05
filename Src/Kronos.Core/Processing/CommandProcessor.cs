@@ -23,7 +23,7 @@ namespace Kronos.Core.Processing
                 throw new KronosException(response.Exception);
             }
 
-            TResponse selectedResponse = ParseResponse(response);
+            TResponse selectedResponse = SelectResponse(response);
 
             return selectedResponse;
         }
@@ -43,6 +43,6 @@ namespace Kronos.Core.Processing
             return await Task.WhenAll(responses);
         }
 
-        protected abstract TResponse ParseResponse(Response response);
+        protected abstract TResponse SelectResponse(Response response);
     }
 }

@@ -14,7 +14,7 @@ namespace Kronos.Core.Processing
             return new InsertResponse { Added = added };
         }
 
-        protected override InsertResponse ParseResponse(Response response)
+        protected override InsertResponse SelectResponse(Response response)
         {
             return response.InsertResponse;
         }

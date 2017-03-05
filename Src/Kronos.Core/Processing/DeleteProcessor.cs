@@ -12,7 +12,7 @@ namespace Kronos.Core.Processing
             return new DeleteResponse { Deleted = deleted };
         }
 
-        protected override DeleteResponse ParseResponse(Response response)
+        protected override DeleteResponse SelectResponse(Response response)
         {
             return response.DeleteResponse;
         }

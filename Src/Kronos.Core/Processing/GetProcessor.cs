@@ -17,7 +17,7 @@ namespace Kronos.Core.Processing
             return new GetResponse { Exists = false, Data = ByteString.Empty };
         }
 
-        protected override GetResponse ParseResponse(Response response)
+        protected override GetResponse SelectResponse(Response response)
         {
             return response.GetRespone;
         }
