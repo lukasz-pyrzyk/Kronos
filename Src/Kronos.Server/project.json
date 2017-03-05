@@ -2,13 +2,15 @@
   "authors": [ "Lukasz Pyrzyk" ],
   "buildOptions": {
     "emitEntryPoint": true,
-    "optimize": true
+    "optimize": true,
+    "copyToOutput": { 
+      "includeFiles": [ "NLog.config" ] 
+      }
   },
   "commands": {
     "Kronos.Server": "Kronos.Server"
   },
   "copyright": "Lukasz Pyrzyk",
-  "copyToOutput": [ "./Nlog.config" ],
   "dependencies": {
     "EntryPoint": "1.1.0",
     "Google.Protobuf": "3.2.0",
