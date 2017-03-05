@@ -3,7 +3,7 @@ using Kronos.Core.Hashing;
 
 namespace Kronos.Core.Storage
 {
-    public struct Key
+    public struct Key : IComparable<Key>
     {
         private readonly int _hashCode;
 
@@ -30,6 +30,17 @@ namespace Kronos.Core.Storage
         public override int GetHashCode()
         {
             return _hashCode;
+        }
+
+        public int CompareTo(Key other)
+        {
+            if (other.ExpiryDate == null)
+                throw new InvalidOperationException("Key to compare is not expiring");
+
+            if (ExpiryDate == null)
+                throw new InvalidOperationException("Cannot compare, key is not expiring");
+
+            return DateTime.Compare(ExpiryDate.Value, other.ExpiryDate.Value);
         }
     }
 }
