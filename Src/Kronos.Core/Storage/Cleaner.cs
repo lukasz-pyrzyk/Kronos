@@ -11,10 +11,15 @@ namespace Kronos.Core.Storage
 
         public void Clear(PriorityQueue<Key> expiringKeys, Dictionary<Key, ByteString> nodes)
         {
-            DateTime currentDate = DateTime.UtcNow;
+            DateTime date = DateTime.UtcNow;
             ulong deleted = 0;
-            
-            // TODO - implement
+
+            while (expiringKeys.Count > 0 && expiringKeys.Peek().IsExpired(date))
+            {
+                Key key = expiringKeys.Poll();
+                nodes.Remove(key);
+                deleted++;
+            }
 
             if (deleted > 0)
             {

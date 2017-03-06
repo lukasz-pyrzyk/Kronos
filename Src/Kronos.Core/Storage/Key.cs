@@ -9,12 +9,18 @@ namespace Kronos.Core.Storage
 
         public string Value { get; }
         public DateTime? ExpiryDate { get; }
+        public bool IsExpiring => ExpiryDate.HasValue;
 
         public Key(string value, DateTime? expiryDate = null)
         {
             Value = value;
             ExpiryDate = expiryDate;
             _hashCode = Hasher.Hash(value);
+        }
+
+        public bool IsExpired()
+        {
+            return IsExpired(DateTime.UtcNow);
         }
 
         public bool IsExpired(DateTime date)
@@ -40,7 +46,7 @@ namespace Kronos.Core.Storage
             if (ExpiryDate == null)
                 throw new InvalidOperationException("Cannot compare, key is not expiring");
 
-            return DateTime.Compare(ExpiryDate.Value, other.ExpiryDate.Value);
+            return other.ExpiryDate.Value.CompareTo(ExpiryDate.Value);
         }
     }
 }

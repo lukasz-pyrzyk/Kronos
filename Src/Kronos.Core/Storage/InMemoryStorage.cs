@@ -28,7 +28,7 @@ namespace Kronos.Core.Storage
             _timer = new Timer(OnCleanupTimer, null, 0, 5000);
             _cleaner = cleaner;
         }
-        
+
         public int Count => _storage.Count;
         public int ExpiringCount => _expiringKeys.Count;
 

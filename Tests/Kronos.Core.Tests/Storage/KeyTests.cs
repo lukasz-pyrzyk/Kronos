@@ -54,7 +54,7 @@ namespace Kronos.Core.Tests.Storage
             var metadata = new Key("lorem ipsum", expiryDate);
 
             // Act
-            bool expired = metadata.IsExpired(DateTime.UtcNow);
+            bool expired = metadata.IsExpired();
 
             // Assert
             Assert.Equal(expired, expected);
@@ -67,7 +67,7 @@ namespace Kronos.Core.Tests.Storage
             var metadata = new Key("lorem ipsum");
 
             // Act
-            bool expired = metadata.IsExpired(DateTime.UtcNow);
+            bool expired = metadata.IsExpired();
 
             // Assert
             Assert.False(expired);
@@ -96,7 +96,7 @@ namespace Kronos.Core.Tests.Storage
         }
 
         [Theory]
-        [MemberData(nameof(CompareTo_Data))]
+        [MemberData(nameof(TestData))]
         public void CompareTo_CalculatesCorrectValues(DateTime expire, DateTime expireGiven, int expected)
         {
             // Arrange
@@ -109,12 +109,12 @@ namespace Kronos.Core.Tests.Storage
             Assert.Equal(expected, result);
         }
 
-        public static IEnumerable<object[]> CompareTo_Data()
+        public static IEnumerable<object[]> TestData()
         {
             var now = DateTime.UtcNow;
-            yield return new object[] { now, now.AddDays(1), -1 };
+            yield return new object[] { now, now.AddDays(1), 1 };
             yield return new object[] { now, now, 0 };
-            yield return new object[] { now.AddDays(1), now, 1 };
+            yield return new object[] { now.AddDays(1), now, -1 };
         }
     }
 }
