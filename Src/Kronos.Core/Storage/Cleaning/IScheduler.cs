@@ -1,6 +1,6 @@
 ﻿using System.Threading;
 
-namespace Kronos.Core.Storage
+namespace Kronos.Core.Storage.Cleaning
 {
     public interface IScheduler
     {

@@ -3,9 +3,10 @@ using System.Collections.Generic;
 using System.Linq;
 using Google.Protobuf;
 using Kronos.Core.Storage;
+using Kronos.Core.Storage.Cleaning;
 using Xunit;
 
-namespace Kronos.Core.Tests.Storage
+namespace Kronos.Core.Tests.Storage.Cleaning
 {
     public class CleanerTests
     {
@@ -13,12 +14,12 @@ namespace Kronos.Core.Tests.Storage
         public void Clear_CanDeleteObjectsFromStorage()
         {
             // Arrange
-            var data = new Dictionary<Key, ByteString>
+            var data = new Dictionary<Key, Element>
             {
-                [new Key("first", DateTime.UtcNow.AddDays(-1))] = ByteString.CopyFromUtf8("first"),
-                [new Key("second", DateTime.MaxValue)] = ByteString.CopyFromUtf8("second"),
-                [new Key("third")] = ByteString.CopyFromUtf8("third"),
-                [new Key("fourth", DateTime.UtcNow.AddDays(1))] = ByteString.CopyFromUtf8("fourth")
+                [new Key("first")] = new Element(ByteString.CopyFromUtf8("first"), DateTime.UtcNow.AddDays(-1)),
+                [new Key("second")] = new Element(ByteString.CopyFromUtf8("second"), DateTime.UtcNow.AddDays(100)),
+                [new Key("third")] = new Element(ByteString.CopyFromUtf8("third")),
+                [new Key("fourth")] = new Element(ByteString.CopyFromUtf8("fourth"), DateTime.UtcNow.AddDays(1)),
             };
 
             int dataCountBefore = data.Count;
@@ -41,15 +42,15 @@ namespace Kronos.Core.Tests.Storage
         }
 
 
-        private static PriorityQueue<Key> PrepareExpiringQueue(Dictionary<Key, ByteString> dic)
+        private static PriorityQueue<ExpiringKey> PrepareExpiringQueue(Dictionary<Key, Element> dic)
         {
-            var queue = new PriorityQueue<Key>();
+            var queue = new PriorityQueue<ExpiringKey>();
 
-            foreach (var key in dic.Keys)
+            foreach (var pair in dic)
             {
-                if (key.IsExpiring)
+                if (pair.Value.IsExpiring)
                 {
-                    queue.Add(key);
+                    queue.Add(new ExpiringKey(pair.Key, pair.Value.ExpiryDate.Value));
                 }
             }
 

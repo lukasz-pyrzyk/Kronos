@@ -9,7 +9,6 @@ namespace Kronos.Core.Storage
         int ExpiringCount { get; }
 
         bool Add(string value, DateTime? expiryDate, ByteString obj);
-        void AddOrUpdate(string value, DateTime? expiryDate, ByteString obj);
         bool TryGet(string key, out ByteString obj);
         bool TryRemove(string key);
         bool Contains(string key);

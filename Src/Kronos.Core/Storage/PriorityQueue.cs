@@ -12,6 +12,7 @@ namespace Kronos.Core.Storage
 
         public void Add(T item)
         {
+            // todo write test
             if (_nodes.Count == 0)
             {
                 _nodes.AddLast(item);
@@ -38,6 +39,7 @@ namespace Kronos.Core.Storage
 
         public T Poll()
         {
+            // todo write test
             if (_nodes.Count == 0)
             {
                 throw new InvalidOperationException("Queue is empty");
@@ -52,6 +54,7 @@ namespace Kronos.Core.Storage
 
         public T Peek()
         {
+            // todo write test
             if (_nodes.Count == 0)
             {
                 throw new InvalidOperationException("Queue is empty");
@@ -62,12 +65,22 @@ namespace Kronos.Core.Storage
 
         public IEnumerator<T> GetEnumerator()
         {
-            return _nodes.GetEnumerator();
+            return _nodes.GetEnumerator(); // todo write test
         }
 
         IEnumerator IEnumerable.GetEnumerator()
         {
-            return GetEnumerator();
+            return GetEnumerator(); // todo write test
+        }
+
+        public void Remove(T item)
+        {
+            _nodes.Remove(item); // todo write test
+        }
+
+        public void Clear()
+        {
+            _nodes.Clear(); // todo write test
         }
     }
 }

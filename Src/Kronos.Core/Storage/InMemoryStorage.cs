@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Threading;
 using Google.Protobuf;
+using Kronos.Core.Storage.Cleaning;
 using NLog;
 
 namespace Kronos.Core.Storage
@@ -10,8 +11,8 @@ namespace Kronos.Core.Storage
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        private readonly Dictionary<Key, ByteString> _storage = new Dictionary<Key, ByteString>(new KeyComperer());
-        private readonly PriorityQueue<Key> _expiringKeys = new PriorityQueue<Key>();
+        private readonly Dictionary<Key, Element> _storage = new Dictionary<Key, Element>(new KeyComperer());
+        private readonly PriorityQueue<ExpiringKey> _expiringKeys = new PriorityQueue<ExpiringKey>();
 
         private int cleanupRequested;
         private readonly ICleaner _cleaner;
@@ -31,53 +32,72 @@ namespace Kronos.Core.Storage
         public int Count => _storage.Count;
         public int ExpiringCount => _expiringKeys.Count;
 
-        public bool Add(string key, DateTime? expiryDate, ByteString obj)
+        public bool Add(string name, DateTime? expiryDate, ByteString obj)
         {
             ClearStorageIfRequested();
 
-            var metaData = new Key(key, expiryDate);
+            var key = new Key(name);
 
-            if (_storage.ContainsKey(metaData))
+            if (_storage.ContainsKey(key))
                 return false;
 
-            _storage[metaData] = obj;
-            _expiringKeys.Add(metaData);
+            var element = new Element(obj, expiryDate);
+            _storage[key] = element;
+
+            if (expiryDate.HasValue)
+            {
+                _expiringKeys.Add(new ExpiringKey(key, expiryDate.Value));
+            }
 
             return true;
         }
 
-        public void AddOrUpdate(string key, DateTime? expiryDate, ByteString obj)
+        public bool TryGet(string name, out ByteString obj)
         {
             ClearStorageIfRequested();
 
-            var metaData = new Key(key, expiryDate);
+            var key = new Key(name);
+            var element = new Element();
 
-            _storage[metaData] = obj;
-            _expiringKeys.Add(metaData);
+            bool found = _storage.TryGetValue(key, out element);
+            if (found && !element.IsExpired())
+            {
+                obj = element.Data;
+                return true;
+            }
+
+            obj = null;
+            return false;
         }
 
-        public bool TryGet(string key, out ByteString obj)
+        public bool TryRemove(string name)
         {
             ClearStorageIfRequested();
 
-            var metaData = new Key(key);
-            return _storage.TryGetValue(metaData, out obj);
+            var key = new Key(name);
+            var element = new Element();
+            bool found = _storage.TryGetValue(key, out element);
+            if (found)
+            {
+                _storage.Remove(key);
+                if (element.IsExpiring)
+                {
+                    _expiringKeys.Remove(new ExpiringKey(key, default(DateTime)));
+                }
+            }
+
+            return found;
         }
 
-        public bool TryRemove(string key)
+        public bool Contains(string name)
         {
             ClearStorageIfRequested();
 
-            var metaData = new Key(key);
-            return _storage.Remove(metaData);
-        }
+            var key = new Key(name);
+            var element = new Element();
+            bool found = _storage.TryGetValue(key, out element);
 
-        public bool Contains(string key)
-        {
-            ClearStorageIfRequested();
-
-            var metaData = new Key(key);
-            return _storage.ContainsKey(metaData);
+            return found && !element.IsExpired();
         }
 
         public int Clear()
@@ -86,6 +106,7 @@ namespace Kronos.Core.Storage
 
             int count = Count;
             _storage.Clear();
+            _expiringKeys.Clear();
 
             return count;
         }

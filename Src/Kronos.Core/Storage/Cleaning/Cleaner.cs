@@ -1,23 +1,22 @@
-﻿using System;
+using System;
 using System.Collections.Generic;
-using Google.Protobuf;
 using NLog;
 
-namespace Kronos.Core.Storage
+namespace Kronos.Core.Storage.Cleaning
 {
     public class Cleaner : ICleaner
     {
         private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
-        public void Clear(PriorityQueue<Key> expiringKeys, Dictionary<Key, ByteString> nodes)
+        public void Clear(PriorityQueue<ExpiringKey> expiringKeys, Dictionary<Key, Element> nodes)
         {
             DateTime date = DateTime.UtcNow;
             uint deleted = 0;
 
             while (expiringKeys.Count > 0 && expiringKeys.Peek().IsExpired(date))
             {
-                Key key = expiringKeys.Poll();
-                nodes.Remove(key);
+                ExpiringKey expiringKey = expiringKeys.Poll();
+                nodes.Remove(expiringKey.Key);
                 deleted++;
             }
 
@@ -28,4 +27,3 @@ namespace Kronos.Core.Storage
         }
     }
 }
-
