@@ -4,7 +4,7 @@ using NLog;
 
 namespace Kronos.Core.Storage.Cleaning
 {
-    public class Cleaner : ICleaner
+    internal class Cleaner : ICleaner
     {
         private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 

@@ -22,7 +22,7 @@ namespace Kronos.Core.Storage
         {
         }
 
-        public InMemoryStorage(ICleaner cleaner, IScheduler scheduler)
+        internal InMemoryStorage(ICleaner cleaner, IScheduler scheduler)
         {
             _cleaner = cleaner;
             _scheduler = scheduler;
