@@ -12,7 +12,7 @@ namespace Kronos.Core.Storage
         public void Clear(PriorityQueue<Key> expiringKeys, Dictionary<Key, ByteString> nodes)
         {
             DateTime date = DateTime.UtcNow;
-            ulong deleted = 0;
+            uint deleted = 0;
 
             while (expiringKeys.Count > 0 && expiringKeys.Peek().IsExpired(date))
             {
