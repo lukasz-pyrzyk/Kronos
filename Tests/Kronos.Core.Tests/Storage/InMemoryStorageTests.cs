@@ -14,8 +14,7 @@ namespace Kronos.Core.Tests.Storage
             const string key = "key";
 
             ByteString package = ByteString.CopyFromUtf8("lorem ipsum");
-            ICleaner cleaner = Substitute.For<ICleaner>();
-            IStorage storage = new InMemoryStorage(cleaner);
+            IStorage storage = CreateStorage();
 
             storage.AddOrUpdate(key, DateTime.MaxValue, package);
 
@@ -32,8 +31,7 @@ namespace Kronos.Core.Tests.Storage
             // Arrange
             string key = "key";
             string objectWord = "lorem ipsum";
-            ICleaner cleaner = Substitute.For<ICleaner>();
-            IStorage storage = new InMemoryStorage(cleaner);
+            IStorage storage = CreateStorage();
 
             // Act
             bool added = storage.Add(key, DateTime.MaxValue, ByteString.Empty);
@@ -50,8 +48,7 @@ namespace Kronos.Core.Tests.Storage
             // Arrange
             string key = "key";
             string objectWord = "lorem ipsum";
-            ICleaner cleaner = Substitute.For<ICleaner>();
-            IStorage storage = new InMemoryStorage(cleaner);
+            IStorage storage = CreateStorage();
 
             // Act
             storage.AddOrUpdate(key, DateTime.MaxValue, ByteString.Empty);
@@ -67,8 +64,7 @@ namespace Kronos.Core.Tests.Storage
             // Arrange
             string key = "key";
             string objectWord = "lorem ipsum";
-            ICleaner cleaner = Substitute.For<ICleaner>();
-            IStorage storage = new InMemoryStorage(cleaner);
+            IStorage storage = CreateStorage();
 
             // Act
             storage.Add(key, DateTime.MaxValue, ByteString.Empty);
@@ -79,11 +75,22 @@ namespace Kronos.Core.Tests.Storage
         }
 
         [Fact]
+        public void ReturnsNullWhenObjectDoesNotExist()
+        {
+            IStorage storage = CreateStorage();
+
+            ByteString objFromBytes;
+            bool success = storage.TryGet("lorem ipsum", out objFromBytes);
+
+            Assert.Null(objFromBytes);
+            Assert.False(success);
+        }
+
+        [Fact]
         public void CanUpdateExistingObject()
         {
             string key = "key";
-            ICleaner cleaner = Substitute.For<ICleaner>();
-            IStorage storage = new InMemoryStorage(cleaner);
+            IStorage storage = CreateStorage();
 
             ByteString firstObject = ByteString.CopyFromUtf8("first");
             ByteString secondObject = ByteString.CopyFromUtf8("second");
@@ -104,8 +111,8 @@ namespace Kronos.Core.Tests.Storage
             const string firstKey = "key1";
             const string secondKey = "key2";
 
-            ICleaner cleaner = Substitute.For<ICleaner>();
-            IStorage storage = new InMemoryStorage(cleaner);
+            IStorage storage = CreateStorage();
+
             storage.AddOrUpdate(firstKey, DateTime.MaxValue, ByteString.Empty);
             storage.AddOrUpdate(secondKey, DateTime.MaxValue, ByteString.Empty);
 
@@ -121,8 +128,7 @@ namespace Kronos.Core.Tests.Storage
             const string firstKey = "key1";
             const string secondKey = "key2";
 
-            ICleaner cleaner = Substitute.For<ICleaner>();
-            IStorage storage = new InMemoryStorage(cleaner);
+            IStorage storage = CreateStorage();
             storage.AddOrUpdate(firstKey, DateTime.MaxValue, ByteString.Empty);
 
             bool deleted = storage.TryRemove(secondKey);
@@ -134,42 +140,31 @@ namespace Kronos.Core.Tests.Storage
         [Fact]
         public void Contains_ReturnsTrueWhenDataExists()
         {
-            ICleaner cleaner = Substitute.For<ICleaner>();
-            IStorage storage = new InMemoryStorage(cleaner);
+            // Arrange
+            IStorage storage = CreateStorage();
 
-            string key = "lorem ipsum";
+            const string key = "lorem ipsum";
             storage.AddOrUpdate(key, DateTime.MaxValue, ByteString.Empty);
             storage.AddOrUpdate("second", DateTime.MaxValue, ByteString.Empty);
 
+            // Act
             bool result = storage.Contains(key);
 
+            // Assert
             Assert.True(result);
         }
 
         [Fact]
         public void Contains_ReturnsTrueWhenDataDoesNotExist()
         {
-            ICleaner cleaner = Substitute.For<ICleaner>();
-            IStorage storage = new InMemoryStorage(cleaner);
+            // Arrange
+            IStorage storage = CreateStorage();
 
-            string key = "lorem ipsum";
+            // Assert
+            bool result = storage.Contains("lorem ipsum");
 
-            bool result = storage.Contains(key);
-
+            // Act
             Assert.False(result);
-        }
-
-        [Fact]
-        public void CanClear()
-        {
-            ICleaner cleaner = Substitute.For<ICleaner>();
-            IStorage storage = new InMemoryStorage(cleaner);
-
-            storage.AddOrUpdate("first", DateTime.MaxValue, ByteString.Empty);
-            storage.AddOrUpdate("second", DateTime.MaxValue, ByteString.Empty);
-
-            storage.Dispose();
-            Assert.Equal(storage.Count, 0);
         }
 
         [Theory]
@@ -177,31 +172,44 @@ namespace Kronos.Core.Tests.Storage
         [InlineData(50)]
         public void Clear_ClearsTheData(int count)
         {
-            var expiryProvider = Substitute.For<ICleaner>();
-            IStorage storage = new InMemoryStorage(expiryProvider);
+            // Arrange
+            IStorage storage = CreateStorage();
 
+            storage.AddOrUpdate("first", DateTime.MaxValue, ByteString.Empty);
+            storage.AddOrUpdate("second", DateTime.MaxValue, ByteString.Empty);
 
-            for (int i = 0; i < count; i++)
-            {
-                storage.AddOrUpdate(Guid.NewGuid().ToString(), DateTime.MaxValue, ByteString.Empty);
-            }
-
+            // Act
             int deleted = storage.Clear();
+
+            // Assert
             Assert.Equal(storage.Count, 0);
+            Assert.Equal(storage.ExpiringCount, 1);
             Assert.Equal(deleted, count);
         }
 
         [Fact]
-        public void ReturnsNullWhenObjectDoesNotExist()
+        public void Dispose_ClearsTheData()
+        {
+            // Arrange
+            IStorage storage = CreateStorage();
+            
+            storage.AddOrUpdate("first", DateTime.MaxValue, ByteString.Empty);
+            storage.AddOrUpdate("second", DateTime.MaxValue, ByteString.Empty);
+
+            // Act
+            storage.Dispose();
+
+            // Assert
+            Assert.Equal(storage.Count, 0);
+            Assert.Equal(storage.ExpiringCount, 0);
+        }
+
+        private static IStorage CreateStorage()
         {
             ICleaner cleaner = Substitute.For<ICleaner>();
-            IStorage storage = new InMemoryStorage(cleaner);
-
-            ByteString objFromBytes;
-            bool success = storage.TryGet("lorem ipsum", out objFromBytes);
-
-            Assert.Null(objFromBytes);
-            Assert.False(success);
+            IScheduler scheduler = Substitute.For<IScheduler>();
+            IStorage storage = new InMemoryStorage(cleaner, scheduler);
+            return storage;
         }
     }
 }
