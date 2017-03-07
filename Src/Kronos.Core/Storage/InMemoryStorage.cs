@@ -57,8 +57,7 @@ namespace Kronos.Core.Storage
             ClearStorageIfRequested();
 
             var key = new Key(name);
-            var element = new Element();
-
+            Element element;
             bool found = _storage.TryGetValue(key, out element);
             if (found && !element.IsExpired())
             {
@@ -75,7 +74,7 @@ namespace Kronos.Core.Storage
             ClearStorageIfRequested();
 
             var key = new Key(name);
-            var element = new Element();
+            Element element;
             bool found = _storage.TryGetValue(key, out element);
             if (found)
             {
@@ -94,7 +93,7 @@ namespace Kronos.Core.Storage
             ClearStorageIfRequested();
 
             var key = new Key(name);
-            var element = new Element();
+            Element element;
             bool found = _storage.TryGetValue(key, out element);
 
             return found && !element.IsExpired();

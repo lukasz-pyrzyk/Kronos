@@ -12,28 +12,25 @@ namespace Kronos.Core.Tests.Storage
     public class InMemoryStorageTests
     {
         [Fact]
-        public void CanInsertAndGetObject()
-        {
-            const string key = "key";
-
-            ByteString package = ByteString.CopyFromUtf8("lorem ipsum");
-            IStorage storage = CreateStorage();
-
-            storage.Add(key, DateTime.MaxValue, package);
-
-            ByteString objFromBytes;
-            bool success = storage.TryGet(key, out objFromBytes);
-
-            Assert.True(success);
-            Assert.Equal(objFromBytes, package);
-        }
-
-        [Fact]
         public void Add_ReturnsTrue_WhenElementWasAdded()
         {
             // Arrange
-            string key = "key";
-            string objectWord = "lorem ipsum";
+            const string key = "key";
+            IStorage storage = CreateStorage();
+
+            // Act
+            bool added = storage.Add(key, null, ByteString.Empty);
+
+            // Assert
+            Assert.Equal(storage.Count, 1);
+            Assert.True(added);
+        }
+
+        [Fact]
+        public void Add_ReturnsTrue_WhenElementWasAdded_AndToTheExpiringKeys()
+        {
+            // Arrange
+            const string key = "key";
             IStorage storage = CreateStorage();
 
             // Act
@@ -44,22 +41,6 @@ namespace Kronos.Core.Tests.Storage
             Assert.Equal(storage.ExpiringCount, 1);
             Assert.True(added);
         }
-
-        //[Fact]
-        //public void AddOrUpdate_AddsElement()
-        //{
-        //    // Arrange
-        //    string key = "key";
-        //    string objectWord = "lorem ipsum";
-        //    IStorage storage = CreateStorage();
-
-        //    // Act
-        //    storage.AddOrUpdate(key, DateTime.MaxValue, ByteString.Empty);
-
-        //    // Assert
-        //    Assert.Equal(storage.Count, 1);
-        //    Assert.Equal(storage.ExpiringCount, 1);
-        //}
 
         [Fact]
         public void Add_ReturnsFalse_WhenKeyAlreadyExists()
@@ -78,39 +59,80 @@ namespace Kronos.Core.Tests.Storage
         }
 
         [Fact]
-        public void ReturnsNullWhenObjectDoesNotExist()
+        public void TryGet_ReturnsObject()
         {
+            // Arrange
             IStorage storage = CreateStorage();
+            const string key = "lorem ipsum";
+            ByteString data = ByteString.CopyFromUtf8("lorem ipsum");
+            storage.Add(key, null, data);
 
-            ByteString objFromBytes;
-            bool success = storage.TryGet("lorem ipsum", out objFromBytes);
+            // Act
+            ByteString received;
+            bool success = storage.TryGet(key, out received);
 
-            Assert.Null(objFromBytes);
-            Assert.False(success);
+            // Assert
+            Assert.True(success);
+            Assert.Equal(data, received);
         }
 
-        //[Fact]
-        //public void CanUpdateExistingObject()
-        //{
-        //    string key = "key";
-        //    IStorage storage = CreateStorage();
+        [Fact]
+        public void TryGet_ReturnsNullWhenObjectDoesNotExist()
+        {
+            // Arrange
+            IStorage storage = CreateStorage();
 
-        //    ByteString firstObject = ByteString.CopyFromUtf8("first");
-        //    ByteString secondObject = ByteString.CopyFromUtf8("second");
+            // Act
+            ByteString received;
+            bool success = storage.TryGet("lorem ipsum", out received);
 
-        //    storage.Add(key, DateTime.MaxValue, firstObject);
-        //    storage.Add(key, DateTime.MaxValue, secondObject); // add or update
+            // Assert
+            Assert.False(success);
+            Assert.Null(received);
+        }
 
-        //    ByteString objFromBytes;
-        //    bool success = storage.TryGet(key, out objFromBytes);
+        [Fact]
+        public void TryGet_ReturnsNullWhenObjectIsExpired()
+        {
+            // Arrange
+            IStorage storage = CreateStorage();
+            const string key = "lorem ipsum";
+            ByteString data = ByteString.CopyFromUtf8("lorem ipsum");
+            storage.Add(key, DateTime.MinValue, data);
 
-        //    Assert.True(success);
-        //    Assert.Equal(objFromBytes, secondObject);
-        //}
+            // Act
+            ByteString received;
+            bool success = storage.TryGet(key, out received);
+
+            // Assert
+            Assert.False(success);
+            Assert.Null(received);
+        }
 
         [Fact]
         public void TryRemove_RemovesEntryFromStorage()
         {
+            // Arrange
+            const string firstKey = "key1";
+            const string secondKey = "key2";
+
+            IStorage storage = CreateStorage();
+
+            storage.Add(firstKey, null, ByteString.Empty);
+            storage.Add(secondKey, null, ByteString.Empty);
+
+            // Act
+            bool deleted = storage.TryRemove(firstKey);
+
+            // Assert
+            Assert.True(deleted);
+            Assert.Equal(storage.Count, 1);
+        }
+
+        [Fact]
+        public void TryRemove_RemovesEntryFromStorage_AlsoFromExpiringKeys()
+        {
+            // Arrange
             const string firstKey = "key1";
             const string secondKey = "key2";
 
@@ -119,10 +141,13 @@ namespace Kronos.Core.Tests.Storage
             storage.Add(firstKey, DateTime.MaxValue, ByteString.Empty);
             storage.Add(secondKey, DateTime.MaxValue, ByteString.Empty);
 
+            // Act
             bool deleted = storage.TryRemove(firstKey);
 
+            // Assert
             Assert.True(deleted);
             Assert.Equal(storage.Count, 1);
+            Assert.Equal(storage.ExpiringCount, 1);
         }
 
         [Fact]
@@ -145,16 +170,29 @@ namespace Kronos.Core.Tests.Storage
         {
             // Arrange
             IStorage storage = CreateStorage();
-
             const string key = "lorem ipsum";
-            storage.Add(key, DateTime.MaxValue, ByteString.Empty);
-            storage.Add("second", DateTime.MaxValue, ByteString.Empty);
+            storage.Add(key, null, ByteString.Empty);
 
             // Act
             bool result = storage.Contains(key);
 
             // Assert
             Assert.True(result);
+        }
+
+        [Fact]
+        public void Contains_ReturnsFalseWhenKeyIsExpired()
+        {
+            // Arrange
+            IStorage storage = CreateStorage();
+            const string key = "lorem ipsum";
+            storage.Add(key, DateTime.MinValue, ByteString.Empty);
+
+            // Act
+            bool result = storage.Contains(key);
+
+            // Assert
+            Assert.False(result);
         }
 
         [Fact]
