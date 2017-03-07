@@ -6,17 +6,17 @@ namespace Kronos.Core.Storage
     {
         private readonly int _hashCode;
 
-        public string Value { get; }
-        
-        public Key(string value)
+        public string Name { get; }
+
+        public Key(string name)
         {
-            Value = value;
-            _hashCode = Hasher.Hash(value);
+            Name = name;
+            _hashCode = Hasher.Hash(name);
         }
 
         public override string ToString()
         {
-            return Value;
+            return Name;
         }
 
         public override int GetHashCode()
