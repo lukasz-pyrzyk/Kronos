@@ -1,4 +1,6 @@
 ﻿using System;
+using System.Collections.Generic;
+using System.Threading.Tasks;
 using Google.Protobuf;
 using Kronos.Core.Storage;
 using Kronos.Core.Storage.Cleaning;
@@ -195,7 +197,7 @@ namespace Kronos.Core.Tests.Storage
         {
             // Arrange
             IStorage storage = CreateStorage();
-            
+
             storage.Add("first", DateTime.MaxValue, ByteString.Empty);
             storage.Add("second", DateTime.MaxValue, ByteString.Empty);
 
@@ -205,6 +207,58 @@ namespace Kronos.Core.Tests.Storage
             // Assert
             Assert.Equal(storage.Count, 0);
             Assert.Equal(storage.ExpiringCount, 0);
+        }
+
+        [Fact]
+        public async Task Add_CallsCleaner()
+        {
+            // Arrange
+            ICleaner cleaner = Substitute.For<ICleaner>();
+            const int timePeriod = 100;
+            IScheduler scheduler = new Scheduler(timePeriod);
+            IStorage storage = new InMemoryStorage(cleaner, scheduler);
+
+            // Act
+            await Task.Delay(timePeriod);
+            storage.Add("", null, ByteString.Empty);
+
+            // Assert
+            cleaner.Received(1).Clear(Arg.Any<PriorityQueue<ExpiringKey>>(), Arg.Any<Dictionary<Key, Element>>());
+        }
+
+        [Fact]
+        public async Task TryGet_CallsCleaner()
+        {
+            // Arrange
+            ICleaner cleaner = Substitute.For<ICleaner>();
+            const int timePeriod = 100;
+            IScheduler scheduler = new Scheduler(timePeriod);
+            IStorage storage = new InMemoryStorage(cleaner, scheduler);
+
+            // Act
+            await Task.Delay(timePeriod);
+            ByteString elem;
+            storage.TryGet("", out elem);
+
+            // Assert
+            cleaner.Received(1).Clear(Arg.Any<PriorityQueue<ExpiringKey>>(), Arg.Any<Dictionary<Key, Element>>());
+        }
+
+        [Fact]
+        public async Task Contains_CallsCleaner()
+        {
+            // Arrange
+            ICleaner cleaner = Substitute.For<ICleaner>();
+            const int timePeriod = 100;
+            IScheduler scheduler = new Scheduler(timePeriod);
+            IStorage storage = new InMemoryStorage(cleaner, scheduler);
+
+            // Act
+            await Task.Delay(timePeriod);
+            storage.Contains("");
+
+            // Assert
+            cleaner.Received(1).Clear(Arg.Any<PriorityQueue<ExpiringKey>>(), Arg.Any<Dictionary<Key, Element>>());
         }
 
         private static IStorage CreateStorage()
