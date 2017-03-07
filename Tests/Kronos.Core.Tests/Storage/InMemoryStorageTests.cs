@@ -46,8 +46,7 @@ namespace Kronos.Core.Tests.Storage
         public void Add_ReturnsFalse_WhenKeyAlreadyExists()
         {
             // Arrange
-            string key = "key";
-            string objectWord = "lorem ipsum";
+            const string key = "key";
             IStorage storage = CreateStorage();
 
             // Act

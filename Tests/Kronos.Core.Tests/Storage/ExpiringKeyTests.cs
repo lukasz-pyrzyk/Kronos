@@ -109,7 +109,6 @@ namespace Kronos.Core.Tests.Storage
         public void GetHashCode_ReturnsKeyHashcode()
         {
             // Arrange
-            var expiryDate = DateTime.Now;
             var key = new Key("lorem ipsum");
             var element = new ExpiringKey(key, default(DateTime));
 
