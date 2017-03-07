@@ -104,5 +104,75 @@ namespace Kronos.Core.Tests.Storage
             // Assert
             Assert.Equal(-1, result);
         }
+
+        [Fact]
+        public void GetHashCode_ReturnsKeyHashcode()
+        {
+            // Arrange
+            var expiryDate = DateTime.Now;
+            var key = new Key("lorem ipsum");
+            var element = new ExpiringKey(key, default(DateTime));
+
+            // Act
+            int hash = element.GetHashCode();
+
+            // Assert
+            Assert.Equal(key.GetHashCode(), hash);
+        }
+
+        [Fact]
+        public void Equals_ReturnsFalse_IfTypeIsDifferent()
+        {
+            // Arrange
+            var element = new ExpiringKey(new Key(""), default(DateTime));
+
+            // Act
+            bool equal = element.Equals(new object());
+
+            // Assert
+            Assert.False(equal);
+        }
+
+        [Fact]
+        public void Equals_ReturnsTrue_IfElementIsTheSame()
+        {
+            // Arrange
+            var element = new ExpiringKey(new Key(""), default(DateTime));
+
+            // Act
+            bool equal = element.Equals(element);
+
+            // Assert
+            Assert.True(equal);
+        }
+
+        [Fact]
+        public void Equals_ReturnsTrue_IfElementIsTheSame_WhenPassedIsObject()
+        {
+            // Arrange
+            var element = new ExpiringKey(new Key(""), default(DateTime));
+
+            // Act
+            bool equal = element.Equals((object)element);
+
+            // Assert
+            Assert.True(equal);
+        }
+
+        [Fact]
+        public void ToString_ContainsInformationAboutNameAndExpiry()
+        {
+            // Arrange
+            const string key = "lorem";
+            var time = DateTime.Now;
+            var element = new ExpiringKey(new Key(key), time);
+
+            // Act
+            string value = element.ToString();
+
+            // Assert
+            Assert.Contains(key, value);
+            Assert.Contains(time.ToString("g"), value);
+        }
     }
 }

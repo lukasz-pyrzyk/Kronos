@@ -30,20 +30,22 @@ namespace Kronos.Core.Storage
 
         public override int GetHashCode()
         {
-            // TODO write unit test
             return Key.GetHashCode();
         }
 
         public override bool Equals(object obj)
         {
-            // TODO write unit test
             if (obj is ExpiringKey) return Equals((ExpiringKey)obj);
             return false;
         }
         public bool Equals(ExpiringKey expiringKey)
         {
-            // TODO write unit test
             return Key.Equals(expiringKey.Key);
+        }
+
+        public override string ToString()
+        {
+            return $"{Key.Name}|{ExpiryDate:g}";
         }
     }
 }
