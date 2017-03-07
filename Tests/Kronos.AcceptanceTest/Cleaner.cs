@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Kronos.Client;
-using Kronos.Core.Storage;
 using Kronos.Core.Storage.Cleaning;
 using Xunit;
 
