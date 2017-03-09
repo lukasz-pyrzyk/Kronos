@@ -21,13 +21,13 @@ namespace Kronos.Client.Tests
         {
             var first = new ServerConfig
             {
-                Ip = "192.168.0.1",
+                Ip = "127.0.0.1",
                 Port = 5000
             };
 
             var second = new ServerConfig
             {
-                Ip = "192.168.0.1",
+                Ip = "127.0.0.1",
                 Port = 5001
             };
 
@@ -49,19 +49,19 @@ namespace Kronos.Client.Tests
         {
             var first = new ServerConfig
             {
-                Ip = "192.168.0.1",
+                Ip = "127.0.0.1",
                 Port = 5000
             };
 
             var second = new ServerConfig
             {
-                Ip = "192.168.0.1",
+                Ip = "127.0.0.1",
                 Port = 5001
             };
 
             var three = new ServerConfig
             {
-                Ip = "192.168.0.1",
+                Ip = "127.0.0.1",
                 Port = 5002
             };
 
@@ -85,7 +85,7 @@ namespace Kronos.Client.Tests
         {
             var first = new ServerConfig
             {
-                Ip = "192.168.0.1",
+                Ip = "127.0.0.1",
                 Port = 5000
             };
 

@@ -9,8 +9,8 @@ namespace Kronos.Core.Tests.Configuration
         [Fact]
         public void EndPoint_ContainsCorrectIPAndPort()
         {
-            string ip = "192.168.0.1";
-            int port = 5000;
+            const string ip = "127.0.0.1";
+            const int port = 5000;
 
             ServerConfig config = new ServerConfig
             {
