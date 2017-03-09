@@ -35,7 +35,7 @@ namespace Benchmark.Types
                 .ConfigureAwait(false);
         }
 
-        [Benchmark]
+        [Benchmark(Baseline = true)]
         public async Task Redis()
         {
             string key = Prepare.Key();
