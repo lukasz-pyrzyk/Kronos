@@ -21,10 +21,10 @@ namespace Kronos.Server
         private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
         private readonly Auth _auth;
 
-        public Listener(IPAddress ipAddress, SettingsArgs settings, ISocketProcessor processor, IRequestProcessor requestProcessor)
+        public Listener(SettingsArgs settings, ISocketProcessor processor, IRequestProcessor requestProcessor)
         {
             _auth = Auth.FromCfg(new AuthConfig { Login = settings.Login, Password = settings.Password });
-            _listener = new TcpListener(ipAddress, settings.Port);
+            _listener = new TcpListener(IPAddress.Any, settings.Port);
             _processor = processor;
             _requestProcessor = requestProcessor;
         }

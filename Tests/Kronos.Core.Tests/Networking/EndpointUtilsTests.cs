@@ -9,13 +9,12 @@ namespace Kronos.Core.Tests.Networking
     public class EndpointUtilsTests
     {
         [Theory]
-        [InlineData(null)]
         [InlineData("localhost")]
         [InlineData("google.com")]
         public async Task GetIPAsync_ReturnsIpAddress(string hostName)
         {
             // Act
-            IPAddress address = await EndpointUtils.GetIPAsync();
+            IPAddress address = await EndpointUtils.GetIPAsync(hostName);
 
             // Assert
             Assert.NotNull(address);
