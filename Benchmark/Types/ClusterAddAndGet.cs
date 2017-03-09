@@ -9,7 +9,7 @@ namespace Benchmark.Types
 {
     public class ClusterAddAndGet : ClusterBenchmark
     {
-        [Params(Size.Mb)]
+        [Params(Size.Kb * 100, Size.Kb * 500, Size.Mb, Size.Mb * 2)]
         public int PackageSize { get; set; }
 
         private byte[] _data;
