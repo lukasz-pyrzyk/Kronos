@@ -1,10 +1,7 @@
 ﻿using System;
-using System.Net;
 using System.Threading;
-using System.Threading.Tasks;
 using System.Xml;
 using EntryPoint;
-using Kronos.Core.Networking;
 using Kronos.Core.Processing;
 using Kronos.Core.Storage;
 using NLog;
@@ -25,21 +22,19 @@ namespace Kronos.Server
             PrintLogo();
 
             var config = LoggerSetup();
-            Task.WaitAll(StartAsync(settings, config));
+            Start(settings, config);
         }
 
-        public static async Task StartAsync(SettingsArgs settings, LoggingConfiguration config)
+        public static void Start(SettingsArgs settings, LoggingConfiguration config)
         {
             LogManager.Configuration = config;
-
-            IPAddress localAddr = await EndpointUtils.GetIPAsync();
 
             ICleaner cleaner = new Cleaner();
             IStorage storage = new InMemoryStorage(cleaner);
 
             IRequestProcessor requestProcessor = new RequestProcessor(storage);
             ISocketProcessor processor = new SocketProcessor();
-            IListener server = new Listener(localAddr, settings, processor, requestProcessor);
+            IListener server = new Listener(settings, processor, requestProcessor);
 
             server.Start();
             IsWorking = true;
