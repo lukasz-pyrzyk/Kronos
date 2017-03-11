@@ -13,6 +13,7 @@ using System.Runtime.InteropServices;
 [assembly: AssemblyCopyright("Copyright © 1 2015 - Lukasz Pyrzyk")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
+[assembly: InternalsVisibleTo("Kronos.AcceptanceTest")]
 [assembly: InternalsVisibleTo("Kronos.Core.Tests")]
 [assembly: InternalsVisibleTo("DynamicProxyGenAssembly2")]
 

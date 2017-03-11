@@ -2,61 +2,101 @@
 using System.Collections.Generic;
 using System.Threading;
 using Google.Protobuf;
+using Kronos.Core.Storage.Cleaning;
 using NLog;
 
 namespace Kronos.Core.Storage
 {
     public class InMemoryStorage : IStorage
     {
-        private readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+
+        private readonly Dictionary<Key, Element> _storage = new Dictionary<Key, Element>(new KeyComperer());
+        private readonly PriorityQueue<ExpiringKey> _expiringKeys = new PriorityQueue<ExpiringKey>();
+
+        private int cleanupRequested;
         private readonly ICleaner _cleaner;
+        private readonly IScheduler _scheduler;
 
-        private readonly Dictionary<Key, ByteString> _storage =
-            new Dictionary<Key, ByteString>(new KeyComperer());
-
-        private readonly CancellationTokenSource _cancelToken = new CancellationTokenSource();
-
-        public int Count => _storage.Count;
-
-        public InMemoryStorage(ICleaner cleaner)
+        public InMemoryStorage() : this(new Cleaner(), new Scheduler())
         {
-            _cleaner = cleaner;
-            _cleaner.Start(_storage, _cancelToken.Token);
         }
 
-        public bool Add(string key, DateTime? expiryDate, ByteString obj)
+        internal InMemoryStorage(ICleaner cleaner, IScheduler scheduler)
         {
-            var metaData = new Key(key, expiryDate);
-            if (_storage.ContainsKey(metaData))
+            _cleaner = cleaner;
+            _scheduler = scheduler;
+            _scheduler.Register(OnTimer);
+        }
+
+        public int Count => _storage.Count;
+        public int ExpiringCount => _expiringKeys.Count;
+
+        public bool Add(string name, DateTime? expiryDate, ByteString obj)
+        {
+            ClearStorageIfRequested();
+
+            var key = new Key(name);
+
+            if (_storage.ContainsKey(key))
                 return false;
 
-            _storage[metaData] = obj;
+            var element = new Element(obj, expiryDate);
+            _storage[key] = element;
+
+            if (expiryDate.HasValue)
+            {
+                _expiringKeys.Add(new ExpiringKey(key, expiryDate.Value));
+            }
+
             return true;
         }
 
-        public void AddOrUpdate(string key, DateTime? expiryDate, ByteString obj)
+        public bool TryGet(string name, out ByteString obj)
         {
-            var metaData = new Key(key, expiryDate);
+            ClearStorageIfRequested();
 
-            _storage[metaData] = obj;
+            var key = new Key(name);
+            Element element;
+            bool found = _storage.TryGetValue(key, out element);
+            if (found && !element.IsExpired())
+            {
+                obj = element.Data;
+                return true;
+            }
+
+            obj = null;
+            return false;
         }
 
-        public bool TryGet(string key, out ByteString obj)
+        public bool TryRemove(string name)
         {
-            var metaData = new Key(key);
-            return _storage.TryGetValue(metaData, out obj);
+            ClearStorageIfRequested();
+
+            var key = new Key(name);
+            Element element;
+            bool found = _storage.TryGetValue(key, out element);
+            if (found)
+            {
+                _storage.Remove(key);
+                if (element.IsExpiring)
+                {
+                    _expiringKeys.Remove(new ExpiringKey(key, default(DateTime)));
+                }
+            }
+
+            return found;
         }
 
-        public bool TryRemove(string key)
+        public bool Contains(string name)
         {
-            var metaData = new Key(key);
-            return _storage.Remove(metaData);
-        }
+            ClearStorageIfRequested();
 
-        public bool Contains(string key)
-        {
-            var metaData = new Key(key);
-            return _storage.ContainsKey(metaData);
+            var key = new Key(name);
+            Element element;
+            bool found = _storage.TryGetValue(key, out element);
+
+            return found && !element.IsExpired();
         }
 
         public int Clear()
@@ -65,6 +105,7 @@ namespace Kronos.Core.Storage
 
             int count = Count;
             _storage.Clear();
+            _expiringKeys.Clear();
 
             return count;
         }
@@ -73,8 +114,27 @@ namespace Kronos.Core.Storage
         {
             _logger.Info("Disposing storage");
 
-            _cancelToken.Cancel();
             Clear();
+        }
+
+        private void ClearStorageIfRequested()
+        {
+            // check if cleanup was requested, do not change value
+            if (Interlocked.CompareExchange(ref cleanupRequested, 1, 1) == 1)
+            {
+                _logger.Debug("Clearing storage");
+                _cleaner.Clear(_expiringKeys, _storage);
+                Interlocked.Exchange(ref cleanupRequested, 0);
+            }
+        }
+
+        private void OnTimer(object obj)
+        {
+            // try to request for cleanup
+            if (Interlocked.CompareExchange(ref cleanupRequested, 1, 0) == 0)
+            {
+                _logger.Debug("Storage cleanup scheduled");
+            }
         }
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿
+using System.Collections.Generic;
 using Kronos.Core.Hashing;
 using Kronos.Core.Storage;
 using Xunit;

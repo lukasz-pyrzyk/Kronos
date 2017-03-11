@@ -28,9 +28,9 @@ namespace Kronos.Server
         public static void Start(SettingsArgs settings, LoggingConfiguration config)
         {
             LogManager.Configuration = config;
+            
 
-            ICleaner cleaner = new Cleaner();
-            IStorage storage = new InMemoryStorage(cleaner);
+            IStorage storage = new InMemoryStorage();
 
             IRequestProcessor requestProcessor = new RequestProcessor(storage);
             ISocketProcessor processor = new SocketProcessor();
