@@ -8,7 +8,7 @@ namespace Benchmark.Types
 {
     public class AddAndGet : BaseBenchmark
     {
-        [Params(Size.Mb)]
+        [Params(Size.Kb * 100, Size.Kb * 500, Size.Mb, Size.Mb * 2)]
         public int PackageSize { get; set; }
 
         private byte[] _data;
@@ -33,7 +33,7 @@ namespace Benchmark.Types
                 .ConfigureAwait(false);
         }
 
-        [Benchmark]
+        [Benchmark(Baseline = true)]
         public async Task<byte[]> Redis()
         {
             string key = Prepare.Key();

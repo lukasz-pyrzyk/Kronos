@@ -29,8 +29,11 @@ namespace Kronos.AcceptanceTest
             LogMessage($"Creating server with port {port}");
 
             var loggerConfig = GetLoggerConfig();
-            Task server = Server.Program.StartAsync(GetSettings(), loggerConfig);
-            while (!Server.Program.IsWorking)
+            Task server = Task.Factory.StartNew(
+                () => Program.Start(GetSettings(), loggerConfig),
+                TaskCreationOptions.LongRunning);
+
+            while (!Program.IsWorking)
             {
                 LogMessage("Waiting for server warnup...");
                 await Task.Delay(100);

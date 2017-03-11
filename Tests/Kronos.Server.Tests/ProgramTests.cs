@@ -17,7 +17,7 @@ namespace Kronos.Server.Tests
             // Act
             Exception ex = await Record.ExceptionAsync(async () =>
             {
-                Task t = Program.StartAsync(args, new LoggingConfiguration());
+                Task t = Task.Run(() => Program.Start(args, new LoggingConfiguration()));
 
                 await Task.Delay(500);
                 wasWorking = Program.IsWorking;

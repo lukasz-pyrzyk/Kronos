@@ -10,11 +10,6 @@ namespace Kronos.Core.Networking
     {
         private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
 
-        public static async Task<IPAddress> GetIPAsync()
-        {
-            return await GetIPAsync(Dns.GetHostName());
-        }
-
         public static async Task<IPAddress> GetIPAsync(string hostName)
         {
             var host = await Dns.GetHostEntryAsync(hostName);

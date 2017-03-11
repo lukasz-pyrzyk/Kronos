@@ -9,7 +9,7 @@ namespace Benchmark.Types
 {
     public class ClusterAddAndRemove : ClusterBenchmark
     {
-        [Params(Size.Mb, Size.Mb * 4)]
+        [Params(Size.Kb * 100, Size.Kb * 500, Size.Mb, Size.Mb * 2)]
         public int PackageSize { get; set; }
 
         private byte[] _data;
@@ -35,7 +35,7 @@ namespace Benchmark.Types
                 .ConfigureAwait(false);
         }
 
-        [Benchmark]
+        [Benchmark(Baseline = true)]
         public async Task Redis()
         {
             string key = Prepare.Key();

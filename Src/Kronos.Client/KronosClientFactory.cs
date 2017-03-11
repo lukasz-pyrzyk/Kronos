@@ -2,7 +2,6 @@
 using System.Net;
 using Kronos.Core.Configuration;
 using Kronos.Core.Messages;
-using Kronos.Core.Networking;
 using Newtonsoft.Json;
 
 namespace Kronos.Client
@@ -20,7 +19,7 @@ namespace Kronos.Client
 
         public static IKronosClient FromLocalhost(int port, string login = Auth.DefaultLogin, string password = Auth.DefaultPassword)
         {
-            IPAddress ip = EndpointUtils.GetIPAsync().Result;
+            IPAddress ip = IPAddress.Parse("127.0.0.1");
             return FromIp(ip.ToString(), port, login, password);
         }
 

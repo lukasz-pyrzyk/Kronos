@@ -7,7 +7,7 @@ namespace Benchmark.Config
     [Config(typeof(CustomConfig))]
     public abstract class BaseBenchmark
     {
-        private const string Domain = "192.168.0.1";
+        private const string Domain = "127.0.0.1";
 
         private static readonly string KronosConnection = Domain;
         private static readonly string RedisConnection = $"{Domain}:6379";
