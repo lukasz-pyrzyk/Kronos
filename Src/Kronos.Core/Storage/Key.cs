@@ -1,5 +1,4 @@
-﻿using System;
-using Kronos.Core.Hashing;
+﻿using Kronos.Core.Hashing;
 
 namespace Kronos.Core.Storage
 {
@@ -7,24 +6,17 @@ namespace Kronos.Core.Storage
     {
         private readonly int _hashCode;
 
-        public string Value { get; }
-        public DateTime? ExpiryDate { get; }
+        public string Name { get; }
 
-        public Key(string value, DateTime? expiryDate = null)
+        public Key(string name)
         {
-            Value = value;
-            ExpiryDate = expiryDate;
-            _hashCode = Hasher.Hash(value);
-        }
-
-        public bool IsExpired(DateTime date)
-        {
-            return ExpiryDate?.Ticks < date.Ticks;
+            Name = name;
+            _hashCode = Hasher.Hash(name);
         }
 
         public override string ToString()
         {
-            return $"{Value}|{ExpiryDate:s}";
+            return Name;
         }
 
         public override int GetHashCode()

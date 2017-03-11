@@ -2,7 +2,7 @@
 
 namespace Kronos.Core.Storage
 {
-    public class KeyComperer : IEqualityComparer<Key>
+    internal class KeyComperer : IEqualityComparer<Key>
     {
         public bool Equals(Key x, Key y)
         {
