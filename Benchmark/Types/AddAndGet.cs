@@ -40,7 +40,7 @@ namespace Benchmark.Types
             await RedisClient.StringSetAsync(key, _data)
                 .ConfigureAwait(false);
 
-            return await RedisClient.StringGetAsync(key);
+            return await RedisClient.StringGetAsync(key).ConfigureAwait(false);
         }
     }
 }

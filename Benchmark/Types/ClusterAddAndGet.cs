@@ -39,10 +39,10 @@ namespace Benchmark.Types
         public async Task<byte[]> Redis()
         {
             string key = Prepare.Key();
-            await RedisClient.SetAddAsync(key, _data)
+            await RedisClient.StringSetAsync(key, _data)
                 .ConfigureAwait(false);
 
-            return await RedisClient.StringGetAsync(key);
+            return await RedisClient.StringGetAsync(key).ConfigureAwait(false);
         }
     }
 }
