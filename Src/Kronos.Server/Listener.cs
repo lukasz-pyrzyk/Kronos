@@ -24,7 +24,7 @@ namespace Kronos.Server
         public Listener(SettingsArgs settings, ISocketProcessor processor, IRequestProcessor requestProcessor)
         {
             _auth = Auth.FromCfg(new AuthConfig { Login = settings.Login, Password = settings.Password });
-            _listener = new TcpListener(IPAddress.Parse("127.0.0.1"), settings.Port);
+            _listener = new TcpListener(IPAddress.Any, settings.Port);
             _processor = processor;
             _requestProcessor = requestProcessor;
         }
