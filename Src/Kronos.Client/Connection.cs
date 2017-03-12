@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Buffers;
+using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Sockets;
 using System.Threading.Tasks;
@@ -15,7 +16,7 @@ namespace Kronos.Client
 {
     public class Connection : IConnection
     {
-        private const int RetryCount = 2;
+        private const int RetryCount = 10;
         private static readonly Policy Policy = Policy.Handle<Exception>()
             .WaitAndRetryAsync(CreateExponentialBackoff(RetryCount));
 
@@ -93,12 +94,13 @@ namespace Kronos.Client
             return response;
         }
 
-        private static TimeSpan[] CreateExponentialBackoff(int retryCount)
+        private static ICollection<TimeSpan> CreateExponentialBackoff(int retryCount)
         {
-            var spans = new TimeSpan[retryCount];
-            for (int i = 0; i < retryCount; i++)
+            var spans = new List<TimeSpan>();
+
+            for (int i = 1; i < retryCount; i++)
             {
-                spans[i] = new TimeSpan(3 * retryCount);
+                spans.Add(TimeSpan.FromSeconds(retryCount));
             }
 
             return spans;
