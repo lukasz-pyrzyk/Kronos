@@ -16,7 +16,7 @@ namespace Kronos.Client
 {
     public class Connection : IConnection
     {
-        private const int RetryCount = 10;
+        private const int RetryCount = 3;
         private static readonly Policy Policy = Policy.Handle<Exception>()
             .WaitAndRetryAsync(CreateExponentialBackoff(RetryCount));
 
