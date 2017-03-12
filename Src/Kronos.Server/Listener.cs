@@ -24,7 +24,7 @@ namespace Kronos.Server
         public Listener(SettingsArgs settings, ISocketProcessor processor, IRequestProcessor requestProcessor)
         {
             _auth = Auth.FromCfg(new AuthConfig { Login = settings.Login, Password = settings.Password });
-            _listener = new TcpListener(IPAddress.Any, settings.Port);
+            _listener = new TcpListener(IPAddress.Parse("127.0.0.1"), settings.Port);
             _processor = processor;
             _requestProcessor = requestProcessor;
         }
@@ -87,6 +87,8 @@ namespace Kronos.Server
         private void ProcessSocketConnection(Socket client)
         {
             string id = Guid.NewGuid().ToString();
+            client.SendTimeout = 10000;
+            client.ReceiveTimeout = 10000;
             try
             {
                 Request request = _processor.ReceiveRequest(client);
