@@ -30,7 +30,7 @@ namespace Kronos.Client
             _serverProvider = new ServerProvider(config.ClusterConfig);
         }
 
-        public async Task<bool> InsertAsync(string key, byte[] package, DateTime expiryDate)
+        public async Task<bool> InsertAsync(string key, byte[] package, DateTime? expiryDate)
         {
             Trace.WriteLine("New insert request");
 
