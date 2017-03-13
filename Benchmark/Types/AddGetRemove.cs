@@ -45,18 +45,13 @@ namespace Benchmark.Types
         [Benchmark(Baseline = true)]
         public void Redis()
         {
-            Parallel.For(1, Clients, _ =>
+            Parallel.For(0, Clients, _ =>
             {
                 string key = Prepare.Key();
 
-                RedisClient.StringSetAsync(key, _data)
-                    .GetAwaiter().GetResult();
-
-                RedisClient.StringGetAsync(key)
-                    .GetAwaiter().GetResult();
-
-                RedisClient.KeyDeleteAsync(key)
-                    .GetAwaiter().GetResult();
+                RedisClient.StringSet(key, _data);
+                RedisClient.StringGet(key);
+                RedisClient.KeyDelete(key);
             });
         }
     }
