@@ -49,9 +49,9 @@ namespace Benchmark.Types
             {
                 string key = Prepare.Key();
 
-                RedisClient.StringSet(key, _data);
-                RedisClient.StringGet(key);
-                RedisClient.KeyDelete(key);
+                RedisClient.StringSetAsync(key, _data).GetAwaiter().GetResult();
+                RedisClient.StringGetAsync(key).GetAwaiter().GetResult();
+                RedisClient.KeyDeleteAsync(key).GetAwaiter().GetResult();
             });
         }
     }
