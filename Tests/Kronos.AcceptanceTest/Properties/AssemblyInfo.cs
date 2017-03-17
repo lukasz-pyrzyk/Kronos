@@ -17,4 +17,4 @@ using Xunit;
 
 // The following GUID is for the ID of the typelib if this project is exposed to COM
 [assembly: Guid("da5de27a-c4f5-4af9-9db1-bf2049317aee")]
-[assembly: CollectionBehavior(CollectionBehavior.CollectionPerAssembly)]
+[assembly: CollectionBehavior(DisableTestParallelization = true)]

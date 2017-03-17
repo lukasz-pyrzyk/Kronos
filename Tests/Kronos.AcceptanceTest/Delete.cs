@@ -5,7 +5,6 @@ using Xunit;
 
 namespace Kronos.AcceptanceTest
 {
-    [Collection("AcceptanceTest")]
     public class Delete : Base
     {
         [Fact]

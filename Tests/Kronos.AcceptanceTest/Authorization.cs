@@ -7,7 +7,6 @@ using Xunit;
 
 namespace Kronos.AcceptanceTest
 {
-    [Collection("AcceptanceTest")]
     public class Authorization : Base
     {
         [Fact]
