@@ -13,7 +13,7 @@ namespace Kronos.AcceptanceTest
 {
     public abstract class Base
     {
-        private readonly SemaphoreSlim _resetEvent = new SemaphoreSlim(1, 1);
+        private static readonly SemaphoreSlim _resetEvent = new SemaphoreSlim(1, 1);
 
         public abstract Task RunAsync();
 
