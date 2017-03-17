@@ -2,6 +2,7 @@
 
 #settings
 MODE="Release"
+STANDARD="netstandard1.3"
 RUNTIME="netcoreapp1.1"
 
 #exit if any command fails
@@ -18,8 +19,8 @@ dotnet restore
 # Ideally we would use the 'dotnet test' command to test netcoreapp and net451 so restrict for now 
 # but this currently doesn't work due to https://github.com/dotnet/cli/issues/3073 so restrict to netcoreapp
 
-dotnet build Src/Kronos.Core/Kronos.Core.csproj -c $MODE -f $RUNTIME
-dotnet build Src/Kronos.Client/Kronos.Client.csproj -c $MODE -f $RUNTIME
+dotnet build Src/Kronos.Core/Kronos.Core.csproj -c $MODE -f $STANDARD
+dotnet build Src/Kronos.Client/Kronos.Client.csproj -c $MODE -f $STANDARD
 dotnet build Src/Kronos.Server/Kronos.Server.csproj -c $MODE -f $RUNTIME
 
 #mono \  
