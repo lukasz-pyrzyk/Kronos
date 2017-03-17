@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Threading;
 using System.Threading.Tasks;
 using Kronos.Client;
 using Kronos.Server;
@@ -13,8 +12,6 @@ namespace Kronos.AcceptanceTest
 {
     public abstract class Base
     {
-        private readonly Semaphore _semaphore = new Semaphore(1, 1, "acceptanceTest1");
-
         public abstract Task RunAsync();
 
         static Base()
@@ -24,78 +21,63 @@ namespace Kronos.AcceptanceTest
 
         public async Task RunInternalAsync()
         {
-            LogMessage($"Taking a {nameof(_semaphore)} wait");
-            bool taken;
-            do
-            {
-                taken = _semaphore.WaitOne();
-            } while (!taken);
-
             const int port = 5000;
             LogMessage($"Creating kronos client with port {port}");
             IKronosClient client = KronosClientFactory.FromLocalhost(port);
 
             LogMessage($"Creating server with port {port}");
 
+            var loggerConfig = GetLoggerConfig();
+            Task server = Task.Factory.StartNew(
+                () => Kronos.Server.Program.Start(GetSettings(), loggerConfig),
+                TaskCreationOptions.LongRunning);
+
+            while (!Kronos.Server.Program.IsWorking)
+            {
+                LogMessage("Waiting for server warnup...");
+                await Task.Delay(100);
+
+                if (server.IsFaulted)
+                {
+                    throw server.Exception;
+                }
+            }
+
             try
             {
-                var loggerConfig = GetLoggerConfig();
-                Task server = Task.Factory.StartNew(
-                    () => Kronos.Server.Program.Start(GetSettings(), loggerConfig),
-                    TaskCreationOptions.LongRunning);
-
-                while (!Kronos.Server.Program.IsWorking)
-                {
-                    LogMessage("Waiting for server warnup...");
-                    await Task.Delay(100);
-
-                    if (server.IsFaulted)
-                    {
-                        throw server.Exception;
-                    }
-                }
-
+                LogMessage("Processing internal test");
+                await ProcessAsync(client).ConfigureAwait(true);
+                LogMessage("Processing internal finished");
+            }
+            catch (Exception ex)
+            {
+                LogMessage($"EXCEPTION: {ex}");
+                Assert.False(true, ex.Message);
+            }
+            finally
+            {
                 try
                 {
-                    LogMessage("Processing internal test");
-                    await ProcessAsync(client).ConfigureAwait(true);
-                    LogMessage("Processing internal finished");
+                    LogMessage("Stopping server");
+                    Server.Program.Stop();
+
+                    LogMessage("Waiting for server task to finish");
+                    await server.ConfigureAwait(true);
+
+                    LogMessage("Server stopped");
+                }
+                catch (AggregateException aex)
+                {
+                    foreach (var ex in aex.InnerExceptions)
+                    {
+                        LogMessage(ex.ToString());
+                    }
                 }
                 catch (Exception ex)
                 {
                     LogMessage($"EXCEPTION: {ex}");
                     Assert.False(true, ex.Message);
                 }
-                finally
-                {
-                    try
-                    {
-                        LogMessage("Stopping server");
-                        Server.Program.Stop();
-
-                        LogMessage("Waiting for server task to finish");
-                        await server.ConfigureAwait(true);
-
-                        LogMessage("Server stopped");
-                    }
-                    catch (AggregateException aex)
-                    {
-                        foreach (var ex in aex.InnerExceptions)
-                        {
-                            LogMessage(ex.ToString());
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        LogMessage($"EXCEPTION: {ex}");
-                        Assert.False(true, ex.Message);
-                    }
-                }
-            }
-            finally
-            {
-                _semaphore.Release();
-                LogMessage($"Releasing {nameof(_semaphore)}");
             }
         }
 
