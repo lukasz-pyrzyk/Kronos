@@ -15,6 +15,7 @@ $projects = @(
 $error = 0;
 
 function RunCodeCoverage($testProject, $filter) {
+    write-host "Running tests for " $testProject
     & $openCover -target:dotnet.exe `"-targetargs:test $testProject`" -output:$fileName -register:'user' -filter:$filter -mergeoutput -oldStyle -returntargetcode
 }
 
