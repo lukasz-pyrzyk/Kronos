@@ -18,9 +18,9 @@ dotnet restore
 # Ideally we would use the 'dotnet test' command to test netcoreapp and net451 so restrict for now 
 # but this currently doesn't work due to https://github.com/dotnet/cli/issues/3073 so restrict to netcoreapp
 
-dotnet build Src/Kronos.Core/project.json -c $MODE 
-dotnet build Src/Kronos.Client/project.json -c $MODE 
-dotnet build Src/Kronos.Server/project.json -c $MODE 
+dotnet build Src/Kronos.Core/Kronos.Core.csproj -c $MODE 
+dotnet build Src/Kronos.Client/Kronos.Client.csproj -c $MODE 
+dotnet build Src/Kronos.Server/Kronos.Server.csproj -c $MODE 
 
 #mono \  
 #./test/TEST_PROJECT_NAME/bin/Release/net451/*/dotnet-test-xunit.exe \
