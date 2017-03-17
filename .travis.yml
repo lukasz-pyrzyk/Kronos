@@ -4,7 +4,7 @@ dist: trusty
 services:
   - docker
 addons:
-    apt:
+  apt:
     sources:
     - sourceline: 'deb [arch=amd64] https://apt-mo.trafficmanager.net/repos/dotnet-release/ trusty main'
       key_url: 'https://apt-mo.trafficmanager.net/keys/microsoft.asc'
