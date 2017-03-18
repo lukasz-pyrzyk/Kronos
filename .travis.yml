@@ -25,7 +25,6 @@ script:
   - ./Scripts/Linux/build.sh
   - ./Scripts/Linux/runTests.sh
   - dotnet publish ./Src/Kronos.Server/ -c Release -o ./Bin -f netcoreapp1.1
-  - cp ./Src/Kronos.Server/NLog.config ./Bin/
 after_success:
   - export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
   - echo "TRAVIS_BRANCH=$TRAVIS_BRANCH, PR=$PR, BRANCH=$BRANCH"
