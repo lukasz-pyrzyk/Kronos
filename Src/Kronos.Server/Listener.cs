@@ -27,6 +27,8 @@ namespace Kronos.Server
             _listener = new TcpListener(IPAddress.Any, settings.Port);
             _processor = processor;
             _requestProcessor = requestProcessor;
+
+            _listener.Server.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, 1);
         }
 
         public void Start()
