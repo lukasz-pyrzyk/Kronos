@@ -5,14 +5,11 @@ services:
   - docker
 addons:
   apt:
+    sources:
+    - sourceline: 'deb [arch=amd64] https://apt-mo.trafficmanager.net/repos/dotnet-release/ trusty main'
+      key_url: 'https://apt-mo.trafficmanager.net/keys/microsoft.asc'
     packages:
-    - gettext
-    - libcurl4-openssl-dev
-    - libicu-dev
-    - libssl-dev
-    - libunwind8
-    - zlib1g
-mono: latest
+    - dotnet-dev-1.0.1
 os:
   - linux
   #- osx # todo: wait for https://github.com/dotnet/corefx/issues/9394
@@ -22,18 +19,12 @@ branches:
     - master
 before_install:  
   # - if test "$TRAVIS_OS_NAME" == "osx"; then brew update; brew install openssl; ln -s /usr/local/opt/openssl/lib/libcrypto.1.0.0.dylib /usr/local/lib/; ln -s /usr/local/opt/openssl/lib/libssl.1.0.0.dylib /usr/local/lib/; fiopenssl; fi
-  - sudo sh -c 'echo "deb [arch=amd64] https://apt-mo.trafficmanager.net/repos/dotnet-release/ trusty main" > /etc/apt/sources.list.d/dotnetdev.list'
-  - sudo apt-key adv --keyserver hkp://keyserver.ubuntu.com:80 --recv-keys 417A0893
-  - sudo apt-get update
-install:
-  - sudo apt-get install dotnet-dev-1.0.0-preview2.1-003177
 script:
   - chmod +x ./Scripts/Linux/build.sh
   - chmod +x ./Scripts/Linux/runTests.sh
   - ./Scripts/Linux/build.sh
   - ./Scripts/Linux/runTests.sh
   - dotnet publish ./Src/Kronos.Server/ -c Release -o ./Bin -f netcoreapp1.1
-  - cp ./Src/Kronos.Server/NLog.config ./Bin/
 after_success:
   - export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)
   - echo "TRAVIS_BRANCH=$TRAVIS_BRANCH, PR=$PR, BRANCH=$BRANCH"

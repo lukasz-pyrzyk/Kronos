@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Diagnostics;
+using System.Threading;
 using System.Threading.Tasks;
 using Kronos.Client;
 using Kronos.Server;
@@ -10,8 +11,11 @@ using Xunit;
 
 namespace Kronos.AcceptanceTest
 {
+    [Collection("AcceptanceTest")]
     public abstract class Base
     {
+        private static readonly SemaphoreSlim _resetEvent = new SemaphoreSlim(1, 1);
+
         public abstract Task RunAsync();
 
         static Base()
@@ -21,35 +25,37 @@ namespace Kronos.AcceptanceTest
 
         public async Task RunInternalAsync()
         {
-            const int port = 5000;
-
-            LogMessage($"Creating kronos client with port {port}");
-            IKronosClient client = KronosClientFactory.FromLocalhost(port);
-
-            LogMessage($"Creating server with port {port}");
-
-            var loggerConfig = GetLoggerConfig();
-            Task server = Task.Factory.StartNew(
-                () => Program.Start(GetSettings(), loggerConfig),
-                TaskCreationOptions.LongRunning);
-
-            while (!Program.IsWorking)
-            {
-                LogMessage("Waiting for server warnup...");
-                await Task.Delay(100);
-
-                if (server.IsFaulted)
-                {
-                    throw server.Exception;
-                }
-            }
-
+            await _resetEvent.WaitAsync();
+            Task server = null;
             try
             {
+                const int port = 5000;
+                LogMessage($"Creating kronos client with port {port}");
+                IKronosClient client = KronosClientFactory.FromLocalhost(port);
+
+                LogMessage($"Creating server with port {port}");
+
+                server = Task.Factory.StartNew(
+                    () => Kronos.Server.Program.Start(GetSettings(), GetLoggerConfig()),
+                    TaskCreationOptions.LongRunning);
+
+                while (!Kronos.Server.Program.IsWorking)
+                {
+                    LogMessage("Waiting for server warnup...");
+                    await Task.Delay(100);
+
+                    if (server.IsFaulted)
+                    {
+                        LogMessage($"Server is faulted. Exception: {server.Exception}");
+                        throw server.Exception;
+                    }
+                }
+
                 LogMessage("Processing internal test");
-                await ProcessAsync(client).AwaitWithTimeout(5000);
+                await ProcessAsync(client).ConfigureAwait(true);
                 LogMessage("Processing internal finished");
             }
+
             catch (Exception ex)
             {
                 LogMessage($"EXCEPTION: {ex}");
@@ -63,7 +69,8 @@ namespace Kronos.AcceptanceTest
                     Server.Program.Stop();
 
                     LogMessage("Waiting for server task to finish");
-                    await server;
+                    if (server != null)
+                        await server.ConfigureAwait(true);
 
                     LogMessage("Server stopped");
                 }
@@ -79,6 +86,8 @@ namespace Kronos.AcceptanceTest
                     LogMessage($"EXCEPTION: {ex}");
                     Assert.False(true, ex.Message);
                 }
+
+                _resetEvent.Release();
             }
         }
 
