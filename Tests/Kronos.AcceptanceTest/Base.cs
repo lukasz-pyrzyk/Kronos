@@ -87,7 +87,9 @@ namespace Kronos.AcceptanceTest
                     Assert.False(true, ex.Message);
                 }
 
+                server = null;
                 _resetEvent.Release();
+                await Task.Delay(2000);
             }
         }
 
