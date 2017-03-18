@@ -293,10 +293,13 @@ namespace Kronos.Core.Tests.Storage
         {
             const int timePeriod = 10;
             IScheduler scheduler = new Scheduler(timePeriod);
-            IStorage storage = new InMemoryStorage(cleaner, scheduler);
+            InMemoryStorage storage = new InMemoryStorage(cleaner, scheduler);
 
-            // Act
-            await Task.Delay(timePeriod * 5); // Wait 5 times more to be sure
+            do
+            {
+                await Task.Delay(timePeriod);
+            } while (storage.cleanupRequested != 1);
+
             return storage;
         }
 
