@@ -6,6 +6,7 @@ using Xunit;
 
 namespace Kronos.AcceptanceTest
 {
+    [Collection("AcceptanceTest")]
     public class Cleaner : Base
     {
         [Fact]

@@ -11,6 +11,7 @@ using Xunit;
 
 namespace Kronos.AcceptanceTest
 {
+    [Collection("AcceptanceTest")]
     public abstract class Base
     {
         private static readonly SemaphoreSlim _resetEvent = new SemaphoreSlim(1, 1);
