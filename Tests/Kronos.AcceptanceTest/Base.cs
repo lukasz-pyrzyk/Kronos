@@ -47,6 +47,7 @@ namespace Kronos.AcceptanceTest
 
                     if (server.IsFaulted)
                     {
+                        LogMessage($"Server is faulted. Exception: {server.Exception}");
                         throw server.Exception;
                     }
                 }
