@@ -251,12 +251,9 @@ namespace Kronos.Core.Tests.Storage
         {
             // Arrange
             ICleaner cleaner = Substitute.For<ICleaner>();
-            const int timePeriod = 100;
-            IScheduler scheduler = new Scheduler(timePeriod);
-            IStorage storage = new InMemoryStorage(cleaner, scheduler);
+            IStorage storage = await CreateStorageWithSchedulerAndWait(cleaner);
 
             // Act
-            await Task.Delay(timePeriod);
             storage.Add("", null, ByteString.Empty);
 
             // Assert
@@ -268,12 +265,9 @@ namespace Kronos.Core.Tests.Storage
         {
             // Arrange
             ICleaner cleaner = Substitute.For<ICleaner>();
-            const int timePeriod = 100;
-            IScheduler scheduler = new Scheduler(timePeriod);
-            IStorage storage = new InMemoryStorage(cleaner, scheduler);
+            IStorage storage = await CreateStorageWithSchedulerAndWait(cleaner);
 
             // Act
-            await Task.Delay(timePeriod);
             ByteString elem;
             storage.TryGet("", out elem);
 
@@ -286,16 +280,27 @@ namespace Kronos.Core.Tests.Storage
         {
             // Arrange
             ICleaner cleaner = Substitute.For<ICleaner>();
-            const int timePeriod = 100;
-            IScheduler scheduler = new Scheduler(timePeriod);
-            IStorage storage = new InMemoryStorage(cleaner, scheduler);
+            IStorage storage = await CreateStorageWithSchedulerAndWait(cleaner);
 
             // Act
-            await Task.Delay(timePeriod);
             storage.Contains("");
 
             // Assert
             cleaner.Received(1).Clear(Arg.Any<PriorityQueue<ExpiringKey>>(), Arg.Any<Dictionary<Key, Element>>());
+        }
+
+        private static async Task<IStorage> CreateStorageWithSchedulerAndWait(ICleaner cleaner)
+        {
+            const int timePeriod = 10;
+            IScheduler scheduler = new Scheduler(timePeriod);
+            InMemoryStorage storage = new InMemoryStorage(cleaner, scheduler);
+
+            do
+            {
+                await Task.Delay(timePeriod);
+            } while (storage.cleanupRequested != 1);
+
+            return storage;
         }
 
         private static IStorage CreateStorage()
