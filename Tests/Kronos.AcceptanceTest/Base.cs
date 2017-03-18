@@ -26,7 +26,7 @@ namespace Kronos.AcceptanceTest
         public async Task RunInternalAsync()
         {
             await _resetEvent.WaitAsync();
-
+            Task server = null;
             try
             {
                 const int port = 5000;
@@ -35,9 +35,8 @@ namespace Kronos.AcceptanceTest
 
                 LogMessage($"Creating server with port {port}");
 
-                var loggerConfig = GetLoggerConfig();
-                Task server = Task.Factory.StartNew(
-                    () => Kronos.Server.Program.Start(GetSettings(), loggerConfig),
+                server = Task.Factory.StartNew(
+                    () => Kronos.Server.Program.Start(GetSettings(), GetLoggerConfig()),
                     TaskCreationOptions.LongRunning);
 
                 while (!Kronos.Server.Program.IsWorking)
@@ -52,45 +51,42 @@ namespace Kronos.AcceptanceTest
                     }
                 }
 
+                LogMessage("Processing internal test");
+                await ProcessAsync(client).ConfigureAwait(true);
+                LogMessage("Processing internal finished");
+            }
+
+            catch (Exception ex)
+            {
+                LogMessage($"EXCEPTION: {ex}");
+                Assert.False(true, ex.Message);
+            }
+            finally
+            {
                 try
                 {
-                    LogMessage("Processing internal test");
-                    await ProcessAsync(client).ConfigureAwait(true);
-                    LogMessage("Processing internal finished");
+                    LogMessage("Stopping server");
+                    Server.Program.Stop();
+
+                    LogMessage("Waiting for server task to finish");
+                    if (server != null)
+                        await server.ConfigureAwait(true);
+
+                    LogMessage("Server stopped");
+                }
+                catch (AggregateException aex)
+                {
+                    foreach (var ex in aex.InnerExceptions)
+                    {
+                        LogMessage(ex.ToString());
+                    }
                 }
                 catch (Exception ex)
                 {
                     LogMessage($"EXCEPTION: {ex}");
                     Assert.False(true, ex.Message);
                 }
-                finally
-                {
-                    try
-                    {
-                        LogMessage("Stopping server");
-                        Server.Program.Stop();
 
-                        LogMessage("Waiting for server task to finish");
-                        await server.ConfigureAwait(true);
-
-                        LogMessage("Server stopped");
-                    }
-                    catch (AggregateException aex)
-                    {
-                        foreach (var ex in aex.InnerExceptions)
-                        {
-                            LogMessage(ex.ToString());
-                        }
-                    }
-                    catch (Exception ex)
-                    {
-                        LogMessage($"EXCEPTION: {ex}");
-                        Assert.False(true, ex.Message);
-                    }
-                }
-            }
-            finally
-            {
                 _resetEvent.Release();
             }
         }
