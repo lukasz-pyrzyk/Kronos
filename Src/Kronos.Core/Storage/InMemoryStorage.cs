@@ -14,7 +14,7 @@ namespace Kronos.Core.Storage
         private readonly Dictionary<Key, Element> _storage = new Dictionary<Key, Element>(new KeyComperer());
         private readonly PriorityQueue<ExpiringKey> _expiringKeys = new PriorityQueue<ExpiringKey>();
 
-        private int cleanupRequested;
+        internal int cleanupRequested;
         private readonly ICleaner _cleaner;
         private readonly IScheduler _scheduler;
 
@@ -31,6 +31,8 @@ namespace Kronos.Core.Storage
 
         public int Count => _storage.Count;
         public int ExpiringCount => _expiringKeys.Count;
+
+        internal int CleanupRequested { get => cleanupRequested; set => cleanupRequested = value; }
 
         public bool Add(string name, DateTime? expiryDate, ByteString obj)
         {

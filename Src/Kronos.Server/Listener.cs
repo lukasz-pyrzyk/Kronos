@@ -28,6 +28,8 @@ namespace Kronos.Server
             _listener = new TcpListener(IPAddress.Any, settings.Port);
             _processor = processor;
             _requestProcessor = requestProcessor;
+
+            _listener.Server.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, 1);
         }
 
         public void Start()
@@ -68,16 +70,26 @@ namespace Kronos.Server
 
         public void Stop()
         {
-            try
+            _logger.Info("Stopping server");
+            _cancel.Cancel();
+
+            if (_listener.Server.Connected)
             {
-                _cancel.Cancel();
-                _listener.Stop();
-                _logger.Info("Server has been stopped");
+                _logger.Info("Server is connected, shutting down");
+                try
+                {
+                    _listener.Server.Shutdown(SocketShutdown.Both);
+                }
+                catch (SocketException ex)
+                {
+                    _logger.Error($"Error on shutting down server socket {ex}");
+                }
             }
-            catch (SocketException ex)
-            {
-                _logger.Error($"Exception during disposing server: {ex}");
-            }
+            
+            _listener.Stop();
+            _listener.Server.Dispose();
+
+            _logger.Info("Server is down");
         }
 
         public void Dispose()
