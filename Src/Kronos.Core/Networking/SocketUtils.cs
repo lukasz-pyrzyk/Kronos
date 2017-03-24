@@ -7,7 +7,14 @@ namespace Kronos.Core.Networking
 {
     public static class SocketUtils
     {
-        private const int BufferSize = 8 * 1024;
+        public const int BufferSize = 8 * 1024;
+        public const int Timeout = 10000;
+
+        public static void Prepare(Socket socket)
+        {
+            socket.ReceiveTimeout = Timeout;
+            socket.SendTimeout = Timeout;
+        }
 
         public static void SendAll(Socket socket, byte[] data, int count = 0)
         {

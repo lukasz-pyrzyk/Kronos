@@ -6,6 +6,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Kronos.Core.Configuration;
 using Kronos.Core.Messages;
+using Kronos.Core.Networking;
 using Kronos.Core.Processing;
 using NLog;
 
@@ -46,6 +47,7 @@ namespace Kronos.Server
                     try
                     {
                         socket = await _listener.AcceptSocketAsync().ConfigureAwait(false);
+                        SocketUtils.Prepare(socket);
                         ProcessSocketConnection(socket);
                     }
                     catch (ObjectDisposedException)
@@ -86,22 +88,19 @@ namespace Kronos.Server
 
         private void ProcessSocketConnection(Socket client)
         {
-            string id = Guid.NewGuid().ToString();
-            client.SendTimeout = 10000;
-            client.ReceiveTimeout = 10000;
             try
             {
                 Request request = _processor.ReceiveRequest(client);
 
-                _logger.Debug($"Processing new request {request.Type} with Id: {id}");
+                _logger.Debug($"Processing new request {request.Type}");
                 Response response = _requestProcessor.Handle(request, _auth);
 
                 _processor.SendResponse(client, response);
-                _logger.Debug($"Processing {id} finished");
+                _logger.Debug("Processing finished");
             }
             catch (Exception ex)
             {
-                _logger.Error($"Exception on processing request {id}, {ex}");
+                _logger.Error($"Exception on processing: {ex}");
             }
         }
     }
