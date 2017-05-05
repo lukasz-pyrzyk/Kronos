@@ -8,6 +8,7 @@ namespace Kronos.Core.Tests.Networking
 {
     public class EndpointUtilsTests
     {
+        /// Requires internet connection
         [Theory]
         [InlineData("localhost")]
         [InlineData("google.com")]
