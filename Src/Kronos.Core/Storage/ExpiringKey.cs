@@ -2,7 +2,7 @@ using System;
 
 namespace Kronos.Core.Storage
 {
-    internal struct ExpiringKey : IComparable<ExpiringKey>
+    internal struct ExpiringKey : IComparable<ExpiringKey>, IEquatable<ExpiringKey>
     {
         public Key Key { get; }
         public DateTime ExpiryDate { get; }
@@ -38,6 +38,7 @@ namespace Kronos.Core.Storage
             if (obj is ExpiringKey) return Equals((ExpiringKey)obj);
             return false;
         }
+
         public bool Equals(ExpiringKey expiringKey)
         {
             return Key.Equals(expiringKey.Key);
