@@ -11,7 +11,7 @@ namespace Kronos.Core.Storage
     {
         private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
 
-        private readonly Dictionary<Key, Element> _storage = new Dictionary<Key, Element>(new KeyComperer());
+        private readonly Dictionary<Key, Element> _storage = new Dictionary<Key, Element>();
         private readonly PriorityQueue<ExpiringKey> _expiringKeys = new PriorityQueue<ExpiringKey>();
 
         internal int cleanupRequested;

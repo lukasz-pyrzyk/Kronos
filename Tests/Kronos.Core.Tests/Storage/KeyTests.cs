@@ -1,4 +1,5 @@
-﻿using Kronos.Core.Hashing;
+﻿using System.Collections.Generic;
+using Kronos.Core.Hashing;
 using Kronos.Core.Storage;
 using Xunit;
 
@@ -48,5 +49,22 @@ namespace Kronos.Core.Tests.Storage
             // Assert
             Assert.Equal(value, message);
         }
+
+        [Theory]
+        [MemberData(nameof(ArgumentsData))]
+        public void Equals_ReturnsFalse_WhenNullIsPassed(Key x, Key y, bool result)
+        {
+            bool comparisonResult = x.Equals(y);
+
+            Assert.Equal(result, comparisonResult);
+        }
+
+        public static IEnumerable<object[]> ArgumentsData => new[]
+        {
+            new object[] { default(Key), new Key("key"), false },
+            new object[] { new Key("key"), default(Key), false },
+            new object[] { new Key("key"), new Key("key1"), false },
+            new object[] { new Key("key"), new Key("key"), true},
+        };
     }
 }
