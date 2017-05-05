@@ -18,7 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet" Version="0.10.1" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.10.5" />
     <PackageReference Include="StackExchange.Redis" Version="1.1.608" />
   </ItemGroup>
 
