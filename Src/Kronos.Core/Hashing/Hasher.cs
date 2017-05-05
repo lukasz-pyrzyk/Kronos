@@ -10,7 +10,7 @@ namespace Kronos.Core.Hashing
 
         public static int Hash(string word)
         {
-            uint hash = Farmhash.Hash32(word);
+            uint hash = Farmhash.Sharp.Farmhash.Hash32(word);
             int intHash = unchecked((int)hash);
 
             return intHash;
