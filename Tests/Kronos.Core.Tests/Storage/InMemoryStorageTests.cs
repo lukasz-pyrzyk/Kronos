@@ -292,7 +292,7 @@ namespace Kronos.Core.Tests.Storage
         private static async Task<IStorage> CreateStorageWithSchedulerAndWait(ICleaner cleaner)
         {
             const int timePeriod = 10;
-            IScheduler scheduler = new Scheduler(timePeriod);
+            IScheduler scheduler = new Scheduler();
             InMemoryStorage storage = new InMemoryStorage(cleaner, scheduler);
 
             do

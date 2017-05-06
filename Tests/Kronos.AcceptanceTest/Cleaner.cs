@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Kronos.Client;
+using Kronos.Core.Configuration;
 using Kronos.Core.Storage.Cleaning;
 using Xunit;
 
@@ -24,7 +25,7 @@ namespace Kronos.AcceptanceTest
             // Act
             await client.InsertAsync(key, data, DateTime.UtcNow);
 
-            await Task.Delay(Scheduler.DefaultPeriod);
+            await Task.Delay(Settings.CleanupTimeMs);
 
             bool contains = await client.ContainsAsync(key);
 
