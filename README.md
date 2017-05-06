@@ -22,16 +22,16 @@ Kronos client requires a cluster configuration file in JSON format. Example file
     "ClusterConfig": {
         "Servers": [
             {
-                "Ip": "192.168.0.1",
-                "Port": 5000
+                "Ip": "127.0.0.1",
+                "Port": 44000
             },
             {
-                "Ip": "192.168.0.1",
-                "Port": 5001
+                "Ip": "127.0.0.1",
+                "Port": 44001
             },
             {
-                "Ip": "192.168.0.1",
-                "Port": 5002
+                "Ip": "127.0.0.1",
+                "Port": 44002
             }
         ]
     }
@@ -62,16 +62,16 @@ await client.DeleteAsync(key);
 ### Server initialization using docker image
 To start server using docker, login as a sudo and type:
 ```bash
-docker run -td -p 5000:5000 lukaszpyrzyk/kronos 5000
-docker run -td -p 5001:5001 lukaszpyrzyk/kronos 5001
-docker run -td -p 5002:5002 lukaszpyrzyk/kronos 5002
+docker run -td -p 44000:44000 lukaszpyrzyk/kronos 44000
+docker run -td -p 44001:44001 lukaszpyrzyk/kronos 44001
+docker run -td -p 44002:44002 lukaszpyrzyk/kronos 44002
 ```
 where: 
 * t - allocate a pseudo-tty
 * d - start a container in detached mode
-* p - assign public port 5000 to internal 5000
+* p - assign public port 44000 to internal 44000
 * lukaszpyrzyk/kronos - name of the image, https://hub.docker.com/r/lukaszpyrzyk/kronos/
-* 5000 - number of internal port, value passed to the Kronos
+* 44000 - number of internal port, value passed to the Kronos
 
 Full documentation is available on the [docker reference page](https://docs.docker.com/engine/reference/run/)
 
@@ -80,21 +80,21 @@ Create a docker-compose.yml file with cluster configuration:
 ```yaml
 kronos-a:
   image: lukaszpyrzyk/kronos
-  command: "5000"
+  command: "44000"
   ports:
-    - 5000:5000
+    - 44000:44000
 
 kronos-b:
   image: lukaszpyrzyk/kronos
-  command: "5001"
+  command: "44001"
   ports:
-    - 5001:5001
+    - 44001:44001
 
 kronos-c:
   image: lukaszpyrzyk/kronos
-  command: "5002"
+  command: "44002"
   ports:
-    - 5002:5002
+    - 44002:44002
 ```
 Save the file and run command:
 ```bash

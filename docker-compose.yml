@@ -1,19 +1,19 @@
 kronos-a:
   image: lukaszpyrzyk/kronos
-  command: "5000"
+  command: "44000"
   ports:
-    - 5000:5000
+    - 44000:44000
 
 kronos-b:
   image: lukaszpyrzyk/kronos
-  command: "5001"
+  command: "44001"
   ports:
-    - 5001:5001
+    - 44001:44001
 
 kronos-c:
   image: lukaszpyrzyk/kronos
-  command: "5002"
+  command: "44002"
   ports:
-    - 5002:5002
+    - 44002:44002
 
 

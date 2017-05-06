@@ -39,10 +39,8 @@ namespace Kronos.Client
 
             for (int i = 0; i < connectionStrings.Length; i++)
             {
-                string con = connectionStrings[i];
-                const int port = 5000;
-
-                servers[i] = new ServerConfig { Ip = con, Port = port };
+                string ip = connectionStrings[i];
+                servers[i] = new ServerConfig { Ip = ip, Port = Settings.DefaultPort };
             }
 
             return new KronosClient(new KronosConfig { ClusterConfig = new ClusterConfig { Servers = servers } });

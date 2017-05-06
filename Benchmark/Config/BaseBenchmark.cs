@@ -1,5 +1,6 @@
 ﻿using BenchmarkDotNet.Attributes;
 using Kronos.Client;
+using Kronos.Core.Configuration;
 using StackExchange.Redis;
 
 namespace Benchmark.Config
@@ -19,7 +20,7 @@ namespace Benchmark.Config
         [Setup]
         public void Setup()
         {
-            KronosClient = KronosClientFactory.FromIp(KronosConnection, 5000);
+            KronosClient = KronosClientFactory.FromIp(KronosConnection, Settings.DefaultPort);
 
             ConnectionMultiplexer redisCacheDistributor = ConnectionMultiplexer.Connect($"{RedisConnection},allowAdmin=true");
             RedisServer = redisCacheDistributor.GetServer(RedisConnection);

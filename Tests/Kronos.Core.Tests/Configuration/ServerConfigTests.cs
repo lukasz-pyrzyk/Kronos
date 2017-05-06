@@ -10,8 +10,8 @@ namespace Kronos.Core.Tests.Configuration
         public void EndPoint_ContainsCorrectIPAndPort()
         {
             // Arrange
-            const string ip = "127.0.0.1";
-            const int port = 5000;
+            const string ip = Settings.LocalIp;
+            const int port = Settings.DefaultPort;
 
             // Act
             ServerConfig config = new ServerConfig
@@ -29,8 +29,8 @@ namespace Kronos.Core.Tests.Configuration
         public void ToString_ReturnsEndpoint()
         {
             // Arrange
-            const string ip = "192.168.0.1";
-            const int port = 5000;
+            const string ip = Settings.LocalIp;
+            const int port = Settings.DefaultPort;
 
             // Act
             ServerConfig config = new ServerConfig

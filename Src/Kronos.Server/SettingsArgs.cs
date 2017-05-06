@@ -1,4 +1,5 @@
 ﻿using EntryPoint;
+using Kronos.Core.Configuration;
 
 namespace Kronos.Server
 {
@@ -9,12 +10,12 @@ namespace Kronos.Server
         }
 
         [Option("port", 'p')]
-        public int Port { get; set; } = 5000;
+        public int Port { get; set; } = Settings.DefaultPort;
 
         [Option("login", 'l')]
-        public string Login { get; set; } = "user";
+        public string Login { get; set; } = Settings.DefaultLogin;
 
         [Option("password")]
-        public string Password { get; set; } = "password";
+        public string Password { get; set; } = Settings.DefaultPassword;
     }
 }

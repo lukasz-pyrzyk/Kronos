@@ -3,6 +3,7 @@ using System.Diagnostics;
 using System.Threading;
 using System.Threading.Tasks;
 using Kronos.Client;
+using Kronos.Core.Configuration;
 using Kronos.Server;
 using NLog;
 using NLog.Config;
@@ -29,7 +30,7 @@ namespace Kronos.AcceptanceTest
             Task server = null;
             try
             {
-                const int port = 5000;
+                const int port = Settings.DefaultPort;
                 LogMessage($"Creating kronos client with port {port}");
                 IKronosClient client = KronosClientFactory.FromLocalhost(port);
 

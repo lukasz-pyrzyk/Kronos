@@ -11,7 +11,7 @@ docker build -t lukaszpyrzyk/kronos:dev .
 docker stop $(docker ps -aq)
 
 # run image
-docker run -td -p 5000:5000 lukaszpyrzyk/kronos:dev
+docker run -td -p 44000:44000 lukaszpyrzyk/kronos:dev
 
 # go back to the benchmark folder
 cd Benchmark
