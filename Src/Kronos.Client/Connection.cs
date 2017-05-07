@@ -94,16 +94,12 @@ namespace Kronos.Client
             return response;
         }
 
-        private static ICollection<TimeSpan> CreateExponentialBackoff(int retryCount)
+        private static IEnumerable<TimeSpan> CreateExponentialBackoff(int retryCount)
         {
-            var spans = new List<TimeSpan>();
-
-            for (int i = 1; i < retryCount; i++)
+            for (int i = 1; i <= retryCount; i++)
             {
-                spans.Add(TimeSpan.FromSeconds(retryCount));
+                yield return TimeSpan.FromSeconds(i * i);
             }
-
-            return spans;
         }
     }
 }
