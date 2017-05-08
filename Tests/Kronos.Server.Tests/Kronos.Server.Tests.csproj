@@ -27,7 +27,6 @@
     <PackageReference Include="xunit.runner.visualstudio" Version="2.2.0" />
     <PackageReference Include="NSubstitute" Version="2.0.3" />
     <PackageReference Include="OpenCover" Version="4.6.519" />
-    <PackageReference Include="protobuf-net" Version="2.1.0" />
     <PackageReference Include="xunit" Version="2.3.0-beta1-build3642" />
     <DotNetCliToolReference Include="dotnet-xunit" Version="2.3.0-beta1-build3642" />  </ItemGroup>
   <ItemGroup>
