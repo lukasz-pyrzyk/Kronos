@@ -9,13 +9,13 @@ namespace Kronos.Server
         {
         }
 
-        [Option("port", 'p')]
+        [OptionParameter("port", 'p')]
         public int Port { get; set; } = Settings.DefaultPort;
 
-        [Option("login", 'l')]
+        [OptionParameter("login", 'l')]
         public string Login { get; set; } = Settings.DefaultLogin;
 
-        [Option("password")]
+        [OptionParameter("password")]
         public string Password { get; set; } = Settings.DefaultPassword;
     }
 }
