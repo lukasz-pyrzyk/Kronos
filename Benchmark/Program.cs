@@ -1,3 +1,4 @@
+using Benchmark.Hashes;
 using Benchmark.Types;
 using BenchmarkDotNet.Running;
 
@@ -12,7 +13,8 @@ namespace Benchmark
                 typeof(AddGetRemove),
                 typeof(Contains),
                 typeof(AddGetRemove_Cluster),
-                typeof(Contains_Cluster)
+                typeof(Contains_Cluster),
+                typeof(HashesBenchmark)
             });
 
             switcher.Run(args);
