@@ -90,8 +90,7 @@ namespace Kronos.Core.Tests.Storage
         public void Clear_ClearsElements()
         {
             // Arrange
-            var queue = new PriorityQueue<int>();
-            queue.Add(1);
+            var queue = new PriorityQueue<int> { 1 };
 
             // Act
             queue.Clear();

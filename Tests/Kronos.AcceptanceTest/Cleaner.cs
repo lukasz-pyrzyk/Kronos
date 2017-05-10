@@ -2,7 +2,6 @@
 using System.Threading.Tasks;
 using Kronos.Client;
 using Kronos.Core.Configuration;
-using Kronos.Core.Storage.Cleaning;
 using Xunit;
 
 namespace Kronos.AcceptanceTest

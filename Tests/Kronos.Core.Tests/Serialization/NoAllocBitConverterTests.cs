@@ -25,7 +25,7 @@ namespace Kronos.Core.Tests.Serialization
         public void GetBytes_Short_ReturnsCorrectValue()
         {
             // Arrange
-            short source = (short)5;
+            short source = 5;
 
             // Act
             byte[] buffer = new byte[2];
@@ -40,7 +40,7 @@ namespace Kronos.Core.Tests.Serialization
         public void GetBytes_Int_ReturnsCorrectValue()
         {
             // Arrange
-            int source = (int)5;
+            int source = 5;
 
             // Act
             byte[] buffer = new byte[4];
@@ -55,7 +55,7 @@ namespace Kronos.Core.Tests.Serialization
         public void GetBytes_long_ReturnsCorrectValue()
         {
             // Arrange
-            long source = (long)5;
+            long source = 5;
 
             // Act
             byte[] buffer = new byte[8];
@@ -70,7 +70,7 @@ namespace Kronos.Core.Tests.Serialization
         public void GetBytes_Ushort_ReturnsCorrectValue()
         {
             // Arrange
-            ushort source = (ushort)5;
+            ushort source = 5;
 
             // Act
             byte[] buffer = new byte[2];
@@ -85,7 +85,7 @@ namespace Kronos.Core.Tests.Serialization
         public void GetBytes_Uint_ReturnsCorrectValue()
         {
             // Arrange
-            uint source = (uint)5;
+            uint source = 5;
 
             // Act
             byte[] buffer = new byte[4];
@@ -100,7 +100,7 @@ namespace Kronos.Core.Tests.Serialization
         public void GetBytes_Ulong_ReturnsCorrectValue()
         {
             // Arrange
-            ulong source = (ulong)5;
+            ulong source = 5;
 
             // Act
             byte[] buffer = new byte[8];
@@ -115,7 +115,7 @@ namespace Kronos.Core.Tests.Serialization
         public void GetBytes_float_ReturnsCorrectValue()
         {
             // Arrange
-            float source = (float)5;
+            float source = 5;
 
             // Act
             byte[] buffer = new byte[4];
@@ -130,7 +130,7 @@ namespace Kronos.Core.Tests.Serialization
         public void GetBytes_Double_ReturnsCorrectValue()
         {
             // Arrange
-            double source = (double)5;
+            double source = 5;
 
             // Act
             byte[] buffer = new byte[8];
