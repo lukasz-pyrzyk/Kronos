@@ -17,7 +17,7 @@ namespace Benchmark.Hashes
         }
 
 
-        [Params(4, 11, 25, 100, 1000, 10000)]
+        [Params(4, 16, 128)]
         public int PayloadLength { get; set; }
 
         [Benchmark]
@@ -38,7 +38,7 @@ namespace Benchmark.Hashes
             return _xxHash.Hash(dataStr);
         }
 
-        [Benchmark]
+        [Benchmark(Baseline = true)]
         public uint FarmHash()
         {
             return Farmhash.Sharp.Farmhash.Hash32(dataStr);
