@@ -112,15 +112,4 @@ namespace Kronos.AcceptanceTest
 
         protected abstract Task ProcessAsync(IKronosClient client);
     }
-
-    public static class TaskExtensions
-    {
-        public static async Task AwaitWithTimeout(this Task task, int miliseconds)
-        {
-            if (await Task.WhenAny(task, Task.Delay(miliseconds)) == task)
-            {
-                await task;
-            }
-        }
-    }
 }
