@@ -298,7 +298,7 @@ namespace Kronos.Core.Tests.Storage
             do
             {
                 await Task.Delay(timePeriod);
-            } while (storage.cleanupRequested != 1);
+            } while (!storage.CleanupRequested);
 
             return storage;
         }
