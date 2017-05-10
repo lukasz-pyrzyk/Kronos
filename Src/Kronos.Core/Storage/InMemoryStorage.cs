@@ -39,10 +39,14 @@ namespace Kronos.Core.Storage
 
             var key = new Key(name);
 
-            if (_storage.ContainsKey(key))
+            Element element;
+            bool found = _storage.TryGetValue(key, out element);
+            if (found && !element.IsExpired())
+            {
                 return false;
+            }
 
-            var element = new Element(obj, expiryDate);
+            element = new Element(obj, expiryDate);
             _storage[key] = element;
 
             if (expiryDate.HasValue)
