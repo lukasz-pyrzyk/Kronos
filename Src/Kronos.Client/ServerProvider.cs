@@ -6,7 +6,6 @@ namespace Kronos.Client
 {
     internal class ServerProvider
     {
-        public int ServersCount => _clusterConfig.Servers.Length;
         public ServerConfig[] Servers => _clusterConfig.Servers;
 
         public Dictionary<byte, ServerConfig> Mappings;
@@ -31,8 +30,8 @@ namespace Kronos.Client
             const ushort hashCodeRange = 100; // numbers in range (0:99).
             Mappings = new Dictionary<byte, ServerConfig>(hashCodeRange);
 
-            byte rangePerServer = (byte)(hashCodeRange / ServersCount);
-            byte modulo = (byte)(hashCodeRange % ServersCount);
+            byte rangePerServer = (byte)(hashCodeRange / Servers.Length);
+            byte modulo = (byte)(hashCodeRange % Servers.Length);
 
             byte position = 0;
             foreach (ServerConfig server in Servers)

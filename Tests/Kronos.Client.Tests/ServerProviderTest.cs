@@ -13,7 +13,7 @@ namespace Kronos.Client.Tests
             ServerProvider provider = new ServerProvider(config);
 
             Assert.NotNull(provider);
-            Assert.Equal(provider.ServersCount, config.Servers.Length);
+            Assert.Equal(provider.Servers.Length, config.Servers.Length);
             Assert.Equal(provider.Servers, config.Servers);
         }
 
