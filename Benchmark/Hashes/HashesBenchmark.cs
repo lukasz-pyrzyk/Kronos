@@ -1,8 +1,9 @@
-﻿using BenchmarkDotNet.Attributes;
+﻿using Benchmark.Config;
+using BenchmarkDotNet.Attributes;
 
 namespace Benchmark.Hashes
 {
-    [Config(typeof(BaseConfig))]
+    [Config(typeof(CustomConfig))]
     public class HashesBenchmark
     {
         private string dataStr;
