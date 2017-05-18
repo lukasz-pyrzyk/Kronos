@@ -1,13 +1,12 @@
 ﻿using System;
 using System.Threading.Tasks;
 using Kronos.Client;
-using Kronos.Core.Configuration;
 using Xunit;
 
 namespace Kronos.AcceptanceTest
 {
     [Collection("AcceptanceTest")]
-    public class Cleaner : Base
+    public class AddButPreviousWasExpired : Base
     {
         [Fact]
         public override async Task RunAsync()
@@ -20,16 +19,17 @@ namespace Kronos.AcceptanceTest
             // Arrange
             string key = Guid.NewGuid().ToString();
             byte[] data = new byte[1024];
+            TimeSpan expiryTime = TimeSpan.FromSeconds(1);
+            DateTime now = DateTime.UtcNow;
 
             // Act
-            await client.InsertAsync(key, data, DateTime.UtcNow);
-
-            await Task.Delay(Settings.CleanupTimeMs);
-
-            bool contains = await client.ContainsAsync(key);
+            bool added = await client.InsertAsync(key, data, now + expiryTime);
+            await Task.Delay(expiryTime);
+            bool addedAgain = await client.InsertAsync(key, data, now + TimeSpan.FromDays(1));
 
             // Assert
-            Assert.False(contains, "Object exists after cleanup");
+            Assert.True(added, "Object was not added");
+            Assert.True(addedAgain, "Object is not added even if previous was expired");
         }
     }
 }

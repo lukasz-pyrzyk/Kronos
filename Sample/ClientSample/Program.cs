@@ -54,24 +54,5 @@ namespace ClientSample
             watch.Stop();
             Console.WriteLine(watch.ElapsedMilliseconds);
         }
-
-        private static async Task SendFileFilesAsync()
-        {
-            const string directory = @"path";
-            string configPath = "KronosConfig.json";
-
-            IKronosClient client = KronosClientFactory.FromFile(configPath);
-
-            foreach (string file in Directory.EnumerateFiles(directory, "*.*", SearchOption.AllDirectories))
-            {
-                var time = Stopwatch.StartNew();
-                var data = File.ReadAllBytes(file);
-                string name = Path.GetFileName(file);
-                Console.WriteLine($"Sending {name}");
-                await client.InsertAsync(name, data, DateTime.Now.AddMinutes(10));
-                time.Stop();
-                Console.WriteLine($"Sending finished. Time: {time.ElapsedMilliseconds}");
-            }
-        }
     }
 }

@@ -17,7 +17,6 @@ namespace Kronos.Core.Tests.Configuration
 
             // Act
             byte[] bytes = auth.HashedPassword;
-            byte[] byteas = auth.HashedPassword;
 
             // Assert
             Assert.Equal(expectedBytes, bytes);

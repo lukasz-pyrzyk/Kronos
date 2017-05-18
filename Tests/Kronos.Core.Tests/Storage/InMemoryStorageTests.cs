@@ -58,6 +58,25 @@ namespace Kronos.Core.Tests.Storage
         }
 
         [Fact]
+        public async Task Add_OverridesValue_WhenKeyWasExpired()
+        {
+            // Arrange
+            const string key = "key";
+            IStorage storage = CreateStorage();
+            TimeSpan expiryTime = TimeSpan.FromSeconds(1);
+            DateTime now = DateTime.UtcNow;
+
+            // Act
+            storage.Add(key, now + expiryTime, ByteString.Empty);
+            await Task.Delay(expiryTime);
+
+            bool added = storage.Add(key, DateTime.MaxValue, ByteString.Empty);
+
+            // Assert
+            Assert.True(added);
+        }
+
+        [Fact]
         public void TryGet_ReturnsObject()
         {
             // Arrange
@@ -298,7 +317,7 @@ namespace Kronos.Core.Tests.Storage
             do
             {
                 await Task.Delay(timePeriod);
-            } while (storage.cleanupRequested != 1);
+            } while (!storage.CleanupRequested);
 
             return storage;
         }

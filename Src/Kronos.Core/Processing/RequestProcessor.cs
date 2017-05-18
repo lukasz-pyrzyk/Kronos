@@ -1,4 +1,3 @@
-using System;
 using Kronos.Core.Messages;
 using Kronos.Core.Storage;
 
