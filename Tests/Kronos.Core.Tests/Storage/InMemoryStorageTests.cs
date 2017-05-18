@@ -68,7 +68,7 @@ namespace Kronos.Core.Tests.Storage
 
             // Act
             storage.Add(key, now + expiryTime, ByteString.Empty);
-            await Task.Delay(expiryTime);
+            await Task.Delay(TimeSpan.FromTicks(expiryTime.Ticks * 2)); // multiply by 2, mono behaves differently... Race condition?
 
             bool added = storage.Add(key, DateTime.MaxValue, ByteString.Empty);
 
