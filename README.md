@@ -44,10 +44,10 @@ Kronos client requires a cluster configuration file in JSON format. Example file
 string configPath = "KronosConfig.json";
 IKronosClient client = KronosClientFactory.CreateClient(configPath);
 
-/// create a key, package and expiry date
+// create a key, package and expiry date
 string key = "key";
 byte[] packageToCache = Encoding.UTF8.GetBytes("Lorem ipsum");
-DateTime expiryDate = DateTime.Now;
+DateTime expiryDate = DateTime.UtcNow.AddDays(5);
 
 // insert package to server
 await client.InsertAsync(key, packageToCache, expiryDate);
@@ -55,8 +55,17 @@ await client.InsertAsync(key, packageToCache, expiryDate);
 // get package from server
 byte[] cachedValues = await client.GetAsync(key);
 
+// check if storage contains given key
+bool contains  = await client.ContainsAsync(key);
+
+// count number of elements in the storage
+int number  = await client.CountAsync();
+
 // Optionally you can delete object from cache using Delete command
 await client.DeleteAsync(key);
+
+// or flush all storage
+await client.ClearAsync();
 ```
 
 ### Server initialization using docker image
