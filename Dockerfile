@@ -1,7 +1,7 @@
 FROM microsoft/dotnet:runtime
 
 # Required to correct .NET Core startup
-WORKDIR /Kronos
+WORKDIR /app
 
 # maintener info
 MAINTAINER Lukasz Pyrzyk <lukasz.pyrzyk@gmail.com>
