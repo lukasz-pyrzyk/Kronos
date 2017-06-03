@@ -7,7 +7,7 @@ WORKDIR /app
 MAINTAINER Lukasz Pyrzyk <lukasz.pyrzyk@gmail.com>
 
 # copy published binaries to the container
-COPY ./Src/Kronos.Server/bin/Release/netcoreapp1.1/ /app
+COPY ./Src/Kronos.Server/bin/ /app
 
 # set entrypoint to the docker run
 ENTRYPOINT ["dotnet", "Kronos.Server.dll"]
