@@ -7,8 +7,6 @@ namespace Kronos.Core.Processing
     {
         public override InsertResponse Reply(InsertRequest request, IStorage storage)
         {
-            // TODO remove ToDateTime
-            // TODO rename properties...
             bool added = storage.Add(request.Key, request.Expiry?.ToDateTime(), request.Data);
 
             return new InsertResponse { Added = added };
