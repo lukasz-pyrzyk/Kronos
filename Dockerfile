@@ -5,10 +5,10 @@ MAINTAINER Lukasz Pyrzyk <lukasz.pyrzyk@gmail.com>
 
 
 ## Required to correct .NET Core startup
-#WORKDIR /app
+WORKDIR /dotnetapp
 
 # copy published binaries to the container
-COPY ./Src/Kronos.Server/bin/ ./
+COPY ./Src/Kronos.Server/Bin .
 
 # set entrypoint to the docker run
 ENTRYPOINT ["dotnet", "Kronos.Server.dll"]
