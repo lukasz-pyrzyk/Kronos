@@ -5,14 +5,13 @@
     <Copyright>Lukasz Pyrzyk</Copyright>
     <VersionPrefix>1.1.2</VersionPrefix>
     <Authors>Lukasz Pyrzyk</Authors>
-    <TargetFrameworks>netstandard1.3;net461</TargetFrameworks>
+    <TargetFrameworks>netstandard1.3</TargetFrameworks>
     <AssemblyName>Kronos.Client</AssemblyName>
     <PackageId>Kronos.Client</PackageId>
     <PackageTags>cache, distributed, socket, dotnetcore, dnx</PackageTags>
     <PackageIconUrl>https://raw.githubusercontent.com/lukasz-pyrzyk/Kronos/master/SolutionItems/nugetIcon.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/lukasz-pyrzyk/Kronos</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/lukasz-pyrzyk/Kronos/blob/master/license.txt</PackageLicenseUrl>
-    <PackageTargetFallback Condition=" '$(TargetFramework)' == 'netstandard1.3' ">$(PackageTargetFallback);dnxcore50</PackageTargetFallback>
     <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
     <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
     <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
@@ -34,10 +33,4 @@
     <PackageReference Include="System.Runtime" Version="4.3.0" />
     <PackageReference Include="System.Threading.Tasks" Version="4.3.0" />
   </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
-  </ItemGroup>
-
 </Project>

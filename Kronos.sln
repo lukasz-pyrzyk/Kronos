@@ -1,28 +1,35 @@
 Microsoft Visual Studio Solution File, Format Version 12.00
 # Visual Studio 15
-VisualStudioVersion = 15.0.26403.7
+VisualStudioVersion = 15.0.26730.3
 MinimumVisualStudioVersion = 10.0.40219.1
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kronos.Client", "Src\Kronos.Client\Kronos.Client.csproj", "{1F0FE4FC-EA2F-4CB3-9509-BF98D53ACFEA}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kronos.Client", "Src\Kronos.Client\Kronos.Client.csproj", "{1F0FE4FC-EA2F-4CB3-9509-BF98D53ACFEA}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kronos.Server", "Src\Kronos.Server\Kronos.Server.csproj", "{5CD560DC-9E67-464D-9E56-B0E5914AFAE6}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kronos.Server", "Src\Kronos.Server\Kronos.Server.csproj", "{5CD560DC-9E67-464D-9E56-B0E5914AFAE6}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kronos.Core", "Src\Kronos.Core\Kronos.Core.csproj", "{125D4674-A403-45BF-A42C-EBD016A78650}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kronos.Core", "Src\Kronos.Core\Kronos.Core.csproj", "{125D4674-A403-45BF-A42C-EBD016A78650}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Tests", "Tests", "{6A45CC5D-C17F-4F32-AD54-B585E1747D43}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kronos.Core.Tests", "Tests\Kronos.Core.Tests\Kronos.Core.Tests.csproj", "{67E85EA7-31DE-468C-B620-A8B9477818B5}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kronos.Core.Tests", "Tests\Kronos.Core.Tests\Kronos.Core.Tests.csproj", "{67E85EA7-31DE-468C-B620-A8B9477818B5}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kronos.Client.Tests", "Tests\Kronos.Client.Tests\Kronos.Client.Tests.csproj", "{960ACF5A-ED8A-4B44-B6AA-90BFB3BD7CF2}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kronos.Client.Tests", "Tests\Kronos.Client.Tests\Kronos.Client.Tests.csproj", "{960ACF5A-ED8A-4B44-B6AA-90BFB3BD7CF2}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kronos.Server.Tests", "Tests\Kronos.Server.Tests\Kronos.Server.Tests.csproj", "{275C87FA-03BC-48A5-A7CE-499738E85BA8}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kronos.Server.Tests", "Tests\Kronos.Server.Tests\Kronos.Server.Tests.csproj", "{275C87FA-03BC-48A5-A7CE-499738E85BA8}"
 EndProject
 Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Sample", "Sample", "{DD99F77D-5451-4051-8F71-432877ACFFB0}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ClientSample", "Sample\ClientSample\ClientSample.csproj", "{217AD1C3-650E-48A7-BF44-95C395EAF167}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "ClientSample", "Sample\ClientSample\ClientSample.csproj", "{217AD1C3-650E-48A7-BF44-95C395EAF167}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Kronos.AcceptanceTest", "Tests\Kronos.AcceptanceTest\Kronos.AcceptanceTest.csproj", "{DA5DE27A-C4F5-4AF9-9DB1-BF2049317AEE}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kronos.AcceptanceTest", "Tests\Kronos.AcceptanceTest\Kronos.AcceptanceTest.csproj", "{DA5DE27A-C4F5-4AF9-9DB1-BF2049317AEE}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Benchmark", "Benchmark\Benchmark.csproj", "{315089CB-0ECC-4856-8FDC-F98BDCBEAF6B}"
+Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmark", "Benchmark\Benchmark.csproj", "{315089CB-0ECC-4856-8FDC-F98BDCBEAF6B}"
+EndProject
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{6E440BB7-B9BD-44DA-B215-FD20A11880EF}"
+	ProjectSection(SolutionItems) = preProject
+		.travis.yml = .travis.yml
+		appveyor.yml = appveyor.yml
+		Dockerfile = Dockerfile
+	EndProjectSection
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -116,5 +123,8 @@ Global
 		{275C87FA-03BC-48A5-A7CE-499738E85BA8} = {6A45CC5D-C17F-4F32-AD54-B585E1747D43}
 		{217AD1C3-650E-48A7-BF44-95C395EAF167} = {DD99F77D-5451-4051-8F71-432877ACFFB0}
 		{DA5DE27A-C4F5-4AF9-9DB1-BF2049317AEE} = {6A45CC5D-C17F-4F32-AD54-B585E1747D43}
+	EndGlobalSection
+	GlobalSection(ExtensibilityGlobals) = postSolution
+		SolutionGuid = {F4981E1B-580F-4E99-9408-DA16AE972D73}
 	EndGlobalSection
 EndGlobal
