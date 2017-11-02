@@ -1,7 +1,3 @@
-param (
-    [Parameter(Mandatory=$true)][string]$version = 0
-)
-
 # projects to pack
 $projects = @(
     "Src\Kronos.Core",
@@ -11,7 +7,7 @@ $projects = @(
 
 # pack function for project
 function Pack($path) {
-    dotnet pack $path -c Release --version-suffix $version;
+    dotnet pack $path -c Release;
 }
 
 write-host "Packeging started"
