@@ -13,7 +13,7 @@ function Pack($path) {
 write-host "Packeging started"
 # build each project
 foreach ($project in $projects){
-    write-host "Packing " $project "with suffix version " $version
+    write-host "Packing " $project
     Pack($project)
 }
 
