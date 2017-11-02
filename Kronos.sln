@@ -28,7 +28,12 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{6E440BB7
 	ProjectSection(SolutionItems) = preProject
 		.travis.yml = .travis.yml
 		appveyor.yml = appveyor.yml
+		Scripts\Windows\build.ps1 = Scripts\Windows\build.ps1
+		Scripts\Linux\build.sh = Scripts\Linux\build.sh
 		Dockerfile = Dockerfile
+		Scripts\Windows\pack.ps1 = Scripts\Windows\pack.ps1
+		Scripts\Windows\runTests.ps1 = Scripts\Windows\runTests.ps1
+		Scripts\Linux\runTests.sh = Scripts\Linux\runTests.sh
 	EndProjectSection
 EndProject
 Global
