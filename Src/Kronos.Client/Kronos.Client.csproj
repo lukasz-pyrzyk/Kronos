@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Description>Kronoc.Client is a library which allows you integrate project with Kronos cache platform (Kronos.Server)</Description>
     <Copyright>Lukasz Pyrzyk</Copyright>
-    <VersionPrefix>1.1.2</VersionPrefix>
+    <VersionPrefix>2.0.0</VersionPrefix>
     <Authors>Lukasz Pyrzyk</Authors>
     <TargetFrameworks>netstandard1.3</TargetFrameworks>
     <AssemblyName>Kronos.Client</AssemblyName>
