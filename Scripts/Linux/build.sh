@@ -3,7 +3,7 @@
 #settings
 MODE="Release"
 STANDARD="netstandard1.3"
-RUNTIME="netcoreapp1.1"
+RUNTIME="netcoreapp2.0"
 
 #exit if any command fails
 set -e

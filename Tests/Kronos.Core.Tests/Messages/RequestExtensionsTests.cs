@@ -116,7 +116,7 @@ namespace Kronos.Core.Tests.Messages
             Assert.Equal(auth, request.Auth);
         }
 
-        private static IEnumerable<object[]> ExpiryDates()
+        public static IEnumerable<object[]> ExpiryDates()
         {
             yield return new object[] { DateTime.UtcNow };
             yield return new object[] { null };

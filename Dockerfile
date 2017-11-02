@@ -1,8 +1,6 @@
-FROM microsoft/dotnet:runtime
-
+FROM microsoft/dotnet:2-runtime
 # maintener info
 MAINTAINER Lukasz Pyrzyk <lukasz.pyrzyk@gmail.com>
-
 
 ## Required to correct .NET Core startup
 WORKDIR /dotnetapp
