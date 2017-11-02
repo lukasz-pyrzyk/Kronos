@@ -25,7 +25,7 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="Newtonsoft.Json" Version="10.0.2" />
+    <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
     <PackageReference Include="Polly" Version="5.1.0" />
     <PackageReference Include="System.IO" Version="4.3.0" />
     <PackageReference Include="System.Net.Sockets" Version="4.3.0" />
