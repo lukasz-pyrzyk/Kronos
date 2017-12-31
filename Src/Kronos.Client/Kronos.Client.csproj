@@ -7,6 +7,7 @@
     <Authors>Lukasz Pyrzyk</Authors>
     <TargetFrameworks>netstandard1.3</TargetFrameworks>
     <AssemblyName>Kronos.Client</AssemblyName>
+    <LangVersion>7.2</LangVersion>
     <PackageId>Kronos.Client</PackageId>
     <PackageTags>cache, distributed, socket, dotnetcore, dnx</PackageTags>
     <PackageIconUrl>https://raw.githubusercontent.com/lukasz-pyrzyk/Kronos/master/SolutionItems/nugetIcon.png</PackageIconUrl>

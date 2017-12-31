@@ -8,6 +8,7 @@
     <TargetFrameworks>netstandard1.3;</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <AssemblyName>Kronos.Core</AssemblyName>
+    <LangVersion>7.2</LangVersion>
     <PackageId>Kronos.Core</PackageId>
     <PackageTags>cache, distributed, socket, dotnetcore, dnx</PackageTags>
     <PackageIconUrl>https://raw.githubusercontent.com/lukasz-pyrzyk/Kronos/master/SolutionItems/nugetIcon.png</PackageIconUrl>
@@ -21,10 +22,6 @@
     <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
   </PropertyGroup>
 
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard1.3|AnyCPU'">
-    <LangVersion>7.2</LangVersion>
-  </PropertyGroup>
-
   <ItemGroup>
     <PackageReference Include="Farmhash.Sharp" Version="0.4.0" />
     <PackageReference Include="NLog" Version="5.0.0-beta03" />
@@ -34,5 +31,5 @@
     <PackageReference Include="Google.Protobuf" Version="3.5.1" />
     <PackageReference Include="System.Runtime.Extensions" Version="4.3.0" />
   </ItemGroup>
-  
+
 </Project>

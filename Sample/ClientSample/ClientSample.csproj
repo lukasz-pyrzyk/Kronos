@@ -4,9 +4,6 @@
     <TargetFrameworks>netcoreapp2.0;net461</TargetFrameworks>
     <AssemblyName>ClientSample</AssemblyName>
     <OutputType>Exe</OutputType>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netcoreapp2.0|AnyCPU'">
     <LangVersion>7.2</LangVersion>
   </PropertyGroup>
 

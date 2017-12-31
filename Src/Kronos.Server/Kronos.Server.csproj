@@ -7,7 +7,9 @@
     <Authors>Lukasz Pyrzyk</Authors>
     <TargetFrameworks>netcoreapp2.0;net461</TargetFrameworks>
     <AssemblyName>Kronos.Server</AssemblyName>
-    <OutputType>Exe</OutputType><PackageId>Kronos.Server</PackageId>
+    <OutputType>Exe</OutputType>
+    <PackageId>Kronos.Server</PackageId>
+    <LangVersion>7.2</LangVersion>
     <PackageTags>cache, distributed, in-memory, memory, socket, redis</PackageTags>
     <PackageIconUrl>https://raw.githubusercontent.com/lukasz-pyrzyk/Kronos/master/SolutionItems/nugetIcon.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/lukasz-pyrzyk/Kronos</PackageProjectUrl>
@@ -19,10 +21,6 @@
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netcoreapp2.0|AnyCPU'">
-    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>
