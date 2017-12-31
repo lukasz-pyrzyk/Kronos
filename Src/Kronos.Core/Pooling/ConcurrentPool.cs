@@ -19,8 +19,7 @@ namespace Kronos.Core.Pooling
         {
             AllocateIfNecessary(1);
 
-            T item;
-            _nodes.TryPop(out item);
+            _nodes.TryPop(out T item);
             return item;
         }
 
@@ -31,8 +30,7 @@ namespace Kronos.Core.Pooling
             T[] items = new T[count];
             for (int i = 0; i < count; i++)
             {
-                T item;
-                _nodes.TryPop(out item);
+                _nodes.TryPop(out T item);
                 items[i] = item;
             }
 

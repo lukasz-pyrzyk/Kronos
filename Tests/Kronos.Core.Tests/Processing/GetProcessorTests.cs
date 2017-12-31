@@ -15,12 +15,11 @@ namespace Kronos.Core.Tests.Processing
             // arrange
             ByteString obj = ByteString.CopyFromUtf8("lorem ipsum");
             bool expected = true;
-            ByteString dummy;
             var request = new GetRequest();
             var processor = new GetProcessor();
             var storage = Substitute.For<IStorage>();
 
-            storage.TryGet(request.Key, out dummy).Returns(x =>
+            storage.TryGet(request.Key, out ByteString dummy).Returns(x =>
             {
                 x[1] = obj;
                 return expected;
@@ -43,8 +42,7 @@ namespace Kronos.Core.Tests.Processing
             var processor = new GetProcessor();
             var storage = Substitute.For<IStorage>();
 
-            ByteString temp;
-            storage.TryGet(request.Key, out temp).Returns(expected);
+            storage.TryGet(request.Key, out ByteString temp).Returns(expected);
 
             // Act
             GetResponse response = processor.Reply(request, storage);
