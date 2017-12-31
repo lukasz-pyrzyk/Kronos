@@ -15,7 +15,7 @@ namespace Kronos.Core.Tests.Networking
         public async Task GetIPAsync_ReturnsIpAddress(string hostName)
         {
             // Act
-            IPAddress address = await EndpointUtils.GetIPAsync(hostName);
+            IPAddress address = await EndpointUtils.GetIpAsync(hostName);
 
             // Assert
             Assert.NotNull(address);

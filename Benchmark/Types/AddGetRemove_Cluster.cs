@@ -6,7 +6,7 @@ using BenchmarkDotNet.Attributes;
 
 namespace Benchmark.Types
 {
-    public class AddGetRemove_Cluster : ClusterBenchmark
+    public class AddGetRemoveCluster : ClusterBenchmark
     {
         [Params(Size.Kb * 100, Size.Kb * 500, Size.Mb, Size.Mb * 2)]
         public int PackageSize { get; set; }

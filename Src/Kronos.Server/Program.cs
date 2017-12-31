@@ -13,7 +13,7 @@ namespace Kronos.Server
     {
         public static bool IsWorking { get; private set; }
 
-        private static readonly ManualResetEventSlim _cancelEvent = new ManualResetEventSlim();
+        private static readonly ManualResetEventSlim CancelEvent = new ManualResetEventSlim();
 
         public static void Main(string[] args)
         {
@@ -41,8 +41,8 @@ namespace Kronos.Server
 
             Console.CancelKeyPress += (sender, args) => Stop();
 
-            _cancelEvent.Wait();
-            _cancelEvent.Reset();
+            CancelEvent.Wait();
+            CancelEvent.Reset();
 
             // dispose components
             storage.Dispose();
@@ -51,7 +51,7 @@ namespace Kronos.Server
 
         public static void Stop()
         {
-            _cancelEvent.Set();
+            CancelEvent.Set();
             IsWorking = false;
         }
 

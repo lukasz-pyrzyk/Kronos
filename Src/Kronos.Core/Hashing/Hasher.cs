@@ -6,7 +6,7 @@ namespace Kronos.Core.Hashing
 {
     public static class Hasher
     {
-        private static readonly ThreadLocal<SHA512> _sha512 = new ThreadLocal<SHA512>(SHA512.Create);
+        private static readonly ThreadLocal<SHA512> Sha512 = new ThreadLocal<SHA512>(SHA512.Create);
 
         public static int Hash(string word)
         {
@@ -19,7 +19,7 @@ namespace Kronos.Core.Hashing
         public static byte[] SecureHash(string word)
         {
             var bytes = Encoding.UTF8.GetBytes(word);
-            return _sha512.Value.ComputeHash(bytes);
+            return Sha512.Value.ComputeHash(bytes);
         }
     }
 }

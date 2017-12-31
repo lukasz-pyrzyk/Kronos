@@ -5,7 +5,7 @@ using BenchmarkDotNet.Attributes;
 
 namespace Benchmark.Types
 {
-    public class Contains_Cluster : ClusterBenchmark
+    public class ContainsCluster : ClusterBenchmark
     {
         [Benchmark]
         public async Task Kronos()

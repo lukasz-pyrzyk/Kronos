@@ -34,14 +34,14 @@ namespace Kronos.Core.Configuration
             return Auth.Default();
         }
 
-        public IPEndPoint EndPoint => _endPoint ?? (_endPoint = CreateIPEndPoint());
+        public IPEndPoint EndPoint => _endPoint ?? (_endPoint = CreateIpEndPoint());
 
-        private IPEndPoint CreateIPEndPoint()
+        private IPEndPoint CreateIpEndPoint()
         {
             IPAddress address;
             if (!string.IsNullOrEmpty(Domain))
             {
-                address = EndpointUtils.GetIPAsync(Domain).Result;
+                address = EndpointUtils.GetIpAsync(Domain).Result;
                 Ip = address.ToString();
             }
             else

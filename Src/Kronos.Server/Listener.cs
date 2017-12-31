@@ -19,7 +19,7 @@ namespace Kronos.Server
         private readonly IRequestProcessor _requestProcessor;
         private readonly CancellationTokenSource _cancel = new CancellationTokenSource();
 
-        private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
         private readonly Auth _auth;
 
         public Listener(SettingsArgs settings, ISocketProcessor processor, IRequestProcessor requestProcessor)
@@ -34,10 +34,10 @@ namespace Kronos.Server
 
         public void Start()
         {
-            _logger.Info("Starting server");
+            Logger.Info("Starting server");
             _listener.Start();
             string version = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
-            _logger.Info($"Server started on {_listener.LocalEndpoint}. Kronos version {version}");
+            Logger.Info($"Server started on {_listener.LocalEndpoint}. Kronos version {version}");
 
             CancellationToken token = _cancel.Token;
 
@@ -54,11 +54,11 @@ namespace Kronos.Server
                     }
                     catch (ObjectDisposedException)
                     {
-                        _logger.Info("TCP listener is disposed");
+                        Logger.Info("TCP listener is disposed");
                     }
                     catch (Exception ex)
                     {
-                        _logger.Error($"Exception during accepting new request {ex}");
+                        Logger.Error($"Exception during accepting new request {ex}");
                     }
                     finally
                     {
@@ -70,31 +70,31 @@ namespace Kronos.Server
 
         public void Stop()
         {
-            _logger.Info("Stopping server");
+            Logger.Info("Stopping server");
             _cancel.Cancel();
 
             if (_listener.Server.Connected)
             {
-                _logger.Info("Server is connected, shutting down");
+                Logger.Info("Server is connected, shutting down");
                 try
                 {
                     _listener.Server.Shutdown(SocketShutdown.Both);
                 }
                 catch (SocketException ex)
                 {
-                    _logger.Error($"Error on shutting down server socket {ex}");
+                    Logger.Error($"Error on shutting down server socket {ex}");
                 }
             }
             
             _listener.Stop();
             _listener.Server.Dispose();
 
-            _logger.Info("Server is down");
+            Logger.Info("Server is down");
         }
 
         public void Dispose()
         {
-            _logger.Info("Stopping TCP/IP server");
+            Logger.Info("Stopping TCP/IP server");
             Stop();
         }
 
@@ -104,15 +104,15 @@ namespace Kronos.Server
             {
                 Request request = _processor.ReceiveRequest(client);
 
-                _logger.Debug($"Processing new request {request.Type}");
+                Logger.Debug($"Processing new request {request.Type}");
                 Response response = _requestProcessor.Handle(request, _auth);
 
                 _processor.SendResponse(client, response);
-                _logger.Debug("Processing finished");
+                Logger.Debug("Processing finished");
             }
             catch (Exception ex)
             {
-                _logger.Error($"Exception on processing: {ex}");
+                Logger.Error($"Exception on processing: {ex}");
             }
         }
     }

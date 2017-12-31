@@ -9,12 +9,12 @@ namespace Kronos.Core.Storage
 {
     public class InMemoryStorage : IStorage
     {
-        private static readonly Logger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
 
         private readonly Dictionary<Key, Element> _storage = new Dictionary<Key, Element>();
         private readonly PriorityQueue<ExpiringKey> _expiringKeys = new PriorityQueue<ExpiringKey>();
 
-        private int cleanupRequested;
+        private int _cleanupRequested;
         private readonly ICleaner _cleaner;
 
         public InMemoryStorage() : this(new Cleaner(), new Scheduler())
@@ -29,7 +29,7 @@ namespace Kronos.Core.Storage
 
         public int Count => _storage.Count;
         public int ExpiringCount => _expiringKeys.Count;
-        internal bool CleanupRequested => cleanupRequested == 1;
+        internal bool CleanupRequested => _cleanupRequested == 1;
 
         public bool Add(string name, DateTime? expiryDate, ByteString obj)
         {
@@ -100,7 +100,7 @@ namespace Kronos.Core.Storage
 
         public int Clear()
         {
-            _logger.Info("Clearing storage");
+            Logger.Info("Clearing storage");
 
             int count = Count;
             _storage.Clear();
@@ -111,7 +111,7 @@ namespace Kronos.Core.Storage
 
         public void Dispose()
         {
-            _logger.Info("Disposing storage");
+            Logger.Info("Disposing storage");
 
             Clear();
         }
@@ -119,20 +119,20 @@ namespace Kronos.Core.Storage
         private void ClearStorageIfRequested()
         {
             // check if cleanup was requested, do not change value
-            if (Interlocked.CompareExchange(ref cleanupRequested, 1, 1) == 1)
+            if (Interlocked.CompareExchange(ref _cleanupRequested, 1, 1) == 1)
             {
-                _logger.Debug("Clearing storage");
+                Logger.Debug("Clearing storage");
                 _cleaner.Clear(_expiringKeys, _storage);
-                Interlocked.Exchange(ref cleanupRequested, 0);
+                Interlocked.Exchange(ref _cleanupRequested, 0);
             }
         }
 
         private void OnTimer(object obj)
         {
             // try to request for cleanup
-            if (Interlocked.CompareExchange(ref cleanupRequested, 1, 0) == 0)
+            if (Interlocked.CompareExchange(ref _cleanupRequested, 1, 0) == 0)
             {
-                _logger.Debug("Storage cleanup scheduled");
+                Logger.Debug("Storage cleanup scheduled");
             }
         }
     }

@@ -8,9 +8,9 @@ namespace Kronos.Core.Networking
 {
     public static class EndpointUtils
     {
-        private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
 
-        public static async Task<IPAddress> GetIPAsync(string hostName)
+        public static async Task<IPAddress> GetIpAsync(string hostName)
         {
             var host = await Dns.GetHostEntryAsync(hostName);
             IPAddress[] addresses = host.AddressList
@@ -19,7 +19,7 @@ namespace Kronos.Core.Networking
 
             if (addresses.Length > 1)
             {
-                _logger.Info($"Found more local network interfaces, choosing {addresses.First()}");
+                Logger.Info($"Found more local network interfaces, choosing {addresses.First()}");
             }
 
             return addresses.First();

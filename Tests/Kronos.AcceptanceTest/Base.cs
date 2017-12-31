@@ -15,7 +15,7 @@ namespace Kronos.AcceptanceTest
     [Collection("AcceptanceTest")]
     public abstract class Base
     {
-        private static readonly SemaphoreSlim _resetEvent = new SemaphoreSlim(1, 1);
+        private static readonly SemaphoreSlim ResetEvent = new SemaphoreSlim(1, 1);
 
         public abstract Task RunAsync();
 
@@ -26,7 +26,7 @@ namespace Kronos.AcceptanceTest
 
         public async Task RunInternalAsync()
         {
-            await _resetEvent.WaitAsync();
+            await ResetEvent.WaitAsync();
             Task server = null;
             try
             {
@@ -87,7 +87,7 @@ namespace Kronos.AcceptanceTest
                     Assert.False(true, ex.Message);
                 }
 
-                _resetEvent.Release();
+                ResetEvent.Release();
             }
         }
 

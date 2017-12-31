@@ -17,7 +17,7 @@ namespace Benchmark.Config
         protected IDatabase RedisClient { get; private set; }
         protected IServer RedisServer { get; private set; }
 
-        [Setup]
+        [GlobalSetup]
         public void Setup()
         {
             KronosClient = KronosClientFactory.FromIp(KronosConnection, Settings.DefaultPort);

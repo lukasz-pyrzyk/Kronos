@@ -12,8 +12,8 @@ namespace Benchmark
             {
                 typeof(AddGetRemove),
                 typeof(Contains),
-                typeof(AddGetRemove_Cluster),
-                typeof(Contains_Cluster),
+                typeof(AddGetRemoveCluster),
+                typeof(ContainsCluster),
                 typeof(HashesBenchmark)
             });
 
