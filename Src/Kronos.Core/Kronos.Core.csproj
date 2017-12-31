@@ -21,6 +21,10 @@
     <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard1.3|AnyCPU'">
+    <LangVersion>7.2</LangVersion>
+  </PropertyGroup>
+
   <ItemGroup>
     <PackageReference Include="Farmhash.Sharp" Version="0.4.0" />
     <PackageReference Include="NLog" Version="5.0.0-beta03" />

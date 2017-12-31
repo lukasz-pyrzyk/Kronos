@@ -31,7 +31,7 @@ namespace Kronos.Core.Pooling
 
         public override long Position
         {
-            get { return _position; }
+            get => _position;
             set
             {
                 if (value > Length) throw new EndOfStreamException();

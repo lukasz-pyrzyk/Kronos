@@ -5,6 +5,10 @@
     <AssemblyName>Kronos.Core.Tests</AssemblyName>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|AnyCPU'">
+    <LangVersion>7.2</LangVersion>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\..\Src\Kronos.Core\Kronos.Core.csproj" />
   </ItemGroup>
