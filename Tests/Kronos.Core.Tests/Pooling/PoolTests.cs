@@ -38,7 +38,7 @@ namespace Kronos.Core.Tests.Pooling
             int count = pool.Count;
 
             // Act
-            byte element = pool.Rent();
+            pool.Rent();
 
             // Assert
             Assert.Equal(pool.Count, count - 1);

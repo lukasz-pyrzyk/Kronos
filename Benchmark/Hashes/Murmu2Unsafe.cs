@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Benchmark.Hashes
 {
@@ -11,8 +9,8 @@ namespace Benchmark.Hashes
     {
         private const uint Seed = 0xc58f1a7b;
 
-        private const UInt32 m = 0x5bd1e995;
-        private const Int32 r = 24;
+        private const UInt32 M = 0x5bd1e995;
+        private const Int32 R = 24;
 
         public unsafe UInt32 Hash(string s)
         {
@@ -48,11 +46,11 @@ namespace Benchmark.Hashes
             {
                 UInt32 k = *realData;
 
-                k *= m;
-                k ^= k >> r;
-                k *= m;
+                k *= M;
+                k ^= k >> R;
+                k *= M;
 
-                h *= m;
+                h *= M;
                 h ^= k;
 
                 realData++;
@@ -65,16 +63,16 @@ namespace Benchmark.Hashes
                     h ^= (uint)(tail[2] << 16);
                     h ^= (uint)(tail[1] << 8);
                     h ^= tail[0];
-                    h *= m;
+                    h *= M;
                     break;
                 case 2:
                     h ^= (uint)(tail[1] << 8);
                     h ^= tail[0];
-                    h *= m;
+                    h *= M;
                     break;
                 case 1:
                     h ^= tail[0];
-                    h *= m;
+                    h *= M;
                     break;
             }
 
@@ -82,7 +80,7 @@ namespace Benchmark.Hashes
             // bytes are well-incorporated.
 
             h ^= h >> 13;
-            h *= m;
+            h *= M;
             h ^= h >> 15;
 
             return h;

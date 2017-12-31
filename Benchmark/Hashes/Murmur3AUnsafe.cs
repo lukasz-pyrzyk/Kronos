@@ -1,6 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Text;
 
 namespace Benchmark.Hashes
 {
@@ -8,8 +6,8 @@ namespace Benchmark.Hashes
     {
         private const uint Seed = 0xc58f1a7b;
 
-        private const UInt32 c1 = 0xcc9e2d51;
-        private const UInt32 c2 = 0x1b873593;
+        private const UInt32 C1 = 0xcc9e2d51;
+        private const UInt32 C2 = 0x1b873593;
 
         public unsafe UInt32 Hash(string s)
         {
@@ -49,9 +47,9 @@ namespace Benchmark.Hashes
             {
                 k1 = *block;
 
-                k1 *= c1;
+                k1 *= C1;
                 k1 = Rotl32(k1, 15);
-                k1 *= c2;
+                k1 *= C2;
 
                 h1 ^= k1;
                 h1 = Rotl32(h1, 13);
@@ -72,9 +70,9 @@ namespace Benchmark.Hashes
             if (rem > 0)
             {
                 k1 ^= tail[0];
-                k1 *= c1;
+                k1 *= C1;
                 k1 = Rotl32(k1, 15);
-                k1 *= c2;
+                k1 *= C2;
                 h1 ^= k1;
             }
 

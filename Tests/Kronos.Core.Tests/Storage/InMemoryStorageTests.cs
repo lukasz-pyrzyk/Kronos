@@ -86,8 +86,7 @@ namespace Kronos.Core.Tests.Storage
             storage.Add(key, null, data);
 
             // Act
-            ByteString received;
-            bool success = storage.TryGet(key, out received);
+            bool success = storage.TryGet(key, out ByteString received);
 
             // Assert
             Assert.True(success);
@@ -101,8 +100,7 @@ namespace Kronos.Core.Tests.Storage
             IStorage storage = CreateStorage();
 
             // Act
-            ByteString received;
-            bool success = storage.TryGet("lorem ipsum", out received);
+            bool success = storage.TryGet("lorem ipsum", out ByteString received);
 
             // Assert
             Assert.False(success);
@@ -119,8 +117,7 @@ namespace Kronos.Core.Tests.Storage
             storage.Add(key, DateTime.MinValue, data);
 
             // Act
-            ByteString received;
-            bool success = storage.TryGet(key, out received);
+            bool success = storage.TryGet(key, out ByteString received);
 
             // Assert
             Assert.False(success);
@@ -287,8 +284,7 @@ namespace Kronos.Core.Tests.Storage
             IStorage storage = await CreateStorageWithSchedulerAndWait(cleaner);
 
             // Act
-            ByteString elem;
-            storage.TryGet("", out elem);
+            storage.TryGet("", out ByteString _);
 
             // Assert
             cleaner.Received(1).Clear(Arg.Any<PriorityQueue<ExpiringKey>>(), Arg.Any<Dictionary<Key, Element>>());

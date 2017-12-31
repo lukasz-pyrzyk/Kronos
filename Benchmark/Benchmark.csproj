@@ -5,6 +5,7 @@
     <AssemblyName>Benchmark</AssemblyName>
     <OutputType>Exe</OutputType>
     <PackageId>Benchmark</PackageId>
+    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup>
@@ -17,9 +18,9 @@
   </ItemGroup>
 
   <ItemGroup>
-    <PackageReference Include="BenchmarkDotNet" Version="0.10.6" />
-    <PackageReference Include="Farmhash.Sharp" Version="0.3.0" />
-    <PackageReference Include="StackExchange.Redis" Version="1.2.3" />
+    <PackageReference Include="BenchmarkDotNet" Version="0.10.11" />
+    <PackageReference Include="Farmhash.Sharp" Version="0.4.0" />
+    <PackageReference Include="StackExchange.Redis" Version="1.2.6" />
   </ItemGroup>
 
   <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">

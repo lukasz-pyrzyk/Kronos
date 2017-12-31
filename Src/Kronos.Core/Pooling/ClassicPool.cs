@@ -4,12 +4,12 @@ namespace Kronos.Core.Pooling
 {
     public class ClassicPool<T> : Pool<T> where T : new()
     {
-        private readonly int allocateSize;
+        private readonly int _allocateSize;
         private readonly Stack<T> _nodes = new Stack<T>();
 
         public ClassicPool(int preallocateCount = 100)
         {
-            allocateSize = preallocateCount;
+            _allocateSize = preallocateCount;
             Allocate();
         }
 
@@ -50,7 +50,7 @@ namespace Kronos.Core.Pooling
 
         protected sealed override void Allocate(int requestedCount = 0)
         {
-            for (int i = 0; i < requestedCount + allocateSize; i++)
+            for (int i = 0; i < requestedCount + _allocateSize; i++)
             {
                 _nodes.Push(new T());
             }

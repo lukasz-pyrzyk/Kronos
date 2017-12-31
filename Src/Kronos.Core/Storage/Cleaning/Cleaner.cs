@@ -6,7 +6,7 @@ namespace Kronos.Core.Storage.Cleaning
 {
     internal class Cleaner : ICleaner
     {
-        private static readonly ILogger _logger = LogManager.GetCurrentClassLogger();
+        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
 
         public void Clear(PriorityQueue<ExpiringKey> expiringKeys, Dictionary<Key, Element> nodes)
         {
@@ -22,7 +22,7 @@ namespace Kronos.Core.Storage.Cleaning
 
             if (deleted > 0)
             {
-                _logger.Info($"Deleted {deleted} elements from storage");
+                Logger.Info($"Deleted {deleted} elements from storage");
             }
         }
     }

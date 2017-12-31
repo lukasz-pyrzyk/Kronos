@@ -9,17 +9,17 @@ namespace Benchmark.Config
     [Config(typeof(CustomConfig))]
     public abstract class ClusterBenchmark
     {
-        private static readonly string[] _nodes = { "192.168.0.101", "192.168.0.102", "192.168.0.103" };
+        private static readonly string[] Nodes = { "192.168.0.101", "192.168.0.102", "192.168.0.103" };
         
         protected IKronosClient KronosClient { get; private set; }
         protected IDatabase RedisClient { get; private set; }
         protected IServer[] RedisServers { get; private set; }
 
-        [Setup]
+        [GlobalSetup]
         public void Setup()
         {
             string redisConnection = GetRedis();
-            KronosClient = KronosClientFactory.FromConnectionString(_nodes);
+            KronosClient = KronosClientFactory.FromConnectionString(Nodes);
 
             ConnectionMultiplexer redisCacheDistributor = ConnectionMultiplexer.Connect($"{redisConnection},allowAdmin=true");
 
@@ -33,13 +33,13 @@ namespace Benchmark.Config
         {
             StringBuilder builder = new StringBuilder();
 
-            for (var i = 0; i < _nodes.Length; i++)
+            for (var i = 0; i < Nodes.Length; i++)
             {
-                var node = _nodes[i];
+                var node = Nodes[i];
                 string nodeCs = $"{node}:6379";
                 builder.Append(nodeCs);
 
-                if (i != _nodes.Length - 1)
+                if (i != Nodes.Length - 1)
                 {
                     builder.Append(',');
                 }

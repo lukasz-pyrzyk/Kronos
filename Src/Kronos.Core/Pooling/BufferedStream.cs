@@ -8,9 +8,9 @@ namespace Kronos.Core.Pooling
     public class BufferedStream : Stream
     {
         public byte[] RawBytes => _pool;
-        public bool IsClean => Position == initialPosition; // TODO and length is initial
+        public bool IsClean => Position == InitialPosition; // TODO and length is initial
 
-        private const int initialPosition = sizeof(int);
+        private const int InitialPosition = sizeof(int);
 
         private byte[] _pool;
         private int _length;
@@ -31,7 +31,7 @@ namespace Kronos.Core.Pooling
 
         public override long Position
         {
-            get { return _position; }
+            get => _position;
             set
             {
                 if (value > Length) throw new EndOfStreamException();
@@ -72,7 +72,7 @@ namespace Kronos.Core.Pooling
             switch (origin)
             {
                 case SeekOrigin.Begin:
-                    Position = initialPosition + offset;
+                    Position = InitialPosition + offset;
                     break;
                 case SeekOrigin.Current:
                     Position += offset;
@@ -120,7 +120,7 @@ namespace Kronos.Core.Pooling
         private void WriteNewSize()
         {
             // Package size without first bytes reserved for size
-            int packageSize = _length - initialPosition;
+            int packageSize = _length - InitialPosition;
 
             // Write size to the reserved bytes without allocation
             NoAllocBitConverter.GetBytes(packageSize, _pool);
@@ -128,8 +128,8 @@ namespace Kronos.Core.Pooling
 
         private void ResetPositions()
         {
-            _length = initialPosition;
-            Position = initialPosition;
+            _length = InitialPosition;
+            Position = InitialPosition;
         }
 
         protected override void Dispose(bool disposing)

@@ -3,7 +3,7 @@ using Kronos.Core.Hashing;
 
 namespace Kronos.Core.Storage
 {
-    public struct Key : IEquatable<Key>
+    public readonly struct Key : IEquatable<Key>
     {
         private readonly int _hashCode;
 
@@ -33,7 +33,7 @@ namespace Kronos.Core.Storage
         public override bool Equals(object obj)
         {
             if (ReferenceEquals(null, obj)) return false;
-            return obj is Key && Equals((Key)obj);
+            return obj is Key key && Equals(key);
         }
     }
 }

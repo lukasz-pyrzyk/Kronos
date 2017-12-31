@@ -7,6 +7,7 @@
     <Authors>Lukasz Pyrzyk</Authors>
     <TargetFrameworks>netstandard1.3</TargetFrameworks>
     <AssemblyName>Kronos.Client</AssemblyName>
+    <LangVersion>7.2</LangVersion>
     <PackageId>Kronos.Client</PackageId>
     <PackageTags>cache, distributed, socket, dotnetcore, dnx</PackageTags>
     <PackageIconUrl>https://raw.githubusercontent.com/lukasz-pyrzyk/Kronos/master/SolutionItems/nugetIcon.png</PackageIconUrl>
@@ -20,13 +21,17 @@
     <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
   </PropertyGroup>
 
+  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard1.3|AnyCPU'">
+    <LangVersion>7.2</LangVersion>
+  </PropertyGroup>
+
   <ItemGroup>
     <ProjectReference Include="..\Kronos.Core\Kronos.Core.csproj" />
   </ItemGroup>
 
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="10.0.3" />
-    <PackageReference Include="Polly" Version="5.1.0" />
+    <PackageReference Include="Polly" Version="5.6.1" />
     <PackageReference Include="System.IO" Version="4.3.0" />
     <PackageReference Include="System.Net.Sockets" Version="4.3.0" />
     <PackageReference Include="System.Net.Primitives" Version="4.3.0" />

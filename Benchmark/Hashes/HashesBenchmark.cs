@@ -6,15 +6,15 @@ namespace Benchmark.Hashes
     [Config(typeof(CustomConfig))]
     public class HashesBenchmark
     {
-        private string dataStr;
-        private Murmur2Unsafe _murmur2 = new Murmur2Unsafe();
-        private Murmur3AUnsafe _murmur3 = new Murmur3AUnsafe();
-        private XXHashUnsafe _xxHash = new XXHashUnsafe();
+        private string _dataStr;
+        private readonly Murmur2Unsafe _murmur2 = new Murmur2Unsafe();
+        private readonly Murmur3AUnsafe _murmur3 = new Murmur3AUnsafe();
+        private readonly XxHashUnsafe _xxHash = new XxHashUnsafe();
 
-        [Setup]
+        [GlobalSetup]
         public void SetupData()
         {
-            dataStr = new string('x', PayloadLength);
+            _dataStr = new string('x', PayloadLength);
         }
 
 
@@ -24,25 +24,25 @@ namespace Benchmark.Hashes
         [Benchmark]
         public uint Murmur2()
         {
-            return _murmur2.Hash(dataStr);
+            return _murmur2.Hash(_dataStr);
         }
 
         [Benchmark]
-        public uint Murmur3a()
+        public uint Murmur3A()
         {
-            return _murmur3.Hash(dataStr);
+            return _murmur3.Hash(_dataStr);
         }
 
         [Benchmark]
-        public uint XXHash()
+        public uint XxHash()
         {
-            return _xxHash.Hash(dataStr);
+            return _xxHash.Hash(_dataStr);
         }
 
         [Benchmark(Baseline = true)]
         public uint FarmHash()
         {
-            return Farmhash.Sharp.Farmhash.Hash32(dataStr);
+            return Farmhash.Sharp.Farmhash.Hash32(_dataStr);
         }
     }
 }

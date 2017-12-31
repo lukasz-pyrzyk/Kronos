@@ -6,7 +6,7 @@ namespace Kronos.Core.Configuration
     [DataContract]
     public class AuthConfig
     {
-        private byte[] hashedPassword;
+        private byte[] _hashedPassword;
 
         [DataMember]
         public string Login { get; set; }
@@ -14,6 +14,6 @@ namespace Kronos.Core.Configuration
         [DataMember]
         public string Password { get; set; }
 
-        public byte[] HashedPassword => hashedPassword ?? (hashedPassword = Hasher.SecureHash(Password));
+        public byte[] HashedPassword => _hashedPassword ?? (_hashedPassword = Hasher.SecureHash(Password));
     }
 }

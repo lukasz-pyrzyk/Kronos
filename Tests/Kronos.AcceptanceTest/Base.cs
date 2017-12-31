@@ -15,7 +15,7 @@ namespace Kronos.AcceptanceTest
     [Collection("AcceptanceTest")]
     public abstract class Base
     {
-        private static readonly SemaphoreSlim _resetEvent = new SemaphoreSlim(1, 1);
+        private static readonly SemaphoreSlim ResetEvent = new SemaphoreSlim(1, 1);
 
         public abstract Task RunAsync();
 
@@ -26,7 +26,7 @@ namespace Kronos.AcceptanceTest
 
         public async Task RunInternalAsync()
         {
-            await _resetEvent.WaitAsync();
+            await ResetEvent.WaitAsync();
             Task server = null;
             try
             {
@@ -36,11 +36,10 @@ namespace Kronos.AcceptanceTest
 
                 LogMessage($"Creating server with port {port}");
 
-                server = Task.Factory.StartNew(
-                    () => Kronos.Server.Program.Start(GetSettings(), GetLoggerConfig()),
+                server = Task.Factory.StartNew(() => Program.Start(GetSettings(), GetLoggerConfig()),
                     TaskCreationOptions.LongRunning);
 
-                while (!Kronos.Server.Program.IsWorking)
+                while (!Program.IsWorking)
                 {
                     LogMessage("Waiting for server warnup...");
                     await Task.Delay(100);
@@ -67,7 +66,7 @@ namespace Kronos.AcceptanceTest
                 try
                 {
                     LogMessage("Stopping server");
-                    Server.Program.Stop();
+                    Program.Stop();
 
                     LogMessage("Waiting for server task to finish");
                     if (server != null)
@@ -88,7 +87,7 @@ namespace Kronos.AcceptanceTest
                     Assert.False(true, ex.Message);
                 }
 
-                _resetEvent.Release();
+                ResetEvent.Release();
             }
         }
 

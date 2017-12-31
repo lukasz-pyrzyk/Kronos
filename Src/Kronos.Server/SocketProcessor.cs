@@ -17,9 +17,8 @@ namespace Kronos.Server
 
         public Request ReceiveRequest(Socket client)
         {
-            int packageSize;
             SocketUtils.ReceiveAll(client, _sizeBuffer, _sizeBuffer.Length);
-            packageSize = BitConverter.ToInt32(_sizeBuffer, 0);
+            int packageSize = BitConverter.ToInt32(_sizeBuffer, 0);
             Array.Clear(_sizeBuffer, 0, _sizeBuffer.Length);
 
             byte[] data = _pool.Rent(packageSize);
