@@ -110,7 +110,7 @@ namespace Kronos.Core.Tests.Storage
         {
             // Arrange
             var key = new Key("lorem ipsum");
-            var element = new ExpiringKey(key, default(DateTime));
+            var element = new ExpiringKey(key, default);
 
             // Act
             int hash = element.GetHashCode();
@@ -123,7 +123,7 @@ namespace Kronos.Core.Tests.Storage
         public void Equals_ReturnsFalse_IfTypeIsDifferent()
         {
             // Arrange
-            var element = new ExpiringKey(new Key(""), default(DateTime));
+            var element = new ExpiringKey(new Key(""), default);
 
             // Act
             bool equal = element.Equals(new object());
@@ -136,7 +136,7 @@ namespace Kronos.Core.Tests.Storage
         public void Equals_ReturnsTrue_IfElementIsTheSame()
         {
             // Arrange
-            var element = new ExpiringKey(new Key(""), default(DateTime));
+            var element = new ExpiringKey(new Key(""), default);
 
             // Act
             bool equal = element.Equals(element);
@@ -149,7 +149,7 @@ namespace Kronos.Core.Tests.Storage
         public void Equals_ReturnsTrue_IfElementIsTheSame_WhenPassedIsObject()
         {
             // Arrange
-            var element = new ExpiringKey(new Key(""), default(DateTime));
+            var element = new ExpiringKey(new Key(""), default);
 
             // Act
             bool equal = element.Equals((object)element);

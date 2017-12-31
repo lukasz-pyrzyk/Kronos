@@ -9,12 +9,13 @@ namespace Kronos.Core.Tests.Processing
 {
     public class GetProcessorTests
     {
-        [Fact]
-        public void Handle_ReturnsObjectFromCache()
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void Handle_ReturnsObjectFromCache(bool expected)
         {
             // arrange
             ByteString obj = ByteString.CopyFromUtf8("lorem ipsum");
-            bool expected = true;
             var request = new GetRequest();
             var processor = new GetProcessor();
             var storage = Substitute.For<IStorage>();
@@ -33,16 +34,17 @@ namespace Kronos.Core.Tests.Processing
             Assert.Equal(obj, response.Data);
         }
 
-        [Fact]
-        public void Handle_ReturnsNotFoundWhenObjectIsNotInTheCache()
+        [Theory]
+        [InlineData(false)]
+        [InlineData(true)]
+        public void Handle_ReturnsNotFoundWhenObjectIsNotInTheCache(bool expected)
         {
             // arrange
-            bool expected = false;
             var request = new GetRequest();
             var processor = new GetProcessor();
             var storage = Substitute.For<IStorage>();
 
-            storage.TryGet(request.Key, out ByteString temp).Returns(expected);
+            storage.TryGet(request.Key, out ByteString _).Returns(expected);
 
             // Act
             GetResponse response = processor.Reply(request, storage);

@@ -284,7 +284,7 @@ namespace Kronos.Core.Tests.Storage
             IStorage storage = await CreateStorageWithSchedulerAndWait(cleaner);
 
             // Act
-            storage.TryGet("", out ByteString elem);
+            storage.TryGet("", out ByteString _);
 
             // Assert
             cleaner.Received(1).Clear(Arg.Any<PriorityQueue<ExpiringKey>>(), Arg.Any<Dictionary<Key, Element>>());

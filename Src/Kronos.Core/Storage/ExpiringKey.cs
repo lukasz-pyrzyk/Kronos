@@ -35,7 +35,7 @@ namespace Kronos.Core.Storage
 
         public override bool Equals(object obj)
         {
-            if (obj is ExpiringKey) return Equals((ExpiringKey)obj);
+            if (obj is ExpiringKey key) return Equals(key);
             return false;
         }
 

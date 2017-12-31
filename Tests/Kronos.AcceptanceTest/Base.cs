@@ -36,11 +36,10 @@ namespace Kronos.AcceptanceTest
 
                 LogMessage($"Creating server with port {port}");
 
-                server = Task.Factory.StartNew(
-                    () => Kronos.Server.Program.Start(GetSettings(), GetLoggerConfig()),
+                server = Task.Factory.StartNew(() => Program.Start(GetSettings(), GetLoggerConfig()),
                     TaskCreationOptions.LongRunning);
 
-                while (!Kronos.Server.Program.IsWorking)
+                while (!Program.IsWorking)
                 {
                     LogMessage("Waiting for server warnup...");
                     await Task.Delay(100);
@@ -67,7 +66,7 @@ namespace Kronos.AcceptanceTest
                 try
                 {
                     LogMessage("Stopping server");
-                    Server.Program.Stop();
+                    Program.Stop();
 
                     LogMessage("Waiting for server task to finish");
                     if (server != null)

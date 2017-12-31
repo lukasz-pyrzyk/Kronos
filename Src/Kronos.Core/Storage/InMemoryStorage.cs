@@ -16,7 +16,6 @@ namespace Kronos.Core.Storage
 
         private int cleanupRequested;
         private readonly ICleaner _cleaner;
-        private readonly IScheduler _scheduler;
 
         public InMemoryStorage() : this(new Cleaner(), new Scheduler())
         {
@@ -25,8 +24,7 @@ namespace Kronos.Core.Storage
         internal InMemoryStorage(ICleaner cleaner, IScheduler scheduler)
         {
             _cleaner = cleaner;
-            _scheduler = scheduler;
-            _scheduler.Register(OnTimer);
+            scheduler.Register(OnTimer);
         }
 
         public int Count => _storage.Count;
@@ -83,7 +81,7 @@ namespace Kronos.Core.Storage
                 _storage.Remove(key);
                 if (element.IsExpiring)
                 {
-                    _expiringKeys.Remove(new ExpiringKey(key, default(DateTime)));
+                    _expiringKeys.Remove(new ExpiringKey(key, default));
                 }
             }
 
