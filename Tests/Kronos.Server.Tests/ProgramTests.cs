@@ -13,18 +13,21 @@ namespace Kronos.Server.Tests
             // Arrange
             var args = new SettingsArgs();
 
+            var server = Task.Run(() => Program.Start(args, new LoggingConfiguration()));
+
             // Act
             Exception ex = await Record.ExceptionAsync(async () =>
             {
-                Task t = Task.Run(() => Program.Start(args, new LoggingConfiguration()));
-
                 while (!Program.IsWorking)
                 {
                     await Task.Delay(100);
                 }
 
                 Program.Stop();
+
+                await server;
             });
+
 
             // Assert
             Assert.Null(ex);

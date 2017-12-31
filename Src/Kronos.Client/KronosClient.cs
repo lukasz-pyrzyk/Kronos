@@ -78,10 +78,7 @@ namespace Kronos.Client
             ServerConfig[] servers = GetServersInternal();
             Request[] requests = servers.Select(x => CountRequest.New(x.Auth)).ToArray();
 
-            var responses = await _connectionPool.UseAsync(servers.Length, con =>
-            {
-                return _countProcessor.ExecuteAsync(requests, con, servers);
-            });
+            var responses = await _connectionPool.UseAsync(servers.Length, con => _countProcessor.ExecuteAsync(requests, con, servers));
 
             return responses.Sum(x => x.Count);
         }
@@ -105,10 +102,7 @@ namespace Kronos.Client
             ServerConfig[] servers = GetServersInternal();
             Request[] requests = servers.Select(x => ClearRequest.New(x.Auth)).ToArray();
 
-            await _connectionPool.UseAsync(servers.Length, con =>
-            {
-                return _clearProcessor.ExecuteAsync(requests, con, servers);
-            });
+            await _connectionPool.UseAsync(servers.Length, con => _clearProcessor.ExecuteAsync(requests, con, servers));
         }
 
         private ServerConfig GetServerInternal(string key)
