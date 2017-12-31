@@ -3,7 +3,7 @@ using Google.Protobuf;
 
 namespace Kronos.Core.Storage
 {
-    internal struct Element
+    internal readonly struct Element
     {
         public ByteString Data { get; }
         public DateTime? ExpiryDate { get; }

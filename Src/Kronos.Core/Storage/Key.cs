@@ -3,7 +3,7 @@ using Kronos.Core.Hashing;
 
 namespace Kronos.Core.Storage
 {
-    public struct Key : IEquatable<Key>
+    public readonly struct Key : IEquatable<Key>
     {
         private readonly int _hashCode;
 
