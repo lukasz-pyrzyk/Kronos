@@ -19,7 +19,7 @@ namespace Kronos.Core.Pooling
 
         public BufferedStream()
         {
-            _pool = ArrayPool<byte>.Shared.Rent(_reserve);
+            _pool = Rent(_reserve);
 
             ResetPositions();
         }
