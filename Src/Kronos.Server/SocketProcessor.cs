@@ -26,7 +26,7 @@ namespace Kronos.Server
             try
             {
                 SocketUtils.ReceiveAll(client, data, packageSize);
-                request = Request.Parser.ParseFrom(new CodedInputStream(data, 0, packageSize));
+                request = Request.Parser.ParseFrom(data, 0, packageSize);
             }
             finally
             {
