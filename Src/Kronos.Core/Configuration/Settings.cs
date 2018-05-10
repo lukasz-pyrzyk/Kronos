@@ -7,5 +7,6 @@
         public const string DefaultPassword = "password";
         public const int CleanupTimeMs = 5000;
         public const string LocalIp = "127.0.0.1";
+        public const int MaxRequestSize = 4 * 1024 * 1024;
     }
 }

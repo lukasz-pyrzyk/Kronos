@@ -1,6 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
+using FluentAssertions;
 using Google.Protobuf.WellKnownTypes;
+using Kronos.Core.Configuration;
+using Kronos.Core.Exceptions;
 using Kronos.Core.Messages;
 using Xunit;
 
@@ -24,12 +27,27 @@ namespace Kronos.Core.Tests.Messages
             Timestamp expectedTimestamp = expiry.HasValue ? Timestamp.FromDateTime(expiry.Value) : null;
 
             Assert.NotNull(request);
-            Assert.Equal(request.Type, RequestType.Insert);
+            Assert.Equal(RequestType.Insert, request.Type);
             Assert.NotNull(request.InsertRequest);
             Assert.Equal(request.InsertRequest.Key, key);
             Assert.Equal(request.InsertRequest.Data, data);
             Assert.Equal(request.InsertRequest.Expiry, expectedTimestamp);
             Assert.Equal(auth, request.Auth);
+        }
+
+        [Fact]
+        public void InsertRequest_ThrowsExceptionWhenContentIsTooBig()
+        {
+            // Arrange
+            const string key = "lorem ipsum";
+            byte[] data = new byte[Settings.MaxRequestSize + 1];
+
+            // Act
+            Action action = () => InsertRequest.New(key, data, DateTime.Now, new Auth());
+
+            // Assert
+
+            action.Should().Throw<KronosException>().WithMessage($"Content size exceeded. Maximum value is {Settings.MaxRequestSize} bytes");
         }
 
         [Fact]
@@ -44,7 +62,7 @@ namespace Kronos.Core.Tests.Messages
 
             // Assert
             Assert.NotNull(request);
-            Assert.Equal(request.Type, RequestType.Get);
+            Assert.Equal(RequestType.Get, request.Type);
             Assert.NotNull(request.GetRequest);
             Assert.Equal(request.GetRequest.Key, key);
             Assert.Equal(auth, request.Auth);
@@ -62,7 +80,7 @@ namespace Kronos.Core.Tests.Messages
 
             // Assert
             Assert.NotNull(request);
-            Assert.Equal(request.Type, RequestType.Delete);
+            Assert.Equal(RequestType.Delete, request.Type);
             Assert.NotNull(request.DeleteRequest);
             Assert.Equal(request.DeleteRequest.Key, key);
             Assert.Equal(auth, request.Auth);
@@ -77,7 +95,7 @@ namespace Kronos.Core.Tests.Messages
 
             // Assert
             Assert.NotNull(request);
-            Assert.Equal(request.Type, RequestType.Count);
+            Assert.Equal(RequestType.Count, request.Type);
             Assert.NotNull(request.CountRequest);
             Assert.Equal(auth, request.Auth);
         }
@@ -94,7 +112,7 @@ namespace Kronos.Core.Tests.Messages
 
             // Assert
             Assert.NotNull(request);
-            Assert.Equal(request.Type, RequestType.Contains);
+            Assert.Equal(RequestType.Contains, request.Type);
             Assert.NotNull(request.ContainsRequest);
             Assert.Equal(auth, request.Auth);
         }
@@ -111,7 +129,7 @@ namespace Kronos.Core.Tests.Messages
 
             // Assert
             Assert.NotNull(request);
-            Assert.Equal(request.Type, RequestType.Clear);
+            Assert.Equal(RequestType.Clear, request.Type);
             Assert.NotNull(request.ClearRequest);
             Assert.Equal(auth, request.Auth);
         }

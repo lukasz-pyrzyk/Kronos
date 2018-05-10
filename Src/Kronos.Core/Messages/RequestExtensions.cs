@@ -2,6 +2,7 @@
 using Google.Protobuf;
 using Google.Protobuf.WellKnownTypes;
 using Kronos.Core.Configuration;
+using Kronos.Core.Exceptions;
 
 namespace Kronos.Core.Messages
 {
@@ -36,14 +37,20 @@ namespace Kronos.Core.Messages
 
     public partial class InsertRequest
     {
-        public static Request New(string key, byte[] package, DateTime? expiryDate, Auth auth)
+        public static Request New(string key, byte[] data, DateTime? expiryDate, Auth auth)
         {
+            int maxSize = Settings.MaxRequestSize;
+            if (data.Length > maxSize)
+            {
+                throw new KronosException($"Content size exceeded. Maximum value is {maxSize} bytes");
+            }
+
             return new Request
             {
                 InsertRequest = new InsertRequest
                 {
                     Key = key,
-                    Data = ByteString.CopyFrom(package),
+                    Data = ByteString.CopyFrom(data),
                     Expiry = expiryDate.HasValue ? Timestamp.FromDateTime(expiryDate.Value) : null
                 },
                 Type = RequestType.Insert,
