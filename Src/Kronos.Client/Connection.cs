@@ -62,10 +62,11 @@ namespace Kronos.Client
         private async Task SendAsync(Request request, Socket server)
         {
             request.WriteTo(_stream);
+            _stream.Flush();
 
             try
             {
-                await SocketUtils.SendAllAsync(server, _stream.RawBytes, (int)_stream.Length).ConfigureAwait(false);
+                await SocketUtils.SendAllAsync(server, _stream.RawBytes, (int)_stream.Position).ConfigureAwait(false);
             }
             finally
             {

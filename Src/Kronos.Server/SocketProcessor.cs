@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Buffers;
+using System.Diagnostics;
 using System.Net.Sockets;
 using Google.Protobuf;
 using Kronos.Core.Configuration;
@@ -28,6 +29,7 @@ namespace Kronos.Server
             {
                 SocketUtils.ReceiveAll(client, data, packageSize);
                 request = Request.Parser.ParseFrom(data, 0, packageSize);
+                Debug.Assert(request.Type != RequestType.Unknown, "Received invalid request");
             }
             finally
             {
@@ -40,10 +42,11 @@ namespace Kronos.Server
         public void SendResponse(Socket client, Response response)
         {
             response.WriteTo(_stream);
+            _stream.Flush();
 
             try
             {
-                SocketUtils.SendAll(client, _stream.RawBytes, (int)_stream.Length);
+                SocketUtils.SendAll(client, _stream.RawBytes, (int)_stream.Position);
             }
             finally
             {
