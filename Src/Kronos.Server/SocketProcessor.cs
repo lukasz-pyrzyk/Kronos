@@ -2,6 +2,7 @@
 using System.Buffers;
 using System.Net.Sockets;
 using Google.Protobuf;
+using Kronos.Core.Configuration;
 using Kronos.Core.Messages;
 using Kronos.Core.Networking;
 using Kronos.Core.Pooling;
@@ -13,7 +14,7 @@ namespace Kronos.Server
         private readonly byte[] _sizeBuffer = new byte[sizeof(int)];
 
         private readonly ArrayPool<byte> _pool = ArrayPool<byte>.Create();
-        private readonly BufferedStream _stream = new BufferedStream();
+        private readonly BufferedStream _stream = new BufferedStream(Settings.MaxRequestSize);
 
         public Request ReceiveRequest(Socket client)
         {

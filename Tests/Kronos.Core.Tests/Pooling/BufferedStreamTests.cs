@@ -1,6 +1,7 @@
 ﻿using System;
-using System.IO;
 using System.Linq;
+using FluentAssertions;
+using Kronos.Core.Configuration;
 using Xunit;
 using BufferedStream = Kronos.Core.Pooling.BufferedStream;
 
@@ -12,9 +13,9 @@ namespace Kronos.Core.Tests.Pooling
         public void Rawbytes_ReturnsCollection()
         {
             // Arrange
-            var stream = new BufferedStream();
+            var stream = NewStream();
 
-            // Act 
+            // Act
             byte[] bytes = stream.RawBytes;
 
             // Assert
@@ -26,9 +27,9 @@ namespace Kronos.Core.Tests.Pooling
         public void IsClean_IsTrue_WhenIsNew()
         {
             // Arrange
-            var stream = new BufferedStream();
+            var stream = NewStream();
 
-            // Act 
+            // Act
             bool isClean = stream.IsClean;
 
             // Assert
@@ -39,11 +40,11 @@ namespace Kronos.Core.Tests.Pooling
         public void IsClean_IsFalse_WhenDataIsWritten()
         {
             // Arrange
-            var stream = new BufferedStream();
+            var stream = NewStream();
             byte[] data = new byte[1024];
             stream.Write(data, 0, data.Length);
 
-            // Act 
+            // Act
             bool isClean = stream.IsClean;
 
             // Assert
@@ -54,12 +55,12 @@ namespace Kronos.Core.Tests.Pooling
         public void IsClean_IsTrue_WhenDataIsWrittenAndStreamIsClean()
         {
             // Arrange
-            var stream = new BufferedStream();
+            var stream = NewStream();
             byte[] data = new byte[1024];
             stream.Write(data, 0, data.Length);
             stream.Clean();
 
-            // Act 
+            // Act
             bool isClean = stream.IsClean;
 
             // Assert
@@ -70,9 +71,9 @@ namespace Kronos.Core.Tests.Pooling
         public void CanRead_IsTrue()
         {
             // Arrange
-            var stream = new BufferedStream();
+            var stream = NewStream();
 
-            // Act 
+            // Act
             bool value = stream.CanRead;
 
             // Assert
@@ -83,9 +84,9 @@ namespace Kronos.Core.Tests.Pooling
         public void CanWrite_IsTrue()
         {
             // Arrange
-            var stream = new BufferedStream();
+            var stream = NewStream();
 
-            // Act 
+            // Act
             bool value = stream.CanWrite;
 
             // Assert
@@ -96,9 +97,9 @@ namespace Kronos.Core.Tests.Pooling
         public void CanSeek_IsFalse()
         {
             // Arrange
-            var stream = new BufferedStream();
+            var stream = NewStream();
 
-            // Act 
+            // Act
             bool value = stream.CanSeek;
 
             // Assert
@@ -109,8 +110,8 @@ namespace Kronos.Core.Tests.Pooling
         public void Length_IsMovedByReservedBytesForSize()
         {
             // Arrange
-            var stream = new BufferedStream();
-            
+            var stream = NewStream();
+
             // Act and assert
             Assert.Equal(stream.Position, sizeof(int));
         }
@@ -119,8 +120,8 @@ namespace Kronos.Core.Tests.Pooling
         public void Position_IsMovedAfterWriting()
         {
             // Arrange
-            var stream = new BufferedStream();
-            
+            var stream = NewStream();
+
             // Act and assert
             Assert.Equal(stream.Position, sizeof(int));
         }
@@ -129,7 +130,7 @@ namespace Kronos.Core.Tests.Pooling
         public void Length_IsMovedAfterWriting()
         {
             // Arrange
-            var stream = new BufferedStream();
+            var stream = NewStream();
             int position = (int)stream.Position;
             byte[] data = new byte[1024];
 
@@ -144,24 +145,24 @@ namespace Kronos.Core.Tests.Pooling
         public void Position_IsMovedByReservedBytesForSize()
         {
             // Arrange
-            var stream = new BufferedStream();
-            int length = (int)stream.Length;
+            var stream = NewStream();
+            int defaultPosition = (int)stream.Position;
             byte[] data = new byte[1024];
 
             // Act
             stream.Write(data, 0, data.Length);
 
             // Assert
-            Assert.Equal(stream.Length, length + data.Length);
+            Assert.Equal(stream.Position, defaultPosition + data.Length);
         }
 
         [Fact]
         public void Flush_DoesNotThrow()
         {
             // Arrange
-            var stream = new BufferedStream();
+            var stream = NewStream();
 
-            // Act 
+            // Act
             var ex = Record.Exception(() => stream.Flush());
 
             // Assert
@@ -169,49 +170,50 @@ namespace Kronos.Core.Tests.Pooling
         }
 
         [Fact]
-        public void Dispose_DoesNotThrow()
+        public void Flush_WritesSizeToTheHeader()
         {
             // Arrange
-            var stream = new BufferedStream();
+            var stream = NewStream();
 
-            // Act 
+            // Act
+            var data = new byte[1024];
+            stream.Write(data, 0, data.Length);
+
             stream.Flush();
+            stream.SetPosition(0);
 
             // Assert
-            int sum = 0;
-            foreach (byte b in stream.RawBytes)
-            {
-                sum += b;
-            }
-
-            Assert.Equal(sum, 0);
+            byte[] bytesForTheSize = new byte[sizeof(int)];
+            Array.Copy(stream.RawBytes, 0, bytesForTheSize, 0, bytesForTheSize.Length);
+            int sizeInHeader = BitConverter.ToInt32(bytesForTheSize, 0);
+            sizeInHeader.Should().Be(data.Length);
         }
 
         [Fact]
         public void Clean_ResetsPositions()
         {
             // Arrange
-            var stream = new BufferedStream();
+            var stream = NewStream();
             int length = (int)stream.Length;
             int position = (int)stream.Position;
             byte[] data = new byte[1024];
             stream.Write(data, 0, data.Length);
 
-            // Act 
+            // Act
             stream.Clean();
 
             // Assert
-            Assert.Equal(stream.Position, position); 
-            Assert.Equal(stream.Length, length); 
+            Assert.Equal(stream.Position, position);
+            Assert.Equal(stream.Length, length);
         }
 
         [Fact]
         public void SetLength_ThrowsNotSupportedException()
         {
             // Arrange
-            var stream = new BufferedStream();
+            var stream = NewStream();
 
-            // Act 
+            // Act
             var ex = Record.Exception(() => stream.SetLength(0));
 
             // Assert
@@ -219,77 +221,16 @@ namespace Kronos.Core.Tests.Pooling
         }
 
         [Fact]
-        public void Seek_Begin_ChangesPosition()
-        {
-            // Arrange
-            var stream = new BufferedStream();
-            long initPosition = stream.Position;
-            const int toMove = 2;
-            var data = new byte[1024];
-            
-            // Act
-            stream.Write(data, 0, data.Length);
-            stream.Seek(toMove, SeekOrigin.Begin);
-
-            // Act and assert
-            Assert.Equal(stream.Position, initPosition + toMove);
-        }
-
-        [Fact]
-        public void Seek_End_ChangesPosition()
-        {
-            // Arrange
-            var stream = new BufferedStream();
-            const int toMove = 2;
-            var data = new byte[1024];
-            
-            // Act
-            stream.Write(data, 0, data.Length);
-            long position = stream.Position;
-            stream.Seek(toMove, SeekOrigin.End);
-
-            // Act and assert
-            Assert.Equal(stream.Position, position - toMove);
-        }
-        
-        [Fact]
-        public void Seek_Current_ChangesPosition()
-        {
-            // Arrange
-            var stream = new BufferedStream();
-            var data = new byte[1024];
-            long toMove = -2;
-
-            // Act
-            stream.Write(data, 0, data.Length);
-            long position = stream.Position;
-            stream.Seek(toMove, SeekOrigin.Current);
-
-            // Act and assert
-            Assert.Equal(stream.Position, position + toMove);
-        }
-
-        [Fact]
-        public void Seek_ThrowsEndOfStream_WhenValueIsToBig()
-        {
-            // Arrange
-            var stream = new BufferedStream();
-            
-            // Act and assert
-            Assert.Throws<EndOfStreamException>(() => stream.Seek(int.MaxValue, SeekOrigin.Begin));
-        }
-
-        [Fact]
         public void Read_ReadsDataFromStream_WhenCountIsTheSame()
         {
             // Arrange
-            var stream = new BufferedStream();
+            var stream = NewStream();
             byte[] data = new byte[1024];
             new Random().NextBytes(data);
 
-            // Act 
+            // Act
             stream.Write(data, 0, data.Length);
-            stream.Seek(0, SeekOrigin.Begin);
+            stream.SetPosition(0);
             byte[] receivedBytes = new byte[data.Length];
             stream.Read(receivedBytes, 0, receivedBytes.Length);
 
@@ -298,38 +239,26 @@ namespace Kronos.Core.Tests.Pooling
         }
 
         [Fact]
-        public void Read_ReadsDataFromStream_WhenCountIsBigger()
-        {
-            // Arrange
-            var stream = new BufferedStream();
-            byte[] data = new byte[1024];
-            new Random().NextBytes(data);
-
-            // Act 
-            stream.Write(data, 0, data.Length);
-            stream.Seek(0, SeekOrigin.Begin);
-            byte[] receivedBytes = new byte[data.Length + 1];
-
-            // Assert
-            Assert.Throws<EndOfStreamException>(() => stream.Read(receivedBytes, 0, receivedBytes.Length));
-        }
-
-        [Fact]
         public void Read_ReadsDataFromStream_WhenCountIsSmaller()
         {
             // Arrange
-            var stream = new BufferedStream();
+            var stream = NewStream();
             byte[] data = new byte[1024];
             new Random().NextBytes(data);
 
-            // Act 
+            // Act
             stream.Write(data, 0, data.Length);
-            stream.Seek(0, SeekOrigin.Begin);
+            stream.SetPosition(0);
             byte[] receivedBytes = new byte[data.Length - 1];
             stream.Read(receivedBytes, 0, receivedBytes.Length);
 
             // Assert
             Assert.Equal(data.Take(receivedBytes.Length), receivedBytes);
+        }
+
+        private static BufferedStream NewStream()
+        {
+            return new BufferedStream(Settings.MaxRequestSize);
         }
     }
 }

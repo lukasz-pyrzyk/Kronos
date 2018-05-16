@@ -20,7 +20,7 @@ namespace Kronos.Client
         private static readonly Policy Policy = Policy.Handle<Exception>()
             .WaitAndRetryAsync(CreateExponentialBackoff(RetryCount));
 
-        private readonly BufferedStream _stream = new BufferedStream();
+        private readonly BufferedStream _stream = new BufferedStream(Settings.MaxRequestSize);
         private readonly byte[] _sizeBytes = new byte[sizeof(int)];
 
         public async Task<Response> SendAsync(Request request, ServerConfig server)
