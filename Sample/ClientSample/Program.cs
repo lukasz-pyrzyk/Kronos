@@ -24,31 +24,31 @@ namespace ClientSample
 
             for (int i = 0; i < 10000; i++)
             {
-                Debug.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
+                Console.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
                 string key = Guid.NewGuid().ToString();
                 DateTime expiryDate = DateTime.UtcNow.AddDays(1);
 
-                Debug.WriteLine("ADD - testing");
+                Console.WriteLine("ADD - testing");
                 await client.InsertAsync(key, package, expiryDate);
-                Debug.WriteLine($"ADD - done (size: {package.Length})");
+                Console.WriteLine($"ADD - done (size: {package.Length})");
 
-                Debug.WriteLine("COUNT - testing");
+                Console.WriteLine("COUNT - testing");
                 int count = await client.CountAsync();
-                Debug.WriteLine($"COUNT - done (count: {count})");
+                Console.WriteLine($"COUNT - done (count: {count})");
 
-                Debug.WriteLine("CONTAINS - testing");
+                Console.WriteLine("CONTAINS - testing");
                 bool contains = await client.ContainsAsync(key);
-                Debug.WriteLine($"CONTAINS - done (exists: {contains})");
+                Console.WriteLine($"CONTAINS - done (exists: {contains})");
 
-                Debug.WriteLine("GET - testing");
+                Console.WriteLine("GET - testing");
                 byte[] fromServer = await client.GetAsync(key);
-                Debug.WriteLine($"GET - done (size: {fromServer.Length})");
+                Console.WriteLine($"GET - done (size: {fromServer.Length})");
                 Debug.Assert(fromServer.Length == package.Length);
 
-                Debug.WriteLine("DELETE - testing");
+                Console.WriteLine("DELETE - testing");
                 await client.DeleteAsync(key);
                 bool containsAfterDeletion = await client.ContainsAsync(key);
-                Debug.WriteLine($"DELETE - done (exists after deletion: {containsAfterDeletion})");
+                Console.WriteLine($"DELETE - done (exists after deletion: {containsAfterDeletion})");
             }
             watch.Stop();
             Console.WriteLine(watch.ElapsedMilliseconds);
