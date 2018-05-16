@@ -14,7 +14,7 @@ namespace Kronos.Server
     {
         private readonly byte[] _sizeBuffer = new byte[sizeof(int)];
 
-        private readonly ArrayPool<byte> _pool = ArrayPool<byte>.Create();
+        private readonly ArrayPool<byte> _pool = ArrayPool<byte>.Create(Settings.MaxRequestSize, 10);
         private readonly BufferedStream _stream = new BufferedStream(Settings.MaxRequestSize);
 
         public Request ReceiveRequest(Socket client)

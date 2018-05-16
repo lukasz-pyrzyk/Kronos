@@ -6,24 +6,23 @@ namespace Kronos.Core.Pooling
 {
     public class BufferedStream : Stream
     {
-        public byte[] RawBytes => _pool;
+        public byte[] RawBytes { get; }
+
         public bool IsClean => Position == InitialPosition;
 
-        private const int InitialPosition = sizeof(int); // todo check if it gives 4th index
-
-        private byte[] _pool;
+        private const int InitialPosition = sizeof(int);
         private long _position;
 
         public BufferedStream(int size)
         {
-            _pool = new byte[InitialPosition + size];
+            RawBytes = new byte[InitialPosition + size];
             _position = InitialPosition;
         }
 
         public override bool CanRead => true;
         public override bool CanSeek => false;
         public override bool CanWrite => true;
-        public override long Length => _pool.Length;
+        public override long Length => RawBytes.Length;
 
         public override long Position
         {
@@ -47,7 +46,7 @@ namespace Kronos.Core.Pooling
 
         public override int Read(byte[] buffer, int offset, int count)
         {
-            Array.Copy(_pool, (int)_position, buffer, offset, count);
+            Array.Copy(RawBytes, (int)_position, buffer, offset, count);
             _position += count;
 
             return count;
@@ -64,7 +63,7 @@ namespace Kronos.Core.Pooling
 
         public override void Write(byte[] buffer, int offset, int count)
         {
-            Array.Copy(buffer, offset, _pool, (int)_position, count);
+            Array.Copy(buffer, offset, RawBytes, (int)_position, count);
             _position += count;
         }
 
@@ -74,7 +73,7 @@ namespace Kronos.Core.Pooling
             int packageSize = (int)(Position - InitialPosition);
 
             // Write size to the reserved bytes without allocation
-            NoAllocBitConverter.GetBytes(packageSize, _pool);
+            NoAllocBitConverter.GetBytes(packageSize, RawBytes);
         }
     }
 }
