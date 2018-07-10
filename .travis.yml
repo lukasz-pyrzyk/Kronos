@@ -1,6 +1,6 @@
 language: csharp
 mono: none
-dotnet: 2.1.105
+dotnet: 2.1.300
 
 services:
   - docker
@@ -17,7 +17,7 @@ script:
   - chmod +x ./Scripts/Linux/runTests.sh
   - ./Scripts/Linux/build.sh
   - ./Scripts/Linux/runTests.sh
-  - dotnet publish ./Src/Kronos.Server/ -c Release -o ./Bin -f netcoreapp2.0
+  - dotnet publish ./Src/Kronos.Server/ -c Release -o ./publish
 
 after_success:
   - export BRANCH=$(if [ "$TRAVIS_PULL_REQUEST" == "false" ]; then echo $TRAVIS_BRANCH; else echo $TRAVIS_PULL_REQUEST_BRANCH; fi)

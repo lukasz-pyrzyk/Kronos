@@ -5,11 +5,11 @@
     <Copyright>Lukasz Pyrzyk</Copyright>
     <VersionPrefix>2.0.0</VersionPrefix>
     <Authors>Lukasz Pyrzyk</Authors>
-    <TargetFrameworks>netstandard1.3;</TargetFrameworks>
+    <TargetFramework>netstandard2.0</TargetFramework>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <AssemblyName>Kronos.Core</AssemblyName>
     <PackageId>Kronos.Core</PackageId>
-    <PackageTags>cache, distributed, socket, dotnetcore, dnx</PackageTags>
+    <PackageTags>cache, distributed, socket, dotnetcore</PackageTags>
     <PackageIconUrl>https://raw.githubusercontent.com/lukasz-pyrzyk/Kronos/master/SolutionItems/nugetIcon.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/lukasz-pyrzyk/Kronos</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/lukasz-pyrzyk/Kronos/blob/master/license.txt</PackageLicenseUrl>
@@ -19,7 +19,6 @@
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
   </PropertyGroup>
 
   <ItemGroup>
