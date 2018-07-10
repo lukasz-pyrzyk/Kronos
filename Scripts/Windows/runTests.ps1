@@ -8,14 +8,14 @@ $projects = @(
 
 $error = 0;
 
-function RunCodeCoverage($testProject, $filter) {
+function RunTests($testProject) {
     write-host "Running tests for " $testProject
     dotnet.exe test $testProject
 }
 
 # run unit tests and calculate code coverage for each test project
 foreach ($project in $projects) {
-    RunCodeCoverage $($project.Path)
+    RunTests $($project.Path)
 
 	# try to find error
 	if($LastExitCode -ne 0)
