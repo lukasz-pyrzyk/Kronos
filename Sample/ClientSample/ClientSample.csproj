@@ -1,7 +1,7 @@
 ﻿<Project Sdk="Microsoft.NET.Sdk">
 
   <PropertyGroup>
-    <TargetFrameworks>netcoreapp2.0;net461</TargetFrameworks>
+    <TargetFrameworks>netcoreapp2.0</TargetFrameworks>
     <AssemblyName>ClientSample</AssemblyName>
     <OutputType>Exe</OutputType>
   </PropertyGroup>
@@ -9,11 +9,6 @@
   <ItemGroup>
     <ProjectReference Include="..\..\Src\Kronos.Client\Kronos.Client.csproj" />
     <ProjectReference Include="..\..\Src\Kronos.Core\Kronos.Core.csproj" />
-  </ItemGroup>
-
-  <ItemGroup Condition=" '$(TargetFramework)' == 'net461' ">
-    <Reference Include="System" />
-    <Reference Include="Microsoft.CSharp" />
   </ItemGroup>
 
 </Project>

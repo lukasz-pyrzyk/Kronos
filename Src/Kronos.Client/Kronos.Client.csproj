@@ -31,10 +31,5 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="Polly" Version="6.0.1" />
-    <PackageReference Include="System.IO" Version="4.4.0-beta-24913-02" />
-    <PackageReference Include="System.Net.Sockets" Version="4.4.0-beta-24913-02" />
-    <PackageReference Include="System.Net.Primitives" Version="4.4.0-beta-24913-02" />
-    <PackageReference Include="System.Runtime" Version="4.4.0-beta-24913-02" />
-    <PackageReference Include="System.Threading.Tasks" Version="4.4.0-beta-24913-02" />
   </ItemGroup>
 </Project>
