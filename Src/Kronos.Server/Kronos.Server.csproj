@@ -5,9 +5,8 @@
     <Copyright>Lukasz Pyrzyk</Copyright>
     <VersionPrefix>2.0.0</VersionPrefix>
     <Authors>Lukasz Pyrzyk</Authors>
-    <TargetFrameworks>netcoreapp2.0</TargetFrameworks>
+    <TargetFramework>netcoreapp2.1</TargetFramework>
     <AssemblyName>Kronos.Server</AssemblyName>
-    <OutputType>Exe</OutputType>
     <PackageId>Kronos.Server</PackageId>
     <PackageTags>cache, distributed, in-memory, memory, socket, redis</PackageTags>
     <PackageIconUrl>https://raw.githubusercontent.com/lukasz-pyrzyk/Kronos/master/SolutionItems/nugetIcon.png</PackageIconUrl>
