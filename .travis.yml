@@ -1,6 +1,6 @@
 language: csharp
 mono: none
-dotnet: 2.1.105
+dotnet: 2.1
 
 services:
   - docker
