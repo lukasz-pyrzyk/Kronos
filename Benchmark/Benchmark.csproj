@@ -5,7 +5,6 @@
     <AssemblyName>Benchmark</AssemblyName>
     <OutputType>Exe</OutputType>
     <PackageId>Benchmark</PackageId>
-    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
 
   <PropertyGroup>

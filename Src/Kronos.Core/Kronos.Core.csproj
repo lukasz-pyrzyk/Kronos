@@ -8,7 +8,6 @@
     <TargetFrameworks>netstandard1.3;</TargetFrameworks>
     <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <AssemblyName>Kronos.Core</AssemblyName>
-    <LangVersion>7.2</LangVersion>
     <PackageId>Kronos.Core</PackageId>
     <PackageTags>cache, distributed, socket, dotnetcore, dnx</PackageTags>
     <PackageIconUrl>https://raw.githubusercontent.com/lukasz-pyrzyk/Kronos/master/SolutionItems/nugetIcon.png</PackageIconUrl>
