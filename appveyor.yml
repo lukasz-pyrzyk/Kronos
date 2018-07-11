@@ -28,4 +28,6 @@ for:
 
   on_success:
   - ps: |
-        Write-Host "Success"
+        docker login -u="$env:DOCKER_USER" -p="$env:DOCKER_PASSWORD"
+        docker build -t lukaszpyrzyk/kronos .
+        docker push lukaszpyrzyk/kronos
