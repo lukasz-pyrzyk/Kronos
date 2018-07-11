@@ -27,7 +27,9 @@ for:
 
   on_success:
   - ps: |
-        dotnet publish ./Src/Kronos.Server/ -c Release -o ./dockerPackage
-        docker login -u="$env:DOCKER_USER" -p="$env:DOCKER_PASSWORD"
-        docker build -t lukaszpyrzyk/kronos .
-        docker push lukaszpyrzyk/kronos
+        if ($isWindows) {
+          dotnet publish ./Src/Kronos.Server/ -c Release -o ./dockerPackage
+          docker login -u="$env:DOCKER_USER" -p="$env:DOCKER_PASSWORD"
+          docker build -t lukaszpyrzyk/kronos .
+          docker push lukaszpyrzyk/kronos
+        }
