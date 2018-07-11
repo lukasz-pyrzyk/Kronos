@@ -1,11 +1,13 @@
 version: 2.0.0-rc-{build}
-image: Visual Studio 2017
+image:
+- Visual Studio 2017
+- Ubuntu
+
 nuget:
   project_feed: true
   disable_publish_on_pr: true
 build_script:
 - ps: >-
-    cd C:\projects\kronos
 
     .\Scripts\Windows\build.ps1 -version $env:appveyor_build_number
 
@@ -15,4 +17,15 @@ test_script:
 
     # run tests
 
-    .\Scripts\Windows\runTests.ps1 -fileName $coverageFile
+    .\Scripts\Windows\runTests.ps1
+
+for:
+
+-
+  branches:
+    only:
+      - master
+
+  on_success:
+  - ps: |
+        Write-Host "Success"
