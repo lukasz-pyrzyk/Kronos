@@ -28,4 +28,4 @@ for:
 
   on_success:
   - ps: |
-        Write-Host "Success"
+        Write-Host "hello world from master!"
