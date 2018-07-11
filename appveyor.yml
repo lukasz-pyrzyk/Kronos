@@ -1,5 +1,8 @@
 version: 2.0.0-rc-{build}
-image: Visual Studio 2017
+image:
+- Visual Studio 2017
+- Ubuntu
+
 nuget:
   project_feed: true
   disable_publish_on_pr: true
