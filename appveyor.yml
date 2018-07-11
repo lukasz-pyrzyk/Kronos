@@ -17,4 +17,4 @@ test_script:
 
     # run tests
 
-    .\Scripts\Windows\runTests.ps1 -fileName $coverageFile
+    .\Scripts\Windows\runTests.ps1
