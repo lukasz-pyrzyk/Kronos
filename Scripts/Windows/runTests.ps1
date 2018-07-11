@@ -10,7 +10,7 @@ $error = 0;
 
 function RunTests($testProject) {
     write-host "Running tests for " $testProject
-    dotnet.exe test $testProject
+    dotnet test $testProject
 }
 
 # run unit tests and calculate code coverage for each test project
