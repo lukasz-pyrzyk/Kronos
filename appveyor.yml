@@ -8,7 +8,6 @@ nuget:
   disable_publish_on_pr: true
 build_script:
 - ps: >-
-    cd C:\projects\kronos
 
     .\Scripts\Windows\build.ps1 -version $env:appveyor_build_number
 
