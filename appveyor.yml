@@ -9,15 +9,14 @@ nuget:
 build_script:
 - ps: >-
 
-    .\Scripts\Windows\build.ps1 -version $env:appveyor_build_number
+    .\Scripts\build.ps1
 
-    .\Scripts\Windows\pack.ps1 -version $env:appveyor_build_number
 test_script:
 - ps: >-
 
     # run tests
 
-    .\Scripts\Windows\runTests.ps1
+    .\Scripts\runTests.ps1
 
 for:
 

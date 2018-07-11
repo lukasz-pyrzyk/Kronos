@@ -24,17 +24,13 @@ Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Kronos.AcceptanceTest", "Te
 EndProject
 Project("{9A19103F-16F7-4668-BE54-9A1E7A4F7556}") = "Benchmark", "Benchmark\Benchmark.csproj", "{315089CB-0ECC-4856-8FDC-F98BDCBEAF6B}"
 EndProject
-Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Build", "Build", "{6E440BB7-B9BD-44DA-B215-FD20A11880EF}"
+Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution Items", "{6E440BB7-B9BD-44DA-B215-FD20A11880EF}"
 	ProjectSection(SolutionItems) = preProject
-		.travis.yml = .travis.yml
 		appveyor.yml = appveyor.yml
-		Scripts\Windows\build.ps1 = Scripts\Windows\build.ps1
-		Scripts\Linux\build.sh = Scripts\Linux\build.sh
-		Dockerfile = Dockerfile
-		Scripts\Windows\pack.ps1 = Scripts\Windows\pack.ps1
+		Scripts\build.ps1 = Scripts\build.ps1
+		Scripts\pack.ps1 = Scripts\pack.ps1
 		README.md = README.md
-		Scripts\Windows\runTests.ps1 = Scripts\Windows\runTests.ps1
-		Scripts\Linux\runTests.sh = Scripts\Linux\runTests.sh
+		Scripts\runTests.ps1 = Scripts\runTests.ps1
 	EndProjectSection
 EndProject
 Global
