@@ -28,6 +28,7 @@ for:
 
   on_success:
   - ps: |
+        dotnet publish ./Src/Kronos.Server/ -c Release -o ./publish
         docker login -u="$env:DOCKER_USER" -p="$env:DOCKER_PASSWORD"
         docker build -t lukaszpyrzyk/kronos .
         docker push lukaszpyrzyk/kronos
