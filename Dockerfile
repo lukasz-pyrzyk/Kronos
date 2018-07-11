@@ -7,7 +7,7 @@ MAINTAINER Lukasz Pyrzyk <lukasz.pyrzyk@gmail.com>
 WORKDIR /dotnetapp
 
 # copy published binaries to the container
-COPY ./Src/Kronos.Server/publish .
+COPY ./Src/Kronos.Server/dockerPackage .
 
 # set entrypoint to the docker run
 ENTRYPOINT ["dotnet", "Kronos.Server.dll"]
