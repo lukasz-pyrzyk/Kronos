@@ -1,0 +1,10 @@
+syntax = "proto3";
+option csharp_namespace = "Kronos.Core.Messages";
+
+message StatsRequest {
+}
+
+message StatsResponse {
+    int64 elements = 1;
+	int32 memoryUsed = 2;
+}

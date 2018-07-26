@@ -12,10 +12,11 @@ namespace Kronos.Core.Processing
         private readonly CommandProcessor<CountRequest, CountResponse> _countProcessor;
         private readonly CommandProcessor<ContainsRequest, ContainsResponse> _containsProcessor;
         private readonly CommandProcessor<ClearRequest, ClearResponse> _clearProcessor;
+        private readonly CommandProcessor<StatsRequest, StatsResponse> _statsProcessor;
 
         public RequestProcessor(IStorage storage) : this(
             storage, new InsertProcessor(), new GetProcessor(),
-            new DeleteProcessor(), new CountProcessor(), new ContainsProcessor(), new ClearProcessor()
+            new DeleteProcessor(), new CountProcessor(), new ContainsProcessor(), new ClearProcessor(), new StatsProcessor()
             )
         { }
 
@@ -26,7 +27,8 @@ namespace Kronos.Core.Processing
             CommandProcessor<DeleteRequest, DeleteResponse> deleteProcessor,
             CommandProcessor<CountRequest, CountResponse> countProcessor,
             CommandProcessor<ContainsRequest, ContainsResponse> containsProcessor,
-            CommandProcessor<ClearRequest, ClearResponse> clearProcessor
+            CommandProcessor<ClearRequest, ClearResponse> clearProcessor,
+            CommandProcessor<StatsRequest, StatsResponse> statsProcessor
         )
         {
             _storage = storage;
@@ -36,6 +38,7 @@ namespace Kronos.Core.Processing
             _countProcessor = countProcessor;
             _containsProcessor = containsProcessor;
             _clearProcessor = clearProcessor;
+            _statsProcessor = statsProcessor;
         }
 
         public Response Handle(Request request, Auth auth)
@@ -68,6 +71,9 @@ namespace Kronos.Core.Processing
                     break;
                 case RequestType.Clear:
                     response.ClearResponse = _clearProcessor.Reply(request.ClearRequest, _storage);
+                    break;
+                case RequestType.Stats:
+                    response.StatsResponse = _statsProcessor.Reply(request.StatsRequest, _storage);
                     break;
                 default:
                     response.Exception = $"Request type {request.Type} is not supported";

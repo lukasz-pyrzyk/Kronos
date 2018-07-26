@@ -9,4 +9,5 @@ enum RequestType {
 	Count = 4;
 	Contains = 5;
 	Clear = 6;
+	Stats = 7;
 }

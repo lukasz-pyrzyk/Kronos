@@ -126,6 +126,19 @@ namespace Kronos.Core.Messages
         }
     }
 
+    public partial class StatsRequest
+    {
+        public static Request New(Auth auth)
+        {
+            return new Request
+            {
+                StatsRequest = new StatsRequest(),
+                Type = RequestType.Stats,
+                Auth = auth
+            };
+        }
+    }
+
     public partial class Response
     {
         public bool Success => string.IsNullOrEmpty(Exception);
