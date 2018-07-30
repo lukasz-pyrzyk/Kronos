@@ -13,12 +13,5 @@ namespace Benchmark.Types
             string key = Prepare.Key();
             await KronosClient.ContainsAsync(key);
         }
-
-        [Benchmark(Baseline = true)]
-        public async Task Redis()
-        {
-            string key = Prepare.Key();
-            await RedisClient.SetContainsAsync(key, "");
-        }
     }
 }
