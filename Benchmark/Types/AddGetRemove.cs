@@ -10,9 +10,6 @@ namespace Benchmark.Types
         [Params(Size.Kb * 100, Size.Kb * 500, Size.Mb, Size.Mb * 2)]
         public int PackageSize { get; set; }
 
-        [Params(1, 2, 4, 8)]
-        public int Clients { get; set; }
-
         private byte[] _data;
 
         protected override void AdditionalSetup()
@@ -20,39 +17,17 @@ namespace Benchmark.Types
             _data = Prepare.Bytes(PackageSize);
 
             Task kronos = KronosClient.ClearAsync();
-            Task redis = RedisServer.FlushAllDatabasesAsync();
-            Task.WaitAll(kronos, redis);
+            Task.WaitAll(kronos);
         }
 
         [Benchmark]
-        public void Kronos()
+        public async Task Kronos()
         {
-            Parallel.For(0, Clients, _ =>
-            {
-                string key = Prepare.Key();
+            string key = Prepare.Key();
 
-                KronosClient.InsertAsync(key, _data, null)
-                    .GetAwaiter().GetResult();
-
-                KronosClient.GetAsync(key)
-                    .GetAwaiter().GetResult();
-
-                KronosClient.DeleteAsync(key)
-                    .GetAwaiter().GetResult();
-            });
-        }
-
-        [Benchmark(Baseline = true)]
-        public void Redis()
-        {
-            Parallel.For(0, Clients, _ =>
-            {
-                string key = Prepare.Key();
-
-                RedisClient.StringSetAsync(key, _data).GetAwaiter().GetResult();
-                RedisClient.StringGetAsync(key).GetAwaiter().GetResult();
-                RedisClient.KeyDeleteAsync(key).GetAwaiter().GetResult();
-            });
+            await KronosClient.InsertAsync(key, _data, null);
+            await KronosClient.GetAsync(key);
+            await KronosClient.DeleteAsync(key);
         }
     }
 }

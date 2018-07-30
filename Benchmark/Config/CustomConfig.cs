@@ -14,8 +14,6 @@ namespace Benchmark.Config
         public CustomConfig()
         {
             Add(StatisticColumn.Mean);
-            Add(StatisticColumn.StdErr);
-            Add(StatisticColumn.StdDev);
             Add(StatisticColumn.Median);
             Add(CsvMeasurementsExporter.Default);
             Add(RPlotExporter.Default);
