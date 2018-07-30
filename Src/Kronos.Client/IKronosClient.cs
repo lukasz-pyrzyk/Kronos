@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using Kronos.Core.Messages;
 
 namespace Kronos.Client
 {
@@ -47,5 +48,11 @@ namespace Kronos.Client
         /// </summary>
         /// <returns></returns>
         Task ClearAsync();
+
+        /// <summary>
+        /// Returns stats from all servers
+        /// </summary>
+        /// <returns></returns>
+        Task<StatsResponse[]> StatsAsync();
     }
 }

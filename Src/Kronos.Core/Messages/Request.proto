@@ -9,7 +9,7 @@ import "delete.proto";
 import "count.proto";
 import "contains.proto";
 import "clear.proto";
-
+import "stats.proto";
 
 message Request {
   Auth Auth = 1;
@@ -20,4 +20,5 @@ message Request {
   ContainsRequest ContainsRequest = 6;
   CountRequest CountRequest = 7;
   ClearRequest ClearRequest = 8;
+  StatsRequest StatsRequest = 9;
 }

@@ -1,9 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using Google.Protobuf;
 
 namespace Kronos.Core.Storage
 {
-    public interface IStorage : IDisposable
+    public interface IStorage : IDisposable, IEnumerable<Element>
     {
         int Count { get; }
         int ExpiringCount { get; }

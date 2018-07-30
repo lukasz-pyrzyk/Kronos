@@ -21,6 +21,7 @@ namespace Kronos.Client
         private readonly CountProcessor _countProcessor = new CountProcessor();
         private readonly ContainsProcessor _containsProcessor = new ContainsProcessor();
         private readonly ClearProcessor _clearProcessor = new ClearProcessor();
+        private readonly StatsProcessor _statsProcessor = new StatsProcessor();
 
         private readonly ServerProvider _serverProvider;
         private readonly ConcurrentPool<Connection> _connectionPool = new ConcurrentPool<Connection>();
@@ -93,6 +94,18 @@ namespace Kronos.Client
             var response = await _connectionPool.UseAsync(con => _containsProcessor.ExecuteAsync(request, con, server));
 
             return response.Contains;
+        }
+
+
+        public async Task<StatsResponse[]> StatsAsync()
+        {
+            Trace.WriteLine("New stats request");
+
+            var servers = GetServersInternal();
+            var requests = servers.Select(x => StatsRequest.New(x.Auth)).ToArray();
+
+            var responses = await _connectionPool.UseAsync(servers.Length, con => _statsProcessor.ExecuteAsync(requests, con, servers));
+            return responses;
         }
 
         public async Task ClearAsync()

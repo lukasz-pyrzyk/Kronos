@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using Google.Protobuf;
@@ -134,6 +135,16 @@ namespace Kronos.Core.Storage
             {
                 Logger.Debug("Storage cleanup scheduled");
             }
+        }
+
+        public IEnumerator<Element> GetEnumerator()
+        {
+            return _storage.Values.GetEnumerator();
+        }
+
+        IEnumerator IEnumerable.GetEnumerator()
+        {
+            return GetEnumerator();
         }
     }
 }
