@@ -60,8 +60,8 @@ namespace Kronos.Core.Tests.Processing
             Response response = processor.Handle(request, Auth.Default());
 
             // Assert
-            AssertSuccessful(response);
-            request.InsertRequest.Should().NotBeNull();
+            AssertSuccessful(response, typeof(InsertResponse));
+            request.InternalRequest.Should().NotBeNull();
         }
 
         [Fact]
@@ -75,8 +75,8 @@ namespace Kronos.Core.Tests.Processing
             Response response = processor.Handle(request, Auth.Default());
 
             // Assert
-            AssertSuccessful(response);
-            request.GetRequest.Should().NotBeNull();
+            AssertSuccessful(response, typeof(GetResponse));
+            request.InternalRequest.Should().NotBeNull();
         }
 
         [Fact]
@@ -90,8 +90,8 @@ namespace Kronos.Core.Tests.Processing
             Response response = processor.Handle(request, Auth.Default());
 
             // Assert
-            AssertSuccessful(response);
-            request.DeleteRequest.Should().NotBeNull();
+            AssertSuccessful(response, typeof(DeleteResponse));
+            request.InternalRequest.Should().NotBeNull();
         }
 
         [Fact]
@@ -105,8 +105,8 @@ namespace Kronos.Core.Tests.Processing
             Response response = processor.Handle(request, Auth.Default());
 
             // Assert
-            AssertSuccessful(response);
-            request.CountRequest.Should().NotBeNull();
+            AssertSuccessful(response, typeof(CountResponse));
+            request.InternalRequest.Should().NotBeNull();
         }
 
         [Fact]
@@ -120,8 +120,8 @@ namespace Kronos.Core.Tests.Processing
             Response response = processor.Handle(request, Auth.Default());
 
             // Assert
-            AssertSuccessful(response);
-            request.ContainsRequest.Should().NotBeNull();
+            AssertSuccessful(response, typeof(ContainsResponse));
+            request.InternalRequest.Should().NotBeNull();
         }
 
         [Fact]
@@ -135,8 +135,8 @@ namespace Kronos.Core.Tests.Processing
             Response response = processor.Handle(request, Auth.Default());
 
             // Assert
-            AssertSuccessful(response);
-            request.ClearRequest.Should().NotBeNull();
+            AssertSuccessful(response, typeof(ClearResponse));
+            request.InternalRequest.Should().NotBeNull();
         }
 
         [Fact]
@@ -150,15 +150,16 @@ namespace Kronos.Core.Tests.Processing
             Response response = processor.Handle(request, Auth.Default());
 
             // Assert
-            AssertSuccessful(response);
-            request.StatsRequest.Should().NotBeNull();
+            AssertSuccessful(response, typeof(StatsResponse));
+            request.InternalRequest.Should().NotBeNull();
         }
 
-        private static void AssertSuccessful(Response response)
+        private static void AssertSuccessful(Response response, Type type)
         {
             response.Should().NotBeNull();
             response.Success.Should().BeTrue();
             response.Exception.Should().BeEmpty();
+            response.InternalResponse.Should().BeOfType(type);
         }
 
         private static RequestProcessor CreateProcessor(IStorage storage,

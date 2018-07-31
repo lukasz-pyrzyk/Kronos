@@ -9,10 +9,6 @@ using Kronos.Core.Processing;
 
 namespace Kronos.Client
 {
-    /// <summary>
-    /// Official Kronos client
-    /// <see cref="IKronosClient" />
-    /// </summary>
     internal class KronosClient : IKronosClient
     {
         private readonly InsertProcessor _insertProcessor = new InsertProcessor();
@@ -54,10 +50,7 @@ namespace Kronos.Client
 
             var response = await _connectionPool.UseAsync(con => _getProcessor.ExecuteAsync(request, con, server));
 
-            if (response.Exists)
-                return response.Data.ToByteArray();
-
-            return null;
+            return response.Data;
         }
 
         public async Task DeleteAsync(string key)

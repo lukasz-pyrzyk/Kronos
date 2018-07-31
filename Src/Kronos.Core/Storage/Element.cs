@@ -1,14 +1,13 @@
 ﻿using System;
-using Google.Protobuf;
 
 namespace Kronos.Core.Storage
 {
     public readonly struct Element
     {
-        public ByteString Data { get; }
+        public byte[] Data { get; }
         public DateTime? ExpiryDate { get; }
 
-        public Element(ByteString data, DateTime? expiryDate = null)
+        public Element(byte[] data, DateTime? expiryDate = null)
         {
             Data = data;
             ExpiryDate = expiryDate;

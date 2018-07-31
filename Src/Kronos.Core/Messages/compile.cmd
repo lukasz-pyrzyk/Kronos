@@ -1,1 +1,0 @@
-protoc.exe --csharp_out=. *.proto

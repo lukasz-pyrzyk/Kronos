@@ -19,7 +19,7 @@ namespace Kronos.Core.Tests.Processing
             var request = new InsertRequest();
             var processor = new InsertProcessor();
             var storage = Substitute.For<IStorage>();
-            storage.Add(Arg.Any<string>(), Arg.Any<DateTime?>(), Arg.Any<ByteString>()).Returns(added);
+            storage.Add(Arg.Any<string>(), Arg.Any<DateTime?>(), Arg.Any<byte[]>()).Returns(added);
 
             // Act
             InsertResponse response = processor.Reply(request, storage);

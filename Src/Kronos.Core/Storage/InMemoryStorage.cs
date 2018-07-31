@@ -32,7 +32,7 @@ namespace Kronos.Core.Storage
         public int ExpiringCount => _expiringKeys.Count;
         internal bool CleanupRequested => _cleanupRequested == 1;
 
-        public bool Add(string name, DateTime? expiryDate, ByteString obj)
+        public bool Add(string name, DateTime? expiryDate, byte[] data)
         {
             ClearStorageIfRequested();
 
@@ -44,7 +44,7 @@ namespace Kronos.Core.Storage
                 return false;
             }
 
-            element = new Element(obj, expiryDate);
+            element = new Element(data, expiryDate);
             _storage[key] = element;
 
             if (expiryDate.HasValue)
@@ -55,7 +55,7 @@ namespace Kronos.Core.Storage
             return true;
         }
 
-        public bool TryGet(string name, out ByteString obj)
+        public bool TryGet(string name, out byte[] data)
         {
             ClearStorageIfRequested();
 
@@ -63,11 +63,11 @@ namespace Kronos.Core.Storage
             bool found = _storage.TryGetValue(key, out Element element);
             if (found && !element.IsExpired())
             {
-                obj = element.Data;
+                data = element.Data;
                 return true;
             }
 
-            obj = null;
+            data = null;
             return false;
         }
 

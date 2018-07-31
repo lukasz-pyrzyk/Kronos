@@ -1,5 +1,4 @@
 ﻿using System.Threading.Tasks;
-using Google.Protobuf;
 using Kronos.Core.Configuration;
 using Kronos.Core.Exceptions;
 using Kronos.Core.Messages;
@@ -9,8 +8,6 @@ using Kronos.Core.Storage;
 namespace Kronos.Core.Processing
 {
     public abstract class CommandProcessor<TRequest, TResponse>
-        where TRequest : IMessage
-        where TResponse : IMessage
     {
         public abstract TResponse Reply(TRequest request, IStorage storage);
 
@@ -43,6 +40,9 @@ namespace Kronos.Core.Processing
             return await Task.WhenAll(responses);
         }
 
-        protected abstract TResponse SelectResponse(Response response);
+        protected TResponse SelectResponse(Response response)
+        {
+            return (TResponse)response.InternalResponse;
+        }
     }
 }

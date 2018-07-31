@@ -1,9 +1,0 @@
-syntax = "proto3";
-option csharp_namespace = "Kronos.Core.Messages";
-
-message ClearRequest {
-}
-
-message ClearResponse {
-	sint64 Deleted = 1;
-}

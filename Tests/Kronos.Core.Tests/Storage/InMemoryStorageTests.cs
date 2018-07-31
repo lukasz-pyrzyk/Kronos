@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Text;
 using System.Threading.Tasks;
 using Google.Protobuf;
 using Kronos.Core.Storage;
@@ -19,7 +20,7 @@ namespace Kronos.Core.Tests.Storage
             IStorage storage = CreateStorage();
 
             // Act
-            bool added = storage.Add(key, null, ByteString.Empty);
+            bool added = storage.Add(key, null, new byte[0]);
 
             // Assert
             Assert.Equal(storage.Count, 1);
@@ -34,7 +35,7 @@ namespace Kronos.Core.Tests.Storage
             IStorage storage = CreateStorage();
 
             // Act
-            bool added = storage.Add(key, DateTime.MaxValue, ByteString.Empty);
+            bool added = storage.Add(key, DateTime.MaxValue, new byte[0]);
 
             // Assert
             Assert.Equal(storage.Count, 1);
@@ -50,8 +51,8 @@ namespace Kronos.Core.Tests.Storage
             IStorage storage = CreateStorage();
 
             // Act
-            storage.Add(key, DateTime.MaxValue, ByteString.Empty);
-            bool added = storage.Add(key, DateTime.MaxValue, ByteString.Empty);
+            storage.Add(key, DateTime.MaxValue, new byte[0]);
+            bool added = storage.Add(key, DateTime.MaxValue, new byte[0]);
 
             // Assert
             Assert.False(added);
@@ -67,10 +68,10 @@ namespace Kronos.Core.Tests.Storage
             DateTime now = DateTime.UtcNow;
 
             // Act
-            storage.Add(key, now + expiryTime, ByteString.Empty);
+            storage.Add(key, now + expiryTime, new byte[0]);
             await Task.Delay(TimeSpan.FromTicks(expiryTime.Ticks * 2)); // multiply by 2, mono behaves differently... Race condition?
 
-            bool added = storage.Add(key, DateTime.MaxValue, ByteString.Empty);
+            bool added = storage.Add(key, DateTime.MaxValue, new byte[0]);
 
             // Assert
             Assert.True(added);
@@ -82,11 +83,11 @@ namespace Kronos.Core.Tests.Storage
             // Arrange
             IStorage storage = CreateStorage();
             const string key = "lorem ipsum";
-            ByteString data = ByteString.CopyFromUtf8("lorem ipsum");
+            var data = Encoding.UTF8.GetBytes("lorem ipsum");
             storage.Add(key, null, data);
 
             // Act
-            bool success = storage.TryGet(key, out ByteString received);
+            bool success = storage.TryGet(key, out var received);
 
             // Assert
             Assert.True(success);
@@ -100,7 +101,7 @@ namespace Kronos.Core.Tests.Storage
             IStorage storage = CreateStorage();
 
             // Act
-            bool success = storage.TryGet("lorem ipsum", out ByteString received);
+            bool success = storage.TryGet("lorem ipsum", out var received);
 
             // Assert
             Assert.False(success);
@@ -113,11 +114,11 @@ namespace Kronos.Core.Tests.Storage
             // Arrange
             IStorage storage = CreateStorage();
             const string key = "lorem ipsum";
-            ByteString data = ByteString.CopyFromUtf8("lorem ipsum");
+            var data = Encoding.UTF8.GetBytes("lorem ipsum");
             storage.Add(key, DateTime.MinValue, data);
 
             // Act
-            bool success = storage.TryGet(key, out ByteString received);
+            bool success = storage.TryGet(key, out var received);
 
             // Assert
             Assert.False(success);
@@ -133,8 +134,8 @@ namespace Kronos.Core.Tests.Storage
 
             IStorage storage = CreateStorage();
 
-            storage.Add(firstKey, null, ByteString.Empty);
-            storage.Add(secondKey, null, ByteString.Empty);
+            storage.Add(firstKey, null, new byte[0]);
+            storage.Add(secondKey, null, new byte[0]);
 
             // Act
             bool deleted = storage.TryRemove(firstKey);
@@ -153,8 +154,8 @@ namespace Kronos.Core.Tests.Storage
 
             IStorage storage = CreateStorage();
 
-            storage.Add(firstKey, DateTime.MaxValue, ByteString.Empty);
-            storage.Add(secondKey, DateTime.MaxValue, ByteString.Empty);
+            storage.Add(firstKey, DateTime.MaxValue, new byte[0]);
+            storage.Add(secondKey, DateTime.MaxValue, new byte[0]);
 
             // Act
             bool deleted = storage.TryRemove(firstKey);
@@ -172,7 +173,7 @@ namespace Kronos.Core.Tests.Storage
             const string secondKey = "key2";
 
             IStorage storage = CreateStorage();
-            storage.Add(firstKey, DateTime.MaxValue, ByteString.Empty);
+            storage.Add(firstKey, DateTime.MaxValue, new byte[0]);
 
             bool deleted = storage.TryRemove(secondKey);
 
@@ -186,7 +187,7 @@ namespace Kronos.Core.Tests.Storage
             // Arrange
             IStorage storage = CreateStorage();
             const string key = "lorem ipsum";
-            storage.Add(key, null, ByteString.Empty);
+            storage.Add(key, null, new byte[0]);
 
             // Act
             bool result = storage.Contains(key);
@@ -201,7 +202,7 @@ namespace Kronos.Core.Tests.Storage
             // Arrange
             IStorage storage = CreateStorage();
             const string key = "lorem ipsum";
-            storage.Add(key, DateTime.MinValue, ByteString.Empty);
+            storage.Add(key, DateTime.MinValue, new byte[0]);
 
             // Act
             bool result = storage.Contains(key);
@@ -233,7 +234,7 @@ namespace Kronos.Core.Tests.Storage
 
             for (int i = 0; i < count; i++)
             {
-                storage.Add(Guid.NewGuid().ToString(), DateTime.MaxValue, ByteString.Empty);
+                storage.Add(Guid.NewGuid().ToString(), DateTime.MaxValue, new byte[0]);
             }
 
             // Act
@@ -251,8 +252,8 @@ namespace Kronos.Core.Tests.Storage
             // Arrange
             IStorage storage = CreateStorage();
 
-            storage.Add("first", DateTime.MaxValue, ByteString.Empty);
-            storage.Add("second", DateTime.MaxValue, ByteString.Empty);
+            storage.Add("first", DateTime.MaxValue, new byte[0]);
+            storage.Add("second", DateTime.MaxValue, new byte[0]);
 
             // Act
             storage.Dispose();
@@ -270,7 +271,7 @@ namespace Kronos.Core.Tests.Storage
             IStorage storage = await CreateStorageWithSchedulerAndWait(cleaner);
 
             // Act
-            storage.Add("", null, ByteString.Empty);
+            storage.Add("", null, new byte[0]);
 
             // Assert
             cleaner.Received(1).Clear(Arg.Any<PriorityQueue<ExpiringKey>>(), Arg.Any<Dictionary<Key, Element>>());
@@ -284,7 +285,7 @@ namespace Kronos.Core.Tests.Storage
             IStorage storage = await CreateStorageWithSchedulerAndWait(cleaner);
 
             // Act
-            storage.TryGet("", out ByteString _);
+            storage.TryGet("", out var _);
 
             // Assert
             cleaner.Received(1).Clear(Arg.Any<PriorityQueue<ExpiringKey>>(), Arg.Any<Dictionary<Key, Element>>());

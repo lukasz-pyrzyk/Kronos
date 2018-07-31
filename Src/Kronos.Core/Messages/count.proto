@@ -1,9 +1,0 @@
-syntax = "proto3";
-option csharp_namespace = "Kronos.Core.Messages";
-
-message CountRequest {
-}
-
-message CountResponse {
-	sint32 Count = 1;
-}

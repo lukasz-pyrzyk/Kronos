@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Collections.Generic;
-using Google.Protobuf;
 
 namespace Kronos.Core.Storage
 {
@@ -9,8 +8,8 @@ namespace Kronos.Core.Storage
         int Count { get; }
         int ExpiringCount { get; }
 
-        bool Add(string value, DateTime? expiryDate, ByteString obj);
-        bool TryGet(string key, out ByteString obj);
+        bool Add(string value, DateTime? expiryDate, byte[] data);
+        bool TryGet(string key, out byte[] data);
         bool TryRemove(string key);
         bool Contains(string key);
         int Clear();

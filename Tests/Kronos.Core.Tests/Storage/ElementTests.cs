@@ -11,7 +11,7 @@ namespace Kronos.Core.Tests.Storage
         public void Ctor_AssignsValues_WithExpiry()
         {
             // Arrange
-            var data = ByteString.Empty;
+            var data = new byte[0];
             var expiry = DateTime.MaxValue;
 
             // Act
@@ -26,7 +26,7 @@ namespace Kronos.Core.Tests.Storage
         public void Ctor_AssignsValues()
         {
             // Arrange
-            var data = ByteString.Empty;
+            var data = new byte[0];
 
             // Act
             var element = new Element(data);
@@ -40,7 +40,7 @@ namespace Kronos.Core.Tests.Storage
         public void IsExpiring_ReturnsTrueWhenElementIsExpiring()
         {
             // Arrange
-            var element = new Element(ByteString.Empty, DateTime.UtcNow);
+            var element = new Element(new byte[0], DateTime.UtcNow);
 
             // Act
             bool expiring = element.IsExpiring;
@@ -53,7 +53,7 @@ namespace Kronos.Core.Tests.Storage
         public void IsExpiring_ReturnsFalseWhenElementIsExpiring()
         {
             // Arrange
-            var element = new Element(ByteString.Empty);
+            var element = new Element(new byte[0]);
 
             // Act
             bool expiring = element.IsExpiring;
@@ -67,7 +67,7 @@ namespace Kronos.Core.Tests.Storage
         {
             // Arrange
             var expiryDate = DateTime.MinValue;
-            var element = new Element(ByteString.Empty, expiryDate);
+            var element = new Element(new byte[0], expiryDate);
 
             // Act
             bool expired = element.IsExpired();
@@ -81,7 +81,7 @@ namespace Kronos.Core.Tests.Storage
         {
             // Arrange
             var expiryDate = DateTime.MinValue;
-            var element = new Element(ByteString.Empty, expiryDate);
+            var element = new Element(new byte[0], expiryDate);
 
             // Act
             bool expired = element.IsExpired(DateTime.UtcNow);

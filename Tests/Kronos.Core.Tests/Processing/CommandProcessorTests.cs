@@ -15,8 +15,8 @@ namespace Kronos.Core.Tests.Processing
         public async Task ExecuteAsync_CallsService()
         {
             // Arrange
-            var fakeResult = new Response { InsertResponse = new InsertResponse { Added = true } };
-            var request = new Request { InsertRequest = new InsertRequest(), Type = RequestType.Insert };
+            var fakeResult = new Response { InternalResponse = new InsertResponse { Added = true } };
+            var request = new Request { InternalRequest = new InsertRequest(), Type = RequestType.Insert };
             var server = new ServerConfig();
             IConnection con = Substitute.For<IConnection>();
             con.SendAsync(request, server).Returns(fakeResult);
@@ -27,7 +27,7 @@ namespace Kronos.Core.Tests.Processing
 
             // Assert
             await con.Received(1).SendAsync(request, server);
-            Assert.Equal(fakeResult.InsertResponse, response);
+            Assert.Equal(fakeResult.InternalResponse, response);
         }
 
         [Fact]
@@ -48,11 +48,6 @@ namespace Kronos.Core.Tests.Processing
             public override InsertResponse Reply(InsertRequest request, IStorage storage)
             {
                 return new InsertResponse();
-            }
-
-            protected override InsertResponse SelectResponse(Response response)
-            {
-                return response.InsertResponse;
             }
         }
     }

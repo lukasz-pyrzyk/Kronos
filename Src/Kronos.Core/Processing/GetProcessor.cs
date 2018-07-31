@@ -8,17 +8,12 @@ namespace Kronos.Core.Processing
     {
         public override GetResponse Reply(GetRequest request, IStorage storage)
         {
-            if (storage.TryGet(request.Key, out ByteString package))
+            if (storage.TryGet(request.Key, out var package))
             {
-                return new GetResponse { Exists = true, Data = package };
+                return new GetResponse {  Data = package };
             }
 
-            return new GetResponse { Exists = false, Data = ByteString.Empty };
-        }
-
-        protected override GetResponse SelectResponse(Response response)
-        {
-            return response.GetRespone;
+            return new GetResponse();
         }
     }
 }

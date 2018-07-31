@@ -55,25 +55,25 @@ namespace Kronos.Core.Processing
             switch (request.Type)
             {
                 case RequestType.Insert:
-                    response.InsertResponse = _insertProcessor.Reply(request.InsertRequest, _storage);
+                    response.InternalResponse = _insertProcessor.Reply((InsertRequest)request.InternalRequest, _storage);
                     break;
                 case RequestType.Get:
-                    response.GetRespone = _getProcessor.Reply(request.GetRequest, _storage);
+                    response.InternalResponse = _getProcessor.Reply((GetRequest)request.InternalRequest, _storage);
                     break;
                 case RequestType.Delete:
-                    response.DeleteResponse = _deleteProcessor.Reply(request.DeleteRequest, _storage);
+                    response.InternalResponse = _deleteProcessor.Reply((DeleteRequest)request.InternalRequest, _storage);
                     break;
                 case RequestType.Count:
-                    response.CountResponse = _countProcessor.Reply(request.CountRequest, _storage);
+                    response.InternalResponse = _countProcessor.Reply((CountRequest)request.InternalRequest, _storage);
                     break;
                 case RequestType.Contains:
-                    response.ContainsResponse = _containsProcessor.Reply(request.ContainsRequest, _storage);
+                    response.InternalResponse = _containsProcessor.Reply((ContainsRequest)request.InternalRequest, _storage);
                     break;
                 case RequestType.Clear:
-                    response.ClearResponse = _clearProcessor.Reply(request.ClearRequest, _storage);
+                    response.InternalResponse = _clearProcessor.Reply((ClearRequest)request.InternalRequest, _storage);
                     break;
                 case RequestType.Stats:
-                    response.StatsResponse = _statsProcessor.Reply(request.StatsRequest, _storage);
+                    response.InternalResponse = _statsProcessor.Reply((StatsRequest)request.InternalRequest, _storage);
                     break;
                 default:
                     response.Exception = $"Request type {request.Type} is not supported";

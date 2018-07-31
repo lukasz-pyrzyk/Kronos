@@ -26,7 +26,7 @@ namespace Kronos.Core.Tests.Storage
         public void IsExpiring_ReturnsTrueWhenElementIsExpiring()
         {
             // Arrange
-            var element = new Element(ByteString.Empty, DateTime.UtcNow);
+            var element = new Element(new byte[0], DateTime.UtcNow);
 
             // Act
             bool expiring = element.IsExpiring;
