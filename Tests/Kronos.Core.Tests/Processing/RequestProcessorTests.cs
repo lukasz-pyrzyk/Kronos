@@ -158,7 +158,7 @@ namespace Kronos.Core.Tests.Processing
         {
             response.Should().NotBeNull();
             response.Success.Should().BeTrue();
-            response.Exception.Should().BeEmpty();
+            response.Exception.Should().BeNull();
             response.InternalResponse.Should().BeOfType(type);
         }
 
