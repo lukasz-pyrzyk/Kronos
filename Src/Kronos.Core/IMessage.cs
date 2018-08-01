@@ -7,13 +7,13 @@ namespace Kronos.Core
     public interface IRequest
     {
         [UnionKey]
-        byte Id { get; }
+        RequestType Type { get; }
     }
 
-    [Union(subTypes: new[] { typeof(ClearResponse), typeof(ContainsResponse), typeof(CountResponse), typeof(DeleteResponse), typeof(GetResponse), typeof(InsertResponse), typeof(StatsResponse) })]
+    [Union(subTypes: new[] { typeof(ClearResponse), typeof(ContainsResponse), typeof(CountResponse), typeof(DeleteResponse), typeof(GetResponse), typeof(InsertResponse), typeof(StatsResponse)})]
     public interface IResponse
     {
         [UnionKey]
-        byte Id { get; }
+        RequestType Type { get; }
     }
 }

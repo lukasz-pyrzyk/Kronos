@@ -6,7 +6,7 @@ namespace Kronos.Core.Messages
     public class ContainsRequest : IRequest
     {
         [IgnoreFormat]
-        public virtual byte Id => 2;
+        public virtual RequestType Type => RequestType.Contains;
 
         [Index(0)]
         public virtual string Key { get; set; }
@@ -16,8 +16,7 @@ namespace Kronos.Core.Messages
             return new Request
             {
                 Auth = auth,
-                InternalRequest = new ContainsRequest { Key = key },
-                Type = RequestType.Contains
+                InternalRequest = new ContainsRequest { Key = key }
             };
         }
     }
@@ -26,7 +25,7 @@ namespace Kronos.Core.Messages
     public class ContainsResponse : IResponse
     {
         [IgnoreFormat]
-        public virtual byte Id => 2;
+        public virtual RequestType Type => RequestType.Contains;
 
         [Index(0)]
         public virtual bool Contains { get; set; }

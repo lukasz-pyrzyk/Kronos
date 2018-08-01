@@ -7,10 +7,13 @@ namespace Kronos.Core.Messages
     public class InsertRequest : IRequest
     {
         [IgnoreFormat]
-        public virtual byte Id => 6;
+        public virtual RequestType Type => RequestType.Insert;
 
         [Index(0)]
         public virtual string Key { get; set; }
+
+        [Index(4)]
+        public virtual string Keay { get; set; }
 
         [Index(1)]
         public virtual DateTime? Expiry { get; set; }
@@ -28,8 +31,7 @@ namespace Kronos.Core.Messages
                     Data = data,
                     Expiry = expiry,
                     Key = key
-                },
-                Type = RequestType.Insert
+                }
             };
         }
     }
@@ -38,7 +40,7 @@ namespace Kronos.Core.Messages
     public class InsertResponse : IResponse
     {
         [IgnoreFormat]
-        public virtual byte Id => 6;
+        public virtual RequestType Type => RequestType.Insert;
 
         [Index(0)]
         public virtual bool Added { get; set; }

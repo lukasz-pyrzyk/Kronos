@@ -16,7 +16,7 @@ namespace Kronos.Core.Tests.Processing
         {
             // Arrange
             var fakeResult = new Response { InternalResponse = new InsertResponse { Added = true } };
-            var request = new Request { InternalRequest = new InsertRequest(), Type = RequestType.Insert };
+            var request = new Request { InternalRequest = new InsertRequest()};
             var server = new ServerConfig();
             IConnection con = Substitute.For<IConnection>();
             con.SendAsync(request, server).Returns(fakeResult);

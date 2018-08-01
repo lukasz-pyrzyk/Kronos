@@ -22,7 +22,6 @@ namespace Kronos.Core.Tests.Messages
 
             // Assert
             request.Should().NotBeNull();
-            request.Type.Should().Be(RequestType.Insert);
             request.Auth.Should().Be(auth);
             request.InternalRequest.Should().BeOfType<InsertRequest>();
             var internalRequest = (InsertRequest)request.InternalRequest;
@@ -30,6 +29,7 @@ namespace Kronos.Core.Tests.Messages
             internalRequest.Key.Should().Be(key);
             internalRequest.Expiry.Should().Be(expiry);
             internalRequest.Data.Should().Equal(data);
+            internalRequest.Type.Should().Be(RequestType.Insert);
         }
 
         public static IEnumerable<object[]> ExpiryDates()

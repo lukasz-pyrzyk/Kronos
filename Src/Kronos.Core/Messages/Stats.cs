@@ -6,11 +6,11 @@ namespace Kronos.Core.Messages
     public class StatsRequest : IRequest
     {
         [IgnoreFormat]
-        public virtual byte Id => 7;
+        public virtual RequestType Type => RequestType.Stats;
 
         public static Request New(Auth auth)
         {
-            return new Request { Auth = auth, InternalRequest = new StatsRequest(), Type = RequestType.Stats };
+            return new Request { Auth = auth, InternalRequest = new StatsRequest()};
         }
     }
 
@@ -18,7 +18,7 @@ namespace Kronos.Core.Messages
     public class StatsResponse : IResponse
     {
         [IgnoreFormat]
-        public virtual byte Id => 7;
+        public virtual RequestType Type => RequestType.Stats;
 
         [Index(0)]
         public virtual int MemoryUsed { get; set; }

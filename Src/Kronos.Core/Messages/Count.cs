@@ -6,11 +6,11 @@ namespace Kronos.Core.Messages
     public class CountRequest : IRequest
     {
         [IgnoreFormat]
-        public virtual byte Id => 3;
+        public virtual RequestType Type => RequestType.Count;
 
         public static Request New(Auth auth)
         {
-            return new Request {Auth = auth, InternalRequest = new CountRequest(), Type = RequestType.Count};
+            return new Request {Auth = auth, InternalRequest = new CountRequest()};
         }
     }
 
@@ -18,7 +18,7 @@ namespace Kronos.Core.Messages
     public class CountResponse : IResponse
     {
         [IgnoreFormat]
-        public virtual byte Id => 3;
+        public virtual RequestType Type => RequestType.Count;
 
         [Index(0)]
         public virtual int Count { get; set; }

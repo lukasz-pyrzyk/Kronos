@@ -85,7 +85,7 @@ namespace Kronos.Server
                     Logger.Error($"Error on shutting down server socket {ex}");
                 }
             }
-            
+
             _listener.Stop();
             _listener.Server.Dispose();
 
@@ -104,7 +104,7 @@ namespace Kronos.Server
             {
                 Request request = _processor.ReceiveRequest(client);
 
-                Logger.Debug($"Processing new request {request.Type}");
+                Logger.Debug($"Processing new request {request?.InternalRequest.Type}");
                 Response response = _requestProcessor.Handle(request, _auth);
 
                 _processor.SendResponse(client, response);
