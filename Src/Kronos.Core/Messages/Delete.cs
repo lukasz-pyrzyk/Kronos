@@ -1,8 +1,15 @@
-﻿namespace Kronos.Core.Messages
+﻿using ZeroFormatter;
+
+namespace Kronos.Core.Messages
 {
-    public class DeleteRequest
+    [ZeroFormattable]
+    public class DeleteRequest : IRequest
     {
-        public string Key { get; set; }
+        [IgnoreFormat]
+        public virtual byte Id => 4;
+
+        [Index(0)]
+        public virtual string Key { get; set; }
 
         public static Request New(string key, Auth auth)
         {
@@ -10,8 +17,13 @@
         }
     }
 
-    public class DeleteResponse
+    [ZeroFormattable]
+    public class DeleteResponse : IResponse
     {
-        public bool Deleted { get; set; }
+        [IgnoreFormat]
+        public virtual byte Id => 4;
+
+        [Index(0)]
+        public virtual bool Deleted { get; set; }
     }
 }

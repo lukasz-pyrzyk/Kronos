@@ -1,7 +1,6 @@
 ﻿using System;
 using System.Buffers;
 using System.Net.Sockets;
-using Google.Protobuf;
 using Kronos.Core.Messages;
 using Kronos.Core.Networking;
 using Kronos.Core.Pooling;
@@ -26,7 +25,7 @@ namespace Kronos.Server
             try
             {
                 SocketUtils.ReceiveAll(client, data, packageSize);
-                request = Request.Parser.ParseFrom(data, 0, packageSize);
+                request = Request.ParseFrom(data, 0, packageSize);
             }
             finally
             {

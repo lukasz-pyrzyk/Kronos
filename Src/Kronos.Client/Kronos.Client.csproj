@@ -31,5 +31,6 @@
   <ItemGroup>
     <PackageReference Include="Newtonsoft.Json" Version="11.0.2" />
     <PackageReference Include="Polly" Version="6.1.0" />
+    <PackageReference Include="ZeroFormatter" Version="1.6.4" />
   </ItemGroup>
 </Project>

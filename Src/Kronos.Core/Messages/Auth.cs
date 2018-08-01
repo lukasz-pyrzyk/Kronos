@@ -1,12 +1,17 @@
 ﻿using System.Linq;
 using Kronos.Core.Configuration;
+using ZeroFormatter;
 
 namespace Kronos.Core.Messages
 {
+    [ZeroFormattable]
     public class Auth
     {
-        public byte[] HashedPassword { get; set; }
-        public string Login { get; set; }
+        [Index(0)]
+        public virtual byte[] HashedPassword { get; set; }
+
+        [Index(1)]
+        public virtual string Login { get; set; }
 
         public static Auth FromCfg(AuthConfig cfg)
         {

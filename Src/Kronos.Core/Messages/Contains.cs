@@ -1,8 +1,15 @@
-﻿namespace Kronos.Core.Messages
+﻿using ZeroFormatter;
+
+namespace Kronos.Core.Messages
 {
-    public class ContainsRequest
+    [ZeroFormattable]
+    public class ContainsRequest : IRequest
     {
-        public string Key { get; set; }
+        [IgnoreFormat]
+        public virtual byte Id => 2;
+
+        [Index(0)]
+        public virtual string Key { get; set; }
 
         public static Request New(string key, Auth auth)
         {
@@ -15,8 +22,13 @@
         }
     }
 
-    public class ContainsResponse
+    [ZeroFormattable]
+    public class ContainsResponse : IResponse
     {
-        public bool Contains { get; set; }
+        [IgnoreFormat]
+        public virtual byte Id => 2;
+
+        [Index(0)]
+        public virtual bool Contains { get; set; }
     }
 }

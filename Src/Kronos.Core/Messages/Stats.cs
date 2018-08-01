@@ -1,16 +1,29 @@
-﻿namespace Kronos.Core.Messages
+﻿using ZeroFormatter;
+
+namespace Kronos.Core.Messages
 {
-    public class StatsRequest
+    [ZeroFormattable]
+    public class StatsRequest : IRequest
     {
+        [IgnoreFormat]
+        public virtual byte Id => 7;
+
         public static Request New(Auth auth)
         {
             return new Request { Auth = auth, InternalRequest = new StatsRequest(), Type = RequestType.Stats };
         }
     }
 
-    public class StatsResponse
+    [ZeroFormattable]
+    public class StatsResponse : IResponse
     {
-        public int MemoryUsed { get; set; }
-        public long Elements { get; set; }
+        [IgnoreFormat]
+        public virtual byte Id => 7;
+
+        [Index(0)]
+        public virtual int MemoryUsed { get; set; }
+
+        [Index(1)]
+        public virtual long Elements { get; set; }
     }
 }

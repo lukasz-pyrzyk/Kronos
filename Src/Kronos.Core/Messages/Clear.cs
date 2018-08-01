@@ -1,16 +1,27 @@
-﻿namespace Kronos.Core.Messages
+﻿using ZeroFormatter;
+
+namespace Kronos.Core.Messages
 {
-    public class ClearRequest
+    [ZeroFormattable]
+    public class ClearRequest : IRequest
     {
+        [IgnoreFormat]
+        public virtual byte Id => 1;
+
         public static Request New(Auth auth)
         {
             return new Request { Auth = auth, InternalRequest = new ClearRequest(), Type = RequestType.Clear };
         }
     }
 
-    public class ClearResponse
+    [ZeroFormattable]
+    public class ClearResponse : IResponse
     {
-        public int Deleted { get; set; }
+        [IgnoreFormat]
+        public virtual byte Id => 1;
+
+        [Index(0)]
+        public virtual int Deleted { get; set; }
     }
 }
 

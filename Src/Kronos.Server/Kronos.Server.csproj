@@ -41,6 +41,7 @@
     <PackageReference Include="System.Buffers" Version="4.5.0" />
     <PackageReference Include="System.Diagnostics.Process" Version="4.3.0" />
     <PackageReference Include="System.Memory" Version="4.5.1" />
+    <PackageReference Include="ZeroFormatter" Version="1.6.4" />
   </ItemGroup>
 
 </Project>

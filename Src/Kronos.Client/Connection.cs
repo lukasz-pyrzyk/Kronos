@@ -89,7 +89,7 @@ namespace Kronos.Client
                 ArrayPool<byte>.Shared.Return(requestBytes);
             }
 
-            Response response = Response.Parser.ParseFrom(new CodedInputStream(requestBytes, 0, packageSize));
+            Response response = Response.ParseFrom(requestBytes, 0, packageSize);
 
             return response;
         }

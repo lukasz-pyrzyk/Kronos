@@ -1,12 +1,22 @@
 ﻿using System;
+using ZeroFormatter;
 
 namespace Kronos.Core.Messages
 {
-    public class InsertRequest
+    [ZeroFormattable]
+    public class InsertRequest : IRequest
     {
-        public string Key { get; set; }
-        public DateTime? Expiry { get; set; }
-        public byte[] Data { get; set; }
+        [IgnoreFormat]
+        public virtual byte Id => 6;
+
+        [Index(0)]
+        public virtual string Key { get; set; }
+
+        [Index(1)]
+        public virtual DateTime? Expiry { get; set; }
+
+        [Index(2)]
+        public virtual byte[] Data { get; set; }
 
         public static Request New(string key, byte[] data, DateTime? expiry, Auth auth)
         {
@@ -24,8 +34,13 @@ namespace Kronos.Core.Messages
         }
     }
 
-    public class InsertResponse
+    [ZeroFormattable]
+    public class InsertResponse : IResponse
     {
-        public bool Added { get; set; }
+        [IgnoreFormat]
+        public virtual byte Id => 6;
+
+        [Index(0)]
+        public virtual bool Added { get; set; }
     }
 }
