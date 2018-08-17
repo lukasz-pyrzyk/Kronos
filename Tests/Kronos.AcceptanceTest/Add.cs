@@ -19,9 +19,10 @@ namespace Kronos.AcceptanceTest
             // Arrange
             string key = Guid.NewGuid().ToString();
             byte[] data = new byte[1024];
+            new Random().NextBytes(data);
 
             // Act
-            bool added = await client.InsertAsync(key, data, DateTime.UtcNow.AddDays(5));
+            bool added = await client.InsertAsync(key, data, DateTimeOffset.UtcNow.AddDays(5));
             bool contains = await client.ContainsAsync(key);
 
             // Assert

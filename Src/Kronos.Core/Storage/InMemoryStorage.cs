@@ -32,7 +32,7 @@ namespace Kronos.Core.Storage
         public int ExpiringCount => _expiringKeys.Count;
         internal bool CleanupRequested => _cleanupRequested == 1;
 
-        public bool Add(string name, DateTime? expiryDate, byte[] data)
+        public bool Add(string name, DateTimeOffset? expiryDate, byte[] data)
         {
             ClearStorageIfRequested();
 

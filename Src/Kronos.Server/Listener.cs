@@ -104,7 +104,7 @@ namespace Kronos.Server
             {
                 Request request = _processor.ReceiveRequest(client);
 
-                Logger.Debug($"Processing new request {request?.InternalRequest.Type}");
+                Logger.Debug($"Processing new request {request.Type}");
                 Response response = _requestProcessor.Handle(request, _auth);
 
                 _processor.SendResponse(client, response);

@@ -1,10 +1,11 @@
 ﻿using FluentAssertions;
 using Kronos.Core.Messages;
+using Kronos.Core.Serialization;
 using Xunit;
 
 namespace Kronos.Core.Tests.Messages
 {
-    public class ClearTests
+    public class ClearRequestTests
     {
         [Fact]
         public void CreatesCorrectMessage()
@@ -18,10 +19,26 @@ namespace Kronos.Core.Tests.Messages
             // Assert
             request.Should().NotBeNull();
             request.Auth.Should().Be(auth);
+            request.Type.Should().Be(RequestType.Clear);
             request.InternalRequest.Should().BeOfType<ClearRequest>();
             var internalRequest = (ClearRequest)request.InternalRequest;
             internalRequest.Should().NotBeNull();
-            internalRequest.Type.Should().Be(RequestType.Clear);
+        }
+
+        [Fact]
+        public void CanBeSerializedAndDeserialized()
+        {
+            // Arrange
+            var auth = new Auth();
+
+            // Act
+            var request = ClearRequest.New(auth);
+
+            // Assert
+            var s = new SerializationStream();
+            request.Write(s);
+
+
         }
     }
 }

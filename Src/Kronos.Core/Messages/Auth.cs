@@ -1,17 +1,15 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using Kronos.Core.Configuration;
-using ZeroFormatter;
+using Kronos.Core.Serialization;
 
 namespace Kronos.Core.Messages
 {
-    [ZeroFormattable]
-    public class Auth
+    public struct Auth : ISerializable<Auth>
     {
-        [Index(0)]
-        public virtual byte[] HashedPassword { get; set; }
+        public byte[] HashedPassword { get; set; }
 
-        [Index(1)]
-        public virtual string Login { get; set; }
+        public string Login { get; set; }
 
         public static Auth FromCfg(AuthConfig cfg)
         {
@@ -34,6 +32,18 @@ namespace Kronos.Core.Messages
         public bool Authorize(Auth auth)
         {
             return auth.Login == Login && auth.HashedPassword.SequenceEqual(HashedPassword);
+        }
+
+        public void Write(SerializationStream stream)
+        {
+            stream.Write(Login);
+            stream.WriteWithPrefixLength(HashedPassword);
+        }
+
+        public void Read(DeserializationStream stream)
+        {
+            Login = stream.ReadString();
+            HashedPassword = stream.ReadBytesWithLengthPrefix().ToArray(); // todo allocation
         }
     }
 }

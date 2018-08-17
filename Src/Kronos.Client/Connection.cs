@@ -9,6 +9,7 @@ using Kronos.Core.Configuration;
 using Kronos.Core.Exceptions;
 using Kronos.Core.Messages;
 using Kronos.Core.Networking;
+using Kronos.Core.Serialization;
 using Polly;
 using BufferedStream = Kronos.Core.Pooling.BufferedStream;
 
@@ -20,7 +21,7 @@ namespace Kronos.Client
         private static readonly Policy Policy = Policy.Handle<Exception>()
             .WaitAndRetryAsync(CreateExponentialBackoff(RetryCount));
 
-        private readonly BufferedStream _stream = new BufferedStream();
+        private readonly SerializationStream _stream = new SerializationStream();
         private readonly byte[] _sizeBytes = new byte[sizeof(int)];
 
         public async Task<Response> SendAsync(Request request, ServerConfig server)
@@ -61,16 +62,10 @@ namespace Kronos.Client
 
         private async Task SendAsync(Request request, Socket server)
         {
-            request.WriteTo(_stream);
+            request.Write(_stream);
+            _stream.Flush();
 
-            try
-            {
-                await SocketUtils.SendAllAsync(server, _stream.RawBytes, (int)_stream.Length).ConfigureAwait(false);
-            }
-            finally
-            {
-                _stream.Clean();
-            }
+            await SocketUtils.SendAllAsync(server, _stream.MemoryWithLengthPrefix).ConfigureAwait(false);
         }
 
         private async Task<Response> ReceiveAndDeserializeAsync(Socket socket)
@@ -89,7 +84,16 @@ namespace Kronos.Client
                 ArrayPool<byte>.Shared.Return(requestBytes);
             }
 
-            Response response = Response.ParseFrom(requestBytes, 0, packageSize);
+            Response response = new Response();
+            try
+            {
+                response.Read(new DeserializationStream(requestBytes));
+            }
+            catch (Exception ex)
+            {
+
+                throw;
+            }
 
             return response;
         }

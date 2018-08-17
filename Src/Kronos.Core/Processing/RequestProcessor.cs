@@ -16,9 +16,11 @@ namespace Kronos.Core.Processing
 
         public RequestProcessor(IStorage storage) : this(
             storage, new InsertProcessor(), new GetProcessor(),
-            new DeleteProcessor(), new CountProcessor(), new ContainsProcessor(), new ClearProcessor(), new StatsProcessor()
-            )
-        { }
+            new DeleteProcessor(), new CountProcessor(), new ContainsProcessor(), new ClearProcessor(),
+            new StatsProcessor()
+        )
+        {
+        }
 
         internal RequestProcessor(
             IStorage storage,
@@ -44,6 +46,7 @@ namespace Kronos.Core.Processing
         public Response Handle(Request request, Auth auth)
         {
             var response = new Response();
+            response.Type = request.Type;
 
             bool authorized = auth.Authorize(request.Auth);
             if (!authorized)
@@ -53,31 +56,31 @@ namespace Kronos.Core.Processing
             }
 
             var internalResponse = request.InternalRequest;
-            switch (internalResponse?.Type)
+            switch (request.Type)
             {
                 case RequestType.Insert:
-                    response.InternalResponse = _insertProcessor.Reply((InsertRequest)internalResponse, _storage);
+                    response.InternalResponse = _insertProcessor.Reply((InsertRequest) internalResponse, _storage);
                     break;
                 case RequestType.Get:
-                    response.InternalResponse = _getProcessor.Reply((GetRequest)internalResponse, _storage);
+                    response.InternalResponse = _getProcessor.Reply((GetRequest) internalResponse, _storage);
                     break;
                 case RequestType.Delete:
-                    response.InternalResponse = _deleteProcessor.Reply((DeleteRequest)internalResponse, _storage);
+                    response.InternalResponse = _deleteProcessor.Reply((DeleteRequest) internalResponse, _storage);
                     break;
                 case RequestType.Count:
-                    response.InternalResponse = _countProcessor.Reply((CountRequest)internalResponse, _storage);
+                    response.InternalResponse = _countProcessor.Reply((CountRequest) internalResponse, _storage);
                     break;
                 case RequestType.Contains:
-                    response.InternalResponse = _containsProcessor.Reply((ContainsRequest)internalResponse, _storage);
+                    response.InternalResponse = _containsProcessor.Reply((ContainsRequest) internalResponse, _storage);
                     break;
                 case RequestType.Clear:
-                    response.InternalResponse = _clearProcessor.Reply((ClearRequest)internalResponse, _storage);
+                    response.InternalResponse = _clearProcessor.Reply((ClearRequest) internalResponse, _storage);
                     break;
                 case RequestType.Stats:
-                    response.InternalResponse = _statsProcessor.Reply((StatsRequest)internalResponse, _storage);
+                    response.InternalResponse = _statsProcessor.Reply((StatsRequest) internalResponse, _storage);
                     break;
                 default:
-                    response.Exception = $"Request type {internalResponse?.Type} is not supported";
+                    response.Exception = $"Request type {request.Type} is not supported";
                     break;
             }
 

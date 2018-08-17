@@ -5,9 +5,9 @@ namespace Kronos.Core.Storage
     public readonly struct Element
     {
         public byte[] Data { get; }
-        public DateTime? ExpiryDate { get; }
+        public DateTimeOffset? ExpiryDate { get; }
 
-        public Element(byte[] data, DateTime? expiryDate = null)
+        public Element(byte[] data, DateTimeOffset? expiryDate = null)
         {
             Data = data;
             ExpiryDate = expiryDate;
@@ -17,10 +17,10 @@ namespace Kronos.Core.Storage
 
         public bool IsExpired()
         {
-            return IsExpired(DateTime.UtcNow);
+            return IsExpired(DateTimeOffset.UtcNow);
         }
 
-        public bool IsExpired(DateTime date)
+        public bool IsExpired(DateTimeOffset date)
         {
             return ExpiryDate?.Ticks < date.Ticks;
         }

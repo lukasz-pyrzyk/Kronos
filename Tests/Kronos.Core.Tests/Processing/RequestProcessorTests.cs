@@ -54,7 +54,7 @@ namespace Kronos.Core.Tests.Processing
         {
             // Arrange
             var processor = CreateProcessor(Substitute.For<IStorage>(), insertProcessor: new InsertProcessor());
-            var request = InsertRequest.New("key", new byte[2014], DateTime.UtcNow, Auth.Default());
+            var request = InsertRequest.New("key", new byte[2014], DateTimeOffset.UtcNow, Auth.Default());
 
             // Act
             Response response = processor.Handle(request, Auth.Default());

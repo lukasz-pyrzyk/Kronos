@@ -9,7 +9,7 @@ namespace Kronos.Core.Configuration
     public class ServerConfig
     {
         private IPEndPoint _endPoint;
-        private Auth _auth;
+        private Auth _authorization;
 
         [DataMember]
         public string Domain { get; set; }
@@ -23,7 +23,18 @@ namespace Kronos.Core.Configuration
         [DataMember]
         public AuthConfig Credentials { get; set; }
 
-        public Auth Auth => _auth ?? (_auth = PrepareAuth());
+        public Auth Authorization
+        {
+            get
+            {
+                if (_authorization.Equals(default(Auth)))
+                {
+                    _authorization = PrepareAuth();
+                }
+
+                return _authorization;
+            }
+        }
 
         private Auth PrepareAuth()
         {

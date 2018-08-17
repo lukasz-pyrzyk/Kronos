@@ -16,28 +16,28 @@ namespace Kronos.Core.Networking
             socket.SendTimeout = Timeout;
         }
 
-        public static void SendAll(Socket socket, byte[] data, int count = 0)
+        public static void SendAll(Socket socket, ReadOnlySpan<byte> data)
         {
-            if (count == 0) count = data.Length;
-
             int position = 0;
-            while (position != count)
+            while (position != data.Length)
             {
-                int size = Math.Min(count - position, BufferSize);
-                int sent = socket.Send(data, position, size, SocketFlags.None);
+                int size = Math.Min(data.Length - position, BufferSize);
+                int sent = socket.Send(data.Slice(position, size), SocketFlags.None);
                 position += sent;
 
                 Debug.Assert(position <= data.Length);
             }
         }
 
-        public static async Task SendAllAsync(Socket socket, byte[] data, int count)
+        public static async Task SendAllAsync(Socket socket, ReadOnlyMemory<byte> data)
         {
             int position = 0;
-            while (position != count)
+            while (position != data.Length)
             {
-                int size = Math.Min(count - position, BufferSize);
-                int sent = await socket.SendAsync(new ArraySegment<byte>(data, position, size), SocketFlags.None).ConfigureAwait(false);
+                int size = Math.Min(data.Length - position, BufferSize);
+                var t = new ReadOnlyMemory<byte>();
+                var buffer = data.Slice(position, size);
+                int sent = await socket.SendAsync(buffer, SocketFlags.None);
                 position += sent;
 
                 Debug.Assert(position <= data.Length);

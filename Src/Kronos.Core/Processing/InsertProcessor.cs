@@ -7,7 +7,7 @@ namespace Kronos.Core.Processing
     {
         public override InsertResponse Reply(InsertRequest request, IStorage storage)
         {
-            bool added = storage.Add(request.Key, request.Expiry, request.Data);
+            bool added = storage.Add(request.Key, request.Expiry, request.Data.ToArray()); // remove toarray
 
             return new InsertResponse { Added = added };
         }

@@ -10,7 +10,7 @@ namespace Kronos.Core.Tests.Messages
     {
         [Theory]
         [MemberData(nameof(ExpiryDates))]
-        public void CreatesCorrectMessage(DateTime? expiry)
+        public void CreatesCorrectMessage(DateTimeOffset? expiry)
         {
             // Arrange
             const string key = "lorem ipsum";
@@ -24,17 +24,18 @@ namespace Kronos.Core.Tests.Messages
             request.Should().NotBeNull();
             request.Auth.Should().Be(auth);
             request.InternalRequest.Should().BeOfType<InsertRequest>();
+            request.Type.Should().Be(RequestType.Insert);
+
             var internalRequest = (InsertRequest)request.InternalRequest;
             internalRequest.Should().NotBeNull();
             internalRequest.Key.Should().Be(key);
             internalRequest.Expiry.Should().Be(expiry);
-            internalRequest.Data.Should().Equal(data);
-            internalRequest.Type.Should().Be(RequestType.Insert);
+            internalRequest.Data.ToArray().Should().Equal(data);
         }
 
         public static IEnumerable<object[]> ExpiryDates()
         {
-            yield return new object[] { DateTime.UtcNow };
+            yield return new object[] { DateTimeOffset.UtcNow };
             yield return new object[] { null };
         }
     }

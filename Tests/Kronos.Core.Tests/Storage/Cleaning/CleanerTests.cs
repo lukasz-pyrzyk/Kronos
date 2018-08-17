@@ -17,10 +17,10 @@ namespace Kronos.Core.Tests.Storage.Cleaning
             // Arrange
             var data = new Dictionary<Key, Element>
             {
-                [new Key("first")] = new Element(Encoding.UTF8.GetBytes("first"), DateTime.UtcNow.AddDays(-1)),
-                [new Key("second")] = new Element(Encoding.UTF8.GetBytes("second"), DateTime.UtcNow.AddDays(100)),
+                [new Key("first")] = new Element(Encoding.UTF8.GetBytes("first"), DateTimeOffset.UtcNow.AddDays(-1)),
+                [new Key("second")] = new Element(Encoding.UTF8.GetBytes("second"), DateTimeOffset.UtcNow.AddDays(100)),
                 [new Key("third")] = new Element(Encoding.UTF8.GetBytes("third")),
-                [new Key("fourth")] = new Element(Encoding.UTF8.GetBytes("fourth"), DateTime.UtcNow.AddDays(1)),
+                [new Key("fourth")] = new Element(Encoding.UTF8.GetBytes("fourth"), DateTimeOffset.UtcNow.AddDays(1)),
             };
 
             int dataCountBefore = data.Count;

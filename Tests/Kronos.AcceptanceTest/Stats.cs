@@ -20,7 +20,7 @@ namespace Kronos.AcceptanceTest
         {
             // Arrange
             var elements = 5;
-            var mbperElement = 5;
+            var mbperElement = 2;
             var data = new byte[mbperElement * 1024 * 1024];
             for (int i = 0; i < elements; i++)
             {

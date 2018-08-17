@@ -1,19 +1,12 @@
-﻿using Kronos.Core.Messages;
-using ZeroFormatter;
+﻿using Kronos.Core.Serialization;
 
 namespace Kronos.Core
 {
-    [Union(subTypes: new[] { typeof(ClearRequest), typeof(ContainsRequest), typeof(CountRequest), typeof(DeleteRequest), typeof(GetRequest), typeof(InsertRequest), typeof(StatsRequest) })]
-    public interface IRequest
+    public interface IRequest : ISerializable<object>
     {
-        [UnionKey]
-        RequestType Type { get; }
     }
 
-    [Union(subTypes: new[] { typeof(ClearResponse), typeof(ContainsResponse), typeof(CountResponse), typeof(DeleteResponse), typeof(GetResponse), typeof(InsertResponse), typeof(StatsResponse)})]
-    public interface IResponse
+    public interface IResponse : ISerializable<object>
     {
-        [UnionKey]
-        RequestType Type { get; }
     }
 }

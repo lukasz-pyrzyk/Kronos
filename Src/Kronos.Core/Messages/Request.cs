@@ -1,51 +1,114 @@
-﻿using System.IO;
-using ZeroFormatter;
-using BufferedStream = Kronos.Core.Pooling.BufferedStream;
+﻿using System;
+using System.IO;
+using Kronos.Core.Exceptions;
+using Kronos.Core.Serialization;
 
 namespace Kronos.Core.Messages
 {
-    [ZeroFormattable]
-    public class Request
+    public struct Request : ISerializable<Request>
     {
-        [Index(0)]
-        public virtual Auth Auth { get; set; }
+        public Auth Auth { get; set; }
 
-        [Index(2)]
-        public virtual IRequest InternalRequest { get; set; }
+        public RequestType Type { get; set; }
 
-        public void WriteTo(BufferedStream stream)
+        public IRequest InternalRequest { get; set; }
+
+        public void Write(SerializationStream stream)
         {
-            ZeroFormatterSerializer.Serialize(stream, this);
+            stream.Write(Type);
+            Auth.Write(stream);
+            InternalRequest.Write(stream);
         }
 
-        public static Request ParseFrom(byte[] data, int offset, int packageSize)
+        public void Read(DeserializationStream stream)
         {
-            var stream = new MemoryStream(data, offset, packageSize);
-            return ZeroFormatterSerializer.Deserialize<Request>(stream);
+            Type = stream.ReadRequestType();
+            var a = new Auth();
+            a.Read(stream);
+            Auth = a;
+            switch (Type)
+            {
+               case RequestType.Insert:
+                   InternalRequest = new InsertRequest();
+                    break;
+                case RequestType.Get:
+                    InternalRequest = new GetRequest();
+                    break;
+                case RequestType.Delete:
+                    InternalRequest = new DeleteRequest();
+                    break;
+                case RequestType.Count:
+                    InternalRequest = new CountRequest();
+                    break;
+                case RequestType.Contains:
+                    InternalRequest = new ContainsRequest();
+                    break;
+                case RequestType.Clear:
+                    InternalRequest = new ClearRequest();
+                    break;
+                case RequestType.Stats:
+                    InternalRequest = new StatsRequest();
+                    break;
+                default:
+                    throw new ArgumentOutOfRangeException();
+            }
+
+            InternalRequest.Read(stream);
         }
     }
 
-    [ZeroFormattable]
-    public class Response
+    public class Response : ISerializable<object>
     {
-        [Index(0)]
-        public virtual string Exception { get; set; }
+        public string Exception { get; set; }
 
-        [IgnoreFormat]
-        public virtual bool Success => string.IsNullOrEmpty(Exception);
+        public RequestType Type { get; set; }
 
-        [Index(1)]
-        public virtual IResponse InternalResponse { get; set; }
+        public bool Success => string.IsNullOrEmpty(Exception);
 
-        public void WriteTo(BufferedStream stream)
+        public IResponse InternalResponse { get; set; }
+
+        public void Write(SerializationStream stream)
         {
-            ZeroFormatterSerializer.Serialize(stream, this);
+            stream.Write(Type);
+            stream.Write(Exception);
+            InternalResponse?.Write(stream);
         }
 
-        public static Response ParseFrom(byte[] requestBytes, int offset, int packageSize)
+        public void Read(DeserializationStream stream)
         {
-            var stream = new MemoryStream(requestBytes, offset, packageSize);
-            return ZeroFormatterSerializer.Deserialize<Response>(stream);
+            Type = stream.ReadRequestType();
+            Exception = stream.ReadString();
+
+            if (Exception != null) return;
+
+            switch (Type)
+            {
+                case RequestType.Insert:
+                    InternalResponse = new InsertResponse();
+                    break;
+                case RequestType.Get:
+                    InternalResponse = new GetResponse();
+                    break;
+                case RequestType.Delete:
+                    InternalResponse = new DeleteResponse();
+                    break;
+                case RequestType.Count:
+                    InternalResponse = new CountResponse();
+                    break;
+                case RequestType.Contains:
+                    InternalResponse = new ContainsResponse();
+                    break;
+                case RequestType.Clear:
+                    InternalResponse = new ClearResponse();
+                    break;
+                case RequestType.Stats:
+                    InternalResponse = new StatsResponse();
+                    break;
+                default:
+                    throw new KronosException($"Unable to find request type for {InternalResponse?.GetType()}");
+            }
+
+            InternalResponse.Read(stream);
         }
     }
 }

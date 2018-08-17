@@ -3,7 +3,7 @@ using System.Buffers;
 using System.Net.Sockets;
 using Kronos.Core.Messages;
 using Kronos.Core.Networking;
-using Kronos.Core.Pooling;
+using Kronos.Core.Serialization;
 
 namespace Kronos.Server
 {
@@ -12,7 +12,6 @@ namespace Kronos.Server
         private readonly byte[] _sizeBuffer = new byte[sizeof(int)];
 
         private readonly ArrayPool<byte> _pool = ArrayPool<byte>.Create();
-        private readonly BufferedStream _stream = new BufferedStream();
 
         public Request ReceiveRequest(Socket client)
         {
@@ -21,11 +20,11 @@ namespace Kronos.Server
             Array.Clear(_sizeBuffer, 0, _sizeBuffer.Length);
 
             byte[] data = _pool.Rent(packageSize);
-            Request request;
+            Request request = new Request();
             try
             {
                 SocketUtils.ReceiveAll(client, data, packageSize);
-                request = Request.ParseFrom(data, 0, packageSize);
+                request.Read(new DeserializationStream(data));
             }
             finally
             {
@@ -37,16 +36,11 @@ namespace Kronos.Server
 
         public void SendResponse(Socket client, Response response)
         {
-            response.WriteTo(_stream);
+            var stream = new SerializationStream();
+            response.Write(stream);
+            stream.Flush();
 
-            try
-            {
-                SocketUtils.SendAll(client, _stream.RawBytes, (int)_stream.Length);
-            }
-            finally
-            {
-                _stream.Clean();
-            }
+            SocketUtils.SendAll(client, stream.MemoryWithLengthPrefix.Span);
         }
     }
 }

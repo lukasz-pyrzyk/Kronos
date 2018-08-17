@@ -19,11 +19,11 @@ namespace Kronos.Core.Tests.Messages
             // Assert
             request.Should().NotBeNull();
             request.Auth.Should().Be(auth);
+            request.Type.Should().Be(RequestType.Delete);
             request.InternalRequest.Should().BeOfType<DeleteRequest>();
             var internalRequest = (DeleteRequest)request.InternalRequest;
             internalRequest.Should().NotBeNull();
             internalRequest.Key.Should().Be(key);
-            internalRequest.Type.Should().Be(RequestType.Delete);
         }
     }
 }

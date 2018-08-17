@@ -45,9 +45,9 @@ string configPath = "KronosConfig.json";
 IKronosClient client = KronosClientFactory.CreateClient(configPath);
 
 // create a key, package and expiry date
-string key = "key";
-byte[] packageToCache = Encoding.UTF8.GetBytes("Lorem ipsum");
-DateTime expiryDate = DateTime.UtcNow.AddDays(5);
+var key = "key";
+var packageToCache = Encoding.UTF8.GetBytes("Lorem ipsum");
+var expiryDate = DateTimeOffset.UtcNow.AddDays(5);
 
 // insert package to server
 await client.InsertAsync(key, packageToCache, expiryDate);

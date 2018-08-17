@@ -1,33 +1,44 @@
-﻿using ZeroFormatter;
+﻿using Kronos.Core.Serialization;
 
 namespace Kronos.Core.Messages
 {
-    [ZeroFormattable]
-    public class ContainsRequest : IRequest
+    public struct ContainsRequest : IRequest
     {
-        [IgnoreFormat]
-        public virtual RequestType Type => RequestType.Contains;
-
-        [Index(0)]
-        public virtual string Key { get; set; }
+        public string Key { get; set; }
 
         public static Request New(string key, Auth auth)
         {
             return new Request
             {
                 Auth = auth,
+                Type = RequestType.Contains,
                 InternalRequest = new ContainsRequest { Key = key }
             };
         }
+
+        public void Write(SerializationStream stream)
+        {
+            stream.Write(Key);
+        }
+
+        public void Read(DeserializationStream stream)
+        {
+            Key = stream.ReadString();
+        }
     }
 
-    [ZeroFormattable]
     public class ContainsResponse : IResponse
     {
-        [IgnoreFormat]
-        public virtual RequestType Type => RequestType.Contains;
+        public bool Contains { get; set; }
 
-        [Index(0)]
-        public virtual bool Contains { get; set; }
+        public void Write(SerializationStream stream)
+        {
+            stream.Write(Contains);
+        }
+
+        public void Read(DeserializationStream stream)
+        {
+            Contains = stream.ReadBoolean();
+        }
     }
 }

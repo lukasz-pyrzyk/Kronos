@@ -22,7 +22,7 @@ namespace Kronos.AcceptanceTest
             byte[] data = new byte[1024];
 
             // Act
-            await client.InsertAsync(key, data, DateTime.UtcNow);
+            await client.InsertAsync(key, data, DateTimeOffset.UtcNow);
 
             await Task.Delay(Settings.CleanupTimeMs);
 

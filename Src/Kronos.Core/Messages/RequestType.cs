@@ -1,6 +1,6 @@
 ﻿namespace Kronos.Core.Messages
 {
-    public enum RequestType
+    public enum RequestType : short
     {
         Unknown = 0,
         Insert = 1,

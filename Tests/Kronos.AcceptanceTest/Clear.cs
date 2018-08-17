@@ -21,7 +21,7 @@ namespace Kronos.AcceptanceTest
             byte[] data = new byte[1024];
 
             // Act
-            await client.InsertAsync(key, data, DateTime.UtcNow.AddDays(5));
+            await client.InsertAsync(key, data, DateTimeOffset.UtcNow.AddDays(5));
             await client.ClearAsync();
             int count = await client.CountAsync();
 

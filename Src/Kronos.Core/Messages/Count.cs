@@ -1,26 +1,40 @@
-﻿using ZeroFormatter;
+﻿using Kronos.Core.Serialization;
 
 namespace Kronos.Core.Messages
 {
-    [ZeroFormattable]
-    public class CountRequest : IRequest
+    public struct CountRequest : IRequest
     {
-        [IgnoreFormat]
-        public virtual RequestType Type => RequestType.Count;
-
         public static Request New(Auth auth)
         {
-            return new Request {Auth = auth, InternalRequest = new CountRequest()};
+            return new Request
+            {
+                Auth = auth,
+                Type = RequestType.Count,
+                InternalRequest = new CountRequest()
+            };
+        }
+
+        public void Write(SerializationStream stream)
+        {
+        }
+
+        public void Read(DeserializationStream stream)
+        {
         }
     }
 
-    [ZeroFormattable]
     public class CountResponse : IResponse
     {
-        [IgnoreFormat]
-        public virtual RequestType Type => RequestType.Count;
+        public int Count { get; set; }
 
-        [Index(0)]
-        public virtual int Count { get; set; }
+        public void Write(SerializationStream stream)
+        {
+            stream.Write(Count);
+        }
+
+        public void Read(DeserializationStream stream)
+        {
+            Count = stream.ReadInt();
+        }
     }
 }

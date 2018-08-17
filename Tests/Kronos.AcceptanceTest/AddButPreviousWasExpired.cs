@@ -20,7 +20,7 @@ namespace Kronos.AcceptanceTest
             string key = Guid.NewGuid().ToString();
             byte[] data = new byte[1024];
             TimeSpan expiryTime = TimeSpan.FromSeconds(1);
-            DateTime now = DateTime.UtcNow;
+            var now = DateTimeOffset.UtcNow;
 
             // Act
             bool added = await client.InsertAsync(key, data, now + expiryTime);

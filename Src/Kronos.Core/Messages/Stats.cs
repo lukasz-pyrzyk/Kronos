@@ -1,29 +1,44 @@
-﻿using ZeroFormatter;
+﻿using Kronos.Core.Serialization;
 
 namespace Kronos.Core.Messages
 {
-    [ZeroFormattable]
-    public class StatsRequest : IRequest
+    public struct StatsRequest : IRequest
     {
-        [IgnoreFormat]
-        public virtual RequestType Type => RequestType.Stats;
-
         public static Request New(Auth auth)
         {
-            return new Request { Auth = auth, InternalRequest = new StatsRequest()};
+            return new Request
+            {
+                Auth = auth,
+                Type = RequestType.Stats,
+                InternalRequest = new StatsRequest()
+            };
+        }
+
+        public void Write(SerializationStream stream)
+        {
+        }
+
+        public void Read(DeserializationStream stream)
+        {
         }
     }
 
-    [ZeroFormattable]
     public class StatsResponse : IResponse
     {
-        [IgnoreFormat]
-        public virtual RequestType Type => RequestType.Stats;
+        public int MemoryUsed { get; set; }
 
-        [Index(0)]
-        public virtual int MemoryUsed { get; set; }
+        public long Elements { get; set; }
 
-        [Index(1)]
-        public virtual long Elements { get; set; }
+        public void Write(SerializationStream stream)
+        {
+            stream.Write(MemoryUsed);
+            stream.Write(Elements);
+        }
+
+        public void Read(DeserializationStream stream)
+        {
+            MemoryUsed = stream.ReadInt();
+            Elements = stream.ReadInt();
+        }
     }
 }

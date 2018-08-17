@@ -1,31 +1,22 @@
 ﻿using System;
-using ZeroFormatter;
+using Kronos.Core.Serialization;
 
 namespace Kronos.Core.Messages
 {
-    [ZeroFormattable]
-    public class InsertRequest : IRequest
+    public struct InsertRequest : IRequest
     {
-        [IgnoreFormat]
-        public virtual RequestType Type => RequestType.Insert;
+        public string Key { get; set; }
 
-        [Index(0)]
-        public virtual string Key { get; set; }
+        public DateTimeOffset? Expiry { get; set; }
 
-        [Index(4)]
-        public virtual string Keay { get; set; }
+        public ReadOnlyMemory<byte> Data { get; set; }
 
-        [Index(1)]
-        public virtual DateTime? Expiry { get; set; }
-
-        [Index(2)]
-        public virtual byte[] Data { get; set; }
-
-        public static Request New(string key, byte[] data, DateTime? expiry, Auth auth)
+        public static Request New(string key, byte[] data, DateTimeOffset? expiry, Auth auth)
         {
             return new Request
             {
                 Auth = auth,
+                Type = RequestType.Insert,
                 InternalRequest = new InsertRequest
                 {
                     Data = data,
@@ -34,15 +25,34 @@ namespace Kronos.Core.Messages
                 }
             };
         }
+
+        public void Write(SerializationStream stream)
+        {
+            stream.Write(Key);
+            stream.WriteWithPrefixLength(Data.Span);
+            stream.Write(Expiry);
+        }
+
+        public void Read(DeserializationStream stream)
+        {
+            Key = stream.ReadString();
+            Data = stream.ReadMemory();
+            Expiry = stream.ReadDateTimeOffset();
+        }
     }
 
-    [ZeroFormattable]
     public class InsertResponse : IResponse
     {
-        [IgnoreFormat]
-        public virtual RequestType Type => RequestType.Insert;
+        public bool Added { get; set; }
 
-        [Index(0)]
-        public virtual bool Added { get; set; }
+        public void Write(SerializationStream stream)
+        {
+            stream.Write(Added);
+        }
+
+        public void Read(DeserializationStream stream)
+        {
+            Added = stream.ReadBoolean();
+        }
     }
 }

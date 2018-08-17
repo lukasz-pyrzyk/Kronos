@@ -1,27 +1,41 @@
-﻿using ZeroFormatter;
+﻿using Kronos.Core.Serialization;
 
 namespace Kronos.Core.Messages
 {
-    [ZeroFormattable]
-    public class ClearRequest : IRequest
+    public struct ClearRequest : IRequest
     {
         public static Request New(Auth auth)
         {
-            return new Request { Auth = auth, InternalRequest = new ClearRequest()};
+            return new Request
+            {
+                Auth = auth,
+                Type = RequestType.Clear,
+                InternalRequest = new ClearRequest()
+            };
         }
 
-        [IgnoreFormat]
-        public virtual RequestType Type => RequestType.Clear;
+        public void Write(SerializationStream stream)
+        {
+        }
+
+        public void Read(DeserializationStream stream)
+        {
+        }
     }
 
-    [ZeroFormattable]
     public class ClearResponse : IResponse
     {
-        [Index(0)]
-        public virtual int Deleted { get; set; }
+        public int Deleted { get; set; }
 
-        [IgnoreFormat]
-        public virtual RequestType Type => RequestType.Clear;
+        public void Write(SerializationStream stream)
+        {
+            stream.Write(Deleted);
+        }
+
+        public void Read(DeserializationStream stream)
+        {
+            Deleted = stream.ReadInt();
+        }
     }
 }
 
