@@ -41,7 +41,7 @@ namespace ClientSample
                 Debug.WriteLine($"CONTAINS - done (exists: {contains})");
 
                 Debug.WriteLine("GET - testing");
-                byte[] fromServer = await client.GetAsync(key);
+                var fromServer = await client.GetAsync(key);
                 Debug.WriteLine($"GET - done (size: {fromServer.Length})");
                 Debug.Assert(fromServer.Length == package.Length);
 

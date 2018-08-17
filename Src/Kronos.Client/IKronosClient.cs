@@ -22,7 +22,7 @@ namespace Kronos.Client
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        Task<byte[]> GetAsync(string key);
+        Task<ReadOnlyMemory<byte>> GetAsync(string key);
 
         /// <summary>
         /// Removes object from Kronos server

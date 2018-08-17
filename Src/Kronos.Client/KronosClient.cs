@@ -41,7 +41,7 @@ namespace Kronos.Client
             return response.Added;
         }
 
-        public async Task<byte[]> GetAsync(string key)
+        public async Task<ReadOnlyMemory<byte>> GetAsync(string key)
         {
             Trace.WriteLine("New get request");
 

@@ -1,4 +1,5 @@
-﻿using Kronos.Core.Serialization;
+﻿using System;
+using Kronos.Core.Serialization;
 
 namespace Kronos.Core.Messages
 {
@@ -29,11 +30,11 @@ namespace Kronos.Core.Messages
 
     public class GetResponse : IResponse
     {
-        public byte[] Data { get; set; }
+        public ReadOnlyMemory<byte> Data { get; set; }
 
         public void Write(SerializationStream stream)
         {
-            stream.WriteWithPrefixLength(Data);
+            stream.WriteWithPrefixLength(Data.Span);
         }
 
         public void Read(DeserializationStream stream)

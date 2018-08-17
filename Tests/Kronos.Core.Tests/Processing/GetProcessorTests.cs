@@ -31,7 +31,7 @@ namespace Kronos.Core.Tests.Processing
 
             // assert
             response.Should().NotBeNull();
-            response.Data.Should().Equal(obj);
+            response.Data.ToArray().Should().Equal(obj);
         }
 
         [Fact]

@@ -8,8 +8,8 @@ namespace Kronos.Core.Storage
         int Count { get; }
         int ExpiringCount { get; }
 
-        bool Add(string value, DateTimeOffset? expiryDate, byte[] data);
-        bool TryGet(string key, out byte[] data);
+        bool Add(string value, DateTimeOffset? expiryDate, ReadOnlyMemory<byte> data);
+        bool TryGet(string key, out ReadOnlyMemory<byte> data);
         bool TryRemove(string key);
         bool Contains(string key);
         int Clear();
