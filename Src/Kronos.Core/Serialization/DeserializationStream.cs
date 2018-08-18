@@ -17,11 +17,6 @@ namespace Kronos.Core.Serialization
 
         public bool IsClean { get; set; }
 
-        public void Clean()
-        {
-            throw new System.NotImplementedException();
-        }
-
         public int ReadInt()
         {
             int size = sizeof(int);
