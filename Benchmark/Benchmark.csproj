@@ -12,6 +12,7 @@
   <ItemGroup>
     <ProjectReference Include="..\Src\Kronos.Client\Kronos.Client.csproj" />
     <ProjectReference Include="..\Src\Kronos.Core\Kronos.Core.csproj" />
+    <ProjectReference Include="..\Src\Kronos.Server\Kronos.Server.csproj" />
   </ItemGroup>
 
   <ItemGroup>
