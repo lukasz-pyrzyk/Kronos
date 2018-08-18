@@ -55,13 +55,14 @@ namespace Kronos.Client
 
         private async Task SendAsync(Request request, Socket server)
         {
-            var stream = new SerializationStream();
+            int size = request.CalculateSize();
+            using (var stream = new SerializationStream(size))
+            {
+                request.Write(stream);
+                stream.Flush();
 
-            request.Write(stream);
-            stream.Flush();
-
-            await SocketUtils.SendAllAsync(server, stream.MemoryWithLengthPrefix).ConfigureAwait(false);
-            stream.Dispose();
+                await SocketUtils.SendAllAsync(server, stream.MemoryWithLengthPrefix).ConfigureAwait(false);
+            }
         }
 
         private async Task<Response> ReceiveAndDeserializeAsync(Socket socket)

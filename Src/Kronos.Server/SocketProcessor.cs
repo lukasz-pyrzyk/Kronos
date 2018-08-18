@@ -11,15 +11,13 @@ namespace Kronos.Server
     {
         private readonly byte[] _sizeBuffer = new byte[sizeof(int)];
 
-        private readonly ArrayPool<byte> _pool = ArrayPool<byte>.Create();
-
         public Request ReceiveRequest(Socket client)
         {
             SocketUtils.ReceiveAll(client, _sizeBuffer, _sizeBuffer.Length);
             int packageSize = BitConverter.ToInt32(_sizeBuffer, 0);
             Array.Clear(_sizeBuffer, 0, _sizeBuffer.Length);
 
-            byte[] data = _pool.Rent(packageSize);
+            byte[] data = ArrayPool<byte>.Shared.Rent(packageSize);
             Request request = new Request();
             try
             {
@@ -28,7 +26,7 @@ namespace Kronos.Server
             }
             finally
             {
-                _pool.Return(data);
+                ArrayPool<byte>.Shared.Return(data);
             }
 
             return request;
@@ -36,12 +34,14 @@ namespace Kronos.Server
 
         public void SendResponse(Socket client, Response response)
         {
-            var stream = new SerializationStream();
-            response.Write(stream);
-            stream.Flush();
+            int neededSize = response.CalculateSize();
+            using (var stream = new SerializationStream(neededSize))
+            {
+                response.Write(stream);
+                stream.Flush();
 
-            SocketUtils.SendAll(client, stream.MemoryWithLengthPrefix.Span);
-            stream.Dispose();
+                SocketUtils.SendAll(client, stream.MemoryWithLengthPrefix.Span);
+            }
         }
     }
 }

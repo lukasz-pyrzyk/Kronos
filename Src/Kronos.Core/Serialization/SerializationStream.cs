@@ -7,14 +7,14 @@ using Kronos.Core.Messages;
 
 namespace Kronos.Core.Serialization
 {
-    public class SerializationStream
+    public class SerializationStream : IDisposable
     {
         private readonly byte[] _bytes;
         private int _position = 4;
 
-        public SerializationStream()
+        public SerializationStream(int neededSize)
         {
-            _bytes = ArrayPool<byte>.Shared.Rent(5 * 1024 * 1024);
+            _bytes = ArrayPool<byte>.Shared.Rent(neededSize);
         }
 
         public void Write(bool content)
@@ -32,7 +32,8 @@ namespace Kronos.Core.Serialization
             }
 
             Write((byte)SerializationMeta.Notnull);
-            var bytes = Encoding.UTF8.GetBytes(content);
+            Span<byte> bytes = stackalloc byte[content.Length];
+            Encoding.UTF8.GetBytes(content, bytes);
             WriteWithPrefixLength(bytes);
         }
 
@@ -57,13 +58,15 @@ namespace Kronos.Core.Serialization
 
         public void Write(int content)
         {
-            var bytes = BitConverter.GetBytes(content);
+            Span<byte> bytes = stackalloc byte[sizeof(int)];
+            NoAllocBitConverter.GetBytes(content, bytes);
             Write(bytes);
         }
 
         public void Write(long content)
         {
-            var bytes = BitConverter.GetBytes(content);
+            Span<byte> bytes = stackalloc byte [sizeof(long)];
+            NoAllocBitConverter.GetBytes(content, bytes);
             Write(bytes);
         }
 
@@ -100,12 +103,6 @@ namespace Kronos.Core.Serialization
             }
         }
 
-        public void Clean()
-        {
-            Array.Clear(_bytes, 0, _position);
-            _position = 4;
-        }
-
         public bool IsClean => _position == 0;
 
         public ReadOnlyMemory<byte> Memory => MemoryWithLengthPrefix.Slice(4, _position - 4);
@@ -123,7 +120,8 @@ namespace Kronos.Core.Serialization
 
         public void Dispose()
         {
-            ArrayPool<byte>.Shared.Return(_bytes, true);
+            Array.Clear(_bytes, 0, _position);
+            ArrayPool<byte>.Shared.Return(_bytes);
         }
     }
 }

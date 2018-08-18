@@ -95,37 +95,6 @@ namespace Kronos.Core.Tests.Storage
         }
 
         [Fact]
-        public void TryGet_ReturnsNullWhenObjectDoesNotExist()
-        {
-            // Arrange
-            IStorage storage = CreateStorage();
-
-            // Act
-            bool success = storage.TryGet("lorem ipsum", out var received);
-
-            // Assert
-            Assert.False(success);
-            Assert.Null(received);
-        }
-
-        [Fact]
-        public void TryGet_ReturnsNullWhenObjectIsExpired()
-        {
-            // Arrange
-            IStorage storage = CreateStorage();
-            const string key = "lorem ipsum";
-            var data = Encoding.UTF8.GetBytes("lorem ipsum");
-            storage.Add(key, DateTimeOffset.MinValue, data);
-
-            // Act
-            bool success = storage.TryGet(key, out var received);
-
-            // Assert
-            Assert.False(success);
-            Assert.Null(received);
-        }
-
-        [Fact]
         public void TryRemove_RemovesEntryFromStorage()
         {
             // Arrange

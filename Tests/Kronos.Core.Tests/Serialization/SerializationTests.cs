@@ -11,15 +11,16 @@ namespace Kronos.Core.Tests.Serialization
         {
             var content = "lorem ipsum";
 
-            var serialization = new SerializationStream();
-            serialization.Write(content);
-            serialization.Flush();
+            using (var serialization = new SerializationStream(1024))
+            {
+                serialization.Write(content);
+                serialization.Flush();
 
-            var deserialization = new DeserializationStream(serialization.Memory);
-            serialization.Dispose();
-            var fromBytes = deserialization.ReadString();
+                var deserialization = new DeserializationStream(serialization.Memory);
+                var fromBytes = deserialization.ReadString();
 
-            fromBytes.Should().Be(content);
+                fromBytes.Should().Be(content);
+            }
         }
     }
 }

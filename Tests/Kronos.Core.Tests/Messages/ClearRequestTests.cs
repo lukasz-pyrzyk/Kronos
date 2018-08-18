@@ -35,10 +35,10 @@ namespace Kronos.Core.Tests.Messages
             var request = ClearRequest.New(auth);
 
             // Assert
-            var s = new SerializationStream();
-            request.Write(s);
-            s.Dispose();
-
+            using (var s = new SerializationStream(1024))
+            {
+                request.Write(s);
+            }
         }
     }
 }

@@ -60,6 +60,7 @@ namespace Kronos.Core.Serialization
             }
 
             var bytes = ReadBytesWithLengthPrefix();
+            var bytesa = MemoryMarshal.AsBytes(bytes);
             return Encoding.UTF8.GetString(bytes.ToArray()); // todo: remove to array
         }
 

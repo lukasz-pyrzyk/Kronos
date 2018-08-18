@@ -13,6 +13,18 @@ namespace Kronos.Core.Messages
 
         public IRequest InternalRequest { get; set; }
 
+        public int CalculateSize()
+        {
+            int baseSize = 1024 * 500;
+            if (Type == RequestType.Insert)
+            {
+                baseSize += ((InsertRequest)InternalRequest).Data.Length;
+            }
+
+            return baseSize;
+        }
+
+
         public void Write(SerializationStream stream)
         {
             stream.Write(Type);
@@ -72,6 +84,17 @@ namespace Kronos.Core.Messages
             stream.Write(Type);
             stream.Write(Exception);
             InternalResponse?.Write(stream);
+        }
+
+        public int CalculateSize()
+        {
+            int baseSize = 1024 * 500;
+            if (Type == RequestType.Get)
+            {
+                baseSize += ((GetResponse) InternalResponse).Data.Length;
+            }
+
+            return baseSize;
         }
 
         public void Read(DeserializationStream stream)
