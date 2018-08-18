@@ -59,11 +59,10 @@ namespace Kronos.Core.Serialization
                 return null;
             }
 
-            var bytes = ReadBytesWithLengthPrefix();
-            var bytesa = MemoryMarshal.AsBytes(bytes);
-            return Encoding.UTF8.GetString(bytes.ToArray()); // todo: remove to array
+            var memory = ReadBytesWithLengthPrefix();
+            var bytes = MemoryMarshal.AsBytes(memory);
+            return Encoding.UTF8.GetString(bytes);
         }
-
 
         public ReadOnlySpan<byte> ReadBytesWithLengthPrefix()
         {
