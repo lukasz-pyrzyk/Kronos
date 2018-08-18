@@ -11,7 +11,6 @@ using Kronos.Core.Messages;
 using Kronos.Core.Networking;
 using Kronos.Core.Serialization;
 using Polly;
-using BufferedStream = Kronos.Core.Pooling.BufferedStream;
 
 namespace Kronos.Client
 {
@@ -21,7 +20,6 @@ namespace Kronos.Client
         private static readonly Policy Policy = Policy.Handle<Exception>()
             .WaitAndRetryAsync(CreateExponentialBackoff(RetryCount));
 
-        private readonly SerializationStream _stream = new SerializationStream();
         private readonly byte[] _sizeBytes = new byte[sizeof(int)];
 
         public async Task<Response> SendAsync(Request request, ServerConfig server)
@@ -48,11 +46,6 @@ namespace Kronos.Client
                 }
                 finally
                 {
-                    if (!_stream.IsClean)
-                    {
-                        _stream.Clean();
-                    }
-
                     socket?.Dispose();
                 }
             }).ConfigureAwait(false);
@@ -62,10 +55,13 @@ namespace Kronos.Client
 
         private async Task SendAsync(Request request, Socket server)
         {
-            request.Write(_stream);
-            _stream.Flush();
+            var stream = new SerializationStream();
 
-            await SocketUtils.SendAllAsync(server, _stream.MemoryWithLengthPrefix).ConfigureAwait(false);
+            request.Write(stream);
+            stream.Flush();
+
+            await SocketUtils.SendAllAsync(server, stream.MemoryWithLengthPrefix).ConfigureAwait(false);
+            stream.Dispose();
         }
 
         private async Task<Response> ReceiveAndDeserializeAsync(Socket socket)
@@ -85,15 +81,7 @@ namespace Kronos.Client
             }
 
             Response response = new Response();
-            try
-            {
-                response.Read(new DeserializationStream(requestBytes));
-            }
-            catch (Exception ex)
-            {
-
-                throw;
-            }
+            response.Read(new DeserializationStream(requestBytes));
 
             return response;
         }

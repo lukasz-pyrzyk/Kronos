@@ -16,7 +16,7 @@ namespace Kronos.Core.Tests.Serialization
             serialization.Flush();
 
             var deserialization = new DeserializationStream(serialization.Memory);
-
+            serialization.Dispose();
             var fromBytes = deserialization.ReadString();
 
             fromBytes.Should().Be(content);

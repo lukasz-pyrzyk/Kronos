@@ -37,7 +37,7 @@ namespace Kronos.Core.Tests.Messages
             // Assert
             var s = new SerializationStream();
             request.Write(s);
-
+            s.Dispose();
 
         }
     }

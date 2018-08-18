@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Buffers;
 using System.Runtime.InteropServices;
 using System.Text;
 using Kronos.Core.Exceptions;
@@ -8,8 +9,13 @@ namespace Kronos.Core.Serialization
 {
     public class SerializationStream
     {
-        private readonly byte[] _bytes = new byte[1024 * 1024 * 5];
+        private readonly byte[] _bytes;
         private int _position = 4;
+
+        public SerializationStream()
+        {
+            _bytes = ArrayPool<byte>.Shared.Rent(5 * 1024 * 1024);
+        }
 
         public void Write(bool content)
         {
@@ -114,5 +120,10 @@ namespace Kronos.Core.Serialization
         }
 
         public int Length => _position;
+
+        public void Dispose()
+        {
+            ArrayPool<byte>.Shared.Return(_bytes, true);
+        }
     }
 }

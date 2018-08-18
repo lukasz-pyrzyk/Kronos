@@ -41,6 +41,7 @@ namespace Kronos.Server
             stream.Flush();
 
             SocketUtils.SendAll(client, stream.MemoryWithLengthPrefix.Span);
+            stream.Dispose();
         }
     }
 }
