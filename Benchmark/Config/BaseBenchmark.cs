@@ -13,6 +13,8 @@ namespace Benchmark.Config
     [Config(typeof(CustomConfig))]
     public abstract class BaseBenchmark : IDisposable
     {
+        public virtual bool RemoteServer => false;
+
         private const string Domain = "127.0.0.1";
         private static readonly string KronosConnection = Domain;
         private Task _server;
@@ -22,27 +24,32 @@ namespace Benchmark.Config
         [GlobalSetup]
         public void Setup()
         {
-            try
+            if (!RemoteServer)
             {
-                _server = Task.Factory.StartNew(() => Kronos.Server.Program.Start(new SettingsArgs(), GetLoggerConfig()),
-                    TaskCreationOptions.LongRunning);
 
-                while (!Kronos.Server.Program.IsWorking)
+                try
                 {
-                    LogMessage("Waiting for server warnup...");
-                    Task.Delay(100).GetAwaiter().GetResult();
+                    _server = Task.Factory.StartNew(() => Kronos.Server.Program.Start(new SettingsArgs(), GetLoggerConfig()),
+                        TaskCreationOptions.LongRunning);
 
-                    if (_server.IsFaulted)
+                    while (!Kronos.Server.Program.IsWorking)
                     {
-                        LogMessage($"Server is faulted. Exception: {_server.Exception}");
-                        throw _server.Exception;
+                        LogMessage("Waiting for server warnup...");
+                        Task.Delay(100).GetAwaiter().GetResult();
+
+                        if (_server.IsFaulted)
+                        {
+                            LogMessage($"Server is faulted. Exception: {_server.Exception}");
+                            throw _server.Exception;
+                        }
                     }
                 }
+                catch (Exception ex)
+                {
+                    LogMessage($"EXCEPTION: {ex}");
+                }
             }
-            catch (Exception ex)
-            {
-                LogMessage($"EXCEPTION: {ex}");
-            }
+
             KronosClient = KronosClientFactory.FromIp(KronosConnection, Settings.DefaultPort);
             AdditionalSetup();
         }
@@ -64,6 +71,8 @@ namespace Benchmark.Config
 
         public void Dispose()
         {
+            if (!Kronos.Server.Program.IsWorking) return;
+
             try
             {
                 LogMessage("Stopping server");
