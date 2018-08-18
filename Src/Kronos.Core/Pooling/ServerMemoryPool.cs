@@ -6,9 +6,9 @@ namespace Kronos.Core.Pooling
     {
         private readonly MemoryPool<byte> _pool = MemoryPool<byte>.Shared;
 
-        public IMemoryOwner<byte> Rent(int i)
+        public IMemoryOwner<byte> Rent(int count)
         {
-            var owner = _pool.Rent(i);
+            var owner = _pool.Rent(count);
             return owner;
         }
     }
