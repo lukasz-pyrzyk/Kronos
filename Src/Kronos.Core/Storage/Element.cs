@@ -1,16 +1,22 @@
 ﻿using System;
+using System.Buffers;
 
 namespace Kronos.Core.Storage
 {
-    public readonly struct Element
+    public struct Element
     {
-        public ReadOnlyMemory<byte> Data { get; }
-        public DateTimeOffset? ExpiryDate { get; }
+        public IMemoryOwner<byte> MemoryOwner { get; }
+        public DateTimeOffset? ExpiryDate { get; private set; }
 
-        public Element(ReadOnlyMemory<byte> data, DateTimeOffset? expiryDate = null)
+        public Element(IMemoryOwner<byte> memoryOwner, DateTimeOffset? expiryDate = null)
         {
-            Data = data;
+            MemoryOwner = memoryOwner;
             ExpiryDate = expiryDate;
+        }
+
+        public void Expire()
+        {
+            ExpiryDate = DateTimeOffset.MinValue;
         }
 
         public bool IsExpiring => ExpiryDate.HasValue;

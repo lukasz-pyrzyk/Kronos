@@ -35,7 +35,6 @@ namespace Kronos.Core.Networking
             while (position != data.Length)
             {
                 int size = Math.Min(data.Length - position, BufferSize);
-                var t = new ReadOnlyMemory<byte>();
                 var buffer = data.Slice(position, size);
                 int sent = await socket.SendAsync(buffer, SocketFlags.None);
                 position += sent;
@@ -68,6 +67,20 @@ namespace Kronos.Core.Networking
                 position += received;
 
                 Debug.Assert(position <= count);
+            }
+        }
+
+        public static void ReceiveAll(Socket socket, Memory<byte> buffer)
+        {
+            int position = 0;
+            while (position != buffer.Length)
+            {
+                int size = Math.Min(buffer.Length - position, BufferSize);
+                var span = buffer.Span.Slice(position, size);
+                int received = socket.Receive(span, SocketFlags.None);
+                position += received;
+
+                Debug.Assert(position <= buffer.Length);
             }
         }
     }

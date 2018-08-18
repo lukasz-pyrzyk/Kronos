@@ -2,7 +2,7 @@
 using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
-using Google.Protobuf;
+using Kronos.Core.Pooling;
 using Kronos.Core.Storage.Cleaning;
 using NLog;
 
@@ -17,14 +17,16 @@ namespace Kronos.Core.Storage
 
         private int _cleanupRequested;
         private readonly ICleaner _cleaner;
+        private readonly ServerMemoryPool _pool;
 
-        public InMemoryStorage() : this(new Cleaner(), new Scheduler())
+        public InMemoryStorage(ServerMemoryPool pool) : this(new Cleaner(), new Scheduler(), pool)
         {
         }
 
-        internal InMemoryStorage(ICleaner cleaner, IScheduler scheduler)
+        internal InMemoryStorage(ICleaner cleaner, IScheduler scheduler, ServerMemoryPool pool)
         {
             _cleaner = cleaner;
+            _pool = pool;
             scheduler.Register(OnTimer);
         }
 
@@ -32,7 +34,7 @@ namespace Kronos.Core.Storage
         public int ExpiringCount => _expiringKeys.Count;
         internal bool CleanupRequested => _cleanupRequested == 1;
 
-        public bool Add(string name, DateTimeOffset? expiryDate, ReadOnlyMemory<byte> data)
+        public bool Add(string name, DateTimeOffset? expiryDate, ReadOnlyMemory<byte> memory)
         {
             ClearStorageIfRequested();
 
@@ -44,7 +46,9 @@ namespace Kronos.Core.Storage
                 return false;
             }
 
-            element = new Element(data, expiryDate);
+            var memoryToStore = _pool.Rent(memory.Length);
+            memory.Span.CopyTo(memoryToStore.Memory.Span);
+            element = new Element(memoryToStore, expiryDate);
             _storage[key] = element;
 
             if (expiryDate.HasValue)
@@ -63,7 +67,7 @@ namespace Kronos.Core.Storage
             bool found = _storage.TryGetValue(key, out Element element);
             if (found && !element.IsExpired())
             {
-                data = element.Data;
+                data = element.MemoryOwner.Memory;
                 return true;
             }
 
@@ -79,11 +83,8 @@ namespace Kronos.Core.Storage
             bool found = _storage.TryGetValue(key, out Element element);
             if (found)
             {
+                element.MemoryOwner.Dispose();
                 _storage.Remove(key);
-                if (element.IsExpiring)
-                {
-                    _expiringKeys.Remove(new ExpiringKey(key, default));
-                }
             }
 
             return found;
@@ -123,7 +124,7 @@ namespace Kronos.Core.Storage
             if (Interlocked.CompareExchange(ref _cleanupRequested, 1, 1) == 1)
             {
                 Logger.Debug("Clearing storage");
-                _cleaner.Clear(_expiringKeys, _storage);
+                _cleaner.Clear(_expiringKeys, this);
                 Interlocked.Exchange(ref _cleanupRequested, 0);
             }
         }

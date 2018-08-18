@@ -2,11 +2,13 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
+using System.Runtime.InteropServices;
 using System.Threading;
 using System.Threading.Tasks;
 using Kronos.Core.Configuration;
 using Kronos.Core.Messages;
 using Kronos.Core.Networking;
+using Kronos.Core.Pooling;
 using Kronos.Core.Processing;
 using NLog;
 
@@ -17,17 +19,19 @@ namespace Kronos.Server
         private readonly TcpListener _listener;
         private readonly ISocketProcessor _processor;
         private readonly IRequestProcessor _requestProcessor;
+        private readonly ServerMemoryPool _pool;
         private readonly CancellationTokenSource _cancel = new CancellationTokenSource();
 
         private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
         private readonly Auth _auth;
 
-        public Listener(SettingsArgs settings, ISocketProcessor processor, IRequestProcessor requestProcessor)
+        public Listener(SettingsArgs settings, ISocketProcessor processor, IRequestProcessor requestProcessor, ServerMemoryPool pool)
         {
             _auth = Auth.FromCfg(new AuthConfig { Login = settings.Login, Password = settings.Password });
             _listener = new TcpListener(IPAddress.Any, settings.Port);
             _processor = processor;
             _requestProcessor = requestProcessor;
+            _pool = pool;
 
             _listener.Server.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, 1);
         }
@@ -102,18 +106,27 @@ namespace Kronos.Server
         {
             try
             {
-                Request request = _processor.ReceiveRequest(client);
+                int packageSize;
+                using (var sizeBuffer = _pool.Rent(4))
+                {
+                    SocketUtils.ReceiveAll(client, sizeBuffer.Memory.Slice(0, 4));
+                    packageSize = MemoryMarshal.Read<int>(sizeBuffer.Memory.Span);
+                }
 
-                Logger.Debug($"Processing new request {request.Type}");
-                Response response = _requestProcessor.Handle(request, _auth);
+                using (var requestBuffer = _pool.Rent(packageSize))
+                {
+                    Request request = _processor.ReceiveRequest(client, requestBuffer.Memory.Slice(0, packageSize));
+                    Logger.Debug($"Processing new request {request.Type}");
+                    Response response = _requestProcessor.Handle(request, _auth);
+                    _processor.SendResponse(client, response);
+                }
 
-                _processor.SendResponse(client, response);
                 Logger.Debug("Processing finished");
             }
             catch (Exception ex)
             {
                 Logger.Error($"Exception on processing: {ex}");
             }
-        }
+}
     }
 }

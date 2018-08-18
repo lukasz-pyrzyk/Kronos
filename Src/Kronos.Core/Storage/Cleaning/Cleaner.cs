@@ -1,5 +1,4 @@
 using System;
-using System.Collections.Generic;
 using NLog;
 
 namespace Kronos.Core.Storage.Cleaning
@@ -8,7 +7,7 @@ namespace Kronos.Core.Storage.Cleaning
     {
         private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
 
-        public void Clear(PriorityQueue<ExpiringKey> expiringKeys, Dictionary<Key, Element> nodes)
+        public void Clear(PriorityQueue<ExpiringKey> expiringKeys, IStorage storage)
         {
             var date = DateTimeOffset.UtcNow;
             uint deleted = 0;
@@ -16,7 +15,7 @@ namespace Kronos.Core.Storage.Cleaning
             while (expiringKeys.Count > 0 && expiringKeys.Peek().IsExpired(date))
             {
                 ExpiringKey expiringKey = expiringKeys.Poll();
-                nodes.Remove(expiringKey.Key);
+                storage.TryRemove(expiringKey.Key.Name);
                 deleted++;
             }
 

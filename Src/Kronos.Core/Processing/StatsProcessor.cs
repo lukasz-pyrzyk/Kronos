@@ -12,7 +12,7 @@ namespace Kronos.Core.Processing
             long count = 0;
             foreach (var element in storage)
             {
-                usedBytes += element.Data.Length;
+                usedBytes += element.MemoryOwner.Memory.Length;
                 count++;
             }
             return new StatsResponse

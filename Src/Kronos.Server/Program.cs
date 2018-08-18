@@ -2,6 +2,7 @@
 using System.Threading;
 using System.Xml;
 using EntryPoint;
+using Kronos.Core.Pooling;
 using Kronos.Core.Processing;
 using Kronos.Core.Storage;
 using NLog;
@@ -28,13 +29,13 @@ namespace Kronos.Server
         public static void Start(SettingsArgs settings, LoggingConfiguration config)
         {
             LogManager.Configuration = config;
-            
 
-            IStorage storage = new InMemoryStorage();
+            var memoryPool = new ServerMemoryPool();
+            IStorage storage = new InMemoryStorage(memoryPool);
 
             IRequestProcessor requestProcessor = new RequestProcessor(storage);
             ISocketProcessor processor = new SocketProcessor();
-            IListener server = new Listener(settings, processor, requestProcessor);
+            IListener server = new Listener(settings, processor, requestProcessor, memoryPool);
 
             server.Start();
             IsWorking = true;

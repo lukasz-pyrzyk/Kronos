@@ -3,6 +3,7 @@ using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
 using Google.Protobuf;
+using Kronos.Core.Pooling;
 using Kronos.Core.Storage;
 using Kronos.Core.Storage.Cleaning;
 using NSubstitute;
@@ -132,7 +133,6 @@ namespace Kronos.Core.Tests.Storage
             // Assert
             Assert.True(deleted);
             Assert.Equal(storage.Count, 1);
-            Assert.Equal(storage.ExpiringCount, 1);
         }
 
         [Fact]
@@ -243,7 +243,7 @@ namespace Kronos.Core.Tests.Storage
             storage.Add("", null, new byte[0]);
 
             // Assert
-            cleaner.Received(1).Clear(Arg.Any<PriorityQueue<ExpiringKey>>(), Arg.Any<Dictionary<Key, Element>>());
+            cleaner.Received(1).Clear(Arg.Any<PriorityQueue<ExpiringKey>>(), Arg.Any<IStorage>());
         }
 
         [Fact]
@@ -257,7 +257,7 @@ namespace Kronos.Core.Tests.Storage
             storage.TryGet("", out var _);
 
             // Assert
-            cleaner.Received(1).Clear(Arg.Any<PriorityQueue<ExpiringKey>>(), Arg.Any<Dictionary<Key, Element>>());
+            cleaner.Received(1).Clear(Arg.Any<PriorityQueue<ExpiringKey>>(), Arg.Any<IStorage>());
         }
 
         [Fact]
@@ -271,14 +271,14 @@ namespace Kronos.Core.Tests.Storage
             storage.Contains("");
 
             // Assert
-            cleaner.Received(1).Clear(Arg.Any<PriorityQueue<ExpiringKey>>(), Arg.Any<Dictionary<Key, Element>>());
+            cleaner.Received(1).Clear(Arg.Any<PriorityQueue<ExpiringKey>>(), Arg.Any<IStorage>());
         }
 
         private static async Task<IStorage> CreateStorageWithSchedulerAndWait(ICleaner cleaner)
         {
             const int timePeriod = 10;
             IScheduler scheduler = new Scheduler();
-            InMemoryStorage storage = new InMemoryStorage(cleaner, scheduler);
+            InMemoryStorage storage = new InMemoryStorage(cleaner, scheduler, new ServerMemoryPool());
 
             do
             {
@@ -292,7 +292,7 @@ namespace Kronos.Core.Tests.Storage
         {
             ICleaner cleaner = Substitute.For<ICleaner>();
             IScheduler scheduler = Substitute.For<IScheduler>();
-            IStorage storage = new InMemoryStorage(cleaner, scheduler);
+            IStorage storage = new InMemoryStorage(cleaner, scheduler, new ServerMemoryPool());
             return storage;
         }
     }
