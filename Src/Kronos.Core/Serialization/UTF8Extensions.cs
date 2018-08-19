@@ -19,6 +19,7 @@ namespace Kronos.Core.Serialization
         {
             return Encoding.UTF8.GetString(bytes);
         }
+
         public static string GetString(this ReadOnlySpan<byte> bytes)
         {
             return Encoding.UTF8.GetString(bytes);

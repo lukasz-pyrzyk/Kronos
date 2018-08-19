@@ -1,6 +1,8 @@
-﻿using System.Security.Cryptography;
+﻿using System;
+using System.Security.Cryptography;
 using System.Text;
 using System.Threading;
+using Kronos.Core.Serialization;
 
 namespace Kronos.Core.Hashing
 {
@@ -8,9 +10,19 @@ namespace Kronos.Core.Hashing
     {
         private static readonly ThreadLocal<SHA512> Sha512 = new ThreadLocal<SHA512>(SHA512.Create);
 
+        public static int Hash(ReadOnlySpan<byte> bytes)
+        {
+            uint hash = Farmhash.Sharp.Farmhash.Hash32(bytes);
+            int intHash = unchecked((int)hash);
+
+            return intHash;
+        }
+
         public static int Hash(string word)
         {
-            uint hash = Farmhash.Sharp.Farmhash.Hash32(word);
+            Span<byte> bytes = stackalloc byte[word.Length];
+            word.GetBytes(bytes);
+            uint hash = Farmhash.Sharp.Farmhash.Hash32(bytes);
             int intHash = unchecked((int)hash);
 
             return intHash;

@@ -1,16 +1,34 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
+using FluentAssertions;
 using Kronos.Core.Hashing;
+using Kronos.Core.Serialization;
 using Xunit;
 
 namespace Kronos.Core.Tests.Hashing
 {
     public class HasherTests
     {
+        const string word = "lorem ipsum";
+
+        [Fact]
+        public void WorksWithMemory()
+        {
+            // Arrange
+            var normalHash = Hasher.Hash(word);
+            var span = word.GetMemory().Span;
+
+            // Act
+            var hashFromBytes = Hasher.Hash(span);
+
+            // Assert
+            hashFromBytes.Should().Be(normalHash);
+        }
+
         [Fact]
         public void HashSecure()
         {
             // Arrange
-            const string word = "lorem ipsum";
             byte[] expectedBytes = Hasher.SecureHash(word);
 
             // Act
