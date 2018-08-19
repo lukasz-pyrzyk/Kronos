@@ -99,10 +99,12 @@ namespace Kronos.Core.Serialization
 
         public void Flush()
         {
-            var size = BitConverter.GetBytes(_position - 4);
+            Span<byte> bytes = stackalloc byte[sizeof(int)];
+            int length = _position - sizeof(int);
+            MemoryMarshal.Write(bytes, ref length);
             for (int i = 0; i < sizeof(int); i++)
             {
-                _memory.Span[i] = size[i];
+                _memory.Span[i] = bytes[i];
             }
         }
 
