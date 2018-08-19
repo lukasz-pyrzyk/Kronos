@@ -7,7 +7,7 @@ namespace Kronos.Core.Networking
 {
     public static class SocketUtils
     {
-        public const int BufferSize = 8 * 1024;
+        public const int BufferSize = 64 * 1024;
         public const int Timeout = 10000;
 
         public static void Prepare(Socket socket)
