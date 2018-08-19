@@ -19,7 +19,7 @@ namespace Kronos.Core.Messages
 
         public void Write(ref SerializationStream stream)
         {
-            stream.Write(Key.Span);
+            stream.WriteWithPrefixLength(Key.Span);
         }
 
         public void Read(ref DeserializationStream stream)
