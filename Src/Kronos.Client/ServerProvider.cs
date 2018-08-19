@@ -36,13 +36,13 @@ namespace Kronos.Client
             byte position = 0;
             foreach (ServerConfig server in Servers)
             {
-                // Assing range to the server
+                // Assign range to the server
                 for (int j = 0; j < rangePerServer; j++)
                 {
                     Mappings[position] = server;
                     position++;
                 }
-                
+
                 if (modulo != 0)
                 {
                     Mappings[position] = server;
