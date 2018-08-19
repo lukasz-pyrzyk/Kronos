@@ -45,18 +45,6 @@ namespace Kronos.Core.Serialization
             return _buffer.Span[_position++];
         }
 
-        public string ReadString()
-        {
-            var meta = (SerializationMeta)ReadByte();
-            if (meta == SerializationMeta.Null)
-            {
-                return null;
-            }
-
-            var memory = ReadBytesWithLengthPrefix();
-            return memory.GetString();
-        }
-
         public ReadOnlySpan<byte> ReadBytesWithLengthPrefix()
         {
             int length = ReadInt();

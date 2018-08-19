@@ -18,6 +18,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <Folder Include="Serialization\" />
     <Folder Include="Storage\Cleaning\" />
   </ItemGroup>
 

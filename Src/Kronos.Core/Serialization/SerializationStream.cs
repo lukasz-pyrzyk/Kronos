@@ -25,20 +25,6 @@ namespace Kronos.Core.Serialization
             Write(value);
         }
 
-        public void Write(string content)
-        {
-            if (content == null)
-            {
-                Write((byte)SerializationMeta.Null);
-                return;
-            }
-
-            Write((byte)SerializationMeta.Notnull);
-            Span<byte> bytes = stackalloc byte[content.Length];
-            content.GetBytes(bytes);
-            WriteWithPrefixLength(bytes);
-        }
-
         public void Write(ReadOnlySpan<byte> content)
         {
             var destination = _memory.Span.Slice(_position, content.Length);
