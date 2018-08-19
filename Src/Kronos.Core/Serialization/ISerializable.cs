@@ -2,7 +2,7 @@
 {
     public interface ISerializable<T>
     {
-        void Write(SerializationStream stream);
-        void Read(DeserializationStream stream);
+        void Write(ref SerializationStream stream);
+        void Read(ref DeserializationStream stream);
     }
 }

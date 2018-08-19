@@ -3,12 +3,14 @@ using System.Buffers;
 using System.Collections.Generic;
 using System.Diagnostics;
 using System.Net.Sockets;
+using System.Runtime.InteropServices;
 using System.Threading.Tasks;
 using Google.Protobuf;
 using Kronos.Core.Configuration;
 using Kronos.Core.Exceptions;
 using Kronos.Core.Messages;
 using Kronos.Core.Networking;
+using Kronos.Core.Pooling;
 using Kronos.Core.Serialization;
 using Polly;
 
@@ -20,7 +22,7 @@ namespace Kronos.Client
         private static readonly Policy Policy = Policy.Handle<Exception>()
             .WaitAndRetryAsync(CreateExponentialBackoff(RetryCount));
 
-        private readonly byte[] _sizeBytes = new byte[sizeof(int)];
+        private readonly ServerMemoryPool _pool = new ServerMemoryPool();
 
         public async Task<Response> SendAsync(Request request, ServerConfig server)
         {
@@ -56,20 +58,23 @@ namespace Kronos.Client
         private async Task SendAsync(Request request, Socket server)
         {
             int size = request.CalculateSize();
-            using (var stream = new SerializationStream(size))
+            using (var serializationBuffer = _pool.Rent(size))
             {
-                request.Write(stream);
+                var stream = new SerializationStream(serializationBuffer.Memory);
+                request.Write(ref stream);
                 stream.Flush();
-
                 await SocketUtils.SendAllAsync(server, stream.MemoryWithLengthPrefix).ConfigureAwait(false);
             }
         }
 
         private async Task<Response> ReceiveAndDeserializeAsync(Socket socket)
         {
-            await SocketUtils.ReceiveAllAsync(socket, _sizeBytes, _sizeBytes.Length).ConfigureAwait(false);
-            int packageSize = BitConverter.ToInt32(_sizeBytes, 0);
-            Array.Clear(_sizeBytes, 0, _sizeBytes.Length);
+            int packageSize;
+            using (var sizeBuffer = _pool.Rent(4))
+            {
+                SocketUtils.ReceiveAll(socket, sizeBuffer.Memory.Slice(0, 4));
+                packageSize = MemoryMarshal.Read<int>(sizeBuffer.Memory.Span);
+            }
 
             byte[] requestBytes = ArrayPool<byte>.Shared.Rent(packageSize);
             try
@@ -82,7 +87,8 @@ namespace Kronos.Client
             }
 
             Response response = new Response();
-            response.Read(new DeserializationStream(requestBytes));
+            var stream = new DeserializationStream(requestBytes);
+            response.Read(ref stream);
 
             return response;
         }

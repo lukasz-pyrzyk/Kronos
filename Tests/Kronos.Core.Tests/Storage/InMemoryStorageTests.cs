@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Text;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Google.Protobuf;
 using Kronos.Core.Pooling;
 using Kronos.Core.Storage;
@@ -91,8 +92,8 @@ namespace Kronos.Core.Tests.Storage
             bool success = storage.TryGet(key, out var received);
 
             // Assert
-            Assert.True(success);
-            Assert.Equal(data, received);
+            success.Should().BeTrue();
+            received.Span.SequenceEqual(data).Should().BeTrue();
         }
 
         [Fact]

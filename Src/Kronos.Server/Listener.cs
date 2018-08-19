@@ -113,12 +113,18 @@ namespace Kronos.Server
                     packageSize = MemoryMarshal.Read<int>(sizeBuffer.Memory.Span);
                 }
 
+                Response response;
                 using (var requestBuffer = _pool.Rent(packageSize))
                 {
                     Request request = _processor.ReceiveRequest(client, requestBuffer.Memory.Slice(0, packageSize));
                     Logger.Debug($"Processing new request {request.Type}");
-                    Response response = _requestProcessor.Handle(request, _auth);
-                    _processor.SendResponse(client, response);
+                    response = _requestProcessor.Handle(request, _auth);
+                }
+
+                int neededSize = response.CalculateSize();
+                using (var responseBuffer = _pool.Rent(neededSize))
+                {
+                    _processor.SendResponse(client, response, responseBuffer.Memory);
                 }
 
                 Logger.Debug("Processing finished");

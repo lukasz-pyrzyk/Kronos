@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Linq;
+using System.Runtime.InteropServices;
 using Kronos.Core.Configuration;
 using Kronos.Core.Serialization;
 
@@ -7,7 +8,7 @@ namespace Kronos.Core.Messages
 {
     public struct Auth : ISerializable<Auth>
     {
-        public byte[] HashedPassword { get; set; }
+        public Memory<byte> HashedPassword { get; set; }
 
         public string Login { get; set; }
 
@@ -31,19 +32,20 @@ namespace Kronos.Core.Messages
 
         public bool Authorize(Auth auth)
         {
-            return auth.Login == Login && auth.HashedPassword.SequenceEqual(HashedPassword);
+            return auth.Login == Login && auth.HashedPassword.Span.SequenceEqual(HashedPassword.Span);
         }
 
-        public void Write(SerializationStream stream)
+        public void Write(ref SerializationStream stream)
         {
             stream.Write(Login);
-            stream.WriteWithPrefixLength(HashedPassword);
+            stream.WriteWithPrefixLength(HashedPassword.Span);
         }
 
-        public void Read(DeserializationStream stream)
+        public void Read(ref DeserializationStream stream)
         {
             Login = stream.ReadString();
-            HashedPassword = stream.ReadBytesWithLengthPrefix().ToArray(); // todo allocation
+            var memory =  stream.ReadMemoryWithLengthPrefix();
+            HashedPassword = MemoryMarshal.AsMemory(memory);
         }
     }
 }

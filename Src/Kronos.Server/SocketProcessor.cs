@@ -15,20 +15,17 @@ namespace Kronos.Server
         {
             SocketUtils.ReceiveAll(client, buffer);
             var request = new Request();
-            request.Read(new DeserializationStream(buffer));
+            var stream = new DeserializationStream(buffer);
+            request.Read(ref stream);
             return request;
         }
 
-        public void SendResponse(Socket client, Response response)
+        public void SendResponse(Socket client, Response response, Memory<byte> buffer)
         {
-            int neededSize = response.CalculateSize();
-            using (var stream = new SerializationStream(neededSize))
-            {
-                response.Write(stream);
-                stream.Flush();
-
-                SocketUtils.SendAll(client, stream.MemoryWithLengthPrefix.Span);
-            }
+            var stream = new SerializationStream(buffer);
+            response.Write(ref stream);
+            stream.Flush();
+            SocketUtils.SendAll(client, stream.MemoryWithLengthPrefix.Span);
         }
     }
 }

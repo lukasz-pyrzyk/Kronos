@@ -24,21 +24,5 @@ namespace Kronos.Core.Tests.Messages
             var internalRequest = (ClearRequest)request.InternalRequest;
             internalRequest.Should().NotBeNull();
         }
-
-        [Fact]
-        public void CanBeSerializedAndDeserialized()
-        {
-            // Arrange
-            var auth = new Auth();
-
-            // Act
-            var request = ClearRequest.New(auth);
-
-            // Assert
-            using (var s = new SerializationStream(1024))
-            {
-                request.Write(s);
-            }
-        }
     }
 }

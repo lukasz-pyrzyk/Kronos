@@ -14,11 +14,11 @@ namespace Kronos.Core.Messages
             };
         }
 
-        public void Write(SerializationStream stream)
+        public void Write(ref SerializationStream stream)
         {
         }
 
-        public void Read(DeserializationStream stream)
+        public void Read(ref DeserializationStream stream)
         {
         }
     }
@@ -27,12 +27,12 @@ namespace Kronos.Core.Messages
     {
         public int Deleted { get; set; }
 
-        public void Write(SerializationStream stream)
+        public void Write(ref SerializationStream stream)
         {
             stream.Write(Deleted);
         }
 
-        public void Read(DeserializationStream stream)
+        public void Read(ref DeserializationStream stream)
         {
             Deleted = stream.ReadInt();
         }

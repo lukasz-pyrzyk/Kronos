@@ -1,20 +1,21 @@
 ﻿using System;
-using System.Buffers;
-using System.Runtime.InteropServices;
 using System.Text;
 using Kronos.Core.Exceptions;
 using Kronos.Core.Messages;
 
 namespace Kronos.Core.Serialization
 {
-    public class SerializationStream : IDisposable
+    public struct SerializationStream
     {
-        private readonly byte[] _bytes;
-        private int _position = 4;
+        private readonly Memory<byte> _memory;
+        private int _position;
+        public int Length => _position;
 
-        public SerializationStream(int neededSize)
+
+        public SerializationStream(Memory<byte> memory)
         {
-            _bytes = ArrayPool<byte>.Shared.Rent(neededSize);
+            _memory = memory;
+            _position = 4;
         }
 
         public void Write(bool content)
@@ -39,7 +40,7 @@ namespace Kronos.Core.Serialization
 
         public void Write(ReadOnlySpan<byte> content)
         {
-            var destination = new Span<byte>(_bytes, _position, content.Length);
+            var destination = _memory.Span.Slice(_position, content.Length);
             content.CopyTo(destination);
             _position += content.Length;
         }
@@ -52,7 +53,7 @@ namespace Kronos.Core.Serialization
 
         public void Write(byte content)
         {
-            _bytes[_position] = content;
+            _memory.Span[_position] = content;
             _position++;
         }
 
@@ -99,29 +100,17 @@ namespace Kronos.Core.Serialization
             var size = BitConverter.GetBytes(_position - 4);
             for (int i = 0; i < sizeof(int); i++)
             {
-                _bytes[i] = size[i];
+                _memory.Span[i] = size[i];
             }
         }
 
-        public bool IsClean => _position == 0;
-
-        public ReadOnlyMemory<byte> Memory => MemoryWithLengthPrefix.Slice(4, _position - 4);
         public ReadOnlyMemory<byte> MemoryWithLengthPrefix
         {
             get
             {
-                if (_bytes[0] == 0) throw new KronosException("Stream ampty or not flushed!");
-
-                return new ReadOnlyMemory<byte>(_bytes, 0, _position);
+                if (_memory.Span[0] == 0) throw new KronosException("Stream empty or not flushed!");
+                return _memory;
             }
-        }
-
-        public int Length => _position;
-
-        public void Dispose()
-        {
-            Array.Clear(_bytes, 0, _position);
-            ArrayPool<byte>.Shared.Return(_bytes);
         }
     }
 }

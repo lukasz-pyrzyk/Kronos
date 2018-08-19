@@ -5,22 +5,21 @@ using Kronos.Core.Messages;
 
 namespace Kronos.Core.Serialization
 {
-    public class DeserializationStream
+    public struct DeserializationStream
     {
-        private ReadOnlyMemory<byte> _data;
-        private int _position = 0;
+        private ReadOnlyMemory<byte> _buffer;
+        private int _position;
 
-        public DeserializationStream(ReadOnlyMemory<byte> data)
+        public DeserializationStream(ReadOnlyMemory<byte> buffer)
         {
-            _data = data;
+            _buffer = buffer;
+            _position = 0;
         }
-
-        public bool IsClean { get; set; }
 
         public int ReadInt()
         {
             int size = sizeof(int);
-            int value = MemoryMarshal.Read<int>(_data.Span.Slice(_position, size));
+            int value = MemoryMarshal.Read<int>(_buffer.Span.Slice(_position, size));
             _position += size;
             return value;
         }
@@ -28,7 +27,7 @@ namespace Kronos.Core.Serialization
         public long ReadLong()
         {
             int size = sizeof(long);
-            long value = MemoryMarshal.Read<long>(_data.Span.Slice(_position, size));
+            long value = MemoryMarshal.Read<long>(_buffer.Span.Slice(_position, size));
             _position += size;
             return value;
         }
@@ -36,19 +35,19 @@ namespace Kronos.Core.Serialization
         public short ReadShort()
         {
             int size = sizeof(short);
-            var value = MemoryMarshal.Read<short>(_data.Span.Slice(_position, size));
+            var value = MemoryMarshal.Read<short>(_buffer.Span.Slice(_position, size));
             _position += size;
             return value;
         }
 
         public byte ReadByte()
         {
-            return _data.Span[_position++];
+            return _buffer.Span[_position++];
         }
 
         public string ReadString()
         {
-            var meta = (SerializationMeta) ReadByte();
+            var meta = (SerializationMeta)ReadByte();
             if (meta == SerializationMeta.Null)
             {
                 return null;
@@ -62,7 +61,15 @@ namespace Kronos.Core.Serialization
         public ReadOnlySpan<byte> ReadBytesWithLengthPrefix()
         {
             int length = ReadInt();
-            var bytes = _data.Span.Slice(_position, length);
+            var bytes = _buffer.Span.Slice(_position, length);
+            _position += length;
+            return bytes;
+        }
+
+        public ReadOnlyMemory<byte> ReadMemoryWithLengthPrefix()
+        {
+            int length = ReadInt();
+            var bytes = _buffer.Slice(_position, length);
             _position += length;
             return bytes;
         }
@@ -70,7 +77,7 @@ namespace Kronos.Core.Serialization
         public ReadOnlyMemory<byte> ReadMemory()
         {
             int length = ReadInt();
-            var bytes = _data.Slice(_position, length);
+            var bytes = _buffer.Slice(_position, length);
             _position += length;
             return bytes;
         }
@@ -78,7 +85,7 @@ namespace Kronos.Core.Serialization
         public DateTimeOffset? ReadDateTimeOffset()
         {
             int size = sizeof(byte);
-            var meta = MemoryMarshal.Read<SerializationMeta>(_data.Span.Slice(_position, size));
+            var meta = MemoryMarshal.Read<SerializationMeta>(_buffer.Span.Slice(_position, size));
             _position += size;
 
             if (meta == SerializationMeta.Notnull)
@@ -93,7 +100,7 @@ namespace Kronos.Core.Serialization
         public bool ReadBoolean()
         {
             int size = sizeof(bool);
-            var value = MemoryMarshal.Read<bool>(_data.Span.Slice(_position, size));
+            var value = MemoryMarshal.Read<bool>(_buffer.Span.Slice(_position, size));
             _position += size;
             return value;
         }

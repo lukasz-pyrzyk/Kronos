@@ -25,18 +25,18 @@ namespace Kronos.Core.Messages
         }
 
 
-        public void Write(SerializationStream stream)
+        public void Write(ref SerializationStream stream)
         {
             stream.Write(Type);
-            Auth.Write(stream);
-            InternalRequest.Write(stream);
+            Auth.Write(ref stream);
+            InternalRequest.Write(ref stream);
         }
 
-        public void Read(DeserializationStream stream)
+        public void Read(ref DeserializationStream stream)
         {
             Type = stream.ReadRequestType();
             var a = new Auth();
-            a.Read(stream);
+            a.Read(ref stream);
             Auth = a;
             switch (Type)
             {
@@ -65,7 +65,7 @@ namespace Kronos.Core.Messages
                     throw new ArgumentOutOfRangeException();
             }
 
-            InternalRequest.Read(stream);
+            InternalRequest.Read(ref stream);
         }
     }
 
@@ -79,25 +79,25 @@ namespace Kronos.Core.Messages
 
         public IResponse InternalResponse { get; set; }
 
-        public void Write(SerializationStream stream)
-        {
-            stream.Write(Type);
-            stream.Write(Exception);
-            InternalResponse?.Write(stream);
-        }
-
         public int CalculateSize()
         {
             int baseSize = 1024 * 500;
             if (Type == RequestType.Get)
             {
-                baseSize += ((GetResponse) InternalResponse).Data.Length;
+                baseSize += ((GetResponse)InternalResponse).Data.Length;
             }
 
             return baseSize;
         }
 
-        public void Read(DeserializationStream stream)
+        public void Write(ref SerializationStream stream)
+        {
+            stream.Write(Type);
+            stream.Write(Exception);
+            InternalResponse?.Write(ref stream);
+        }
+
+        public void Read(ref DeserializationStream stream)
         {
             Type = stream.ReadRequestType();
             Exception = stream.ReadString();
@@ -131,7 +131,7 @@ namespace Kronos.Core.Messages
                     throw new KronosException($"Unable to find request type for {InternalResponse?.GetType()}");
             }
 
-            InternalResponse.Read(stream);
+            InternalResponse.Read(ref stream);
         }
     }
 }

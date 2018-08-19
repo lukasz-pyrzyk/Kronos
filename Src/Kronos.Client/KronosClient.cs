@@ -20,7 +20,7 @@ namespace Kronos.Client
         private readonly StatsProcessor _statsProcessor = new StatsProcessor();
 
         private readonly ServerProvider _serverProvider;
-        private readonly ConcurrentPool<Connection> _connectionPool = new ConcurrentPool<Connection>();
+        private readonly Connection _connection = new Connection();
 
         public KronosClient(KronosConfig config)
         {
@@ -34,7 +34,7 @@ namespace Kronos.Client
             ServerConfig server = GetServerInternal(key);
             Request request = InsertRequest.New(key, package, expiryDate, server.Authorization);
 
-            var response = await _connectionPool.UseAsync(con => _insertProcessor.ExecuteAsync(request, con, server));
+            var response = await _insertProcessor.ExecuteAsync(request, _connection, server);
 
             Trace.WriteLine($"InsertRequest status: {response.Added}");
 
@@ -48,7 +48,7 @@ namespace Kronos.Client
             ServerConfig server = GetServerInternal(key);
             Request request = GetRequest.New(key, server.Authorization);
 
-            var response = await _connectionPool.UseAsync(con => _getProcessor.ExecuteAsync(request, con, server));
+            var response = await _getProcessor.ExecuteAsync(request, _connection, server);
 
             return response.Data;
         }
@@ -60,7 +60,7 @@ namespace Kronos.Client
             ServerConfig server = GetServerInternal(key);
             Request request = DeleteRequest.New(key, server.Authorization);
 
-            var response = await _connectionPool.UseAsync(con => _deleteProcessor.ExecuteAsync(request, con, server));
+            var response = await _deleteProcessor.ExecuteAsync(request, _connection, server);
 
             Debug.WriteLine($"InsertRequest status: {response.Deleted}");
         }
@@ -72,7 +72,7 @@ namespace Kronos.Client
             ServerConfig[] servers = GetServersInternal();
             Request[] requests = servers.Select(x => CountRequest.New(x.Authorization)).ToArray();
 
-            var responses = await _connectionPool.UseAsync(servers.Length, con => _countProcessor.ExecuteAsync(requests, con, servers));
+            var responses = await _countProcessor.ExecuteAsync(requests, _connection, servers);
 
             return responses.Sum(x => x.Count);
         }
@@ -84,7 +84,7 @@ namespace Kronos.Client
             ServerConfig server = GetServerInternal(key);
             Request request = ContainsRequest.New(key, server.Authorization);
 
-            var response = await _connectionPool.UseAsync(con => _containsProcessor.ExecuteAsync(request, con, server));
+            var response = await _containsProcessor.ExecuteAsync(request, _connection, server);
 
             return response.Contains;
         }
@@ -97,7 +97,7 @@ namespace Kronos.Client
             var servers = GetServersInternal();
             var requests = servers.Select(x => StatsRequest.New(x.Authorization)).ToArray();
 
-            var responses = await _connectionPool.UseAsync(servers.Length, con => _statsProcessor.ExecuteAsync(requests, con, servers));
+            var responses = await _statsProcessor.ExecuteAsync(requests, _connection, servers);
             return responses;
         }
 
@@ -108,7 +108,7 @@ namespace Kronos.Client
             ServerConfig[] servers = GetServersInternal();
             Request[] requests = servers.Select(x => ClearRequest.New(x.Authorization)).ToArray();
 
-            await _connectionPool.UseAsync(servers.Length, con => _clearProcessor.ExecuteAsync(requests, con, servers));
+            await _clearProcessor.ExecuteAsync(requests, _connection, servers);
         }
 
         private ServerConfig GetServerInternal(string key)

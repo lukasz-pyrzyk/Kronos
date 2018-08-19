@@ -16,12 +16,12 @@ namespace Kronos.Core.Messages
             };
         }
 
-        public void Write(SerializationStream stream)
+        public void Write(ref SerializationStream stream)
         {
             stream.Write(Key);
         }
 
-        public void Read(DeserializationStream stream)
+        public void Read(ref DeserializationStream stream)
         {
             Key = stream.ReadString();
         }
@@ -31,12 +31,12 @@ namespace Kronos.Core.Messages
     {
         public bool Deleted { get; set; }
 
-        public void Write(SerializationStream stream)
+        public void Write(ref SerializationStream stream)
         {
             stream.Write(Deleted);
         }
 
-        public void Read(DeserializationStream stream)
+        public void Read(ref DeserializationStream stream)
         {
             Deleted = stream.ReadBoolean();
         }

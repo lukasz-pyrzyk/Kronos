@@ -48,7 +48,7 @@ namespace Kronos.Core.Storage
 
             var memoryToStore = _pool.Rent(memory.Length);
             memory.Span.CopyTo(memoryToStore.Memory.Span);
-            element = new Element(memoryToStore, expiryDate);
+            element = new Element(memoryToStore, memory.Length, expiryDate);
             _storage[key] = element;
 
             if (expiryDate.HasValue)
@@ -67,7 +67,7 @@ namespace Kronos.Core.Storage
             bool found = _storage.TryGetValue(key, out Element element);
             if (found && !element.IsExpired())
             {
-                data = element.MemoryOwner.Memory;
+                data = element.Memory;
                 return true;
             }
 

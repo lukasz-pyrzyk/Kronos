@@ -1,4 +1,5 @@
-﻿using FluentAssertions;
+﻿using System;
+using FluentAssertions;
 using Kronos.Core.Serialization;
 using Xunit;
 
@@ -11,16 +12,16 @@ namespace Kronos.Core.Tests.Serialization
         {
             var content = "lorem ipsum";
 
-            using (var serialization = new SerializationStream(1024))
-            {
-                serialization.Write(content);
-                serialization.Flush();
+            var serialization = new SerializationStream(new Memory<byte>(new byte[1024]));
 
-                var deserialization = new DeserializationStream(serialization.Memory);
-                var fromBytes = deserialization.ReadString();
+            serialization.Write(content);
+            serialization.Flush();
 
-                fromBytes.Should().Be(content);
-            }
+            var deserialization = new DeserializationStream(serialization.MemoryWithLengthPrefix);
+            deserialization.ReadInt(); // read request length
+            var fromBytes = deserialization.ReadString();
+
+            fromBytes.Should().Be(content);
         }
     }
 }

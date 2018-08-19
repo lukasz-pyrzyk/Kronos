@@ -17,12 +17,12 @@ namespace Kronos.Core.Messages
             };
         }
 
-        public void Write(SerializationStream stream)
+        public void Write(ref SerializationStream stream)
         {
             stream.Write(Key);
         }
 
-        public void Read(DeserializationStream stream)
+        public void Read(ref DeserializationStream stream)
         {
             Key = stream.ReadString();
         }
@@ -32,14 +32,14 @@ namespace Kronos.Core.Messages
     {
         public ReadOnlyMemory<byte> Data { get; set; }
 
-        public void Write(SerializationStream stream)
+        public void Write(ref SerializationStream stream)
         {
             stream.WriteWithPrefixLength(Data.Span);
         }
 
-        public void Read(DeserializationStream stream)
+        public void Read(ref DeserializationStream stream)
         {
-            Data = stream.ReadBytesWithLengthPrefix().ToArray(); // allocation
+            Data = stream.ReadMemoryWithLengthPrefix();
         }
     }
 }

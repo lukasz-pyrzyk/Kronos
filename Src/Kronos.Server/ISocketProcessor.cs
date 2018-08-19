@@ -8,6 +8,6 @@ namespace Kronos.Server
     {
         Request ReceiveRequest(Socket client, Memory<byte> buffer);
 
-        void SendResponse(Socket client, Response response);
+        void SendResponse(Socket client, Response response, Memory<byte> buffer);
     }
 }
