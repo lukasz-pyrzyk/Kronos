@@ -109,7 +109,7 @@ namespace Kronos.Core.Serialization
             get
             {
                 if (_memory.Span[0] == 0) throw new KronosException("Stream empty or not flushed!");
-                return _memory;
+                return _memory.Slice(0, _position);
             }
         }
     }
