@@ -43,19 +43,6 @@ namespace Kronos.Core.Networking
             }
         }
 
-        public static void ReceiveAll(Socket socket, byte[] data, int count)
-        {
-            int position = 0;
-            while (position != count)
-            {
-                int size = Math.Min(count - position, BufferSize);
-                int received = socket.Receive(data, position, size, SocketFlags.None);
-                position += received;
-
-                Debug.Assert(position <= count);
-            }
-        }
-
         public static async Task ReceiveAllAsync(Socket socket, byte[] data, int count)
         {
             int position = 0;
