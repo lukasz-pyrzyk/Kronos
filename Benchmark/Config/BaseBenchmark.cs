@@ -13,7 +13,7 @@ namespace Benchmark.Config
     [Config(typeof(CustomConfig))]
     public abstract class BaseBenchmark : IDisposable
     {
-        public virtual bool RemoteServer => true;
+        public virtual bool RemoteServer => false;
 
         private const string Domain = "127.0.0.1";
         private static readonly string KronosConnection = Domain;
