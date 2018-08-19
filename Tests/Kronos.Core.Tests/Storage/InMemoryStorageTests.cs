@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using FluentAssertions;
 using Google.Protobuf;
 using Kronos.Core.Pooling;
+using Kronos.Core.Serialization;
 using Kronos.Core.Storage;
 using Kronos.Core.Storage.Cleaning;
 using NSubstitute;
@@ -85,7 +86,7 @@ namespace Kronos.Core.Tests.Storage
             // Arrange
             IStorage storage = CreateStorage();
             const string key = "lorem ipsum";
-            var data = Encoding.UTF8.GetBytes("lorem ipsum");
+            var data = "lorem ipsum".GetMemory();
             storage.Add(key, null, data);
 
             // Act
@@ -93,7 +94,7 @@ namespace Kronos.Core.Tests.Storage
 
             // Assert
             success.Should().BeTrue();
-            received.Span.SequenceEqual(data).Should().BeTrue();
+            received.Span.SequenceEqual(data.Span).Should().BeTrue();
         }
 
         [Fact]

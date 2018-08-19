@@ -1,4 +1,8 @@
+using System;
+using System.Runtime.InteropServices;
+using System.Text;
 using Kronos.Core.Messages;
+using Kronos.Core.Serialization;
 using Kronos.Core.Storage;
 
 namespace Kronos.Core.Processing
@@ -51,7 +55,7 @@ namespace Kronos.Core.Processing
             bool authorized = auth.Authorize(request.Auth);
             if (!authorized)
             {
-                response.Exception = $"User {request.Auth.Login} is not authorized";
+                response.Exception = $"User {request.Auth.GetLogin()} is not authorized".GetMemory();
                 return response;
             }
 
@@ -80,7 +84,7 @@ namespace Kronos.Core.Processing
                     response.InternalResponse = _statsProcessor.Reply((StatsRequest) internalResponse, _storage);
                     break;
                 default:
-                    response.Exception = $"Request type {request.Type} is not supported";
+                    response.Exception = $"Request type {request.Type} is not supported".GetMemory();
                     break;
             }
 

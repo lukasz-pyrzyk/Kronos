@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Text;
 using FluentAssertions;
 using Kronos.Core.Configuration;
 using Kronos.Core.Messages;
 using Kronos.Core.Processing;
+using Kronos.Core.Serialization;
 using Kronos.Core.Storage;
 using NSubstitute;
 using Xunit;
@@ -25,7 +27,8 @@ namespace Kronos.Core.Tests.Processing
 
             // Assert
             AssertFailure(response);
-            response.Exception.Should().Contain(request.Auth.Login);
+            var exception = response.Exception.Span.GetString();
+            exception.Should().Contain("random");
         }
 
         [Fact]
@@ -40,13 +43,13 @@ namespace Kronos.Core.Tests.Processing
 
             // Assert
             AssertFailure(response);
-            response.Exception.Should().NotBeNullOrEmpty();
+            response.Exception.IsEmpty.Should().BeFalse();
         }
 
         private static void AssertFailure(Response response)
         {
             response.Success.Should().BeFalse();
-            response.Exception.Should().NotBeNullOrEmpty();
+            response.Exception.IsEmpty.Should().BeFalse();
         }
 
         [Fact]
@@ -158,7 +161,7 @@ namespace Kronos.Core.Tests.Processing
         {
             response.Should().NotBeNull();
             response.Success.Should().BeTrue();
-            response.Exception.Should().BeNull();
+            response.Exception.IsEmpty.Should().BeTrue();
             response.InternalResponse.Should().BeOfType(type);
         }
 

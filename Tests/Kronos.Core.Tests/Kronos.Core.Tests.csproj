@@ -17,4 +17,8 @@
     <PackageReference Include="NLog" Version="5.0.0-beta03" />
   </ItemGroup>
 
+  <ItemGroup>
+    <Folder Include="Storage\Cleaning\" />
+  </ItemGroup>
+
 </Project>

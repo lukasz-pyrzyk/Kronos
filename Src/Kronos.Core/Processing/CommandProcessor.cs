@@ -1,8 +1,10 @@
-﻿using System.Threading.Tasks;
+﻿using System.Text;
+using System.Threading.Tasks;
 using Kronos.Core.Configuration;
 using Kronos.Core.Exceptions;
 using Kronos.Core.Messages;
 using Kronos.Core.Networking;
+using Kronos.Core.Serialization;
 using Kronos.Core.Storage;
 
 namespace Kronos.Core.Processing
@@ -17,7 +19,8 @@ namespace Kronos.Core.Processing
 
             if (!response.Success)
             {
-                throw new KronosException(response.Exception);
+                var errorMessage = response.Exception.Span.GetString();
+                throw new KronosException(errorMessage);
             }
 
             TResponse selectedResponse = SelectResponse(response);

@@ -1,5 +1,6 @@
 ﻿using System;
 using System.IO;
+using System.Runtime.InteropServices;
 using Kronos.Core.Exceptions;
 using Kronos.Core.Serialization;
 
@@ -71,11 +72,11 @@ namespace Kronos.Core.Messages
 
     public class Response : ISerializable<object>
     {
-        public string Exception { get; set; }
+        public ReadOnlyMemory<byte> Exception { get; set; }
 
         public RequestType Type { get; set; }
 
-        public bool Success => string.IsNullOrEmpty(Exception);
+        public bool Success => Exception.IsEmpty;
 
         public IResponse InternalResponse { get; set; }
 
@@ -93,16 +94,17 @@ namespace Kronos.Core.Messages
         public void Write(ref SerializationStream stream)
         {
             stream.Write(Type);
-            stream.Write(Exception);
+            stream.WriteWithPrefixLength(Exception.Span);
             InternalResponse?.Write(ref stream);
         }
 
         public void Read(ref DeserializationStream stream)
         {
             Type = stream.ReadRequestType();
-            Exception = stream.ReadString();
 
-            if (Exception != null) return;
+            Exception = stream.ReadMemoryWithLengthPrefix();
+
+            if (!Exception.IsEmpty) return;
 
             switch (Type)
             {

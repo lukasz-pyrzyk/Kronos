@@ -54,7 +54,7 @@ namespace Kronos.Core.Serialization
             }
 
             var memory = ReadBytesWithLengthPrefix();
-            return Encoding.UTF8.GetString(memory);
+            return memory.GetString();
         }
 
         public ReadOnlySpan<byte> ReadBytesWithLengthPrefix()

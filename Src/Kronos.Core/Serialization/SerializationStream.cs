@@ -35,7 +35,7 @@ namespace Kronos.Core.Serialization
 
             Write((byte)SerializationMeta.Notnull);
             Span<byte> bytes = stackalloc byte[content.Length];
-            Encoding.UTF8.GetBytes(content, bytes);
+            content.GetBytes(bytes);
             WriteWithPrefixLength(bytes);
         }
 
