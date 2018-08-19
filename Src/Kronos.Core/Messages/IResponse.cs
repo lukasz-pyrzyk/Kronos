@@ -1,11 +1,7 @@
 ﻿using Kronos.Core.Serialization;
 
-namespace Kronos.Core
+namespace Kronos.Core.Messages
 {
-    public interface IRequest : ISerializable<object>
-    {
-    }
-
     public interface IResponse : ISerializable<object>
     {
     }
