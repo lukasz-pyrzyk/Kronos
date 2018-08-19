@@ -66,7 +66,11 @@ namespace Kronos.Server
                     }
                     finally
                     {
-                        socket?.Shutdown(SocketShutdown.Send);
+                        if (socket != null)
+                        {
+                            socket.Shutdown(SocketShutdown.Send);
+                            socket.Dispose();
+                        }
                     }
                 }
             }, token, TaskCreationOptions.LongRunning, TaskScheduler.Current);
@@ -133,6 +137,6 @@ namespace Kronos.Server
             {
                 Logger.Error($"Exception on processing: {ex}");
             }
-}
+        }
     }
 }
