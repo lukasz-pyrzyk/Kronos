@@ -32,19 +32,6 @@ namespace Kronos.Client
             return CreateInternal(null, ip, port, login, password);
         }
 
-        public static IKronosClient FromConnectionString(string[] connectionStrings)
-        {
-            ServerConfig[] servers = new ServerConfig[connectionStrings.Length];
-
-            for (int i = 0; i < connectionStrings.Length; i++)
-            {
-                string ip = connectionStrings[i];
-                servers[i] = new ServerConfig { Ip = ip, Port = Settings.DefaultPort };
-            }
-
-            return new KronosClient(new KronosConfig { ClusterConfig = new ClusterConfig { Servers = servers } });
-        }
-
         private static IKronosClient CreateInternal(string domain, string ip, int port, string login, string password)
         {
             var config = new KronosConfig

@@ -82,7 +82,7 @@ namespace Kronos.Client
             }
             finally
             {
-                ArrayPool<byte>.Shared.Return(requestBytes);
+                ArrayPool<byte>.Shared.Return(requestBytes); // TODO: usage of the memory pool after disposal
             }
 
             Response response = new Response();
