@@ -7,7 +7,7 @@ using Kronos.Core.Serialization;
 
 namespace Kronos.Core.Messages
 {
-    public struct Auth : ISerializable<Auth>
+    public class Auth : ISerializable<Auth>
     {
         public Memory<byte> HashedPassword { get; set; }
 

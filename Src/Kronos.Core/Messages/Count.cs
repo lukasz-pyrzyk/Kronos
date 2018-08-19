@@ -2,7 +2,7 @@
 
 namespace Kronos.Core.Messages
 {
-    public struct CountRequest : IRequest
+    public class CountRequest : IRequest
     {
         public static Request New(Auth auth)
         {

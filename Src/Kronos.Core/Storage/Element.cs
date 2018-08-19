@@ -22,8 +22,6 @@ namespace Kronos.Core.Storage
             ExpiryDate = DateTimeOffset.MinValue;
         }
 
-        public bool IsExpiring => ExpiryDate.HasValue;
-
         public bool IsExpired()
         {
             return IsExpired(DateTimeOffset.UtcNow);

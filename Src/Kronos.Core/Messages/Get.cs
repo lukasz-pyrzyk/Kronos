@@ -3,7 +3,7 @@ using Kronos.Core.Serialization;
 
 namespace Kronos.Core.Messages
 {
-    public struct GetRequest : IRequest
+    public class GetRequest : IRequest
     {
         public ReadOnlyMemory<byte> Key { get; set; }
 

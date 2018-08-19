@@ -1,12 +1,10 @@
 ﻿using System;
-using System.IO;
-using System.Runtime.InteropServices;
 using Kronos.Core.Exceptions;
 using Kronos.Core.Serialization;
 
 namespace Kronos.Core.Messages
 {
-    public struct Request : ISerializable<Request>
+    public class Request : ISerializable<Request>
     {
         public Auth Auth { get; set; }
 

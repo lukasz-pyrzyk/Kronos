@@ -23,18 +23,7 @@ namespace Kronos.Core.Configuration
         [DataMember]
         public AuthConfig Credentials { get; set; }
 
-        public Auth Authorization
-        {
-            get
-            {
-                if (_authorization.Equals(default(Auth)))
-                {
-                    _authorization = PrepareAuth();
-                }
-
-                return _authorization;
-            }
-        }
+        public Auth Authorization => _authorization ?? (_authorization = PrepareAuth());
 
         private Auth PrepareAuth()
         {
