@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Runtime.InteropServices;
 using System.Text;
 using Kronos.Core.Exceptions;
 using Kronos.Core.Messages;
@@ -57,23 +58,24 @@ namespace Kronos.Core.Serialization
             _position++;
         }
 
-        public void Write(int content)
+        public void Write(int value)
         {
             Span<byte> bytes = stackalloc byte[sizeof(int)];
-            NoAllocBitConverter.GetBytes(content, bytes);
+            MemoryMarshal.Write(bytes, ref value);
             Write(bytes);
         }
 
-        public void Write(long content)
+        public void Write(long value)
         {
             Span<byte> bytes = stackalloc byte [sizeof(long)];
-            NoAllocBitConverter.GetBytes(content, bytes);
+            MemoryMarshal.Write(bytes, ref value);
             Write(bytes);
         }
 
-        public void Write(short content)
+        public void Write(short value)
         {
-            var bytes = BitConverter.GetBytes(content);
+            Span<byte> bytes = stackalloc byte[sizeof(long)];
+            MemoryMarshal.Write(bytes, ref value);
             Write(bytes);
         }
 
