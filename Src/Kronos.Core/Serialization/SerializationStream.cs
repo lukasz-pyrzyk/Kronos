@@ -74,7 +74,7 @@ namespace Kronos.Core.Serialization
 
         public void Write(short value)
         {
-            Span<byte> bytes = stackalloc byte[sizeof(long)];
+            Span<byte> bytes = stackalloc byte[sizeof(short)];
             MemoryMarshal.Write(bytes, ref value);
             Write(bytes);
         }
