@@ -1,10 +1,11 @@
-﻿using Kronos.Core.Serialization;
+﻿using System;
+using Kronos.Core.Serialization;
 
 namespace Kronos.Core.Messages
 {
     public struct ContainsRequest : IRequest
     {
-        public string Key { get; set; }
+        public ReadOnlyMemory<byte> Key { get; set; }
 
         public static Request New(string key, Auth auth)
         {
@@ -12,18 +13,18 @@ namespace Kronos.Core.Messages
             {
                 Auth = auth,
                 Type = RequestType.Contains,
-                InternalRequest = new ContainsRequest { Key = key }
+                InternalRequest = new ContainsRequest { Key = key.GetMemory() }
             };
         }
 
         public void Write(ref SerializationStream stream)
         {
-            stream.Write(Key);
+            stream.Write(Key.Span);
         }
 
         public void Read(ref DeserializationStream stream)
         {
-            Key = stream.ReadString();
+            Key = stream.ReadMemory();
         }
     }
 

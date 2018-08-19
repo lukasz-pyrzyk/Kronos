@@ -7,17 +7,12 @@ namespace Kronos.Core.Storage
     {
         private readonly int _hashCode;
 
-        public string Name { get; }
+        public ReadOnlyMemory<byte> Name { get; }
 
-        public Key(string name)
+        public Key(ReadOnlyMemory<byte> name)
         {
             Name = name;
-            _hashCode = Hasher.Hash(name);
-        }
-
-        public override string ToString()
-        {
-            return Name;
+            _hashCode = Hasher.Hash(Name.Span);
         }
 
         public override int GetHashCode()
@@ -27,7 +22,7 @@ namespace Kronos.Core.Storage
 
         public bool Equals(Key other)
         {
-            return GetHashCode() == other.GetHashCode() && string.Equals(Name, other.Name);
+            return GetHashCode() == other.GetHashCode() && Name.Span.SequenceEqual(other.Name.Span);
         }
 
         public override bool Equals(object obj)

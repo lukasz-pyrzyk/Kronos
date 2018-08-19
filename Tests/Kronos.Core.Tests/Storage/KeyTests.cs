@@ -1,5 +1,7 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Kronos.Core.Hashing;
+using Kronos.Core.Serialization;
 using Kronos.Core.Storage;
 using Xunit;
 
@@ -7,47 +9,31 @@ namespace Kronos.Core.Tests.Storage
 {
     public class KeyTests
     {
+        private ReadOnlyMemory<byte> _key = "value".GetMemory();
+        private ReadOnlyMemory<byte> _key1 = "value1".GetMemory();
+
         [Fact]
         public void Ctor_AssignsProperties()
         {
-            // Arrange
-            const string userKey = "value";
-
             // Act
-            var metadata = new Key(userKey);
+            var metadata = new Key(_key);
 
             // Assert
-            Assert.Equal(metadata.Name, userKey);
+            Assert.Equal(metadata.Name, _key);
         }
 
         [Fact]
         public void GetHashcode_ReturnsKeyHashcode()
         {
             // Arrange
-            const string value = "key";
-            int expectedHash = Hasher.Hash(value);
+            int expectedHash = Hasher.Hash(_key.Span);
 
             // Act
-            Key metatada = new Key(value);
+            Key metatada = new Key(_key);
             int hash = metatada.GetHashCode();
 
             // Assert
             Assert.Equal(expectedHash, hash);
-        }
-
-        [Fact]
-        public void ToString_ContainsInformationAboutKeyAndExpiry()
-        {
-            // Arrange
-            const string value = "value";
-            var metadata = new Key(value);
-
-            // Act
-            string message = metadata.ToString();
-
-
-            // Assert
-            Assert.Equal(value, message);
         }
 
         [Theory]
@@ -59,12 +45,15 @@ namespace Kronos.Core.Tests.Storage
             Assert.Equal(result, comparisonResult);
         }
 
-        public static IEnumerable<object[]> ArgumentsData => new[]
+        public static IEnumerable<object[]> ArgumentsData ()
         {
-            new object[] { default(Key), new Key("key"), false },
-            new object[] { new Key("key"), default(Key), false },
-            new object[] { new Key("key"), new Key("key1"), false },
-            new object[] { new Key("key"), new Key("key"), true},
-        };
+            var first = Guid.NewGuid().ToString().GetMemory();
+            var second = Guid.NewGuid().ToString().GetMemory();
+
+            yield return new object[] {default(Key), new Key(first), false};
+            yield return new object[] {new Key(first), default(Key), false};
+            yield return new object[] {new Key(first), new Key(second), false};
+            yield return new object[] {new Key(first), new Key(first), true};
+        }
     }
 }

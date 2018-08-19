@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using FluentAssertions;
 using Kronos.Core.Messages;
+using Kronos.Core.Serialization;
 using Xunit;
 
 namespace Kronos.Core.Tests.Messages
@@ -28,7 +29,7 @@ namespace Kronos.Core.Tests.Messages
 
             var internalRequest = (InsertRequest)request.InternalRequest;
             internalRequest.Should().NotBeNull();
-            internalRequest.Key.Should().Be(key);
+            internalRequest.Key.Span.GetString().Should().Be(key);
             internalRequest.Expiry.Should().Be(expiry);
             internalRequest.Data.ToArray().Should().Equal(data);
         }

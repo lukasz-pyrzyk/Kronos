@@ -5,7 +5,7 @@ namespace Kronos.Core.Messages
 {
     public struct InsertRequest : IRequest
     {
-        public string Key { get; set; }
+        public ReadOnlyMemory<byte> Key { get; set; }
 
         public DateTimeOffset? Expiry { get; set; }
 
@@ -21,21 +21,21 @@ namespace Kronos.Core.Messages
                 {
                     Data = data,
                     Expiry = expiry,
-                    Key = key
+                    Key = key.GetMemory()
                 }
             };
         }
 
         public void Write(ref SerializationStream stream)
         {
-            stream.Write(Key);
+            stream.WriteWithPrefixLength(Key.Span);
             stream.WriteWithPrefixLength(Data.Span);
             stream.Write(Expiry);
         }
 
         public void Read(ref DeserializationStream stream)
         {
-            Key = stream.ReadString();
+            Key = stream.ReadMemory();
             Data = stream.ReadMemory();
             Expiry = stream.ReadDateTimeOffset();
         }

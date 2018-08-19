@@ -12,15 +12,17 @@ namespace Kronos.Core.Tests.Storage
 {
     public class InMemoryStorageTests
     {
+        private ReadOnlyMemory<byte> validKey = "key".GetMemory();
+        private ReadOnlyMemory<byte> invalidKey = "lorem ipsum".GetMemory();
+
         [Fact]
         public void Add_ReturnsTrue_WhenElementWasAdded()
         {
             // Arrange
-            const string key = "key";
             IStorage storage = CreateStorage();
 
             // Act
-            bool added = storage.Add(key, null, new byte[0]);
+            bool added = storage.Add(validKey, null, new byte[0]);
 
             // Assert
             Assert.Equal(storage.Count, 1);
@@ -31,11 +33,11 @@ namespace Kronos.Core.Tests.Storage
         public void Add_ReturnsTrue_WhenElementWasAdded_AndToTheExpiringKeys()
         {
             // Arrange
-            const string key = "key";
+
             IStorage storage = CreateStorage();
 
             // Act
-            bool added = storage.Add(key, DateTimeOffset.MaxValue, new byte[0]);
+            bool added = storage.Add(validKey, DateTimeOffset.MaxValue, new byte[0]);
 
             // Assert
             Assert.Equal(storage.Count, 1);
@@ -47,12 +49,11 @@ namespace Kronos.Core.Tests.Storage
         public void Add_ReturnsFalse_WhenKeyAlreadyExists()
         {
             // Arrange
-            const string key = "key";
             IStorage storage = CreateStorage();
 
             // Act
-            storage.Add(key, DateTimeOffset.MaxValue, new byte[0]);
-            bool added = storage.Add(key, DateTimeOffset.MaxValue, new byte[0]);
+            storage.Add(validKey, DateTimeOffset.MaxValue, new byte[0]);
+            bool added = storage.Add(validKey, DateTimeOffset.MaxValue, new byte[0]);
 
             // Assert
             Assert.False(added);
@@ -62,16 +63,15 @@ namespace Kronos.Core.Tests.Storage
         public async Task Add_OverridesValue_WhenKeyWasExpired()
         {
             // Arrange
-            const string key = "key";
             IStorage storage = CreateStorage();
             TimeSpan expiryTime = TimeSpan.FromSeconds(1);
             var now = DateTimeOffset.UtcNow;
 
             // Act
-            storage.Add(key, now + expiryTime, new byte[0]);
+            storage.Add(validKey, now + expiryTime, new byte[0]);
             await Task.Delay(TimeSpan.FromTicks(expiryTime.Ticks * 2)); // multiply by 2, mono behaves differently... Race condition?
 
-            bool added = storage.Add(key, DateTimeOffset.MaxValue, new byte[0]);
+            bool added = storage.Add(validKey, DateTimeOffset.MaxValue, new byte[0]);
 
             // Assert
             Assert.True(added);
@@ -82,12 +82,11 @@ namespace Kronos.Core.Tests.Storage
         {
             // Arrange
             IStorage storage = CreateStorage();
-            const string key = "lorem ipsum";
             var data = "lorem ipsum".GetMemory();
-            storage.Add(key, null, data);
+            storage.Add(validKey, null, data);
 
             // Act
-            bool success = storage.TryGet(key, out var received);
+            bool success = storage.TryGet(validKey, out var received);
 
             // Assert
             success.Should().BeTrue();
@@ -98,16 +97,13 @@ namespace Kronos.Core.Tests.Storage
         public void TryRemove_RemovesEntryFromStorage()
         {
             // Arrange
-            const string firstKey = "key1";
-            const string secondKey = "key2";
-
             IStorage storage = CreateStorage();
 
-            storage.Add(firstKey, null, new byte[0]);
-            storage.Add(secondKey, null, new byte[0]);
+            storage.Add(validKey, null, new byte[0]);
+            storage.Add(invalidKey, null, new byte[0]);
 
             // Act
-            bool deleted = storage.TryRemove(firstKey);
+            bool deleted = storage.TryRemove(validKey);
 
             // Assert
             Assert.True(deleted);
@@ -118,16 +114,13 @@ namespace Kronos.Core.Tests.Storage
         public void TryRemove_RemovesEntryFromStorage_AlsoFromExpiringKeys()
         {
             // Arrange
-            const string firstKey = "key1";
-            const string secondKey = "key2";
-
             IStorage storage = CreateStorage();
 
-            storage.Add(firstKey, DateTimeOffset.MaxValue, new byte[0]);
-            storage.Add(secondKey, DateTimeOffset.MaxValue, new byte[0]);
+            storage.Add(validKey, DateTimeOffset.MaxValue, new byte[0]);
+            storage.Add(invalidKey, DateTimeOffset.MaxValue, new byte[0]);
 
             // Act
-            bool deleted = storage.TryRemove(firstKey);
+            bool deleted = storage.TryRemove(validKey);
 
             // Assert
             Assert.True(deleted);
@@ -137,13 +130,10 @@ namespace Kronos.Core.Tests.Storage
         [Fact]
         public void TryRemove_DoestNotRemoveEntryFromStorageWhenKeyDoesNotExist()
         {
-            const string firstKey = "key1";
-            const string secondKey = "key2";
-
             IStorage storage = CreateStorage();
-            storage.Add(firstKey, DateTimeOffset.MaxValue, new byte[0]);
+            storage.Add(validKey, DateTimeOffset.MaxValue, new byte[0]);
 
-            bool deleted = storage.TryRemove(secondKey);
+            bool deleted = storage.TryRemove(invalidKey);
 
             Assert.False(deleted);
             Assert.Equal(storage.Count, 1);
@@ -154,11 +144,10 @@ namespace Kronos.Core.Tests.Storage
         {
             // Arrange
             IStorage storage = CreateStorage();
-            const string key = "lorem ipsum";
-            storage.Add(key, null, new byte[0]);
+            storage.Add(validKey, null, new byte[0]);
 
             // Act
-            bool result = storage.Contains(key);
+            bool result = storage.Contains(validKey);
 
             // Assert
             Assert.True(result);
@@ -169,11 +158,10 @@ namespace Kronos.Core.Tests.Storage
         {
             // Arrange
             IStorage storage = CreateStorage();
-            const string key = "lorem ipsum";
-            storage.Add(key, DateTimeOffset.MinValue, new byte[0]);
+            storage.Add(validKey, DateTimeOffset.MinValue, new byte[0]);
 
             // Act
-            bool result = storage.Contains(key);
+            bool result = storage.Contains(validKey);
 
             // Assert
             Assert.False(result);
@@ -186,7 +174,7 @@ namespace Kronos.Core.Tests.Storage
             IStorage storage = CreateStorage();
 
             // Assert
-            bool result = storage.Contains("lorem ipsum");
+            bool result = storage.Contains(validKey);
 
             // Act
             Assert.False(result);
@@ -202,7 +190,7 @@ namespace Kronos.Core.Tests.Storage
 
             for (int i = 0; i < count; i++)
             {
-                storage.Add(Guid.NewGuid().ToString(), DateTimeOffset.MaxValue, new byte[0]);
+                storage.Add(Guid.NewGuid().ToString().GetMemory(), DateTimeOffset.MaxValue, new byte[0]);
             }
 
             // Act
@@ -220,8 +208,8 @@ namespace Kronos.Core.Tests.Storage
             // Arrange
             IStorage storage = CreateStorage();
 
-            storage.Add("first", DateTimeOffset.MaxValue, new byte[0]);
-            storage.Add("second", DateTimeOffset.MaxValue, new byte[0]);
+            storage.Add(validKey, DateTimeOffset.MaxValue, new byte[0]);
+            storage.Add(invalidKey, DateTimeOffset.MaxValue, new byte[0]);
 
             // Act
             storage.Dispose();
@@ -239,7 +227,7 @@ namespace Kronos.Core.Tests.Storage
             IStorage storage = await CreateStorageWithSchedulerAndWait(cleaner);
 
             // Act
-            storage.Add("", null, new byte[0]);
+            storage.Add(invalidKey, null, new byte[0]);
 
             // Assert
             cleaner.Received(1).Clear(Arg.Any<PriorityQueue<ExpiringKey>>(), Arg.Any<IStorage>());
@@ -253,7 +241,7 @@ namespace Kronos.Core.Tests.Storage
             IStorage storage = await CreateStorageWithSchedulerAndWait(cleaner);
 
             // Act
-            storage.TryGet("", out var _);
+            storage.TryGet(invalidKey, out var _);
 
             // Assert
             cleaner.Received(1).Clear(Arg.Any<PriorityQueue<ExpiringKey>>(), Arg.Any<IStorage>());
@@ -267,7 +255,7 @@ namespace Kronos.Core.Tests.Storage
             IStorage storage = await CreateStorageWithSchedulerAndWait(cleaner);
 
             // Act
-            storage.Contains("");
+            storage.Contains(invalidKey);
 
             // Assert
             cleaner.Received(1).Clear(Arg.Any<PriorityQueue<ExpiringKey>>(), Arg.Any<IStorage>());

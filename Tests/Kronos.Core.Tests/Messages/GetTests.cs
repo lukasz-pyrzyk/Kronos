@@ -1,5 +1,6 @@
 ﻿using FluentAssertions;
 using Kronos.Core.Messages;
+using Kronos.Core.Serialization;
 using Xunit;
 
 namespace Kronos.Core.Tests.Messages
@@ -23,7 +24,7 @@ namespace Kronos.Core.Tests.Messages
             request.InternalRequest.Should().BeOfType<GetRequest>();
             var internalRequest = (GetRequest)request.InternalRequest;
             internalRequest.Should().NotBeNull();
-            internalRequest.Key.Should().Be(key);
+            internalRequest.Key.Span.GetString().Should().Be(key);
         }
     }
 }

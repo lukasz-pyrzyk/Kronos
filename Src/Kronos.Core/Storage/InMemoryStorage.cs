@@ -34,7 +34,7 @@ namespace Kronos.Core.Storage
         public int ExpiringCount => _expiringKeys.Count;
         internal bool CleanupRequested => _cleanupRequested == 1;
 
-        public bool Add(string name, DateTimeOffset? expiryDate, ReadOnlyMemory<byte> memory)
+        public bool Add(ReadOnlyMemory<byte> name, DateTimeOffset? expiryDate, ReadOnlyMemory<byte> memory)
         {
             ClearStorageIfRequested();
 
@@ -59,7 +59,7 @@ namespace Kronos.Core.Storage
             return true;
         }
 
-        public bool TryGet(string name, out ReadOnlyMemory<byte> data)
+        public bool TryGet(ReadOnlyMemory<byte> name, out ReadOnlyMemory<byte> data)
         {
             ClearStorageIfRequested();
 
@@ -75,7 +75,7 @@ namespace Kronos.Core.Storage
             return false;
         }
 
-        public bool TryRemove(string name)
+        public bool TryRemove(ReadOnlyMemory<byte> name)
         {
             ClearStorageIfRequested();
 
@@ -90,7 +90,7 @@ namespace Kronos.Core.Storage
             return found;
         }
 
-        public bool Contains(string name)
+        public bool Contains(ReadOnlyMemory<byte> name)
         {
             ClearStorageIfRequested();
 
