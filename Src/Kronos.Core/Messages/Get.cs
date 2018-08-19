@@ -30,6 +30,8 @@ namespace Kronos.Core.Messages
 
     public class GetResponse : IResponse
     {
+        public static readonly GetResponse CachedEmpty = new GetResponse();
+
         public ReadOnlyMemory<byte> Data { get; set; }
 
         public void Write(ref SerializationStream stream)

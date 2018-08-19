@@ -30,7 +30,10 @@ namespace Kronos.Core.Messages
 
     public class ContainsResponse : IResponse
     {
-        public bool Contains { get; set; }
+        public static readonly ContainsResponse CachedExists = new ContainsResponse() { Contains = true };
+        public static readonly ContainsResponse CachedMissing = new ContainsResponse() { Contains = false };
+
+        public bool Contains { get; private set; }
 
         public void Write(ref SerializationStream stream)
         {

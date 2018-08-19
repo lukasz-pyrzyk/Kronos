@@ -9,7 +9,7 @@ namespace Kronos.Core.Processing
         {
             bool contains = storage.Contains(request.Key);
 
-            return new ContainsResponse {Contains = contains};
+            return contains ? ContainsResponse.CachedExists : ContainsResponse.CachedMissing;
         }
     }
 }

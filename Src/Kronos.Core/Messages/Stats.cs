@@ -4,13 +4,15 @@ namespace Kronos.Core.Messages
 {
     public class StatsRequest : IRequest
     {
+        public static readonly StatsRequest Default = new StatsRequest();
+
         public static Request New(Auth auth)
         {
             return new Request
             {
                 Auth = auth,
                 Type = RequestType.Stats,
-                InternalRequest = new StatsRequest()
+                InternalRequest = Default
             };
         }
 

@@ -12,7 +12,7 @@ namespace Kronos.Core.Processing
                 return new GetResponse {  Data = package };
             }
 
-            return new GetResponse();
+            return GetResponse.CachedEmpty;
         }
     }
 }

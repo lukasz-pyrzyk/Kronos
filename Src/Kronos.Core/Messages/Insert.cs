@@ -43,7 +43,10 @@ namespace Kronos.Core.Messages
 
     public class InsertResponse : IResponse
     {
-        public bool Added { get; set; }
+        public static readonly InsertResponse CachedAdded = new InsertResponse { Added = true };
+        public static readonly InsertResponse CachedNotAdded = new InsertResponse { Added = false };
+
+        public bool Added { get; private set; }
 
         public void Write(ref SerializationStream stream)
         {

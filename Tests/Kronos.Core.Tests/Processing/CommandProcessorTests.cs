@@ -15,7 +15,7 @@ namespace Kronos.Core.Tests.Processing
         public async Task ExecuteAsync_CallsService()
         {
             // Arrange
-            var fakeResult = new Response { InternalResponse = new InsertResponse { Added = true } };
+            var fakeResult = new Response { InternalResponse = InsertResponse.CachedAdded };
             var request = new Request { InternalRequest = new InsertRequest()};
             var server = new ServerConfig();
             IConnection con = Substitute.For<IConnection>();

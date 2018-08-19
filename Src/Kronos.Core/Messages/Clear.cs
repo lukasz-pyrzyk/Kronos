@@ -4,13 +4,15 @@ namespace Kronos.Core.Messages
 {
     public class ClearRequest : IRequest
     {
+        public static readonly ClearRequest Default = new ClearRequest();
+
         public static Request New(Auth auth)
         {
             return new Request
             {
                 Auth = auth,
                 Type = RequestType.Clear,
-                InternalRequest = new ClearRequest()
+                InternalRequest = Default
             };
         }
 

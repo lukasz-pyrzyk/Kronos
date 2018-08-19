@@ -9,7 +9,7 @@ namespace Kronos.Core.Processing
         {
             bool added = storage.Add(request.Key, request.Expiry, request.Data);
 
-            return new InsertResponse { Added = added };
+            return added ? InsertResponse.CachedAdded : InsertResponse.CachedNotAdded;
         }
     }
 }
