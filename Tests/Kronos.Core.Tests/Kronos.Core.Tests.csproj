@@ -17,9 +17,4 @@
     <PackageReference Include="NLog" Version="5.0.0-beta03" />
   </ItemGroup>
 
-  <ItemGroup>
-    <Folder Include="Serialization\" />
-    <Folder Include="Storage\Cleaning\" />
-  </ItemGroup>
-
 </Project>

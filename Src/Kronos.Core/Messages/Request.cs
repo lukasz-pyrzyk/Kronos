@@ -34,13 +34,13 @@ namespace Kronos.Core.Messages
         public void Read(ref DeserializationStream stream)
         {
             Type = stream.ReadRequestType();
-            var a = new Auth();
-            a.Read(ref stream);
-            Auth = a;
+            Auth = new Auth();
+            Auth.Read(ref stream);
+
             switch (Type)
             {
-               case RequestType.Insert:
-                   InternalRequest = new InsertRequest();
+                case RequestType.Insert:
+                    InternalRequest = new InsertRequest();
                     break;
                 case RequestType.Get:
                     InternalRequest = new GetRequest();
