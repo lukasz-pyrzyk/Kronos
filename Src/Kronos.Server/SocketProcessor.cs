@@ -1,39 +1,24 @@
-﻿using System;
-using System.Buffers;
+﻿using System.IO;
 using System.Net.Sockets;
 using Google.Protobuf;
 using Kronos.Core.Messages;
 using Kronos.Core.Networking;
-using Kronos.Core.Pooling;
+using BufferedStream = Kronos.Core.Pooling.BufferedStream;
 
 namespace Kronos.Server
 {
     public class SocketProcessor : ISocketProcessor
     {
-        private readonly byte[] _sizeBuffer = new byte[sizeof(int)];
-
-        private readonly ArrayPool<byte> _pool = ArrayPool<byte>.Create();
         private readonly BufferedStream _stream = new BufferedStream();
 
         public Request ReceiveRequest(Socket client)
         {
-            SocketUtils.ReceiveAll(client, _sizeBuffer, _sizeBuffer.Length);
-            int packageSize = BitConverter.ToInt32(_sizeBuffer, 0);
-            Array.Clear(_sizeBuffer, 0, _sizeBuffer.Length);
-
-            byte[] data = _pool.Rent(packageSize);
-            Request request;
-            try
+            using (var stream = new NetworkStream(client, FileAccess.Read, false))
             {
-                SocketUtils.ReceiveAll(client, data, packageSize);
-                request = Request.Parser.ParseFrom(data, 0, packageSize);
-            }
-            finally
-            {
-                _pool.Return(data);
-            }
+                var request = Request.Parser.ParseDelimitedFrom(stream);
 
-            return request;
+                return request;
+            }
         }
 
         public void SendResponse(Socket client, Response response)

@@ -85,7 +85,7 @@ namespace Kronos.Server
                     Logger.Error($"Error on shutting down server socket {ex}");
                 }
             }
-            
+
             _listener.Stop();
             _listener.Server.Dispose();
 
