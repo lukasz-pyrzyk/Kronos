@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Buffers;
-using System.Collections.Generic;
 using System.Diagnostics;
+using System.IO;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using Google.Protobuf;
@@ -9,7 +9,7 @@ using Kronos.Core.Configuration;
 using Kronos.Core.Exceptions;
 using Kronos.Core.Messages;
 using Kronos.Core.Networking;
-using Kronos.Core.Pooling;
+using BufferedStream = Kronos.Core.Pooling.BufferedStream;
 
 namespace Kronos.Client
 {
@@ -21,7 +21,7 @@ namespace Kronos.Client
         public async Task<Response> SendAsync(Request request, ServerConfig server)
         {
             Socket socket = null;
-            Response response = null;
+            Response response;
             try
             {
                 Trace.WriteLine("Connecting to the server socket");
@@ -50,15 +50,10 @@ namespace Kronos.Client
 
         private async Task SendAsync(Request request, Socket server)
         {
-            request.WriteTo(_stream);
-
-            try
+            using (var stream = new NetworkStream(server, FileAccess.Write, false))
             {
-                await SocketUtils.SendAllAsync(server, _stream.RawBytes, (int) _stream.Length).ConfigureAwait(false);
-            }
-            finally
-            {
-                _stream.Clean();
+                request.WriteDelimitedTo(stream);
+                await stream.FlushAsync();
             }
         }
 
@@ -81,11 +76,6 @@ namespace Kronos.Client
             var response = Response.Parser.ParseFrom(new CodedInputStream(requestBytes, 0, packageSize));
 
             return response;
-        }
-
-        private static IEnumerable<TimeSpan> CreateExponentialBackoff(int retryCount)
-        {
-            for (var i = 1; i <= retryCount; i++) yield return TimeSpan.FromSeconds(i * i);
         }
     }
 }
