@@ -1,12 +1,12 @@
-﻿using System.Net.Sockets;
+﻿using System.IO;
 using Kronos.Core.Messages;
 
 namespace Kronos.Server
 {
     public interface ISocketProcessor
     {
-        Request ReceiveRequest(Socket client);
+        Request ReceiveRequest(Stream client);
 
-        void SendResponse(Socket client, Response response);
+        void SendResponse(Stream client, Response response);
     }
 }

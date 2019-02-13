@@ -1,5 +1,4 @@
 ﻿using System.IO;
-using System.Net.Sockets;
 using Google.Protobuf;
 using Kronos.Core.Messages;
 
@@ -7,21 +6,15 @@ namespace Kronos.Server
 {
     public class SocketProcessor : ISocketProcessor
     {
-        public Request ReceiveRequest(Socket client)
+        public Request ReceiveRequest(Stream stream)
         {
-            using (var stream = new NetworkStream(client, FileAccess.Read, false))
-            {
-                return Request.Parser.ParseDelimitedFrom(stream);
-            }
+            return Request.Parser.ParseDelimitedFrom(stream);
         }
 
-        public void SendResponse(Socket client, Response response)
+        public void SendResponse(Stream stream, Response response)
         {
-            using (var stream = new NetworkStream(client, FileAccess.Write, false))
-            {
-                response.WriteDelimitedTo(stream);
-                stream.Flush(); // TODO: async
-            }
+            response.WriteDelimitedTo(stream);
+            stream.Flush(); // TODO: async
         }
     }
 }

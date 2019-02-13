@@ -1,4 +1,5 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
@@ -44,11 +45,12 @@ namespace Kronos.Server
             {
                 while (!token.IsCancellationRequested)
                 {
-                    Socket socket = null;
+                    TcpClient client = null;
                     try
                     {
-                        socket = await _listener.AcceptSocketAsync().ConfigureAwait(false);
-                        ProcessSocketConnection(socket);
+                        client = await _listener.AcceptTcpClientAsync().ConfigureAwait(false);
+                        var stream = client.GetStream();
+                        ProcessSocketConnection(stream);
                     }
                     catch (ObjectDisposedException)
                     {
@@ -60,7 +62,7 @@ namespace Kronos.Server
                     }
                     finally
                     {
-                        socket?.Shutdown(SocketShutdown.Send);
+                        client?.Dispose();
                     }
                 }
             }, token, TaskCreationOptions.LongRunning, TaskScheduler.Current);
@@ -96,16 +98,16 @@ namespace Kronos.Server
             Stop();
         }
 
-        private void ProcessSocketConnection(Socket client)
+        private void ProcessSocketConnection(Stream stream)
         {
             try
             {
-                Request request = _processor.ReceiveRequest(client);
+                Request request = _processor.ReceiveRequest(stream);
 
                 Logger.Debug($"Processing new request {request.Type}");
                 Response response = _requestProcessor.Handle(request, _auth);
 
-                _processor.SendResponse(client, response);
+                _processor.SendResponse(stream, response);
                 Logger.Debug("Processing finished");
             }
             catch (Exception ex)
