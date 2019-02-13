@@ -6,7 +6,6 @@ using System.Threading;
 using System.Threading.Tasks;
 using Kronos.Core.Configuration;
 using Kronos.Core.Messages;
-using Kronos.Core.Networking;
 using Kronos.Core.Processing;
 using NLog;
 
@@ -49,7 +48,6 @@ namespace Kronos.Server
                     try
                     {
                         socket = await _listener.AcceptSocketAsync().ConfigureAwait(false);
-                        SocketUtils.Prepare(socket);
                         ProcessSocketConnection(socket);
                     }
                     catch (ObjectDisposedException)

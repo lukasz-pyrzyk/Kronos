@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Buffers;
 using System.Diagnostics;
 using System.IO;
 using System.Net.Sockets;
@@ -9,15 +8,11 @@ using Kronos.Core.Configuration;
 using Kronos.Core.Exceptions;
 using Kronos.Core.Messages;
 using Kronos.Core.Networking;
-using BufferedStream = Kronos.Core.Pooling.BufferedStream;
 
 namespace Kronos.Client
 {
     public class Connection : IConnection
     {
-        private readonly byte[] _sizeBytes = new byte[sizeof(int)];
-        private readonly BufferedStream _stream = new BufferedStream();
-
         public async Task<Response> SendAsync(Request request, ServerConfig server)
         {
             Socket socket = null;
@@ -40,8 +35,6 @@ namespace Kronos.Client
             }
             finally
             {
-                if (!_stream.IsClean) _stream.Clean();
-
                 socket?.Dispose();
             }
 
@@ -59,23 +52,10 @@ namespace Kronos.Client
 
         private async Task<Response> ReceiveAndDeserializeAsync(Socket socket)
         {
-            await SocketUtils.ReceiveAllAsync(socket, _sizeBytes, _sizeBytes.Length).ConfigureAwait(false);
-            var packageSize = BitConverter.ToInt32(_sizeBytes, 0);
-            Array.Clear(_sizeBytes, 0, _sizeBytes.Length);
-
-            var requestBytes = ArrayPool<byte>.Shared.Rent(packageSize);
-            try
+            using (var stream = new NetworkStream(socket, FileAccess.Read, false))
             {
-                await SocketUtils.ReceiveAllAsync(socket, requestBytes, packageSize).ConfigureAwait(false);
+                return Response.Parser.ParseDelimitedFrom(stream);
             }
-            finally
-            {
-                ArrayPool<byte>.Shared.Return(requestBytes);
-            }
-
-            var response = Response.Parser.ParseFrom(new CodedInputStream(requestBytes, 0, packageSize));
-
-            return response;
         }
     }
 }
