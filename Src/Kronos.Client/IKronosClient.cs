@@ -50,9 +50,9 @@ namespace Kronos.Client
         Task ClearAsync();
 
         /// <summary>
-        /// Returns stats from all servers
+        /// Returns stats from the server
         /// </summary>
         /// <returns></returns>
-        Task<StatsResponse[]> StatsAsync();
+        Task<StatsResponse> StatsAsync();
     }
 }

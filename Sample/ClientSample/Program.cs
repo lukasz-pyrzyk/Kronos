@@ -14,9 +14,7 @@ namespace ClientSample
 
         private static async Task StartAsync()
         {
-            string configPath = "KronosConfig.json";
-
-            IKronosClient client = KronosClientFactory.FromFile(configPath);
+            IKronosClient client = KronosClientFactory.FromIp("127.0.0.1", 44000);
 
             var watch = Stopwatch.StartNew();
             byte[] package = new byte[1024 * 9];

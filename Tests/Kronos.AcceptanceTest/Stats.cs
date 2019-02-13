@@ -31,10 +31,9 @@ namespace Kronos.AcceptanceTest
             var stats = await client.StatsAsync();
 
             // Assert
-            var serverStats = stats.Single();
-            serverStats.Should().NotBeNull();
-            serverStats.Elements.Should().Be(elements);
-            serverStats.MemoryUsed.Should().Be(elements * mbperElement);
+            stats.Should().NotBeNull();
+            stats.Elements.Should().Be(elements);
+            stats.MemoryUsed.Should().Be(elements * mbperElement);
         }
     }
 }
