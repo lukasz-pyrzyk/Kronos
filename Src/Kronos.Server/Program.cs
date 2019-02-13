@@ -28,12 +28,12 @@ namespace Kronos.Server
         public static void Start(SettingsArgs settings, LoggingConfiguration config)
         {
             LogManager.Configuration = config;
-            
+
 
             IStorage storage = new InMemoryStorage();
 
             IRequestProcessor requestProcessor = new RequestProcessor(storage);
-            ISocketProcessor processor = new SocketProcessor();
+            var processor = new SocketProcessor();
             IListener server = new Listener(settings, processor, requestProcessor);
 
             server.Start();

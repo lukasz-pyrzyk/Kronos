@@ -4,7 +4,7 @@ using Kronos.Core.Messages;
 
 namespace Kronos.Server
 {
-    public class SocketProcessor : ISocketProcessor
+    public class SocketProcessor
     {
         public Request ReceiveRequest(Stream stream)
         {
