@@ -15,34 +15,10 @@ Kronos is distributed, in-memory cache system based on .NET Core. Client library
 $ Install-Package Kronos.Client
 ```
 
-### Kronos.Client - Configuration file
-Kronos client requires a cluster configuration file in JSON format. Example file is assigned to the package:
-```json
-{
-    "ClusterConfig": {
-        "Servers": [
-            {
-                "Ip": "127.0.0.1",
-                "Port": 44000
-            },
-            {
-                "Ip": "127.0.0.1",
-                "Port": 44001
-            },
-            {
-                "Ip": "127.0.0.1",
-                "Port": 44002
-            }
-        ]
-    }
-}
-```
-
 ### Kronos.Client - Usage
 ```csharp
 // initialize client
-string configPath = "KronosConfig.json";
-IKronosClient client = KronosClientFactory.CreateClient(configPath);
+KronosClient client = KronosClientFactory.FromIp("127.0.0.1", 44000);
 
 // create a key, package and expiry date
 string key = "key";
@@ -72,8 +48,6 @@ await client.ClearAsync();
 To start server using docker, login as a sudo and type:
 ```bash
 docker run -td -p 44000:44000 lukaszpyrzyk/kronos 44000
-docker run -td -p 44001:44001 lukaszpyrzyk/kronos 44001
-docker run -td -p 44002:44002 lukaszpyrzyk/kronos 44002
 ```
 where: 
 * t - allocate a pseudo-tty
@@ -83,36 +57,6 @@ where:
 * 44000 - number of internal port, value passed to the Kronos
 
 Full documentation is available on the [docker reference page](https://docs.docker.com/engine/reference/run/)
-
-### Cluster initialization using docker-compose
-Create a docker-compose.yml file with cluster configuration:
-```yaml
-kronos-a:
-  image: lukaszpyrzyk/kronos
-  command: "44000"
-  ports:
-    - 44000:44000
-
-kronos-b:
-  image: lukaszpyrzyk/kronos
-  command: "44001"
-  ports:
-    - 44001:44001
-
-kronos-c:
-  image: lukaszpyrzyk/kronos
-  command: "44002"
-  ports:
-    - 44002:44002
-```
-Save the file and run command:
-```bash
-docker-compose up -d
-```
-where 
-* d - start a containers in detached mode
-
-This command will create and start three Kronos Severs.
 
 ### Building own docker image
 If you don't want to use my docker image, you can build your own. Clone repository and type: 

@@ -1,11 +1,7 @@
-﻿using System.Runtime.Serialization;
-
-namespace Kronos.Core.Configuration
+﻿namespace Kronos.Core.Configuration
 {
-    [DataContract]
     public class KronosConfig
     {
-        [DataMember]
-        public ClusterConfig ClusterConfig { get; set; }
+        public ServerConfig Server { get; set; }
     }
 }
