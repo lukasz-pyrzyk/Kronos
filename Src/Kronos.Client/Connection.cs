@@ -15,19 +15,20 @@ namespace Kronos.Client
     {
         public async Task<Response> SendAsync(Request request, ServerConfig server)
         {
-            Socket socket = null;
+            TcpClient client = null;
             Response response;
             try
             {
                 Trace.WriteLine("Connecting to the server socket");
-                socket = new Socket(SocketType.Stream, ProtocolType.IP);
-                await socket.ConnectAsync(server.EndPoint).ConfigureAwait(false);
+                client = new TcpClient();
+                await client.ConnectAsync(server.EndPoint.Address, server.Port).ConfigureAwait(false);
+                var stream = client.GetStream();
 
                 Trace.WriteLine("Sending request");
-                await SendAsync(request, socket).ConfigureAwait(false);
+                await SendAsync(request, stream).ConfigureAwait(false);
 
                 Trace.WriteLine("Waiting for response");
-                response = await ReceiveAndDeserializeAsync(socket).ConfigureAwait(false);
+                response = await ReceiveAndDeserializeAsync(stream).ConfigureAwait(false);
             }
             catch (Exception ex)
             {
@@ -35,27 +36,21 @@ namespace Kronos.Client
             }
             finally
             {
-                socket?.Dispose();
+                client?.Dispose();
             }
 
             return response;
         }
 
-        private async Task SendAsync(Request request, Socket server)
+        private async Task SendAsync(Request request, Stream stream)
         {
-            using (var stream = new NetworkStream(server, FileAccess.Write, false))
-            {
-                request.WriteDelimitedTo(stream);
-                await stream.FlushAsync();
-            }
+            request.WriteDelimitedTo(stream);
+            await stream.FlushAsync();
         }
 
-        private async Task<Response> ReceiveAndDeserializeAsync(Socket socket)
+        private async Task<Response> ReceiveAndDeserializeAsync(Stream stream)
         {
-            using (var stream = new NetworkStream(socket, FileAccess.Read, false))
-            {
-                return Response.Parser.ParseDelimitedFrom(stream);
-            }
+            return Response.Parser.ParseDelimitedFrom(stream);
         }
     }
 }
