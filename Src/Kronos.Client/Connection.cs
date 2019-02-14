@@ -28,7 +28,7 @@ namespace Kronos.Client
                 await SendAsync(request, stream).ConfigureAwait(false);
 
                 Trace.WriteLine("Waiting for response");
-                response = await ReceiveAndDeserializeAsync(stream).ConfigureAwait(false);
+                response = ReceiveAndDeserialize(stream);
             }
             catch (Exception ex)
             {
@@ -48,7 +48,7 @@ namespace Kronos.Client
             await stream.FlushAsync();
         }
 
-        private async Task<Response> ReceiveAndDeserializeAsync(Stream stream)
+        private Response ReceiveAndDeserialize(Stream stream)
         {
             return Response.Parser.ParseDelimitedFrom(stream);
         }
