@@ -40,7 +40,7 @@ namespace Kronos.Server
 
             CancellationToken token = _cancel.Token;
 
-            Task.Factory.StartNew(async () =>
+            _ = Task.Factory.StartNew(async () =>
             {
                 while (!token.IsCancellationRequested)
                 {
