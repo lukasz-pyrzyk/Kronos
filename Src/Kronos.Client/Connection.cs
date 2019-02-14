@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Diagnostics;
-using System.IO;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using Google.Protobuf;
 using Kronos.Client.Configuration;
-using Kronos.Core.Configuration;
+using Kronos.Core;
 using Kronos.Core.Exceptions;
 using Kronos.Core.Messages;
 
@@ -13,6 +11,8 @@ namespace Kronos.Client
 {
     public class Connection
     {
+        private readonly SocketConnection _connection = new SocketConnection();
+
         public async Task<Response> SendAsync(Request request, ServerConfig server)
         {
             TcpClient client = null;
@@ -25,10 +25,10 @@ namespace Kronos.Client
                 var stream = client.GetStream();
 
                 Trace.WriteLine("Sending request");
-                await SendAsync(request, stream).ConfigureAwait(false);
+                await _connection.Send(request, stream).ConfigureAwait(false);
 
                 Trace.WriteLine("Waiting for response");
-                response = ReceiveAndDeserialize(stream);
+                response = _connection.ReceiveResponse(stream);
             }
             catch (Exception ex)
             {
@@ -40,17 +40,6 @@ namespace Kronos.Client
             }
 
             return response;
-        }
-
-        private async Task SendAsync(Request request, Stream stream)
-        {
-            request.WriteDelimitedTo(stream);
-            await stream.FlushAsync();
-        }
-
-        private Response ReceiveAndDeserialize(Stream stream)
-        {
-            return Response.Parser.ParseDelimitedFrom(stream);
         }
     }
 }

@@ -5,6 +5,7 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
+using Kronos.Core;
 using Kronos.Core.Messages;
 using Kronos.Core.Processing;
 using NLog;
@@ -14,18 +15,17 @@ namespace Kronos.Server
     public class Listener : IDisposable
     {
         private readonly TcpListener _listener;
-        private readonly SocketProcessor _processor;
+        private readonly SocketConnection _socketConnection = new SocketConnection();
         private readonly RequestProcessor _requestProcessor;
         private readonly CancellationTokenSource _cancel = new CancellationTokenSource();
 
         private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
         private readonly Auth _auth;
 
-        public Listener(SettingsArgs settings, SocketProcessor processor, RequestProcessor requestProcessor)
+        public Listener(SettingsArgs settings, RequestProcessor requestProcessor)
         {
             _auth = Auth.FromCfg(settings.Login, settings.HashedPassword());
             _listener = new TcpListener(IPAddress.Any, settings.Port);
-            _processor = processor;
             _requestProcessor = requestProcessor;
 
             _listener.Server.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, 1);
@@ -47,9 +47,9 @@ namespace Kronos.Server
                     TcpClient client = null;
                     try
                     {
-                        client = await _listener.AcceptTcpClientAsync().ConfigureAwait(false);
+                        client = await _listener.AcceptTcpClientAsync();
                         var stream = client.GetStream();
-                        ProcessSocketConnection(stream);
+                        _ = ProcessSocketConnection(stream);
                     }
                     catch (ObjectDisposedException)
                     {
@@ -97,16 +97,16 @@ namespace Kronos.Server
             Stop();
         }
 
-        private void ProcessSocketConnection(Stream stream)
+        private async Task ProcessSocketConnection(Stream stream)
         {
             try
             {
-                Request request = _processor.ReceiveRequest(stream);
+                Request request = _socketConnection.ReceiveRequest(stream);
 
                 Logger.Debug($"Processing new request {request.Type}");
                 Response response = _requestProcessor.Handle(request, _auth);
 
-                _processor.SendResponse(stream, response);
+                await _socketConnection.Send(response, stream);
                 Logger.Debug("Processing finished");
             }
             catch (Exception ex)
