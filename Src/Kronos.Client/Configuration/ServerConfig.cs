@@ -1,26 +1,20 @@
 ﻿using System.Net;
-using System.Runtime.Serialization;
+using Kronos.Client.Utils;
 using Kronos.Core.Messages;
-using Kronos.Core.Networking;
 
-namespace Kronos.Core.Configuration
+namespace Kronos.Client.Configuration
 {
-    [DataContract]
     public class ServerConfig
     {
         private IPEndPoint _endPoint;
         private Auth _auth;
 
-        [DataMember]
         public string Domain { get; set; }
 
-        [DataMember]
         public string Ip { get; set; }
 
-        [DataMember]
         public int Port { get; set; }
 
-        [DataMember]
         public AuthConfig Credentials { get; set; }
 
         public Auth Auth => _auth ?? (_auth = PrepareAuth());
@@ -29,7 +23,7 @@ namespace Kronos.Core.Configuration
         {
             if (Credentials != null)
             {
-                return Auth.FromCfg(Credentials);
+                return Auth.FromCfg(Credentials.Login, Credentials.HashedPassword);
             }
             return Auth.Default();
         }

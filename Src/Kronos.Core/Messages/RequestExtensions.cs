@@ -7,25 +7,18 @@ namespace Kronos.Core.Messages
 {
     public partial class Auth
     {
-        public const string DefaultLogin = "user";
-        public const string DefaultPassword = "password";
-
-        public static Auth FromCfg(AuthConfig cfg)
+        public static Auth FromCfg(string login, byte[] password)
         {
             return new Auth
             {
-                Login = cfg.Login,
-                HashedPassword = ByteString.CopyFrom(cfg.HashedPassword)
+                Login = login,
+                HashedPassword = ByteString.CopyFrom(password)
             };
         }
 
         public static Auth Default()
         {
-            return FromCfg(new AuthConfig
-            {
-                Login = DefaultLogin,
-                Password = DefaultPassword
-            });
+            return FromCfg(DefaultSettings.Login, DefaultSettings.HashedPassword);
         }
 
         public bool Authorize(Auth auth)

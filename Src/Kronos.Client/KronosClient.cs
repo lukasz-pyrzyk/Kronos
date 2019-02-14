@@ -1,7 +1,7 @@
 ﻿using System;
 using System.Diagnostics;
 using System.Threading.Tasks;
-using Kronos.Core.Configuration;
+using Kronos.Client.Configuration;
 using Kronos.Core.Messages;
 
 namespace Kronos.Client

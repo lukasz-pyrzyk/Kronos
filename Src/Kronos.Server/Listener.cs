@@ -5,14 +5,13 @@ using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Kronos.Core.Configuration;
 using Kronos.Core.Messages;
 using Kronos.Core.Processing;
 using NLog;
 
 namespace Kronos.Server
 {
-    public class Listener : IListener
+    public class Listener : IDisposable
     {
         private readonly TcpListener _listener;
         private readonly SocketProcessor _processor;
@@ -24,7 +23,7 @@ namespace Kronos.Server
 
         public Listener(SettingsArgs settings, SocketProcessor processor, RequestProcessor requestProcessor)
         {
-            _auth = Auth.FromCfg(new AuthConfig { Login = settings.Login, Password = settings.Password });
+            _auth = Auth.FromCfg(settings.Login, settings.HashedPassword());
             _listener = new TcpListener(IPAddress.Any, settings.Port);
             _processor = processor;
             _requestProcessor = requestProcessor;

@@ -4,14 +4,14 @@ using System.IO;
 using System.Net.Sockets;
 using System.Threading.Tasks;
 using Google.Protobuf;
+using Kronos.Client.Configuration;
 using Kronos.Core.Configuration;
 using Kronos.Core.Exceptions;
 using Kronos.Core.Messages;
-using Kronos.Core.Networking;
 
 namespace Kronos.Client
 {
-    public class Connection : IConnection
+    public class Connection
     {
         public async Task<Response> SendAsync(Request request, ServerConfig server)
         {

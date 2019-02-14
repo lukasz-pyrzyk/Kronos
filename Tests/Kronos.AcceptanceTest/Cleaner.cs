@@ -25,7 +25,7 @@ namespace Kronos.AcceptanceTest
             // Act
             await client.InsertAsync(key, data, DateTime.UtcNow);
 
-            await Task.Delay(Settings.CleanupTimeMs);
+            await Task.Delay(DefaultSettings.CleanupTimeMs);
 
             var containsResponse = await client.ContainsAsync(key);
 

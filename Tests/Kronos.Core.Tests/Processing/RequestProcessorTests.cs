@@ -17,7 +17,7 @@ namespace Kronos.Core.Tests.Processing
             // Arrange
             IStorage storage = Substitute.For<IStorage>();
             var processor = new RequestProcessor(storage);
-            var request = new Request { Auth = Auth.FromCfg(new AuthConfig { Login = "random", Password = "random" }) };
+            var request = new Request { Auth = Auth.FromCfg(DefaultSettings.Login, DefaultSettings.HashedPassword) };
             var serverAuth = Auth.Default();
 
             // Act

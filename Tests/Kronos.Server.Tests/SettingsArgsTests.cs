@@ -12,9 +12,9 @@ namespace Kronos.Server.Tests
             var args = new SettingsArgs();
 
             // Assert
-            Assert.Equal(args.Port, Settings.DefaultPort);
-            Assert.Equal(args.Login, Settings.DefaultLogin);
-            Assert.Equal(args.Password, Settings.DefaultPassword);
+            Assert.Equal(args.Port, DefaultSettings.Port);
+            Assert.Equal(args.Login, DefaultSettings.Login);
+            Assert.Equal(args.Password, DefaultSettings.Password);
         }
     }
 }

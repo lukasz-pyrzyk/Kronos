@@ -34,7 +34,7 @@ namespace Kronos.Server
 
             var requestProcessor = new RequestProcessor(storage);
             var processor = new SocketProcessor();
-            IListener server = new Listener(settings, processor, requestProcessor);
+            Listener server = new Listener(settings, processor, requestProcessor);
 
             server.Start();
             IsWorking = true;

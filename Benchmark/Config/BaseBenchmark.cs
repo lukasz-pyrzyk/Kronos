@@ -43,7 +43,7 @@ namespace Benchmark.Config
             {
                 LogMessage($"EXCEPTION: {ex}");
             }
-            KronosClient = KronosClientFactory.FromIp(KronosConnection, Settings.DefaultPort);
+            KronosClient = KronosClientFactory.FromIp(KronosConnection, DefaultSettings.Port);
             AdditionalSetup();
         }
 
