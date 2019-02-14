@@ -16,13 +16,13 @@ namespace Kronos.Server
     {
         private readonly TcpListener _listener;
         private readonly SocketProcessor _processor;
-        private readonly IRequestProcessor _requestProcessor;
+        private readonly RequestProcessor _requestProcessor;
         private readonly CancellationTokenSource _cancel = new CancellationTokenSource();
 
         private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
         private readonly Auth _auth;
 
-        public Listener(SettingsArgs settings, SocketProcessor processor, IRequestProcessor requestProcessor)
+        public Listener(SettingsArgs settings, SocketProcessor processor, RequestProcessor requestProcessor)
         {
             _auth = Auth.FromCfg(new AuthConfig { Login = settings.Login, Password = settings.Password });
             _listener = new TcpListener(IPAddress.Any, settings.Port);

@@ -32,7 +32,7 @@ namespace Kronos.Server
 
             IStorage storage = new InMemoryStorage();
 
-            IRequestProcessor requestProcessor = new RequestProcessor(storage);
+            var requestProcessor = new RequestProcessor(storage);
             var processor = new SocketProcessor();
             IListener server = new Listener(settings, processor, requestProcessor);
 
