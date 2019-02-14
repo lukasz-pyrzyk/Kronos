@@ -26,10 +26,5 @@ namespace Kronos.Core.Processing
         {
             return (int)Math.Floor(number / (1024 * 1024));
         }
-
-        protected override StatsResponse SelectResponse(Response response)
-        {
-            return response.StatsResponse;
-        }
     }
 }

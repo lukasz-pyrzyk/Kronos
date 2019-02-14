@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Kronos.Client;
 using Kronos.Core.Configuration;
 using Xunit;
@@ -26,10 +27,10 @@ namespace Kronos.AcceptanceTest
 
             await Task.Delay(Settings.CleanupTimeMs);
 
-            bool contains = await client.ContainsAsync(key);
+            var containsResponse = await client.ContainsAsync(key);
 
             // Assert
-            Assert.False(contains, "Object exists after cleanup");
+            containsResponse.Contains.Should().BeFalse("Object should be deleted because of the cleanup");
         }
     }
 }
