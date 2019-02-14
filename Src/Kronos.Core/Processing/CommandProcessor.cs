@@ -28,21 +28,6 @@ namespace Kronos.Core.Processing
             return selectedResponse;
         }
 
-        public async Task<TResponse[]> ExecuteAsync(Request[] requests, IConnection[] services, ServerConfig[] servers)
-        {
-            int count = services.Length;
-            Task<TResponse>[] responses = new Task<TResponse>[count];
-            for (int i = 0; i < count; i++)
-            {
-                IConnection con = services[i];
-                ServerConfig server = servers[i];
-                Request request = requests[i];
-                responses[i] = ExecuteAsync(request, con, server);
-            }
-
-            return await Task.WhenAll(responses);
-        }
-
         protected abstract TResponse SelectResponse(Response response);
     }
 }
