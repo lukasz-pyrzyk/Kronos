@@ -74,6 +74,3 @@ I am a student of Opole University Of technology and this is my Engineering Thes
 License
 ----
 MIT
-
-   [kronos-nuget]: <https://www.nuget.org/packages/Kronos.Client/>
-   [protobuf-net-url]: <https://github.com/mgravell/protobuf-net>
