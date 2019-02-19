@@ -4,13 +4,13 @@ using System.Collections.Generic;
 using System.Threading;
 using Google.Protobuf;
 using Kronos.Core.Storage.Cleaning;
-using NLog;
+using ZeroLog;
 
 namespace Kronos.Core.Storage
 {
     public class InMemoryStorage : IStorage
     {
-        private static readonly Logger Logger = LogManager.GetCurrentClassLogger();
+        private static readonly ILog Logger = LogManager.GetLogger<InMemoryStorage>();
 
         private readonly Dictionary<Key, Element> _storage = new Dictionary<Key, Element>();
         private readonly PriorityQueue<ExpiringKey> _expiringKeys = new PriorityQueue<ExpiringKey>();

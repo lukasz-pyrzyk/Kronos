@@ -1,11 +1,10 @@
 ﻿using System;
 using System.Threading;
-using System.Xml;
 using EntryPoint;
 using Kronos.Core.Processing;
 using Kronos.Core.Storage;
-using NLog;
-using NLog.Config;
+using ZeroLog.Appenders;
+using ZeroLog.Config;
 
 namespace Kronos.Server
 {
@@ -21,15 +20,12 @@ namespace Kronos.Server
 
             PrintLogo();
 
-            var config = LoggerSetup();
-            Start(settings, config);
+            SetupLogger();
+            Start(settings);
         }
 
-        public static void Start(SettingsArgs settings, LoggingConfiguration config)
+        public static void Start(SettingsArgs settings)
         {
-            LogManager.Configuration = config;
-            
-
             IStorage storage = new InMemoryStorage();
 
             IRequestProcessor requestProcessor = new RequestProcessor(storage);
@@ -80,10 +76,9 @@ namespace Kronos.Server
             Console.WriteLine(line);
         }
 
-        private static XmlLoggingConfiguration LoggerSetup()
+        private static void SetupLogger()
         {
-            var reader = XmlReader.Create("NLog.config");
-            return new XmlLoggingConfiguration(reader, null);
+            BasicConfigurator.Configure(new[] { new ConsoleAppender() });
         }
     }
 }

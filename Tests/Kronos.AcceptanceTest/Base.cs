@@ -5,9 +5,6 @@ using System.Threading.Tasks;
 using Kronos.Client;
 using Kronos.Core.Configuration;
 using Kronos.Server;
-using NLog;
-using NLog.Config;
-using NLog.Targets;
 using Xunit;
 
 namespace Kronos.AcceptanceTest
@@ -36,8 +33,7 @@ namespace Kronos.AcceptanceTest
 
                 LogMessage($"Creating server with port {port}");
 
-                server = Task.Factory.StartNew(() => Program.Start(GetSettings(), GetLoggerConfig()),
-                    TaskCreationOptions.LongRunning);
+                server = Task.Factory.StartNew(() => Program.Start(GetSettings()), TaskCreationOptions.LongRunning);
 
                 while (!Program.IsWorking)
                 {
@@ -94,14 +90,6 @@ namespace Kronos.AcceptanceTest
         protected virtual SettingsArgs GetSettings()
         {
             return new SettingsArgs();
-        }
-
-        private static LoggingConfiguration GetLoggerConfig()
-        {
-            var config = new LoggingConfiguration();
-            config.AddTarget("console", new ConsoleTarget());
-            config.AddRule(LogLevel.Debug, LogLevel.Fatal, "console");
-            return config;
         }
 
         protected void LogMessage(string message)

@@ -1,6 +1,5 @@
 ﻿using System;
 using System.Threading.Tasks;
-using NLog.Config;
 using Xunit;
 
 namespace Kronos.Server.Tests
@@ -13,7 +12,7 @@ namespace Kronos.Server.Tests
             // Arrange
             var args = new SettingsArgs();
 
-            var server = Task.Run(() => Program.Start(args, new LoggingConfiguration()));
+            var server = Task.Run(() => Program.Start(args));
 
             // Act
             Exception ex = await Record.ExceptionAsync(async () =>

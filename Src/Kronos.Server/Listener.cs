@@ -7,7 +7,7 @@ using System.Threading.Tasks;
 using Kronos.Core.Configuration;
 using Kronos.Core.Messages;
 using Kronos.Core.Processing;
-using NLog;
+using ZeroLog;
 
 namespace Kronos.Server
 {
@@ -18,7 +18,7 @@ namespace Kronos.Server
         private readonly IRequestProcessor _requestProcessor;
         private readonly CancellationTokenSource _cancel = new CancellationTokenSource();
 
-        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
+        private static readonly ILog Logger = LogManager.GetLogger<Listener>();
         private readonly Auth _auth;
 
         public Listener(SettingsArgs settings, ISocketProcessor processor, IRequestProcessor requestProcessor)

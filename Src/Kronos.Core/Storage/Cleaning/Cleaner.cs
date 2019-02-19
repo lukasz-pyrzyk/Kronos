@@ -1,12 +1,12 @@
 using System;
 using System.Collections.Generic;
-using NLog;
+using ZeroLog;
 
 namespace Kronos.Core.Storage.Cleaning
 {
     internal class Cleaner : ICleaner
     {
-        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
+        private static readonly ILog Logger = LogManager.GetLogger<Cleaner>();
 
         public void Clear(PriorityQueue<ExpiringKey> expiringKeys, Dictionary<Key, Element> nodes)
         {

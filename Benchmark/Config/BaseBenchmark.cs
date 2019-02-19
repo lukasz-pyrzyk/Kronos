@@ -4,9 +4,6 @@ using BenchmarkDotNet.Attributes;
 using Kronos.Client;
 using Kronos.Core.Configuration;
 using Kronos.Server;
-using NLog;
-using NLog.Config;
-using NLog.Targets;
 
 namespace Benchmark.Config
 {
@@ -24,7 +21,7 @@ namespace Benchmark.Config
         {
             try
             {
-                _server = Task.Factory.StartNew(() => Kronos.Server.Program.Start(new SettingsArgs(), GetLoggerConfig()),
+                _server = Task.Factory.StartNew(() => Kronos.Server.Program.Start(new SettingsArgs()),
                     TaskCreationOptions.LongRunning);
 
                 while (!Kronos.Server.Program.IsWorking)
@@ -53,14 +50,6 @@ namespace Benchmark.Config
         }
 
         protected virtual void AdditionalSetup() { }
-
-        private static LoggingConfiguration GetLoggerConfig()
-        {
-            var config = new LoggingConfiguration();
-            config.AddTarget("console", new ConsoleTarget());
-            config.AddRule(LogLevel.Error, LogLevel.Fatal, "console");
-            return config;
-        }
 
         public void Dispose()
         {

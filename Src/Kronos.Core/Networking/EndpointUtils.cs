@@ -2,13 +2,13 @@
 using System.Net;
 using System.Net.Sockets;
 using System.Threading.Tasks;
-using NLog;
+using ZeroLog;
 
 namespace Kronos.Core.Networking
 {
     public static class EndpointUtils
     {
-        private static readonly ILogger Logger = LogManager.GetCurrentClassLogger();
+        private static readonly ILog Logger = LogManager.GetLogger(typeof(EndpointUtils));
 
         public static async Task<IPAddress> GetIpAsync(string hostName)
         {
