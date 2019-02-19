@@ -1,10 +1,9 @@
 ﻿using System;
+using System.Diagnostics;
 using System.Threading;
 using EntryPoint;
 using Kronos.Core.Processing;
 using Kronos.Core.Storage;
-using ZeroLog.Appenders;
-using ZeroLog.Config;
 
 namespace Kronos.Server
 {
@@ -18,10 +17,15 @@ namespace Kronos.Server
         {
             var settings = Cli.Parse<SettingsArgs>(args);
 
+            ConfigLogger();
             PrintLogo();
 
-            SetupLogger();
             Start(settings);
+        }
+
+        private static void ConfigLogger()
+        {
+            Trace.Listeners.Add(new ConsoleTraceListener());
         }
 
         public static void Start(SettingsArgs settings)
@@ -74,10 +78,24 @@ namespace Kronos.Server
 
             Console.WriteLine(line);
         }
+    }
 
-        private static void SetupLogger()
+
+    /// <summary>
+    /// Comes from https://github.com/dotnet/corefx/pull/32620/files
+    /// Should be shipped in .NET Core 3.0
+    /// </summary>
+    internal class ConsoleTraceListener : TextWriterTraceListener
+    {
+        public ConsoleTraceListener() : base(Console.Out)
         {
-            BasicConfigurator.Configure(new[] { new ConsoleAppender() });
         }
+
+        public ConsoleTraceListener(bool useErrorStream) 
+            : base (useErrorStream ? Console.Error : Console.Out)
+        {
+        }
+
+        public override void Close() { }
     }
 }

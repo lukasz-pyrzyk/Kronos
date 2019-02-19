@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Diagnostics;
 using System.IO;
 using System.Net;
 using System.Net.Sockets;
@@ -8,7 +9,6 @@ using System.Threading.Tasks;
 using Kronos.Core;
 using Kronos.Core.Messages;
 using Kronos.Core.Processing;
-using ZeroLog;
 
 namespace Kronos.Server
 {
@@ -19,7 +19,6 @@ namespace Kronos.Server
         private readonly RequestProcessor _requestProcessor;
         private readonly CancellationTokenSource _cancel = new CancellationTokenSource();
 
-        private static readonly ILog Logger = LogManager.GetLogger<Listener>();
         private readonly Auth _auth;
 
         public Listener(SettingsArgs settings, RequestProcessor requestProcessor)
@@ -33,13 +32,12 @@ namespace Kronos.Server
 
         public void Start()
         {
-            Logger.Info("Starting server");
+            Trace.TraceInformation("Starting server");
             _listener.Start();
             string version = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
-            Logger.Info($"Server started on {_listener.LocalEndpoint}. Kronos version {version}");
+            Trace.TraceInformation($"Server started on {_listener.LocalEndpoint}. Kronos version {version}");
 
             CancellationToken token = _cancel.Token;
-
             _ = Task.Factory.StartNew(async () =>
             {
                 while (!token.IsCancellationRequested)
@@ -53,11 +51,11 @@ namespace Kronos.Server
                     }
                     catch (ObjectDisposedException)
                     {
-                        Logger.Info("TCP listener is disposed");
+                        Trace.TraceInformation("TCP listener is disposed");
                     }
                     catch (Exception ex)
                     {
-                        Logger.Error($"Exception during accepting new request {ex}");
+                        Trace.TraceError($"Exception during accepting new request {ex}");
                     }
                     finally
                     {
@@ -69,31 +67,31 @@ namespace Kronos.Server
 
         public void Stop()
         {
-            Logger.Info("Stopping server");
+            Trace.TraceInformation("Stopping server");
             _cancel.Cancel();
 
             if (_listener.Server.Connected)
             {
-                Logger.Info("Server is connected, shutting down");
+                Trace.TraceInformation("Server is connected, shutting down");
                 try
                 {
                     _listener.Server.Shutdown(SocketShutdown.Both);
                 }
                 catch (SocketException ex)
                 {
-                    Logger.Error($"Error on shutting down server socket {ex}");
+                    Trace.TraceError($"Error on shutting down server socket {ex}");
                 }
             }
 
             _listener.Stop();
             _listener.Server.Dispose();
 
-            Logger.Info("Server is down");
+            Trace.TraceInformation("Server is down");
         }
 
         public void Dispose()
         {
-            Logger.Info("Stopping TCP/IP server");
+            Trace.TraceInformation("Stopping TCP/IP server");
             Stop();
         }
 
@@ -103,15 +101,15 @@ namespace Kronos.Server
             {
                 Request request = _socketConnection.ReceiveRequest(stream);
 
-                Logger.Debug($"Processing new request {request.Type}");
+                Trace.TraceInformation($"Processing new request {request.Type}");
                 Response response = _requestProcessor.Handle(request, _auth);
 
                 await _socketConnection.Send(response, stream);
-                Logger.Debug("Processing finished");
+                Trace.TraceInformation("Processing finished");
             }
             catch (Exception ex)
             {
-                Logger.Error($"Exception on processing: {ex}");
+                Trace.TraceError($"Exception on processing: {ex}");
             }
         }
     }

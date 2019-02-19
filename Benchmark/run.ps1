@@ -3,7 +3,6 @@ cd ..
 # build Kronos locally and copy files to /Bin
 dotnet restore
 dotnet publish ./Src/Kronos.Server/ -c Release -o ./Bin -f netcoreapp1.1
-cp ./Src/Kronos.Server/NLog.config ./Bin/
 
 # build docker image
 docker build -t lukaszpyrzyk/kronos:dev .

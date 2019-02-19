@@ -1,17 +1,15 @@
 ﻿using System;
 using System.Collections;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Threading;
 using Google.Protobuf;
 using Kronos.Core.Storage.Cleaning;
-using ZeroLog;
 
 namespace Kronos.Core.Storage
 {
     public class InMemoryStorage : IStorage
     {
-        private static readonly ILog Logger = LogManager.GetLogger<InMemoryStorage>();
-
         private readonly Dictionary<Key, Element> _storage = new Dictionary<Key, Element>();
         private readonly PriorityQueue<ExpiringKey> _expiringKeys = new PriorityQueue<ExpiringKey>();
 
@@ -101,7 +99,7 @@ namespace Kronos.Core.Storage
 
         public int Clear()
         {
-            Logger.Info("Clearing storage");
+            Trace.TraceInformation("Clearing storage");
 
             int count = Count;
             _storage.Clear();
@@ -112,7 +110,7 @@ namespace Kronos.Core.Storage
 
         public void Dispose()
         {
-            Logger.Info("Disposing storage");
+            Trace.TraceInformation("Disposing storage");
 
             Clear();
         }
@@ -122,7 +120,7 @@ namespace Kronos.Core.Storage
             // check if cleanup was requested, do not change value
             if (Interlocked.CompareExchange(ref _cleanupRequested, 1, 1) == 1)
             {
-                Logger.Debug("Clearing storage");
+                Trace.TraceInformation("Clearing storage");
                 _cleaner.Clear(_expiringKeys, _storage);
                 Interlocked.Exchange(ref _cleanupRequested, 0);
             }
@@ -133,7 +131,7 @@ namespace Kronos.Core.Storage
             // try to request for cleanup
             if (Interlocked.CompareExchange(ref _cleanupRequested, 1, 0) == 0)
             {
-                Logger.Debug("Storage cleanup scheduled");
+                Trace.TraceInformation("Storage cleanup scheduled");
             }
         }
 
