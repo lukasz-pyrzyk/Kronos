@@ -4,7 +4,7 @@ using System.Net.Sockets;
 using System.Threading.Tasks;
 using NLog;
 
-namespace Kronos.Core.Networking
+namespace Kronos.Client.Utils
 {
     public static class EndpointUtils
     {

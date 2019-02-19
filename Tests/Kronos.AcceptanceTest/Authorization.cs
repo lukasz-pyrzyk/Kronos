@@ -1,7 +1,6 @@
-﻿using System;
-using System.Threading.Tasks;
+﻿using System.Threading.Tasks;
+using FluentAssertions;
 using Kronos.Client;
-using Kronos.Core.Exceptions;
 using Kronos.Server;
 using Xunit;
 
@@ -19,9 +18,9 @@ namespace Kronos.AcceptanceTest
         protected override async Task ProcessAsync(IKronosClient client)
         {
             // Act
-            Exception ex = await Record.ExceptionAsync(() => client.CountAsync());
+            var countResponse = await client.CountAsync();
 
-            Assert.IsType<KronosException>(ex);
+            countResponse.Should().BeNull();
         }
 
         protected override SettingsArgs GetSettings()

@@ -7,7 +7,7 @@ namespace Kronos.Core.Storage.Cleaning
     {
         private Timer _timer;
 
-        public void Register(TimerCallback callback, int period = Settings.CleanupTimeMs)
+        public void Register(TimerCallback callback, int period = DefaultSettings.CleanupTimeMs)
         {
             _timer = new Timer(callback, null, 0, period);
         }

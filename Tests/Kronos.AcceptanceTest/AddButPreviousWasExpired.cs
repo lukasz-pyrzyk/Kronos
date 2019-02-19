@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Kronos.Client;
 using Xunit;
 
@@ -23,13 +24,13 @@ namespace Kronos.AcceptanceTest
             DateTime now = DateTime.UtcNow;
 
             // Act
-            bool added = await client.InsertAsync(key, data, now + expiryTime);
+            var addedResponse = await client.InsertAsync(key, data, now + expiryTime);
             await Task.Delay(expiryTime);
-            bool addedAgain = await client.InsertAsync(key, data, now + TimeSpan.FromDays(1));
+            var addedAgainResponse = await client.InsertAsync(key, data, now + TimeSpan.FromDays(1));
 
             // Assert
-            Assert.True(added, "Object was not added");
-            Assert.True(addedAgain, "Object is not added even if previous was expired");
+            addedResponse.Added.Should().BeTrue();
+            addedAgainResponse.Added.Should().BeTrue("Object is not added even if previous was expired");
         }
     }
 }

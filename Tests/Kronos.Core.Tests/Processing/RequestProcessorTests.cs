@@ -1,6 +1,5 @@
 ﻿using System;
 using FluentAssertions;
-using Kronos.Core.Configuration;
 using Kronos.Core.Messages;
 using Kronos.Core.Processing;
 using Kronos.Core.Storage;
@@ -17,7 +16,7 @@ namespace Kronos.Core.Tests.Processing
             // Arrange
             IStorage storage = Substitute.For<IStorage>();
             var processor = new RequestProcessor(storage);
-            var request = new Request { Auth = Auth.FromCfg(new AuthConfig { Login = "random", Password = "random" }) };
+            var request = CountRequest.New(Auth.FromCfg("random", new byte[0]));
             var serverAuth = Auth.Default();
 
             // Act

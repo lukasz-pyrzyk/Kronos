@@ -1,4 +1,4 @@
-﻿using Kronos.Core.Configuration;
+﻿using Kronos.Client.Configuration;
 using Kronos.Core.Hashing;
 using Xunit;
 

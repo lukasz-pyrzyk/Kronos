@@ -7,6 +7,10 @@ Kronos is distributed, in-memory cache system based on .NET Core. Client library
 |:-------:|:------:|
 |  [![Build status](https://ci.appveyor.com/api/projects/status/vrkm5pcbg0dv6n6w?svg=true)](https://ci.appveyor.com/project/LukaszPyrzyk/kronos) | [![Build Status](https://travis-ci.org/lukasz-pyrzyk/Kronos.svg?branch=master)](https://travis-ci.org/lukasz-pyrzyk/Kronos) |
 
+### Known performance issues
+- Google protobuf library doesn't support async read/write operation. Because of that, reading from the network stream is synchronous what blocks the thread. https://github.com/lukasz-pyrzyk/Kronos/issues/184
+- A package travels via protobuf, which always allocates new memory for the request. It means that we allocate a new array of bytes for new package. It must be changed.
+
 ### Docker Image
 [![](https://images.microbadger.com/badges/version/lukaszpyrzyk/kronos.svg)](https://microbadger.com/images/lukaszpyrzyk/kronos "Kronos ") [![](https://images.microbadger.com/badges/image/lukaszpyrzyk/kronos.svg)](https://microbadger.com/images/lukaszpyrzyk/kronos "Kronos") [![Docker Stars](https://img.shields.io/docker/stars/lukaszpyrzyk/kronos.svg)](https://hub.docker.com/r/lukaszpyrzyk/kronos/)
 
@@ -26,22 +30,22 @@ byte[] packageToCache = Encoding.UTF8.GetBytes("Lorem ipsum");
 DateTime expiryDate = DateTime.UtcNow.AddDays(5);
 
 // insert package to server
-await client.InsertAsync(key, packageToCache, expiryDate);
+InsertResponse insert = await client.InsertAsync(key, packageToCache, expiryDate);
 
 // get package from server
-byte[] cachedValues = await client.GetAsync(key);
+GetResponse getResponse = await client.GetAsync(key);
 
 // check if storage contains given key
-bool contains  = await client.ContainsAsync(key);
+ContainsResponse contains  = await client.ContainsAsync(key);
 
 // count number of elements in the storage
-int number  = await client.CountAsync();
+CountResponse number  = await client.CountAsync();
 
 // Optionally you can delete object from cache using Delete command
-await client.DeleteAsync(key);
+DeleteResponse delete = await client.DeleteAsync(key);
 
 // or flush all storage
-await client.ClearAsync();
+ClearResponse clear = await client.ClearAsync();
 ```
 
 ### Server initialization using docker image
@@ -70,6 +74,3 @@ I am a student of Opole University Of technology and this is my Engineering Thes
 License
 ----
 MIT
-
-   [kronos-nuget]: <https://www.nuget.org/packages/Kronos.Client/>
-   [protobuf-net-url]: <https://github.com/mgravell/protobuf-net>

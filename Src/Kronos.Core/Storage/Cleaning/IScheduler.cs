@@ -5,6 +5,6 @@ namespace Kronos.Core.Storage.Cleaning
 {
     internal interface IScheduler
     {
-        void Register(TimerCallback callback, int period = Settings.CleanupTimeMs);
+        void Register(TimerCallback callback, int period = DefaultSettings.CleanupTimeMs);
     }
 }

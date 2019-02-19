@@ -30,7 +30,7 @@ namespace Kronos.AcceptanceTest
             Task server = null;
             try
             {
-                const int port = Settings.DefaultPort;
+                const int port = DefaultSettings.Port;
                 LogMessage($"Creating kronos client with port {port}");
                 IKronosClient client = KronosClientFactory.FromLocalhost(port);
 
@@ -41,7 +41,7 @@ namespace Kronos.AcceptanceTest
 
                 while (!Program.IsWorking)
                 {
-                    LogMessage("Waiting for server warnup...");
+                    LogMessage("Waiting for server warn-up...");
                     await Task.Delay(100);
 
                     if (server.IsFaulted)
