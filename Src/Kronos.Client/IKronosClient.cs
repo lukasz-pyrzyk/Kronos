@@ -15,39 +15,39 @@ namespace Kronos.Client
         /// <param name="key">Package identifier</param>
         /// <param name="package">Package to save in the Kronos</param>
         /// <param name="expiryDate">Package Expiration date</param>
-        Task<bool> InsertAsync(string key, byte[] package, DateTime? expiryDate);
+        Task<InsertResponse> InsertAsync(string key, byte[] package, DateTime? expiryDate);
 
         /// <summary>
         /// Gets object from Kronos server
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        Task<byte[]> GetAsync(string key);
+        Task<GetResponse> GetAsync(string key);
 
         /// <summary>
         /// Removes object from Kronos server
         /// </summary>
         /// <param name="key"></param>
         /// <returns></returns>
-        Task DeleteAsync(string key);
+        Task<DeleteResponse> DeleteAsync(string key);
 
         /// <summary>
         /// Counts number of objects in the storage
         /// </summary>
         /// <returns>Number of objects in the storage</returns>
-        Task<int> CountAsync();
+        Task<CountResponse> CountAsync();
 
         /// <summary>
         /// Checks if element exists in the storage
         /// </summary>
         /// <returns></returns>
-        Task<bool> ContainsAsync(string key);
+        Task<ContainsResponse> ContainsAsync(string key);
 
         /// <summary>
         /// Clears the database
         /// </summary>
         /// <returns></returns>
-        Task ClearAsync();
+        Task<ClearResponse> ClearAsync();
 
         /// <summary>
         /// Returns stats from the server

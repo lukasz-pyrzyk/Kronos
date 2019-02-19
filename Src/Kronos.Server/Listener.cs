@@ -1,31 +1,31 @@
 ﻿using System;
+using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
 using System.Threading;
 using System.Threading.Tasks;
-using Kronos.Core.Configuration;
+using Kronos.Core;
 using Kronos.Core.Messages;
 using Kronos.Core.Processing;
 using ZeroLog;
 
 namespace Kronos.Server
 {
-    public class Listener : IListener
+    public class Listener : IDisposable
     {
         private readonly TcpListener _listener;
-        private readonly ISocketProcessor _processor;
-        private readonly IRequestProcessor _requestProcessor;
+        private readonly SocketConnection _socketConnection = new SocketConnection();
+        private readonly RequestProcessor _requestProcessor;
         private readonly CancellationTokenSource _cancel = new CancellationTokenSource();
 
         private static readonly ILog Logger = LogManager.GetLogger<Listener>();
         private readonly Auth _auth;
 
-        public Listener(SettingsArgs settings, ISocketProcessor processor, IRequestProcessor requestProcessor)
+        public Listener(SettingsArgs settings, RequestProcessor requestProcessor)
         {
-            _auth = Auth.FromCfg(new AuthConfig { Login = settings.Login, Password = settings.Password });
+            _auth = Auth.FromCfg(settings.Login, settings.HashedPassword());
             _listener = new TcpListener(IPAddress.Any, settings.Port);
-            _processor = processor;
             _requestProcessor = requestProcessor;
 
             _listener.Server.SetSocketOption(SocketOptionLevel.Socket, SocketOptionName.ReuseAddress, 1);
@@ -40,15 +40,16 @@ namespace Kronos.Server
 
             CancellationToken token = _cancel.Token;
 
-            Task.Factory.StartNew(async () =>
+            _ = Task.Factory.StartNew(async () =>
             {
                 while (!token.IsCancellationRequested)
                 {
-                    Socket socket = null;
+                    TcpClient client = null;
                     try
                     {
-                        socket = await _listener.AcceptSocketAsync().ConfigureAwait(false);
-                        ProcessSocketConnection(socket);
+                        client = await _listener.AcceptTcpClientAsync();
+                        var stream = client.GetStream();
+                        _ = ProcessSocketConnection(stream);
                     }
                     catch (ObjectDisposedException)
                     {
@@ -60,7 +61,7 @@ namespace Kronos.Server
                     }
                     finally
                     {
-                        socket?.Shutdown(SocketShutdown.Send);
+                        client?.Dispose();
                     }
                 }
             }, token, TaskCreationOptions.LongRunning, TaskScheduler.Current);
@@ -96,16 +97,16 @@ namespace Kronos.Server
             Stop();
         }
 
-        private void ProcessSocketConnection(Socket client)
+        private async Task ProcessSocketConnection(Stream stream)
         {
             try
             {
-                Request request = _processor.ReceiveRequest(client);
+                Request request = _socketConnection.ReceiveRequest(stream);
 
                 Logger.Debug($"Processing new request {request.Type}");
                 Response response = _requestProcessor.Handle(request, _auth);
 
-                _processor.SendResponse(client, response);
+                await _socketConnection.Send(response, stream);
                 Logger.Debug("Processing finished");
             }
             catch (Exception ex)

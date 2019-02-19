@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Threading.Tasks;
+using FluentAssertions;
 using Kronos.Client;
 using Xunit;
 
@@ -23,10 +24,10 @@ namespace Kronos.AcceptanceTest
             // Act
             await client.InsertAsync(key, data, DateTime.UtcNow.AddDays(5));
             await client.DeleteAsync(key);
-            bool contains = await client.ContainsAsync(key);
+            var containsResponse = await client.ContainsAsync(key);
 
             // Assert
-            Assert.False(contains);
+            containsResponse.Contains.Should().BeFalse();
         }
     }
 }

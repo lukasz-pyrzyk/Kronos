@@ -3,7 +3,7 @@ using Kronos.Core.Storage;
 
 namespace Kronos.Core.Processing
 {
-    public class RequestProcessor : IRequestProcessor
+    public class RequestProcessor
     {
         private readonly IStorage _storage;
         private readonly CommandProcessor<InsertRequest, InsertResponse> _insertProcessor;

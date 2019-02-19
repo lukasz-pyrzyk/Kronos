@@ -1,10 +1,10 @@
-﻿using System.Net;
-using System.Net.Sockets;
+﻿using System.Net.Sockets;
 using System.Threading.Tasks;
-using Kronos.Core.Networking;
+using FluentAssertions;
+using Kronos.Client.Utils;
 using Xunit;
 
-namespace Kronos.Core.Tests.Networking
+namespace Kronos.Client.Tests.Utils
 {
     public class EndpointUtilsTests
     {
@@ -15,11 +15,11 @@ namespace Kronos.Core.Tests.Networking
         public async Task GetIPAsync_ReturnsIpAddress(string hostName)
         {
             // Act
-            IPAddress address = await EndpointUtils.GetIpAsync(hostName);
+            var address = await EndpointUtils.GetIpAsync(hostName);
 
             // Assert
-            Assert.NotNull(address);
-            Assert.Equal(address.AddressFamily, AddressFamily.InterNetwork);
+            address.Should().NotBeNull();
+            address.AddressFamily.Should().Be(AddressFamily.InterNetwork);
         }
     }
 }

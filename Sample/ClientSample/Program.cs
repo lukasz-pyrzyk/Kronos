@@ -31,22 +31,22 @@ namespace ClientSample
                 Debug.WriteLine($"ADD - done (size: {package.Length})");
 
                 Debug.WriteLine("COUNT - testing");
-                int count = await client.CountAsync();
-                Debug.WriteLine($"COUNT - done (count: {count})");
+                var countResponse = await client.CountAsync();
+                Debug.WriteLine($"COUNT - done (count: {countResponse.Count})");
 
                 Debug.WriteLine("CONTAINS - testing");
-                bool contains = await client.ContainsAsync(key);
-                Debug.WriteLine($"CONTAINS - done (exists: {contains})");
+                var containsResponse = await client.ContainsAsync(key);
+                Debug.WriteLine($"CONTAINS - done (exists: {containsResponse.Contains})");
 
                 Debug.WriteLine("GET - testing");
-                byte[] fromServer = await client.GetAsync(key);
-                Debug.WriteLine($"GET - done (size: {fromServer.Length})");
-                Debug.Assert(fromServer.Length == package.Length);
+                var getResponse = await client.GetAsync(key);
+                Debug.WriteLine($"GET - done (size: {getResponse.Data.Length})");
+                Debug.Assert(getResponse.Data.Length == package.Length);
 
                 Debug.WriteLine("DELETE - testing");
                 await client.DeleteAsync(key);
-                bool containsAfterDeletion = await client.ContainsAsync(key);
-                Debug.WriteLine($"DELETE - done (exists after deletion: {containsAfterDeletion})");
+                var containsAfterDeletionResponse = await client.ContainsAsync(key);
+                Debug.WriteLine($"DELETE - done (exists after deletion: {containsAfterDeletionResponse.Contains})");
             }
             watch.Stop();
             Console.WriteLine(watch.ElapsedMilliseconds);

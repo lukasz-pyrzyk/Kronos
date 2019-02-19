@@ -1,4 +1,4 @@
-﻿namespace Kronos.Core.Configuration
+﻿namespace Kronos.Client.Configuration
 {
     public class KronosConfig
     {

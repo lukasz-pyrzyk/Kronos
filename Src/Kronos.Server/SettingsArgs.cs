@@ -1,5 +1,6 @@
 ﻿using EntryPoint;
 using Kronos.Core.Configuration;
+using Kronos.Core.Hashing;
 
 namespace Kronos.Server
 {
@@ -10,12 +11,14 @@ namespace Kronos.Server
         }
 
         [OptionParameter("port", 'p')]
-        public int Port { get; set; } = Settings.DefaultPort;
+        public int Port { get; set; } = DefaultSettings.Port;
 
         [OptionParameter("login", 'l')]
-        public string Login { get; set; } = Settings.DefaultLogin;
+        public string Login { get; set; } = DefaultSettings.Login;
 
         [OptionParameter("password")]
-        public string Password { get; set; } = Settings.DefaultPassword;
+        public string Password { get; set; } = DefaultSettings.Password;
+
+        public byte[] HashedPassword() => Hasher.SecureHash(Password);
     }
 }

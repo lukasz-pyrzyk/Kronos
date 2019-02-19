@@ -11,10 +11,5 @@ namespace Kronos.Core.Processing
 
             return new CountResponse { Count = count };
         }
-
-        protected override CountResponse SelectResponse(Response response)
-        {
-            return response.CountResponse;
-        }
     }
 }

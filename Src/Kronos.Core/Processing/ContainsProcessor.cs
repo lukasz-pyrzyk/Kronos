@@ -11,10 +11,5 @@ namespace Kronos.Core.Processing
 
             return new ContainsResponse {Contains = contains};
         }
-
-        protected override ContainsResponse SelectResponse(Response response)
-        {
-            return response.ContainsResponse;
-        }
     }
 }
