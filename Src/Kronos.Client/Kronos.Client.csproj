@@ -8,7 +8,7 @@
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Kronos.Client</AssemblyName>
     <PackageId>Kronos.Client</PackageId>
-    <PackageTags>cache, distributed, socket, dotnetcore, dnx</PackageTags>
+    <PackageTags>cache, distributed, redis, memcached</PackageTags>
     <PackageIconUrl>https://raw.githubusercontent.com/lukasz-pyrzyk/Kronos/master/SolutionItems/nugetIcon.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/lukasz-pyrzyk/Kronos</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/lukasz-pyrzyk/Kronos/blob/master/license.txt</PackageLicenseUrl>
@@ -18,10 +18,6 @@
     <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
     <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
     <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
-  </PropertyGroup>
-
-  <PropertyGroup Condition="'$(Configuration)|$(TargetFramework)|$(Platform)'=='Debug|netstandard1.3|AnyCPU'">
-    <LangVersion>7.2</LangVersion>
   </PropertyGroup>
 
   <ItemGroup>

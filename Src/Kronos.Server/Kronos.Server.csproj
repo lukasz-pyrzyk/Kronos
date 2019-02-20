@@ -9,7 +9,7 @@
     <AssemblyName>Kronos.Server</AssemblyName>
     <PackageId>Kronos.Server</PackageId>
     <OutputType>Exe</OutputType>
-    <PackageTags>cache, distributed, in-memory, memory, socket, redis</PackageTags>
+    <PackageTags>cache, distributed, redis, memcached</PackageTags>
     <PackageIconUrl>https://raw.githubusercontent.com/lukasz-pyrzyk/Kronos/master/SolutionItems/nugetIcon.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/lukasz-pyrzyk/Kronos</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/lukasz-pyrzyk/Kronos/blob/master/license.txt</PackageLicenseUrl>

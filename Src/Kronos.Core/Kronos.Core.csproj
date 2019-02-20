@@ -6,10 +6,9 @@
     <VersionPrefix>3.0.0</VersionPrefix>
     <Authors>Lukasz Pyrzyk</Authors>
     <TargetFramework>netstandard2.0</TargetFramework>
-    <AllowUnsafeBlocks>true</AllowUnsafeBlocks>
     <AssemblyName>Kronos.Core</AssemblyName>
     <PackageId>Kronos.Core</PackageId>
-    <PackageTags>cache, distributed, socket, dotnetcore</PackageTags>
+    <PackageTags>cache, distributed, redis, memcached</PackageTags>
     <PackageIconUrl>https://raw.githubusercontent.com/lukasz-pyrzyk/Kronos/master/SolutionItems/nugetIcon.png</PackageIconUrl>
     <PackageProjectUrl>https://github.com/lukasz-pyrzyk/Kronos</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/lukasz-pyrzyk/Kronos/blob/master/license.txt</PackageLicenseUrl>
