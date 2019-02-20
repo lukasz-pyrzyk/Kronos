@@ -5,7 +5,7 @@ Kronos is distributed, in-memory cache system based on .NET Core. Client library
 ### Build status
 | Windows |  Linux |
 |:-------:|:------:|
-|  [![Build status](https://ci.appveyor.com/api/projects/status/vrkm5pcbg0dv6n6w?svg=true)](https://ci.appveyor.com/project/LukaszPyrzyk/kronos) | [![Build Status](https://travis-ci.org/lukasz-pyrzyk/Kronos.svg?branch=master)](https://travis-ci.org/lukasz-pyrzyk/Kronos) |
+| [![Build status](https://ci.appveyor.com/api/projects/status/vrkm5pcbg0dv6n6w/branch/master?svg=true)](https://ci.appveyor.com/project/LukaszPyrzyk/kronos/branch/master) | [![Build status](https://ci.appveyor.com/api/projects/status/vrkm5pcbg0dv6n6w/branch/master?svg=true)](https://ci.appveyor.com/project/LukaszPyrzyk/kronos/branch/master) |
 
 ### Known performance issues
 - Google protobuf library doesn't support async read/write operation. Because of that, reading from the network stream is synchronous what blocks the thread. https://github.com/lukasz-pyrzyk/Kronos/issues/184
