@@ -14,12 +14,7 @@
     <PackageProjectUrl>https://github.com/lukasz-pyrzyk/Kronos</PackageProjectUrl>
     <PackageLicenseUrl>https://github.com/lukasz-pyrzyk/Kronos/blob/master/license.txt</PackageLicenseUrl>
     <ServerGarbageCollection>true</ServerGarbageCollection>
-    <GenerateAssemblyTitleAttribute>false</GenerateAssemblyTitleAttribute>
-    <GenerateAssemblyDescriptionAttribute>false</GenerateAssemblyDescriptionAttribute>
-    <GenerateAssemblyConfigurationAttribute>false</GenerateAssemblyConfigurationAttribute>
-    <GenerateAssemblyCompanyAttribute>false</GenerateAssemblyCompanyAttribute>
-    <GenerateAssemblyProductAttribute>false</GenerateAssemblyProductAttribute>
-    <GenerateAssemblyCopyrightAttribute>false</GenerateAssemblyCopyrightAttribute>
+    <PublishWithAspNetCoreTargetManifest>false</PublishWithAspNetCoreTargetManifest>
   </PropertyGroup>
   
   <ItemGroup>
