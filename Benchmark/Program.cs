@@ -1,4 +1,3 @@
-using Benchmark.Hashes;
 using Benchmark.Types;
 using BenchmarkDotNet.Running;
 
@@ -12,7 +11,6 @@ namespace Benchmark
             {
                 typeof(AddGetRemove),
                 typeof(Contains),
-                typeof(HashesBenchmark)
             });
 
             switcher.Run(args);
