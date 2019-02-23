@@ -1,4 +1,4 @@
-FROM microsoft/dotnet:2.2-runtime-alpine3.8
+FROM microsoft/dotnet:2.2-runtime
 
 # maintener info
 MAINTAINER Lukasz Pyrzyk <lukasz.pyrzyk@gmail.com>
@@ -7,7 +7,7 @@ MAINTAINER Lukasz Pyrzyk <lukasz.pyrzyk@gmail.com>
 WORKDIR /dotnetapp
 
 # copy published binaries to the container
-COPY ./Src/Kronos.Server/dockerPackage .
+COPY ./Src/Kronos.Server/bin/Release/ .
 
 # set entrypoint to the docker run
 ENTRYPOINT ["dotnet", "Kronos.Server.dll"]
