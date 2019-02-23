@@ -1,4 +1,4 @@
-FROM microsoft/dotnet:2.1-runtime-alpine3.7
+FROM microsoft/dotnet:2.2-runtime-alpine3.8
 
 # maintener info
 MAINTAINER Lukasz Pyrzyk <lukasz.pyrzyk@gmail.com>
