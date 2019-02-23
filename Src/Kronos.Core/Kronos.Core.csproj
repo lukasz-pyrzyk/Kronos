@@ -3,7 +3,7 @@
   <PropertyGroup>
     <Description>Kronoc.Core is a main library for Kronos cache platform (Kronos.Server)</Description>
     <Copyright>Lukasz Pyrzyk</Copyright>
-    <VersionPrefix>3.0.0</VersionPrefix>
+    <VersionPrefix>4.0.0</VersionPrefix>
     <Authors>Lukasz Pyrzyk</Authors>
     <TargetFramework>netstandard2.0</TargetFramework>
     <AssemblyName>Kronos.Core</AssemblyName>
