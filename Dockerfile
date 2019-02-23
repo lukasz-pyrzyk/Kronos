@@ -4,10 +4,10 @@ FROM microsoft/dotnet:2.2-runtime
 MAINTAINER Lukasz Pyrzyk <lukasz.pyrzyk@gmail.com>
 
 ## Required to correct .NET Core startup
-WORKDIR /dotnetapp
+WORKDIR /app
 
 # copy published binaries to the container
-COPY ./Src/Kronos.Server/bin/Release/ .
+COPY ./Src/Kronos.Server/bin/Release/netcoreapp2.2 .
 
 # set entrypoint to the docker run
 ENTRYPOINT ["dotnet", "Kronos.Server.dll"]
