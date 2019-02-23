@@ -63,10 +63,10 @@ where:
 Full documentation is available on the [docker reference page](https://docs.docker.com/engine/reference/run/)
 
 ### Building own docker image
-If you don't want to use my docker image, you can build your own. Install .NET Core 2.2, clone repository and type: 
+If you don't want to use my docker image, you can build your own. Install .NET Core 2.2, clone repository, go to the `src\Kronos.Server` and type: 
 ```bash
-dotnet publish Src/Kronos.Server -c Release
-docker build -t kronos .
+dotnet publish -o ./publish -c Release
+docker build -t lukaszpyrzyk/kronos .
 ```
 
 ### University
