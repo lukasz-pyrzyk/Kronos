@@ -12,7 +12,7 @@ namespace Kronos.Core.Tests.Storage
         {
             // Arrange
             var key = new Key();
-            var expiry = DateTime.MaxValue;
+            var expiry = DateTimeOffset.MaxValue;
 
             // Act
             var element = new ExpiringKey(key, expiry);
@@ -26,7 +26,7 @@ namespace Kronos.Core.Tests.Storage
         public void IsExpiring_ReturnsTrueWhenElementIsExpiring()
         {
             // Arrange
-            var element = new Element(ByteString.Empty, DateTime.UtcNow);
+            var element = new Element(ByteString.Empty, DateTimeOffset.UtcNow);
 
             // Act
             bool expiring = element.IsExpiring;
@@ -39,7 +39,7 @@ namespace Kronos.Core.Tests.Storage
         public void IsExpired_ReturnsTrueWhenKeyExpired_WithoutPassingDate()
         {
             // Arrange
-            var expiryDate = DateTime.MinValue;
+            var expiryDate = DateTimeOffset.MinValue;
             var element = new ExpiringKey(new Key("lorem ipsum"), expiryDate);
 
             // Act
@@ -53,11 +53,11 @@ namespace Kronos.Core.Tests.Storage
         public void IsExpired_ReturnsTrueWhenKeyExpired_WithPassingDate()
         {
             // Arrange
-            var expiryDate = DateTime.MinValue;
+            var expiryDate = DateTimeOffset.MinValue;
             var element = new ExpiringKey(new Key("lorem ipsum"), expiryDate);
 
             // Act
-            bool expired = element.IsExpired(DateTime.UtcNow);
+            bool expired = element.IsExpired(DateTimeOffset.UtcNow);
 
             // Assert
             Assert.True(expired);
@@ -67,7 +67,7 @@ namespace Kronos.Core.Tests.Storage
         public void CompareTo_Returns_1_When_GivenIsBigger()
         {
             // Arrange
-            var expiryDate = DateTime.Now;
+            var expiryDate = DateTimeOffset.Now;
             var element = new ExpiringKey(new Key("lorem ipsum"), expiryDate);
 
             // Act
@@ -81,7 +81,7 @@ namespace Kronos.Core.Tests.Storage
         public void CompareTo_Returns_0_When_GivenIsEqual()
         {
             // Arrange
-            var expiryDate = DateTime.Now;
+            var expiryDate = DateTimeOffset.Now;
             var element = new ExpiringKey(new Key("lorem ipsum"), expiryDate);
 
             // Act
@@ -95,7 +95,7 @@ namespace Kronos.Core.Tests.Storage
         public void CompareTo_Returns_Minus1_When_GivenIsEqual()
         {
             // Arrange
-            var expiryDate = DateTime.Now;
+            var expiryDate = DateTimeOffset.Now;
             var element = new ExpiringKey(new Key("lorem ipsum"), expiryDate);
 
             // Act
@@ -163,7 +163,7 @@ namespace Kronos.Core.Tests.Storage
         {
             // Arrange
             const string key = "lorem";
-            var time = DateTime.Now;
+            var time = DateTimeOffset.Now;
             var element = new ExpiringKey(new Key(key), time);
 
             // Act

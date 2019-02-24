@@ -10,7 +10,7 @@ namespace Kronos.Core.Tests.Messages
     {
         [Theory]
         [MemberData(nameof(ExpiryDates))]
-        public void InsertRequest_ReturnsNew(DateTime? expiry)
+        public void InsertRequest_ReturnsNew(DateTimeOffset? expiry)
         {
             // Arrange
             const string key = "lorem ipsum";
@@ -21,7 +21,7 @@ namespace Kronos.Core.Tests.Messages
             var request = InsertRequest.New(key, data, expiry, auth);
 
             // Assert
-            Timestamp expectedTimestamp = expiry.HasValue ? Timestamp.FromDateTime(expiry.Value) : null;
+            Timestamp expectedTimestamp = expiry.HasValue ? Timestamp.FromDateTimeOffset(expiry.Value) : null;
 
             Assert.NotNull(request);
             Assert.Equal(request.Type, RequestType.Insert);
@@ -118,7 +118,7 @@ namespace Kronos.Core.Tests.Messages
 
         public static IEnumerable<object[]> ExpiryDates()
         {
-            yield return new object[] { DateTime.UtcNow };
+            yield return new object[] { DateTimeOffset.UtcNow };
             yield return new object[] { null };
         }
     }

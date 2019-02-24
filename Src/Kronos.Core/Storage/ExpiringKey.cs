@@ -5,9 +5,9 @@ namespace Kronos.Core.Storage
     internal readonly struct ExpiringKey : IComparable<ExpiringKey>, IEquatable<ExpiringKey>
     {
         public Key Key { get; }
-        public DateTime ExpiryDate { get; }
+        public DateTimeOffset ExpiryDate { get; }
 
-        public ExpiringKey(Key key, DateTime expiryDate)
+        public ExpiringKey(Key key, DateTimeOffset expiryDate)
         {
             Key = key;
             ExpiryDate = expiryDate;
@@ -15,10 +15,10 @@ namespace Kronos.Core.Storage
 
         public bool IsExpired()
         {
-            return IsExpired(DateTime.UtcNow);
+            return IsExpired(DateTimeOffset.UtcNow);
         }
 
-        public bool IsExpired(DateTime date)
+        public bool IsExpired(DateTimeOffset date)
         {
             return ExpiryDate.Ticks < date.Ticks;
         }

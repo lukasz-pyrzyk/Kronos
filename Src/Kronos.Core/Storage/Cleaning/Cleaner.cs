@@ -8,7 +8,7 @@ namespace Kronos.Core.Storage.Cleaning
     {
         public void Clear(PriorityQueue<ExpiringKey> expiringKeys, Dictionary<Key, Element> nodes)
         {
-            DateTime date = DateTime.UtcNow;
+            DateTimeOffset date = DateTimeOffset.UtcNow;
             uint deleted = 0;
 
             while (expiringKeys.Count > 0 && expiringKeys.Peek().IsExpired(date))

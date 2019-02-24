@@ -27,7 +27,7 @@ KronosClient client = KronosClientFactory.FromIp("127.0.0.1", 44000);
 // create a key, package and expiry date
 string key = "key";
 byte[] packageToCache = Encoding.UTF8.GetBytes("Lorem ipsum");
-DateTime expiryDate = DateTime.UtcNow.AddDays(5);
+DateTimeOffset expiryDate = DateTimeOffset.UtcNow.AddDays(5);
 
 // insert package to server
 InsertResponse insert = await client.InsertAsync(key, packageToCache, expiryDate);
