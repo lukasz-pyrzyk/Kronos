@@ -24,7 +24,7 @@ namespace ClientSample
             {
                 Debug.WriteLine("~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~~");
                 string key = Guid.NewGuid().ToString();
-                DateTime expiryDate = DateTime.UtcNow.AddDays(1);
+                DateTimeOffset expiryDate = DateTimeOffset.UtcNow.AddDays(1);
 
                 Debug.WriteLine("ADD - testing");
                 await client.InsertAsync(key, package, expiryDate);

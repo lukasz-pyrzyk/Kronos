@@ -17,7 +17,7 @@ namespace Kronos.AcceptanceTest
 
         private static string FormatMessage(string message)
         {
-            return $"{DateTime.Now} - {message}";
+            return $"{DateTimeOffset.Now} - {message}";
         }
     }
 }

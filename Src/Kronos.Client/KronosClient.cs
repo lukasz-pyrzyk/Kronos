@@ -24,7 +24,7 @@ namespace Kronos.Client
             _server = config.Server;
         }
 
-        public async Task<InsertResponse> InsertAsync(string key, byte[] package, DateTime? expiryDate)
+        public async Task<InsertResponse> InsertAsync(string key, byte[] package, DateTimeOffset? expiryDate)
         {
             Trace.WriteLine("New insert request");
 

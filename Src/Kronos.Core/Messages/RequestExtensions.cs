@@ -29,7 +29,7 @@ namespace Kronos.Core.Messages
 
     public partial class InsertRequest
     {
-        public static Request New(string key, byte[] package, DateTime? expiryDate, Auth auth)
+        public static Request New(string key, byte[] package, DateTimeOffset? expiryDate, Auth auth)
         {
             return new Request
             {
@@ -37,7 +37,7 @@ namespace Kronos.Core.Messages
                 {
                     Key = key,
                     Data = ByteString.CopyFrom(package),
-                    Expiry = expiryDate.HasValue ? Timestamp.FromDateTime(expiryDate.Value) : null
+                    Expiry = expiryDate.HasValue ? Timestamp.FromDateTimeOffset(expiryDate.Value) : null
                 },
                 Type = RequestType.Insert,
                 Auth = auth

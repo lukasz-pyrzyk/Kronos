@@ -12,7 +12,7 @@ namespace Kronos.Core.Tests.Storage
         {
             // Arrange
             var data = ByteString.Empty;
-            var expiry = DateTime.MaxValue;
+            var expiry = DateTimeOffset.MaxValue;
 
             // Act
             var element = new Element(data, expiry);
@@ -40,7 +40,7 @@ namespace Kronos.Core.Tests.Storage
         public void IsExpiring_ReturnsTrueWhenElementIsExpiring()
         {
             // Arrange
-            var element = new Element(ByteString.Empty, DateTime.UtcNow);
+            var element = new Element(ByteString.Empty, DateTimeOffset.UtcNow);
 
             // Act
             bool expiring = element.IsExpiring;
@@ -66,7 +66,7 @@ namespace Kronos.Core.Tests.Storage
         public void IsExpired_ReturnsTrueWhenKeyExpired_WithoutPassingDate()
         {
             // Arrange
-            var expiryDate = DateTime.MinValue;
+            var expiryDate = DateTimeOffset.MinValue;
             var element = new Element(ByteString.Empty, expiryDate);
 
             // Act
@@ -80,11 +80,11 @@ namespace Kronos.Core.Tests.Storage
         public void IsExpired_ReturnsTrueWhenKeyExpired_WithPassingDate()
         {
             // Arrange
-            var expiryDate = DateTime.MinValue;
+            var expiryDate = DateTimeOffset.MinValue;
             var element = new Element(ByteString.Empty, expiryDate);
 
             // Act
-            bool expired = element.IsExpired(DateTime.UtcNow);
+            bool expired = element.IsExpired(DateTimeOffset.UtcNow);
 
             // Assert
             Assert.True(expired);
