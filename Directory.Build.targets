@@ -2,7 +2,7 @@
   <ItemGroup>
     <PackageReference Update="EntryPoint" Version="1.2.3" />
     <PackageReference Update="BenchmarkDotNet" Version="0.11.5" />
-    <PackageReference Update="Google.Protobuf" Version="3.10.0-rc.1" />
+    <PackageReference Update="Google.Protobuf" Version="3.10.0-rc1" />
     <PackageReference Update="Microsoft.Extensions.PlatformAbstractions" Version="1.1.0" />
     <PackageReference Update="Farmhash.Sharp" Version="0.8.0" />
     <PackageReference Update="Newtonsoft.Json" Version="12.0.2" />
