@@ -1,8 +1,5 @@
 <Project>
   <PropertyGroup>
-    <LangVersion>7.3</LangVersion>
+    <LangVersion>8.0</LangVersion>
   </PropertyGroup>
-  <Target Name="VSTestIfTestProject">
-    <CallTarget Targets="VSTest" Condition="'$(IsTestProject)' == 'true'" />
-  </Target>
 </Project>
