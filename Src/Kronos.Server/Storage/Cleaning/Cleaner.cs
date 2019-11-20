@@ -13,7 +13,7 @@ namespace Kronos.Server.Storage.Cleaning
             _logger = logger;
         }
 
-        public void Clear(PriorityQueue<ExpiringKey> expiringKeys, Dictionary<Key, Element> nodes)
+        public void Clear(ConcurrentPriorityQueue<ExpiringKey> expiringKeys, Dictionary<Key, Element> nodes)
         {
             DateTimeOffset date = DateTimeOffset.UtcNow;
             uint deleted = 0;

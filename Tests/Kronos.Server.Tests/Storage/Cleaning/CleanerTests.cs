@@ -28,7 +28,7 @@ namespace Kronos.Server.Tests.Storage.Cleaning
 
             var expiringKeys = PrepareExpiringQueue(data);
             int expiringKeysBefore = expiringKeys.Count;
-            int shouldBeDeleted = expiringKeys.Count(x => x.IsExpired());
+            int shouldBeDeleted = expiringKeys.ToArray().Count(x => x.IsExpired());
 
             Cleaner provider = new Cleaner(Substitute.For<ILogger<Cleaner>>());
 
@@ -44,9 +44,9 @@ namespace Kronos.Server.Tests.Storage.Cleaning
         }
 
 
-        private static PriorityQueue<ExpiringKey> PrepareExpiringQueue(Dictionary<Key, Element> dic)
+        private static ConcurrentPriorityQueue<ExpiringKey> PrepareExpiringQueue(Dictionary<Key, Element> dic)
         {
-            var queue = new PriorityQueue<ExpiringKey>();
+            var queue = new ConcurrentPriorityQueue<ExpiringKey>();
 
             foreach (var pair in dic)
             {

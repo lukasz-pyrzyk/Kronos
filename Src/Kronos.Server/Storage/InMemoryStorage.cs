@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections;
 using System.Collections.Generic;
 using System.Threading;
 using Google.Protobuf;
@@ -11,7 +10,7 @@ namespace Kronos.Server.Storage
     class InMemoryStorage
     {
         private readonly Dictionary<Key, Element> _storage = new Dictionary<Key, Element>();
-        private readonly PriorityQueue<ExpiringKey> _expiringKeys = new PriorityQueue<ExpiringKey>();
+        private readonly ConcurrentPriorityQueue<ExpiringKey> _expiringKeys = new ConcurrentPriorityQueue<ExpiringKey>();
 
         private int _cleanupRequested;
         private readonly ICleaner _cleaner;

@@ -257,7 +257,7 @@ namespace Kronos.Server.Tests.Storage
             storage.Add("", null, ByteString.Empty);
 
             // Assert
-            cleaner.Received(1).Clear(Arg.Any<PriorityQueue<ExpiringKey>>(), Arg.Any<Dictionary<Key, Element>>());
+            cleaner.Received(1).Clear(Arg.Any<ConcurrentPriorityQueue<ExpiringKey>>(), Arg.Any<Dictionary<Key, Element>>());
         }
 
         [Fact]
@@ -271,7 +271,7 @@ namespace Kronos.Server.Tests.Storage
             storage.TryGet("", out ByteString _);
 
             // Assert
-            cleaner.Received(1).Clear(Arg.Any<PriorityQueue<ExpiringKey>>(), Arg.Any<Dictionary<Key, Element>>());
+            cleaner.Received(1).Clear(Arg.Any<ConcurrentPriorityQueue<ExpiringKey>>(), Arg.Any<Dictionary<Key, Element>>());
         }
 
         [Fact]
@@ -285,7 +285,7 @@ namespace Kronos.Server.Tests.Storage
             storage.Contains("");
 
             // Assert
-            cleaner.Received(1).Clear(Arg.Any<PriorityQueue<ExpiringKey>>(), Arg.Any<Dictionary<Key, Element>>());
+            cleaner.Received(1).Clear(Arg.Any<ConcurrentPriorityQueue<ExpiringKey>>(), Arg.Any<Dictionary<Key, Element>>());
         }
 
         private static async Task<InMemoryStorage> CreateStorageWithSchedulerAndWait(ICleaner cleaner)
