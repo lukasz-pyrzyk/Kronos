@@ -1,6 +1,8 @@
 ﻿using Kronos.Core.Messages;
 using Kronos.Server.Processing;
 using Kronos.Server.Storage;
+using Kronos.Server.Storage.Cleaning;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Xunit;
 
@@ -16,7 +18,7 @@ namespace Kronos.Server.Tests.Processing
             // arrange
             var request = new DeleteRequest();
             var processor = new DeleteProcessor();
-            var storage = Substitute.For<IStorage>();
+            var storage = new InMemoryStorage(Substitute.For<ICleaner>(), Substitute.For<IScheduler>(), Substitute.For<ILogger<InMemoryStorage>>());
             storage.TryRemove(request.Key).Returns(deleted);
 
             DeleteResponse response = processor.Reply(request, storage);

@@ -4,9 +4,9 @@ using Kronos.Server.Storage;
 
 namespace Kronos.Server.Processing
 {
-    public class GetProcessor : CommandProcessor<GetRequest, GetResponse>
+    class GetProcessor : CommandProcessor<GetRequest, GetResponse>
     {
-        public override GetResponse Reply(GetRequest request, IStorage storage)
+        public override GetResponse Reply(GetRequest request, InMemoryStorage storage)
         {
             if (storage.TryGet(request.Key, out ByteString package))
             {

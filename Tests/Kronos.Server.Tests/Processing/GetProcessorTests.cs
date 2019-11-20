@@ -2,6 +2,8 @@
 using Kronos.Core.Messages;
 using Kronos.Server.Processing;
 using Kronos.Server.Storage;
+using Kronos.Server.Storage.Cleaning;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Xunit;
 
@@ -16,7 +18,7 @@ namespace Kronos.Server.Tests.Processing
             ByteString obj = ByteString.CopyFromUtf8("lorem ipsum");
             var request = new GetRequest();
             var processor = new GetProcessor();
-            var storage = Substitute.For<IStorage>();
+            var storage = new InMemoryStorage(Substitute.For<ICleaner>(), Substitute.For<IScheduler>(), Substitute.For<ILogger<InMemoryStorage>>());
 
             storage.TryGet(request.Key, out ByteString dummy).Returns(x =>
             {
@@ -38,7 +40,7 @@ namespace Kronos.Server.Tests.Processing
             // arrange
             var request = new GetRequest();
             var processor = new GetProcessor();
-            var storage = Substitute.For<IStorage>();
+            var storage = new InMemoryStorage(Substitute.For<ICleaner>(), Substitute.For<IScheduler>(), Substitute.For<ILogger<InMemoryStorage>>());
 
             storage.TryGet(request.Key, out ByteString _).Returns(false);
 

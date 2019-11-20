@@ -8,7 +8,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Kronos.Server.Storage
 {
-    public class InMemoryStorage : IStorage
+    class InMemoryStorage
     {
         private readonly Dictionary<Key, Element> _storage = new Dictionary<Key, Element>();
         private readonly PriorityQueue<ExpiringKey> _expiringKeys = new PriorityQueue<ExpiringKey>();
@@ -126,14 +126,6 @@ namespace Kronos.Server.Storage
             }
         }
 
-        public IEnumerator<Element> GetEnumerator()
-        {
-            return _storage.Values.GetEnumerator();
-        }
-
-        IEnumerator IEnumerable.GetEnumerator()
-        {
-            return GetEnumerator();
-        }
+        public IEnumerable<Element> GetAll() => _storage.Values;
     }
 }

@@ -3,9 +3,9 @@ using Kronos.Server.Storage;
 
 namespace Kronos.Server.Processing
 {
-    public class ContainsProcessor : CommandProcessor<ContainsRequest, ContainsResponse>
+    class ContainsProcessor : CommandProcessor<ContainsRequest, ContainsResponse>
     {
-        public override ContainsResponse Reply(ContainsRequest request, IStorage storage)
+        public override ContainsResponse Reply(ContainsRequest request, InMemoryStorage storage)
         {
             bool contains = storage.Contains(request.Key);
 

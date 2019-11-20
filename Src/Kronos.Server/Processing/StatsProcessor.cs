@@ -4,13 +4,13 @@ using Kronos.Server.Storage;
 
 namespace Kronos.Server.Processing
 {
-    public class StatsProcessor : CommandProcessor<StatsRequest, StatsResponse>
+    class StatsProcessor : CommandProcessor<StatsRequest, StatsResponse>
     {
-        public override StatsResponse Reply(StatsRequest request, IStorage storage)
+        public override StatsResponse Reply(StatsRequest request, InMemoryStorage storage)
         {
             long usedBytes = 0;
             long count = 0;
-            foreach (var element in storage)
+            foreach (var element in storage.GetAll())
             {
                 usedBytes += element.Data.Length;
                 count++;

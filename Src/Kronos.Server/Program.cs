@@ -30,7 +30,7 @@ namespace Kronos.Server
                     services.AddSingleton(settings);
                     services.AddSingleton<ICleaner, Cleaner>();
                     services.AddSingleton<IScheduler, Scheduler>();
-                    services.AddSingleton<IStorage, InMemoryStorage>();
+                    services.AddSingleton<InMemoryStorage>();
                     services.AddSingleton<RequestProcessor>();
                     services.AddSingleton<Listener>();
                     services.AddHostedService<KronosWorker>();

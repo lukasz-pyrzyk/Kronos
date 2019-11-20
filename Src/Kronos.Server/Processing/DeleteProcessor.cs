@@ -3,9 +3,9 @@ using Kronos.Server.Storage;
 
 namespace Kronos.Server.Processing
 {
-    public class DeleteProcessor : CommandProcessor<DeleteRequest, DeleteResponse>
+    class DeleteProcessor : CommandProcessor<DeleteRequest, DeleteResponse>
     {
-        public override DeleteResponse Reply(DeleteRequest request, IStorage storage)
+        public override DeleteResponse Reply(DeleteRequest request, InMemoryStorage storage)
         {
             bool deleted = storage.TryRemove(request.Key);
 

@@ -3,10 +3,10 @@ using Kronos.Server.Storage;
 
 namespace Kronos.Server.Processing
 {
-    public abstract class CommandProcessor<TRequest, TResponse>
+    abstract class CommandProcessor<TRequest, TResponse>
         where TRequest : IMessage
         where TResponse : IMessage
     {
-        public abstract TResponse Reply(TRequest request, IStorage storage);
+        public abstract TResponse Reply(TRequest request, InMemoryStorage storage);
     }
 }

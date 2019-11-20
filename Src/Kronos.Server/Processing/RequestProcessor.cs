@@ -3,9 +3,9 @@ using Kronos.Server.Storage;
 
 namespace Kronos.Server.Processing
 {
-    public class RequestProcessor
+    class RequestProcessor
     {
-        private readonly IStorage _storage;
+        private readonly InMemoryStorage _storage;
         private readonly CommandProcessor<InsertRequest, InsertResponse> _insertProcessor;
         private readonly CommandProcessor<GetRequest, GetResponse> _getProcessor;
         private readonly CommandProcessor<DeleteRequest, DeleteResponse> _deleteProcessor;
@@ -14,14 +14,14 @@ namespace Kronos.Server.Processing
         private readonly CommandProcessor<ClearRequest, ClearResponse> _clearProcessor;
         private readonly CommandProcessor<StatsRequest, StatsResponse> _statsProcessor;
 
-        public RequestProcessor(IStorage storage) : this(
+        public RequestProcessor(InMemoryStorage storage) : this(
             storage, new InsertProcessor(), new GetProcessor(),
             new DeleteProcessor(), new CountProcessor(), new ContainsProcessor(), new ClearProcessor(), new StatsProcessor()
             )
         { }
 
-        internal RequestProcessor(
-            IStorage storage,
+        public RequestProcessor(
+            InMemoryStorage storage,
             CommandProcessor<InsertRequest, InsertResponse> insertProcessor,
             CommandProcessor<GetRequest, GetResponse> getProcessor,
             CommandProcessor<DeleteRequest, DeleteResponse> deleteProcessor,

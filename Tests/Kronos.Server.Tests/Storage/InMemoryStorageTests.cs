@@ -17,7 +17,7 @@ namespace Kronos.Server.Tests.Storage
         {
             // Arrange
             const string key = "key";
-            IStorage storage = CreateStorage();
+            var storage = CreateStorage();
 
             // Act
             bool added = storage.Add(key, null, ByteString.Empty);
@@ -32,7 +32,7 @@ namespace Kronos.Server.Tests.Storage
         {
             // Arrange
             const string key = "key";
-            IStorage storage = CreateStorage();
+            var storage = CreateStorage();
 
             // Act
             bool added = storage.Add(key, DateTimeOffset.MaxValue, ByteString.Empty);
@@ -48,7 +48,7 @@ namespace Kronos.Server.Tests.Storage
         {
             // Arrange
             const string key = "key";
-            IStorage storage = CreateStorage();
+            var storage = CreateStorage();
 
             // Act
             storage.Add(key, DateTimeOffset.MaxValue, ByteString.Empty);
@@ -63,7 +63,7 @@ namespace Kronos.Server.Tests.Storage
         {
             // Arrange
             const string key = "key";
-            IStorage storage = CreateStorage();
+            var storage = CreateStorage();
             TimeSpan expiryTime = TimeSpan.FromSeconds(1);
             DateTimeOffset now = DateTimeOffset.UtcNow;
 
@@ -81,7 +81,7 @@ namespace Kronos.Server.Tests.Storage
         public void TryGet_ReturnsObject()
         {
             // Arrange
-            IStorage storage = CreateStorage();
+            var storage = CreateStorage();
             const string key = "lorem ipsum";
             ByteString data = ByteString.CopyFromUtf8("lorem ipsum");
             storage.Add(key, null, data);
@@ -98,7 +98,7 @@ namespace Kronos.Server.Tests.Storage
         public void TryGet_ReturnsNullWhenObjectDoesNotExist()
         {
             // Arrange
-            IStorage storage = CreateStorage();
+            var storage = CreateStorage();
 
             // Act
             bool success = storage.TryGet("lorem ipsum", out ByteString received);
@@ -112,7 +112,7 @@ namespace Kronos.Server.Tests.Storage
         public void TryGet_ReturnsNullWhenObjectIsExpired()
         {
             // Arrange
-            IStorage storage = CreateStorage();
+            var storage = CreateStorage();
             const string key = "lorem ipsum";
             ByteString data = ByteString.CopyFromUtf8("lorem ipsum");
             storage.Add(key, DateTimeOffset.MinValue, data);
@@ -132,7 +132,7 @@ namespace Kronos.Server.Tests.Storage
             const string firstKey = "key1";
             const string secondKey = "key2";
 
-            IStorage storage = CreateStorage();
+            var storage = CreateStorage();
 
             storage.Add(firstKey, null, ByteString.Empty);
             storage.Add(secondKey, null, ByteString.Empty);
@@ -152,7 +152,7 @@ namespace Kronos.Server.Tests.Storage
             const string firstKey = "key1";
             const string secondKey = "key2";
 
-            IStorage storage = CreateStorage();
+            var storage = CreateStorage();
 
             storage.Add(firstKey, DateTimeOffset.MaxValue, ByteString.Empty);
             storage.Add(secondKey, DateTimeOffset.MaxValue, ByteString.Empty);
@@ -172,7 +172,7 @@ namespace Kronos.Server.Tests.Storage
             const string firstKey = "key1";
             const string secondKey = "key2";
 
-            IStorage storage = CreateStorage();
+            var storage = CreateStorage();
             storage.Add(firstKey, DateTimeOffset.MaxValue, ByteString.Empty);
 
             bool deleted = storage.TryRemove(secondKey);
@@ -185,7 +185,7 @@ namespace Kronos.Server.Tests.Storage
         public void Contains_ReturnsTrueWhenDataExists()
         {
             // Arrange
-            IStorage storage = CreateStorage();
+            var storage = CreateStorage();
             const string key = "lorem ipsum";
             storage.Add(key, null, ByteString.Empty);
 
@@ -200,7 +200,7 @@ namespace Kronos.Server.Tests.Storage
         public void Contains_ReturnsFalseWhenKeyIsExpired()
         {
             // Arrange
-            IStorage storage = CreateStorage();
+            var storage = CreateStorage();
             const string key = "lorem ipsum";
             storage.Add(key, DateTimeOffset.MinValue, ByteString.Empty);
 
@@ -215,7 +215,7 @@ namespace Kronos.Server.Tests.Storage
         public void Contains_ReturnsTrueWhenDataDoesNotExist()
         {
             // Arrange
-            IStorage storage = CreateStorage();
+            var storage = CreateStorage();
 
             // Assert
             bool result = storage.Contains("lorem ipsum");
@@ -230,7 +230,7 @@ namespace Kronos.Server.Tests.Storage
         public void Clear_ClearsTheData(int count)
         {
             // Arrange
-            IStorage storage = CreateStorage();
+            var storage = CreateStorage();
 
             for (int i = 0; i < count; i++)
             {
@@ -251,7 +251,7 @@ namespace Kronos.Server.Tests.Storage
         {
             // Arrange
             ICleaner cleaner = Substitute.For<ICleaner>();
-            IStorage storage = await CreateStorageWithSchedulerAndWait(cleaner);
+            var storage = await CreateStorageWithSchedulerAndWait(cleaner);
 
             // Act
             storage.Add("", null, ByteString.Empty);
@@ -265,7 +265,7 @@ namespace Kronos.Server.Tests.Storage
         {
             // Arrange
             ICleaner cleaner = Substitute.For<ICleaner>();
-            IStorage storage = await CreateStorageWithSchedulerAndWait(cleaner);
+            var storage = await CreateStorageWithSchedulerAndWait(cleaner);
 
             // Act
             storage.TryGet("", out ByteString _);
@@ -279,7 +279,7 @@ namespace Kronos.Server.Tests.Storage
         {
             // Arrange
             ICleaner cleaner = Substitute.For<ICleaner>();
-            IStorage storage = await CreateStorageWithSchedulerAndWait(cleaner);
+            var storage = await CreateStorageWithSchedulerAndWait(cleaner);
 
             // Act
             storage.Contains("");
@@ -288,7 +288,7 @@ namespace Kronos.Server.Tests.Storage
             cleaner.Received(1).Clear(Arg.Any<PriorityQueue<ExpiringKey>>(), Arg.Any<Dictionary<Key, Element>>());
         }
 
-        private static async Task<IStorage> CreateStorageWithSchedulerAndWait(ICleaner cleaner)
+        private static async Task<InMemoryStorage> CreateStorageWithSchedulerAndWait(ICleaner cleaner)
         {
             const int timePeriod = 10;
             IScheduler scheduler = new Scheduler();
@@ -302,13 +302,12 @@ namespace Kronos.Server.Tests.Storage
             return storage;
         }
 
-        private static IStorage CreateStorage()
+        private static InMemoryStorage CreateStorage()
         {
             ICleaner cleaner = Substitute.For<ICleaner>();
             IScheduler scheduler = Substitute.For<IScheduler>();
             ILogger<InMemoryStorage> logger = Substitute.For<ILogger<InMemoryStorage>>();
-            IStorage storage = new InMemoryStorage(cleaner, scheduler, logger);
-            return storage;
+            return new InMemoryStorage(cleaner, scheduler, logger);
         }
     }
 }

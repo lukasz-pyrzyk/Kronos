@@ -3,9 +3,9 @@ using Kronos.Server.Storage;
 
 namespace Kronos.Server.Processing
 {
-    public class InsertProcessor : CommandProcessor<InsertRequest, InsertResponse>
+    class InsertProcessor : CommandProcessor<InsertRequest, InsertResponse>
     {
-        public override InsertResponse Reply(InsertRequest request, IStorage storage)
+        public override InsertResponse Reply(InsertRequest request, InMemoryStorage storage)
         {
             bool added = storage.Add(request.Key, request.Expiry?.ToDateTimeOffset(), request.Data);
 

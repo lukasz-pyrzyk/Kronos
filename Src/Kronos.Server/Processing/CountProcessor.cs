@@ -3,9 +3,9 @@ using Kronos.Server.Storage;
 
 namespace Kronos.Server.Processing
 {
-    public class CountProcessor : CommandProcessor<CountRequest, CountResponse>
+    class CountProcessor : CommandProcessor<CountRequest, CountResponse>
     {
-        public override CountResponse Reply(CountRequest request, IStorage storage)
+        public override CountResponse Reply(CountRequest request, InMemoryStorage storage)
         {
             int count = storage.Count;
 

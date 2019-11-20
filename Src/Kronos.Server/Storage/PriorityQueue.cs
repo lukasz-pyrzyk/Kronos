@@ -4,7 +4,7 @@ using System.Collections.Generic;
 
 namespace Kronos.Server.Storage
 {
-    public class PriorityQueue<T> : IEnumerable<T> where T : IComparable<T>
+    class PriorityQueue<T> : IEnumerable<T> where T : IComparable<T>
     {
         private readonly LinkedList<T> _nodes = new LinkedList<T>();
 

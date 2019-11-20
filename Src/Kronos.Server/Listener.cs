@@ -12,7 +12,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Kronos.Server
 {
-    public class Listener
+    class Listener
     {
         private readonly TcpListener _tcpListener;
         private readonly SocketConnection _socketConnection = new SocketConnection();
