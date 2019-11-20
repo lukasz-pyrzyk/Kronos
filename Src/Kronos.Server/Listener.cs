@@ -7,7 +7,7 @@ using System.Threading;
 using System.Threading.Tasks;
 using Kronos.Core;
 using Kronos.Core.Messages;
-using Kronos.Core.Processing;
+using Kronos.Server.Processing;
 using Microsoft.Extensions.Logging;
 
 namespace Kronos.Server

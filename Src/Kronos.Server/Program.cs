@@ -1,7 +1,7 @@
 ﻿using EntryPoint;
-using Kronos.Core.Processing;
-using Kronos.Core.Storage;
-using Kronos.Core.Storage.Cleaning;
+using Kronos.Server.Processing;
+using Kronos.Server.Storage;
+using Kronos.Server.Storage.Cleaning;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;

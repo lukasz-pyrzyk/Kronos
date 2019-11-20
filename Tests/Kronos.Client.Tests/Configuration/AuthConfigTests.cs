@@ -2,7 +2,7 @@
 using Kronos.Core.Hashing;
 using Xunit;
 
-namespace Kronos.Core.Tests.Configuration
+namespace Kronos.Client.Tests.Configuration
 {
     public class AuthConfigTests
     {
