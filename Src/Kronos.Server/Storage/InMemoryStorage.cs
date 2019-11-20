@@ -1,8 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Threading;
 using Google.Protobuf;
-using Kronos.Server.Storage.Cleaning;
 using Microsoft.Extensions.Logging;
 
 namespace Kronos.Server.Storage
@@ -12,25 +10,18 @@ namespace Kronos.Server.Storage
         private readonly Dictionary<Key, Element> _storage = new Dictionary<Key, Element>();
         private readonly ConcurrentPriorityQueue<ExpiringKey> _expiringKeys = new ConcurrentPriorityQueue<ExpiringKey>();
 
-        private int _cleanupRequested;
-        private readonly ICleaner _cleaner;
         private readonly ILogger<InMemoryStorage> _logger;
 
-        public InMemoryStorage(ICleaner cleaner, IScheduler scheduler, ILogger<InMemoryStorage> logger)
+        public InMemoryStorage(ILogger<InMemoryStorage> logger)
         {
-            _cleaner = cleaner;
             _logger = logger;
-            scheduler.Register(OnTimer);
         }
 
         public int Count => _storage.Count;
         public int ExpiringCount => _expiringKeys.Count;
-        internal bool CleanupRequested => _cleanupRequested == 1;
 
         public bool Add(string name, DateTimeOffset? expiryDate, ByteString obj)
         {
-            ClearStorageIfRequested();
-
             var key = new Key(name);
 
             bool found = _storage.TryGetValue(key, out Element element);
@@ -52,8 +43,6 @@ namespace Kronos.Server.Storage
 
         public bool TryGet(string name, out ByteString obj)
         {
-            ClearStorageIfRequested();
-
             var key = new Key(name);
             bool found = _storage.TryGetValue(key, out Element element);
             if (found && !element.IsExpired())
@@ -68,8 +57,6 @@ namespace Kronos.Server.Storage
 
         public bool TryRemove(string name)
         {
-            ClearStorageIfRequested();
-
             var key = new Key(name);
             bool found = _storage.TryGetValue(key, out Element element);
             if (found)
@@ -86,8 +73,6 @@ namespace Kronos.Server.Storage
 
         public bool Contains(string name)
         {
-            ClearStorageIfRequested();
-
             var key = new Key(name);
             bool found = _storage.TryGetValue(key, out Element element);
 
@@ -105,23 +90,21 @@ namespace Kronos.Server.Storage
             return count;
         }
 
-        private void ClearStorageIfRequested()
+        public void Cleanup()
         {
-            // check if cleanup was requested, do not change value
-            if (Interlocked.CompareExchange(ref _cleanupRequested, 1, 1) == 1)
-            {
-                _logger.LogInformation("Clearing storage");
-                _cleaner.Clear(_expiringKeys, _storage);
-                Interlocked.Exchange(ref _cleanupRequested, 0);
-            }
-        }
+            DateTimeOffset date = DateTimeOffset.UtcNow;
+            var deleted = 0;
 
-        private void OnTimer(object obj)
-        {
-            // try to request for cleanup
-            if (Interlocked.CompareExchange(ref _cleanupRequested, 1, 0) == 0)
+            while (_expiringKeys.Count > 0 && _expiringKeys.Peek().IsExpired(date))
             {
-                _logger.LogInformation("Storage cleanup scheduled");
+                ExpiringKey expiringKey = _expiringKeys.Poll();
+                _storage.Remove(expiringKey.Key);
+                deleted++;
+            }
+
+            if (deleted > 0)
+            {
+                _logger.LogDebug("Deleted {deleted} elements from storage", deleted);
             }
         }
 

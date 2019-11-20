@@ -3,14 +3,14 @@ using System.Threading.Tasks;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Kronos.Server
+namespace Kronos.Server.Workers
 {
-    internal class KronosWorker : IHostedService
+    internal class ListenerWorker : IHostedService
     {
         private readonly Listener _listener;
-        private readonly ILogger<KronosWorker> _logger;
+        private readonly ILogger<ListenerWorker> _logger;
 
-        public KronosWorker(Listener listener, ILogger<KronosWorker> logger)
+        public ListenerWorker(Listener listener, ILogger<ListenerWorker> logger)
         {
             _logger = logger;
             _listener = listener;

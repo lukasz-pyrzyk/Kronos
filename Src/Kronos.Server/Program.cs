@@ -1,7 +1,7 @@
 ﻿using EntryPoint;
 using Kronos.Server.Processing;
 using Kronos.Server.Storage;
-using Kronos.Server.Storage.Cleaning;
+using Kronos.Server.Workers;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
@@ -28,12 +28,11 @@ namespace Kronos.Server
                     var settings = Cli.Parse<SettingsArgs>(args);
 
                     services.AddSingleton(settings);
-                    services.AddSingleton<ICleaner, Cleaner>();
-                    services.AddSingleton<IScheduler, Scheduler>();
                     services.AddSingleton<InMemoryStorage>();
                     services.AddSingleton<RequestProcessor>();
                     services.AddSingleton<Listener>();
-                    services.AddHostedService<KronosWorker>();
+                    services.AddHostedService<ListenerWorker>();
+                    services.AddHostedService<CleanerWorker>();
                 });
         }
     }

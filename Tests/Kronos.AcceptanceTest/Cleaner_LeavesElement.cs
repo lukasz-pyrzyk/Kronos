@@ -2,13 +2,12 @@
 using System.Threading.Tasks;
 using FluentAssertions;
 using Kronos.Client;
-using Kronos.Core.Configuration;
 using Xunit;
 
 namespace Kronos.AcceptanceTest
 {
     [Collection("AcceptanceTest")]
-    public class Cleaner : Base
+    public class Cleaner_RemovesElement : Base
     {
         [Fact]
         public override async Task RunAsync()
@@ -23,9 +22,10 @@ namespace Kronos.AcceptanceTest
             byte[] data = new byte[1024];
 
             // Act
-            await client.InsertAsync(key, data, DateTimeOffset.UtcNow);
+            var insertResponse = await client.InsertAsync(key, data, DateTimeOffset.UtcNow);
+            insertResponse.Added.Should().BeTrue();
 
-            await Task.Delay(DefaultSettings.CleanupTimeMs);
+            await Task.Delay(5000);
 
             var containsResponse = await client.ContainsAsync(key);
 

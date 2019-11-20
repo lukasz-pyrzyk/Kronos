@@ -1,9 +1,7 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Threading.Tasks;
 using Google.Protobuf;
 using Kronos.Server.Storage;
-using Kronos.Server.Storage.Cleaning;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Xunit;
@@ -246,68 +244,10 @@ namespace Kronos.Server.Tests.Storage
             Assert.Equal(deleted, count);
         }
 
-        [Fact]
-        public async Task Add_CallsCleaner()
-        {
-            // Arrange
-            ICleaner cleaner = Substitute.For<ICleaner>();
-            var storage = await CreateStorageWithSchedulerAndWait(cleaner);
-
-            // Act
-            storage.Add("", null, ByteString.Empty);
-
-            // Assert
-            cleaner.Received(1).Clear(Arg.Any<ConcurrentPriorityQueue<ExpiringKey>>(), Arg.Any<Dictionary<Key, Element>>());
-        }
-
-        [Fact]
-        public async Task TryGet_CallsCleaner()
-        {
-            // Arrange
-            ICleaner cleaner = Substitute.For<ICleaner>();
-            var storage = await CreateStorageWithSchedulerAndWait(cleaner);
-
-            // Act
-            storage.TryGet("", out ByteString _);
-
-            // Assert
-            cleaner.Received(1).Clear(Arg.Any<ConcurrentPriorityQueue<ExpiringKey>>(), Arg.Any<Dictionary<Key, Element>>());
-        }
-
-        [Fact]
-        public async Task Contains_CallsCleaner()
-        {
-            // Arrange
-            ICleaner cleaner = Substitute.For<ICleaner>();
-            var storage = await CreateStorageWithSchedulerAndWait(cleaner);
-
-            // Act
-            storage.Contains("");
-
-            // Assert
-            cleaner.Received(1).Clear(Arg.Any<ConcurrentPriorityQueue<ExpiringKey>>(), Arg.Any<Dictionary<Key, Element>>());
-        }
-
-        private static async Task<InMemoryStorage> CreateStorageWithSchedulerAndWait(ICleaner cleaner)
-        {
-            const int timePeriod = 10;
-            IScheduler scheduler = new Scheduler();
-            InMemoryStorage storage = new InMemoryStorage(cleaner, scheduler, Substitute.For<ILogger<InMemoryStorage>>());
-
-            do
-            {
-                await Task.Delay(timePeriod);
-            } while (!storage.CleanupRequested);
-
-            return storage;
-        }
-
         private static InMemoryStorage CreateStorage()
         {
-            ICleaner cleaner = Substitute.For<ICleaner>();
-            IScheduler scheduler = Substitute.For<IScheduler>();
             ILogger<InMemoryStorage> logger = Substitute.For<ILogger<InMemoryStorage>>();
-            return new InMemoryStorage(cleaner, scheduler, logger);
+            return new InMemoryStorage(logger);
         }
     }
 }

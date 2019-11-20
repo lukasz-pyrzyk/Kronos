@@ -3,7 +3,6 @@ using Google.Protobuf;
 using Kronos.Core.Messages;
 using Kronos.Server.Processing;
 using Kronos.Server.Storage;
-using Kronos.Server.Storage.Cleaning;
 using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Xunit;
@@ -18,7 +17,7 @@ namespace Kronos.Server.Tests.Processing
             // arrange
             var request = new InsertRequest();
             var processor = new InsertProcessor();
-            var storage = new InMemoryStorage(Substitute.For<ICleaner>(), Substitute.For<IScheduler>(), Substitute.For<ILogger<InMemoryStorage>>());
+            var storage = new InMemoryStorage(Substitute.For<ILogger<InMemoryStorage>>());
 
             // Act
             InsertResponse response = processor.Reply(request, storage);
@@ -34,7 +33,7 @@ namespace Kronos.Server.Tests.Processing
             var key = "key";
             var request = new InsertRequest { Key = key };
             var processor = new InsertProcessor();
-            var storage = new InMemoryStorage(Substitute.For<ICleaner>(), Substitute.For<IScheduler>(), Substitute.For<ILogger<InMemoryStorage>>());
+            var storage = new InMemoryStorage(Substitute.For<ILogger<InMemoryStorage>>());
             storage.Add(key, null, ByteString.Empty);
 
             // Act
