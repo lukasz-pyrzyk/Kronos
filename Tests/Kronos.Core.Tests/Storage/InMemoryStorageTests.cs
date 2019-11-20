@@ -4,6 +4,7 @@ using System.Threading.Tasks;
 using Google.Protobuf;
 using Kronos.Core.Storage;
 using Kronos.Core.Storage.Cleaning;
+using Microsoft.Extensions.Logging;
 using NSubstitute;
 using Xunit;
 
@@ -291,7 +292,7 @@ namespace Kronos.Core.Tests.Storage
         {
             const int timePeriod = 10;
             IScheduler scheduler = new Scheduler();
-            InMemoryStorage storage = new InMemoryStorage(cleaner, scheduler);
+            InMemoryStorage storage = new InMemoryStorage(cleaner, scheduler, Substitute.For<ILogger<InMemoryStorage>>());
 
             do
             {
@@ -305,7 +306,8 @@ namespace Kronos.Core.Tests.Storage
         {
             ICleaner cleaner = Substitute.For<ICleaner>();
             IScheduler scheduler = Substitute.For<IScheduler>();
-            IStorage storage = new InMemoryStorage(cleaner, scheduler);
+            ILogger<InMemoryStorage> logger = Substitute.For<ILogger<InMemoryStorage>>();
+            IStorage storage = new InMemoryStorage(cleaner, scheduler, logger);
             return storage;
         }
     }

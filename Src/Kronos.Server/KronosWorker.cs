@@ -1,33 +1,34 @@
-﻿using System;
-using System.Threading;
+﻿using System.Threading;
 using System.Threading.Tasks;
 using Kronos.Core.Processing;
 using Kronos.Core.Storage;
 using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Logging;
 
 namespace Kronos.Server
 {
     internal class KronosWorker : IHostedService
     {
-        private readonly Listener _server;
+        private readonly ILogger<KronosWorker> _logger;
+        private readonly Listener listener;
 
-        public KronosWorker(SettingsArgs settings)
+        public KronosWorker(Listener listener, ILogger<KronosWorker> logger)
         {
-            var storage = new InMemoryStorage();
-            var requestProcessor = new RequestProcessor(storage);
-
-            _server = new Listener(settings, requestProcessor);
+            _logger = logger;
+            this.listener = listener;
         }
 
         public Task StartAsync(CancellationToken cancellationToken)
         {
-            _server.Start();
+            listener.Start();
+            _logger.LogInformation("Worker started");
             return Task.CompletedTask;
         }
 
         public Task StopAsync(CancellationToken cancellationToken)
         {
-            _server.Dispose();
+            listener.Stop();
+            _logger.LogInformation("Worker stopped");
             return Task.CompletedTask;
         }
     }

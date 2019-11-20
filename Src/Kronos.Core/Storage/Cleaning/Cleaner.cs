@@ -1,11 +1,18 @@
 using System;
 using System.Collections.Generic;
-using System.Diagnostics;
+using Microsoft.Extensions.Logging;
 
 namespace Kronos.Core.Storage.Cleaning
 {
     internal class Cleaner : ICleaner
     {
+        private readonly ILogger<Cleaner> _logger;
+
+        public Cleaner(ILogger<Cleaner> logger)
+        {
+            _logger = logger;
+        }
+
         public void Clear(PriorityQueue<ExpiringKey> expiringKeys, Dictionary<Key, Element> nodes)
         {
             DateTimeOffset date = DateTimeOffset.UtcNow;
@@ -20,7 +27,7 @@ namespace Kronos.Core.Storage.Cleaning
 
             if (deleted > 0)
             {
-                Trace.TraceInformation($"Deleted {deleted} elements from storage");
+                _logger.LogDebug("Deleted {deleted} elements from storage", deleted);
             }
         }
     }

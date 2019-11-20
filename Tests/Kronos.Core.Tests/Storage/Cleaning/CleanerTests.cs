@@ -4,6 +4,8 @@ using System.Linq;
 using Google.Protobuf;
 using Kronos.Core.Storage;
 using Kronos.Core.Storage.Cleaning;
+using Microsoft.Extensions.Logging;
+using NSubstitute;
 using Xunit;
 
 namespace Kronos.Core.Tests.Storage.Cleaning
@@ -28,7 +30,7 @@ namespace Kronos.Core.Tests.Storage.Cleaning
             int expiringKeysBefore = expiringKeys.Count;
             int shouldBeDeleted = expiringKeys.Count(x => x.IsExpired());
 
-            Cleaner provider = new Cleaner();
+            Cleaner provider = new Cleaner(Substitute.For<ILogger<Cleaner>>());
 
             // Act
             provider.Clear(expiringKeys, data);
