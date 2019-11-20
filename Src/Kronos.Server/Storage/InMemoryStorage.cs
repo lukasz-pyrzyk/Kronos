@@ -1,5 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
+using System.Threading;
 using Google.Protobuf;
 using Microsoft.Extensions.Logging;
 
@@ -8,7 +10,8 @@ namespace Kronos.Server.Storage
     class InMemoryStorage
     {
         private readonly Dictionary<Key, Element> _storage = new Dictionary<Key, Element>();
-        private readonly ConcurrentPriorityQueue<ExpiringKey> _expiringKeys = new ConcurrentPriorityQueue<ExpiringKey>();
+        private readonly PriorityQueue<ExpiringKey> _expiringKeys = new PriorityQueue<ExpiringKey>();
+        private readonly ReaderWriterLockSlim _lock = new ReaderWriterLockSlim(LockRecursionPolicy.NoRecursion);
 
         private readonly ILogger<InMemoryStorage> _logger;
 
@@ -18,76 +21,135 @@ namespace Kronos.Server.Storage
         }
 
         public int Count => _storage.Count;
+
         public int ExpiringCount => _expiringKeys.Count;
 
         public bool Add(string name, DateTimeOffset? expiryDate, ByteString obj)
         {
             var key = new Key(name);
 
-            bool found = _storage.TryGetValue(key, out Element element);
-            if (found && !element.IsExpired())
+            _lock.EnterReadLock();
+            Element element;
+            try
             {
-                return false;
+                bool found = _storage.TryGetValue(key, out Element e);
+                element = e;
+                if (found && !element.IsExpired())
+                {
+                    return false;
+                }
+            }
+            finally
+            {
+                _lock.ExitReadLock();
             }
 
-            element = new Element(obj, expiryDate);
-            _storage[key] = element;
-
-            if (expiryDate.HasValue)
+            _lock.EnterWriteLock();
+            try
             {
-                _expiringKeys.Add(new ExpiringKey(key, expiryDate.Value));
-            }
+                element = new Element(obj, expiryDate);
+                _storage[key] = element;
 
-            return true;
+                if (expiryDate.HasValue)
+                {
+                    _expiringKeys.Add(new ExpiringKey(key, expiryDate.Value));
+                }
+
+                return true;
+            }
+            finally
+            {
+                _lock.ExitWriteLock();
+            }
         }
 
         public bool TryGet(string name, out ByteString obj)
         {
             var key = new Key(name);
-            bool found = _storage.TryGetValue(key, out Element element);
-            if (found && !element.IsExpired())
+            _lock.EnterReadLock();
+            try
             {
-                obj = element.Data;
-                return true;
-            }
+                bool found = _storage.TryGetValue(key, out Element element);
+                if (found && !element.IsExpired())
+                {
+                    obj = element.Data;
+                    return true;
+                }
 
-            obj = null;
-            return false;
+                obj = null;
+                return false;
+            }
+            finally
+            {
+                _lock.ExitReadLock();
+            }
         }
 
         public bool TryRemove(string name)
         {
             var key = new Key(name);
-            bool found = _storage.TryGetValue(key, out Element element);
-            if (found)
+            Element element;
+            _lock.EnterReadLock();
+            try
+            {
+                bool found = _storage.TryGetValue(key, out Element e);
+                if (!found) return false;
+                element = e;
+            }
+            finally
+            {
+                _lock.ExitReadLock();
+            }
+
+            _lock.EnterWriteLock();
+            try
             {
                 _storage.Remove(key);
                 if (element.IsExpiring)
                 {
                     _expiringKeys.Remove(new ExpiringKey(key, default));
                 }
+                return true;
             }
-
-            return found;
+            finally
+            {
+                _lock.ExitWriteLock();
+            }
         }
 
         public bool Contains(string name)
         {
             var key = new Key(name);
-            bool found = _storage.TryGetValue(key, out Element element);
 
-            return found && !element.IsExpired();
+            _lock.EnterReadLock();
+            try
+            {
+                bool found = _storage.TryGetValue(key, out Element element);
+                return found && !element.IsExpired();
+            }
+            finally
+            {
+                _lock.ExitReadLock();
+            }
         }
 
         public int Clear()
         {
             _logger.LogInformation("Clearing storage");
 
-            int count = Count;
-            _storage.Clear();
-            _expiringKeys.Clear();
+            _lock.EnterWriteLock();
+            try
+            {
+                int count = Count;
+                _storage.Clear();
+                _expiringKeys.Clear();
 
-            return count;
+                return count;
+            }
+            finally
+            {
+                _lock.ExitWriteLock();
+            }
         }
 
         public void Cleanup()
@@ -95,19 +157,37 @@ namespace Kronos.Server.Storage
             DateTimeOffset date = DateTimeOffset.UtcNow;
             var deleted = 0;
 
-            while (_expiringKeys.Count > 0 && _expiringKeys.Peek().IsExpired(date))
+            _lock.EnterWriteLock();
+            try
             {
-                ExpiringKey expiringKey = _expiringKeys.Poll();
-                _storage.Remove(expiringKey.Key);
-                deleted++;
+                while (_expiringKeys.Count > 0 && _expiringKeys.Peek().IsExpired(date))
+                {
+                    ExpiringKey expiringKey = _expiringKeys.Poll();
+                    _storage.Remove(expiringKey.Key);
+                    deleted++;
+                    if (deleted > 0)
+                    {
+                        _logger.LogDebug("Deleted {deleted} elements from storage", deleted);
+                    }
+                }
             }
-
-            if (deleted > 0)
+            finally
             {
-                _logger.LogDebug("Deleted {deleted} elements from storage", deleted);
+                _lock.ExitWriteLock();
             }
         }
 
-        public IEnumerable<Element> GetAll() => _storage.Values;
+        public Element[] GetAll()
+        {
+            _lock.EnterReadLock();
+            try
+            {
+                return _storage.Values.ToArray();
+            }
+            finally
+            {
+                _lock.ExitWriteLock();
+            }
+        }
     }
 }

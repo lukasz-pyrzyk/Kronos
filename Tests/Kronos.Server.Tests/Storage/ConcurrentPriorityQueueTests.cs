@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Linq;
 using Kronos.Server.Storage;
 using Xunit;
 
@@ -12,7 +13,7 @@ namespace Kronos.Server.Tests.Storage
         public void Peek_ReturnsElement(int[] values, int[] expectedOrder)
         {
             // Arrange
-            var queue = new ConcurrentPriorityQueue<int>();
+            var queue = new PriorityQueue<int>();
             foreach (int value in values)
             {
                 queue.Add(value);
@@ -38,7 +39,7 @@ namespace Kronos.Server.Tests.Storage
         public void Peek_ThrowsExceptionWhenElementIsMissing()
         {
             // Arrange
-            var queue = new ConcurrentPriorityQueue<int>();
+            var queue = new PriorityQueue<int>();
 
             // Act and assert
             Assert.Throws<InvalidOperationException>(() => queue.Peek());
@@ -48,7 +49,7 @@ namespace Kronos.Server.Tests.Storage
         public void Poll_ThrowsExceptionWhenElementIsMissing()
         {
             // Arrange
-            var queue = new ConcurrentPriorityQueue<int>();
+            var queue = new PriorityQueue<int>();
 
             // Act and assert
             Assert.Throws<InvalidOperationException>(() => queue.Poll());
@@ -58,7 +59,7 @@ namespace Kronos.Server.Tests.Storage
         public void Poll_ReturnsElement()
         {
             // Arrange
-            var queue = new ConcurrentPriorityQueue<int>();
+            var queue = new PriorityQueue<int>();
             const int element = 1;
             queue.Add(element);
 
@@ -74,7 +75,7 @@ namespace Kronos.Server.Tests.Storage
         public void Remove_RemovesElement()
         {
             // Arrange
-            var queue = new ConcurrentPriorityQueue<int>();
+            var queue = new PriorityQueue<int>();
             const int element = 1;
             queue.Add(element);
 
@@ -89,7 +90,7 @@ namespace Kronos.Server.Tests.Storage
         public void Clear_ClearsElements()
         {
             // Arrange
-            var queue = new ConcurrentPriorityQueue<int>();
+            var queue = new PriorityQueue<int>();
             queue.Add(1);
 
             // Act
