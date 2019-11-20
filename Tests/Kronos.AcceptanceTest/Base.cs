@@ -5,6 +5,7 @@ using System.Threading.Tasks;
 using Kronos.Client;
 using Kronos.Core.Configuration;
 using Kronos.Server;
+using Microsoft.Extensions.Hosting;
 using Xunit;
 
 namespace Kronos.AcceptanceTest
@@ -24,7 +25,7 @@ namespace Kronos.AcceptanceTest
         public async Task RunInternalAsync()
         {
             await ResetEvent.WaitAsync();
-            Task server = null;
+            IHost? program = null;
             try
             {
                 const int port = DefaultSettings.Port;
@@ -33,19 +34,11 @@ namespace Kronos.AcceptanceTest
 
                 LogMessage($"Creating server with port {port}");
 
-                server = Task.Factory.StartNew(() => Program.Start(GetSettings()), TaskCreationOptions.LongRunning);
+                program = Program.CreateHostBuilder(GetSettings()).Build();
+                await program.StartAsync();
 
-                while (!Program.IsWorking)
-                {
-                    LogMessage("Waiting for server warn-up...");
-                    await Task.Delay(100);
-
-                    if (server.IsFaulted)
-                    {
-                        LogMessage($"Server is faulted. Exception: {server.Exception}");
-                        throw server.Exception;
-                    }
-                }
+                LogMessage("Waiting for server warn-up...");
+                await Task.Delay(100);
 
                 LogMessage("Processing internal test");
                 await ProcessAsync(client).ConfigureAwait(true);
@@ -59,37 +52,35 @@ namespace Kronos.AcceptanceTest
             }
             finally
             {
-                try
+                if (program != null)
                 {
-                    LogMessage("Stopping server");
-                    Program.Stop();
-
-                    LogMessage("Waiting for server task to finish");
-                    if (server != null)
-                        await server.ConfigureAwait(true);
-
-                    LogMessage("Server stopped");
-                }
-                catch (AggregateException aex)
-                {
-                    foreach (var ex in aex.InnerExceptions)
+                    try
                     {
-                        LogMessage(ex.ToString());
+                        LogMessage("Stopping server");
+                        await program.StopAsync();
+                        LogMessage("Server stopped");
+                    }
+                    catch (AggregateException aex)
+                    {
+                        foreach (var ex in aex.InnerExceptions)
+                        {
+                            LogMessage(ex.ToString());
+                        }
+                    }
+                    catch (Exception ex)
+                    {
+                        LogMessage($"EXCEPTION: {ex}");
+                        Assert.False(true, ex.Message);
                     }
                 }
-                catch (Exception ex)
-                {
-                    LogMessage($"EXCEPTION: {ex}");
-                    Assert.False(true, ex.Message);
-                }
-
-                ResetEvent.Release();
             }
+
+            ResetEvent.Release();
         }
 
-        protected virtual SettingsArgs GetSettings()
+        protected virtual string[] GetSettings()
         {
-            return new SettingsArgs();
+            return Array.Empty<string>();
         }
 
         protected void LogMessage(string message)

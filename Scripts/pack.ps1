@@ -1,21 +1,6 @@
-# projects to pack
-$projects = @(
-    "Src\Kronos.Core",
-    "Src\Kronos.Client",
-    "Src\Kronos.Server"
-)
+write-host "Packaging"
 
-# pack function for project
-function Pack($path) {
-    dotnet pack $path -c Release;
-}
-
-write-host "Packeging started"
-# build each project
-foreach ($project in $projects){
-    write-host "Packing " $project
-    Pack($project)
-}
+dotnet pack -c Release
 
 # Set build as failed if any error occurred
 if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode )  }
@@ -28,7 +13,7 @@ cd "Src\Kronos.Server"
 dotnet publish -o ./publish -c Release
 write-host "Project packaged"
 
-docker build -t lukaszpyrzyk/kronos .
+docker build --no-cache -t lukaszpyrzyk/kronos .
 write-host "Docker image built"
 
 if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode )  }

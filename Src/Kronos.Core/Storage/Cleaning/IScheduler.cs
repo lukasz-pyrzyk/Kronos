@@ -3,7 +3,7 @@ using Kronos.Core.Configuration;
 
 namespace Kronos.Core.Storage.Cleaning
 {
-    internal interface IScheduler
+    public interface IScheduler
     {
         void Register(TimerCallback callback, int period = DefaultSettings.CleanupTimeMs);
     }

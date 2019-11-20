@@ -2,7 +2,7 @@ using System;
 
 namespace Kronos.Core.Storage
 {
-    internal readonly struct ExpiringKey : IComparable<ExpiringKey>, IEquatable<ExpiringKey>
+    public readonly struct ExpiringKey : IComparable<ExpiringKey>, IEquatable<ExpiringKey>
     {
         public Key Key { get; }
         public DateTimeOffset ExpiryDate { get; }

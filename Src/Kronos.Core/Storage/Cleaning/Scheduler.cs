@@ -3,7 +3,7 @@ using Kronos.Core.Configuration;
 
 namespace Kronos.Core.Storage.Cleaning
 {
-    internal class Scheduler : IScheduler
+    public class Scheduler : IScheduler
     {
         private Timer _timer;
 
