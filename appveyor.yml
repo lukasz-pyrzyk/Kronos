@@ -2,7 +2,6 @@ version: 4.0.0-rc-{build}
 image:
 - Visual Studio 2019
 - Ubuntu
-- macos
 
 nuget:
   project_feed: true
