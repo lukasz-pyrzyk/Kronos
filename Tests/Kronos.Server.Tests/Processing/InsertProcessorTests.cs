@@ -1,4 +1,4 @@
-﻿using System;
+﻿using FluentAssertions;
 using Google.Protobuf;
 using Kronos.Core.Messages;
 using Kronos.Server.Processing;
@@ -12,22 +12,36 @@ namespace Kronos.Server.Tests.Processing
 {
     public class InsertProcessorTests
     {
-        [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
-        public void Handle_ReturnsTrueWhenElementAdded(bool added)
+        [Fact]
+        public void Handle_ReturnsTrueWhenAdded()
         {
             // arrange
             var request = new InsertRequest();
             var processor = new InsertProcessor();
             var storage = new InMemoryStorage(Substitute.For<ICleaner>(), Substitute.For<IScheduler>(), Substitute.For<ILogger<InMemoryStorage>>());
-            storage.Add(Arg.Any<string>(), Arg.Any<DateTimeOffset?>(), Arg.Any<ByteString>()).Returns(added);
 
             // Act
             InsertResponse response = processor.Reply(request, storage);
 
             // assert
-            Assert.Equal(response.Added, added);
+            response.Added.Should().BeTrue();
+        }
+
+        [Fact]
+        public void Handle_ReturnsFalseWhenAlreadyExists()
+        {
+            // arrange
+            var key = "key";
+            var request = new InsertRequest { Key = key };
+            var processor = new InsertProcessor();
+            var storage = new InMemoryStorage(Substitute.For<ICleaner>(), Substitute.For<IScheduler>(), Substitute.For<ILogger<InMemoryStorage>>());
+            storage.Add(key, null, ByteString.Empty);
+
+            // Act
+            InsertResponse response = processor.Reply(request, storage);
+
+            // assert
+            response.Added.Should().BeFalse();
         }
     }
 }

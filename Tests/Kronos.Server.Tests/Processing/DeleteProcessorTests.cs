@@ -1,4 +1,7 @@
-﻿using Kronos.Core.Messages;
+﻿using System;
+using FluentAssertions;
+using Google.Protobuf;
+using Kronos.Core.Messages;
 using Kronos.Server.Processing;
 using Kronos.Server.Storage;
 using Kronos.Server.Storage.Cleaning;
@@ -10,21 +13,53 @@ namespace Kronos.Server.Tests.Processing
 {
     public class DeleteProcessorTests
     {
-        [Theory]
-        [InlineData(true)]
-        [InlineData(false)]
-        public void Handle_ReturnsTrueOrFalseIfElementWasDeleted(bool deleted)
+        [Fact]
+        public void Handle_ReturnsTrueWhenElementWasDeleted()
         {
             // arrange
-            var request = new DeleteRequest();
+            var key = "key";
+            var request = new DeleteRequest { Key = key };
             var processor = new DeleteProcessor();
             var storage = new InMemoryStorage(Substitute.For<ICleaner>(), Substitute.For<IScheduler>(), Substitute.For<ILogger<InMemoryStorage>>());
-            storage.TryRemove(request.Key).Returns(deleted);
+            storage.Add(key, null, ByteString.Empty);
 
             DeleteResponse response = processor.Reply(request, storage);
 
             // assert
-            Assert.Equal(response.Deleted, deleted);
+            response.Deleted.Should().BeTrue();
+            storage.Count.Should().Be(0);
+        }
+
+        [Fact]
+        public void Handle_ReturnsFalseWhenElementWasNotAdded()
+        {
+            // arrange
+            var key = "key";
+            var request = new DeleteRequest { Key = key };
+            var processor = new DeleteProcessor();
+            var storage = new InMemoryStorage(Substitute.For<ICleaner>(), Substitute.For<IScheduler>(), Substitute.For<ILogger<InMemoryStorage>>());
+
+            DeleteResponse response = processor.Reply(request, storage);
+
+            // assert
+            response.Deleted.Should().BeFalse();
+        }
+
+        [Fact]
+        public void Handle_ReturnsFalseWhenKeyWasDifferent()
+        {
+            // arrange
+            var key = "key";
+            var request = new DeleteRequest { Key = Guid.NewGuid().ToString() };
+            var processor = new DeleteProcessor();
+            var storage = new InMemoryStorage(Substitute.For<ICleaner>(), Substitute.For<IScheduler>(), Substitute.For<ILogger<InMemoryStorage>>());
+            storage.Add(key, null, ByteString.Empty);
+
+            DeleteResponse response = processor.Reply(request, storage);
+
+            // assert
+            response.Deleted.Should().BeFalse();
+            storage.Count.Should().Be(1);
         }
     }
 }

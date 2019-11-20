@@ -1,4 +1,6 @@
-﻿using Google.Protobuf;
+﻿using System;
+using FluentAssertions;
+using Google.Protobuf;
 using Kronos.Core.Messages;
 using Kronos.Server.Processing;
 using Kronos.Server.Storage;
@@ -15,23 +17,19 @@ namespace Kronos.Server.Tests.Processing
         public void Handle_ReturnsObjectFromCache()
         {
             // arrange
+            var key = "key";
             ByteString obj = ByteString.CopyFromUtf8("lorem ipsum");
-            var request = new GetRequest();
+            var request = new GetRequest { Key = key };
             var processor = new GetProcessor();
             var storage = new InMemoryStorage(Substitute.For<ICleaner>(), Substitute.For<IScheduler>(), Substitute.For<ILogger<InMemoryStorage>>());
-
-            storage.TryGet(request.Key, out ByteString dummy).Returns(x =>
-            {
-                x[1] = obj;
-                return true;
-            });
+            storage.Add(key, DateTimeOffset.MaxValue, obj);
 
             // Act
             GetResponse response = processor.Reply(request, storage);
 
             // assert
-            Assert.True(response.Exists);
-            Assert.Equal(obj, response.Data);
+            response.Exists.Should().BeTrue();
+            response.Data.Should().BeEquivalentTo(obj);
         }
 
         [Fact]
@@ -41,15 +39,32 @@ namespace Kronos.Server.Tests.Processing
             var request = new GetRequest();
             var processor = new GetProcessor();
             var storage = new InMemoryStorage(Substitute.For<ICleaner>(), Substitute.For<IScheduler>(), Substitute.For<ILogger<InMemoryStorage>>());
-
-            storage.TryGet(request.Key, out ByteString _).Returns(false);
-
+            
             // Act
             GetResponse response = processor.Reply(request, storage);
 
             // assert
-            Assert.False(response.Exists);
-            Assert.True(response.Data.IsEmpty);
+            response.Exists.Should().BeFalse();
+            response.Data.Should().BeEmpty();
+        }
+
+        [Fact]
+        public void Handle_ReturnsNotFoundWhenKeyDoesntMatch()
+        {
+            // arrange
+            var key = "key";
+            ByteString obj = ByteString.CopyFromUtf8("lorem ipsum");
+            var request = new GetRequest { Key = Guid.NewGuid().ToString() };
+            var processor = new GetProcessor();
+            var storage = new InMemoryStorage(Substitute.For<ICleaner>(), Substitute.For<IScheduler>(), Substitute.For<ILogger<InMemoryStorage>>());
+            storage.Add(key, DateTimeOffset.MaxValue, obj);
+            
+            // Act
+            GetResponse response = processor.Reply(request, storage);
+
+            // assert
+            response.Exists.Should().BeFalse();
+            response.Data.Should().BeEmpty();
         }
     }
 }
