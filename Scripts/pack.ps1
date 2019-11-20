@@ -13,7 +13,7 @@ cd "Src\Kronos.Server"
 dotnet publish -o ./publish -c Release
 write-host "Project packaged"
 
-docker build -t lukaszpyrzyk/kronos .
+docker build --no-cache -t lukaszpyrzyk/kronos .
 write-host "Docker image built"
 
 if($LastExitCode -ne 0) { $host.SetShouldExit($LastExitCode )  }
