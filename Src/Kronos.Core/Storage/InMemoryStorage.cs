@@ -17,7 +17,7 @@ namespace Kronos.Core.Storage
         private readonly ICleaner _cleaner;
         private readonly ILogger<InMemoryStorage> _logger;
 
-        internal InMemoryStorage(ICleaner cleaner, IScheduler scheduler, ILogger<InMemoryStorage> logger)
+        public InMemoryStorage(ICleaner cleaner, IScheduler scheduler, ILogger<InMemoryStorage> logger)
         {
             _cleaner = cleaner;
             _logger = logger;

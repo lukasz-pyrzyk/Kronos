@@ -4,7 +4,7 @@ using Microsoft.Extensions.Logging;
 
 namespace Kronos.Core.Storage.Cleaning
 {
-    internal class Cleaner : ICleaner
+    public class Cleaner : ICleaner
     {
         private readonly ILogger<Cleaner> _logger;
 
