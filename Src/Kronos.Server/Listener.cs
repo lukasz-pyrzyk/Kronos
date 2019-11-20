@@ -37,7 +37,7 @@ namespace Kronos.Server
             _logger.LogInformation("Starting server");
             _tcpListener.Start();
             string version = Assembly.GetEntryAssembly().GetCustomAttribute<AssemblyInformationalVersionAttribute>().InformationalVersion;
-            _logger.LogInformation($"Server started on {_tcpListener.LocalEndpoint}. Kronos version {version}");
+            _logger.LogInformation("Server started on {endpoint}. Kronos version {appVersion}", _tcpListener.LocalEndpoint, version);
 
             CancellationToken token = _cancel.Token;
             _ = Task.Factory.StartNew(async () =>
@@ -57,7 +57,7 @@ namespace Kronos.Server
                     }
                     catch (Exception ex)
                     {
-                        _logger.LogError($"Exception during accepting new request {ex}");
+                        _logger.LogError("Exception during accepting new request {ex}", ex);
                     }
                     finally
                     {
@@ -81,7 +81,7 @@ namespace Kronos.Server
                 }
                 catch (SocketException ex)
                 {
-                    _logger.LogError($"Error on shutting down server socket {ex}");
+                    _logger.LogError("Error on shutting down server socket {ex}", ex);
                 }
             }
 
@@ -97,15 +97,15 @@ namespace Kronos.Server
             {
                 Request request = _socketConnection.ReceiveRequest(stream);
 
-                _logger.LogDebug($"Processing new request {request.Type}");
+                _logger.LogDebug("Processing new request {requestType}", request.Type);
                 Response response = _requestProcessor.Handle(request, _auth);
 
                 await _socketConnection.Send(response, stream);
-                _logger.LogDebug("Processing finished");
+                _logger.LogDebug("Request {requestType} finished", request.Type);
             }
             catch (Exception ex)
             {
-                _logger.LogError($"Exception on processing: {ex}");
+                _logger.LogError("Exception on processing: {ex}", ex);
             }
         }
     }

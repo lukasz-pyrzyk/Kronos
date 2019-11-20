@@ -1,5 +1,4 @@
-﻿using System.Diagnostics;
-using EntryPoint;
+﻿using EntryPoint;
 using Kronos.Core.Processing;
 using Kronos.Core.Storage;
 using Microsoft.Extensions.DependencyInjection;
