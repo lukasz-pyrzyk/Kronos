@@ -186,7 +186,7 @@ namespace Kronos.Server.Storage
             }
             finally
             {
-                _lock.ExitWriteLock();
+                _lock.ExitReadLock();
             }
         }
     }
