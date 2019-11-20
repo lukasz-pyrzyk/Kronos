@@ -3,16 +3,15 @@ using System.Threading.Tasks;
 using BenchmarkDotNet.Attributes;
 using Kronos.Client;
 using Kronos.Core.Configuration;
-using Kronos.Server;
+using Microsoft.Extensions.Hosting;
 
 namespace Benchmark.Config
 {
     [Config(typeof(CustomConfig))]
     public abstract class BaseBenchmark : IDisposable
     {
-        private const string Domain = "127.0.0.1";
-        private static readonly string KronosConnection = Domain;
-        private Task _server;
+        private const string KronosConnection = "127.0.0.1";
+        private IHost _server;
 
         protected IKronosClient KronosClient { get; private set; }
 
@@ -21,20 +20,11 @@ namespace Benchmark.Config
         {
             try
             {
-                _server = Task.Factory.StartNew(() => Kronos.Server.Program.Start(new SettingsArgs()),
-                    TaskCreationOptions.LongRunning);
+                _server = Kronos.Server.Program.CreateHostBuilder(new string[0]).Build();
+                _server.StartAsync().GetAwaiter().GetResult();
 
-                while (!Kronos.Server.Program.IsWorking)
-                {
-                    LogMessage("Waiting for server warnup...");
-                    Task.Delay(100).GetAwaiter().GetResult();
-
-                    if (_server.IsFaulted)
-                    {
-                        LogMessage($"Server is faulted. Exception: {_server.Exception}");
-                        throw _server.Exception;
-                    }
-                }
+                // wait for warmup
+                Task.Delay(100).GetAwaiter().GetResult();
             }
             catch (Exception ex)
             {
@@ -56,11 +46,7 @@ namespace Benchmark.Config
             try
             {
                 LogMessage("Stopping server");
-                Kronos.Server.Program.Stop();
-
-                LogMessage("Waiting for server task to finish");
-                _server?.GetAwaiter().GetResult();
-
+                _server.StopAsync().GetAwaiter().GetResult();
                 LogMessage("Server stopped");
             }
             catch (AggregateException aex)

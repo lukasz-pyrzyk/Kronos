@@ -108,13 +108,6 @@ namespace Kronos.Core.Storage
             return count;
         }
 
-        public void Dispose()
-        {
-            Trace.TraceInformation("Disposing storage");
-
-            Clear();
-        }
-
         private void ClearStorageIfRequested()
         {
             // check if cleanup was requested, do not change value

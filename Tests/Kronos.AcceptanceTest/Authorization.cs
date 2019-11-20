@@ -1,7 +1,7 @@
-﻿using System.Threading.Tasks;
+﻿using System;
+using System.Threading.Tasks;
 using FluentAssertions;
 using Kronos.Client;
-using Kronos.Server;
 using Xunit;
 
 namespace Kronos.AcceptanceTest
@@ -23,11 +23,9 @@ namespace Kronos.AcceptanceTest
             countResponse.Should().BeNull();
         }
 
-        protected override SettingsArgs GetSettings()
+        protected override string[] GetSettings()
         {
-            var currentSettings = base.GetSettings();
-            currentSettings.Password = "Super secret admin password";
-            return currentSettings;
+            return new[] { "--password", Guid.NewGuid().ToString() };
         }
     }
 }

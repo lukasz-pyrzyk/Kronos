@@ -246,23 +246,6 @@ namespace Kronos.Core.Tests.Storage
         }
 
         [Fact]
-        public void Dispose_ClearsTheData()
-        {
-            // Arrange
-            IStorage storage = CreateStorage();
-
-            storage.Add("first", DateTimeOffset.MaxValue, ByteString.Empty);
-            storage.Add("second", DateTimeOffset.MaxValue, ByteString.Empty);
-
-            // Act
-            storage.Dispose();
-
-            // Assert
-            Assert.Equal(storage.Count, 0);
-            Assert.Equal(storage.ExpiringCount, 0);
-        }
-
-        [Fact]
         public async Task Add_CallsCleaner()
         {
             // Arrange

@@ -1,57 +1,23 @@
 ﻿using System;
 using System.Diagnostics;
-using System.Threading;
 using EntryPoint;
-using Kronos.Core.Processing;
-using Kronos.Core.Storage;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 
 namespace Kronos.Server
 {
     public class Program
     {
-        public static bool IsWorking { get; private set; }
-
-        private static readonly ManualResetEventSlim CancelEvent = new ManualResetEventSlim();
-
         public static void Main(string[] args)
         {
-            var settings = Cli.Parse<SettingsArgs>(args);
-
             ConfigLogger();
             PrintLogo();
-
-            Start(settings);
+            CreateHostBuilder(args).Build().Run();
         }
 
         private static void ConfigLogger()
         {
             Trace.Listeners.Add(new ConsoleTraceListener());
-        }
-
-        public static void Start(SettingsArgs settings)
-        {
-            IStorage storage = new InMemoryStorage();
-
-            var requestProcessor = new RequestProcessor(storage);
-            Listener server = new Listener(settings, requestProcessor);
-
-            server.Start();
-            IsWorking = true;
-
-            Console.CancelKeyPress += (sender, args) => Stop();
-
-            CancelEvent.Wait();
-            CancelEvent.Reset();
-
-            // dispose components
-            storage.Dispose();
-            server.Dispose();
-        }
-
-        public static void Stop()
-        {
-            CancelEvent.Set();
-            IsWorking = false;
         }
 
         private static void PrintLogo()
@@ -78,24 +44,17 @@ namespace Kronos.Server
 
             Console.WriteLine(line);
         }
-    }
 
-
-    /// <summary>
-    /// Comes from https://github.com/dotnet/corefx/pull/32620/files
-    /// Should be shipped in .NET Core 3.0
-    /// </summary>
-    internal class ConsoleTraceListener : TextWriterTraceListener
-    {
-        public ConsoleTraceListener() : base(Console.Out)
+        public static IHostBuilder CreateHostBuilder(string[] args)
         {
-        }
+            return Host.CreateDefaultBuilder(args)
+                .ConfigureServices((hostContext, services) =>
+                {
+                    var settings = Cli.Parse<SettingsArgs>(args);
 
-        public ConsoleTraceListener(bool useErrorStream) 
-            : base (useErrorStream ? Console.Error : Console.Out)
-        {
+                    services.AddSingleton(settings);
+                    services.AddHostedService<KronosWorker>();
+                });
         }
-
-        public override void Close() { }
     }
 }
