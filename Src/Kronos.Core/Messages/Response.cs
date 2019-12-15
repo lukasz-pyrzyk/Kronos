@@ -37,8 +37,8 @@ namespace Kronos.Core.Messages {
             "dG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Kronos.Core.Messages.InsertReflection.Descriptor, global::Kronos.Core.Messages.GetReflection.Descriptor, global::Kronos.Core.Messages.DeleteReflection.Descriptor, global::Kronos.Core.Messages.CountReflection.Descriptor, global::Kronos.Core.Messages.ContainsReflection.Descriptor, global::Kronos.Core.Messages.ClearReflection.Descriptor, global::Kronos.Core.Messages.StatsReflection.Descriptor, },
-          new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Kronos.Core.Messages.Response), global::Kronos.Core.Messages.Response.Parser, new[]{ "Exception", "InsertResponse", "GetRespone", "DeleteResponse", "ContainsResponse", "CountResponse", "ClearResponse", "StatsResponse" }, null, null, null)
+          new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
+            new pbr::GeneratedClrTypeInfo(typeof(global::Kronos.Core.Messages.Response), global::Kronos.Core.Messages.Response.Parser, new[]{ "Exception", "InsertResponse", "GetRespone", "DeleteResponse", "ContainsResponse", "CountResponse", "ClearResponse", "StatsResponse" }, null, null, null, null)
           }));
     }
     #endregion
@@ -302,43 +302,43 @@ namespace Kronos.Core.Messages {
       }
       if (other.insertResponse_ != null) {
         if (insertResponse_ == null) {
-          insertResponse_ = new global::Kronos.Core.Messages.InsertResponse();
+          InsertResponse = new global::Kronos.Core.Messages.InsertResponse();
         }
         InsertResponse.MergeFrom(other.InsertResponse);
       }
       if (other.getRespone_ != null) {
         if (getRespone_ == null) {
-          getRespone_ = new global::Kronos.Core.Messages.GetResponse();
+          GetRespone = new global::Kronos.Core.Messages.GetResponse();
         }
         GetRespone.MergeFrom(other.GetRespone);
       }
       if (other.deleteResponse_ != null) {
         if (deleteResponse_ == null) {
-          deleteResponse_ = new global::Kronos.Core.Messages.DeleteResponse();
+          DeleteResponse = new global::Kronos.Core.Messages.DeleteResponse();
         }
         DeleteResponse.MergeFrom(other.DeleteResponse);
       }
       if (other.containsResponse_ != null) {
         if (containsResponse_ == null) {
-          containsResponse_ = new global::Kronos.Core.Messages.ContainsResponse();
+          ContainsResponse = new global::Kronos.Core.Messages.ContainsResponse();
         }
         ContainsResponse.MergeFrom(other.ContainsResponse);
       }
       if (other.countResponse_ != null) {
         if (countResponse_ == null) {
-          countResponse_ = new global::Kronos.Core.Messages.CountResponse();
+          CountResponse = new global::Kronos.Core.Messages.CountResponse();
         }
         CountResponse.MergeFrom(other.CountResponse);
       }
       if (other.clearResponse_ != null) {
         if (clearResponse_ == null) {
-          clearResponse_ = new global::Kronos.Core.Messages.ClearResponse();
+          ClearResponse = new global::Kronos.Core.Messages.ClearResponse();
         }
         ClearResponse.MergeFrom(other.ClearResponse);
       }
       if (other.statsResponse_ != null) {
         if (statsResponse_ == null) {
-          statsResponse_ = new global::Kronos.Core.Messages.StatsResponse();
+          StatsResponse = new global::Kronos.Core.Messages.StatsResponse();
         }
         StatsResponse.MergeFrom(other.StatsResponse);
       }
@@ -359,51 +359,51 @@ namespace Kronos.Core.Messages {
           }
           case 18: {
             if (insertResponse_ == null) {
-              insertResponse_ = new global::Kronos.Core.Messages.InsertResponse();
+              InsertResponse = new global::Kronos.Core.Messages.InsertResponse();
             }
-            input.ReadMessage(insertResponse_);
+            input.ReadMessage(InsertResponse);
             break;
           }
           case 26: {
             if (getRespone_ == null) {
-              getRespone_ = new global::Kronos.Core.Messages.GetResponse();
+              GetRespone = new global::Kronos.Core.Messages.GetResponse();
             }
-            input.ReadMessage(getRespone_);
+            input.ReadMessage(GetRespone);
             break;
           }
           case 34: {
             if (deleteResponse_ == null) {
-              deleteResponse_ = new global::Kronos.Core.Messages.DeleteResponse();
+              DeleteResponse = new global::Kronos.Core.Messages.DeleteResponse();
             }
-            input.ReadMessage(deleteResponse_);
+            input.ReadMessage(DeleteResponse);
             break;
           }
           case 42: {
             if (containsResponse_ == null) {
-              containsResponse_ = new global::Kronos.Core.Messages.ContainsResponse();
+              ContainsResponse = new global::Kronos.Core.Messages.ContainsResponse();
             }
-            input.ReadMessage(containsResponse_);
+            input.ReadMessage(ContainsResponse);
             break;
           }
           case 50: {
             if (countResponse_ == null) {
-              countResponse_ = new global::Kronos.Core.Messages.CountResponse();
+              CountResponse = new global::Kronos.Core.Messages.CountResponse();
             }
-            input.ReadMessage(countResponse_);
+            input.ReadMessage(CountResponse);
             break;
           }
           case 58: {
             if (clearResponse_ == null) {
-              clearResponse_ = new global::Kronos.Core.Messages.ClearResponse();
+              ClearResponse = new global::Kronos.Core.Messages.ClearResponse();
             }
-            input.ReadMessage(clearResponse_);
+            input.ReadMessage(ClearResponse);
             break;
           }
           case 66: {
             if (statsResponse_ == null) {
-              statsResponse_ = new global::Kronos.Core.Messages.StatsResponse();
+              StatsResponse = new global::Kronos.Core.Messages.StatsResponse();
             }
-            input.ReadMessage(statsResponse_);
+            input.ReadMessage(StatsResponse);
             break;
           }
         }
