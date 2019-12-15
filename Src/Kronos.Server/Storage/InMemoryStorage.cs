@@ -28,38 +28,36 @@ namespace Kronos.Server.Storage
         {
             var key = new Key(name);
 
-            _lock.EnterReadLock();
-            Element element;
+            _lock.EnterUpgradeableReadLock();
             try
             {
-                bool found = _storage.TryGetValue(key, out Element e);
-                element = e;
+                bool found = _storage.TryGetValue(key, out Element element);
                 if (found && !element.IsExpired())
                 {
                     return false;
                 }
-            }
-            finally
-            {
-                _lock.ExitReadLock();
-            }
-
-            _lock.EnterWriteLock();
-            try
-            {
-                element = new Element(obj, expiryDate);
-                _storage[key] = element;
-
-                if (expiryDate.HasValue)
+                
+                _lock.EnterWriteLock();
+                try
                 {
-                    _expiringKeys.Add(new ExpiringKey(key, expiryDate.Value));
-                }
+                    element = new Element(obj, expiryDate);
+                    _storage[key] = element;
 
-                return true;
+                    if (expiryDate.HasValue)
+                    {
+                        _expiringKeys.Add(new ExpiringKey(key, expiryDate.Value));
+                    }
+
+                    return true;
+                }
+                finally
+                {
+                    _lock.ExitWriteLock();
+                }
             }
             finally
             {
-                _lock.ExitWriteLock();
+                _lock.ExitUpgradeableReadLock();
             }
         }
 
@@ -88,32 +86,30 @@ namespace Kronos.Server.Storage
         public bool TryRemove(string name)
         {
             var key = new Key(name);
-            Element element;
-            _lock.EnterReadLock();
+            _lock.EnterUpgradeableReadLock();
             try
             {
-                bool found = _storage.TryGetValue(key, out Element e);
+                bool found = _storage.TryGetValue(key, out Element element);
                 if (!found) return false;
-                element = e;
-            }
-            finally
-            {
-                _lock.ExitReadLock();
-            }
 
-            _lock.EnterWriteLock();
-            try
-            {
-                _storage.Remove(key);
-                if (element.IsExpiring)
+                _lock.EnterWriteLock();
+                try
                 {
-                    _expiringKeys.Remove(new ExpiringKey(key, default));
+                    _storage.Remove(key);
+                    if (element.IsExpiring)
+                    {
+                        _expiringKeys.Remove(new ExpiringKey(key, default));
+                    }
+                    return true;
                 }
-                return true;
+                finally
+                {
+                    _lock.ExitWriteLock();
+                }
             }
             finally
             {
-                _lock.ExitWriteLock();
+                _lock.ExitUpgradeableReadLock();
             }
         }
 
