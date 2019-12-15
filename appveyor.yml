@@ -29,9 +29,6 @@ for:
   on_success:
   - ps: |
         if ($isLinux) {
-          cd ./Src/Kronos.Server/
-          dotnet publish -c Release
-          docker login -u="$env:DOCKER_USER" -p="$env:DOCKER_PASSWORD"
-          docker build -t lukaszpyrzyk/kronos .
+          .\Scripts\pack.ps1
           docker push lukaszpyrzyk/kronos
         }
