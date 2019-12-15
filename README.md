@@ -65,7 +65,8 @@ Full documentation is available on the [docker reference page](https://docs.dock
 ### Building own docker image
 If you don't want to use my docker image, you can build your own. Install .NET Core 3.0, clone repository, go to the `src\Kronos.Server` and type: 
 ```bash
-dotnet publish -o ./publish -c Release
+cd ./Src/Kronos.Server/
+dotnet publish -c Release
 docker build --no-cache -t lukaszpyrzyk/kronos .
 ```
 

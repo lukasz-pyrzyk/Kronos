@@ -1,5 +1,4 @@
 ﻿using System;
-using System.IO;
 using System.Net;
 using System.Net.Sockets;
 using System.Reflection;
@@ -7,12 +6,12 @@ using System.Threading;
 using System.Threading.Tasks;
 using Kronos.Core;
 using Kronos.Core.Messages;
-using Kronos.Core.Processing;
+using Kronos.Server.Processing;
 using Microsoft.Extensions.Logging;
 
 namespace Kronos.Server
 {
-    public class Listener
+    class Listener
     {
         private readonly TcpListener _tcpListener;
         private readonly SocketConnection _socketConnection = new SocketConnection();
@@ -44,25 +43,8 @@ namespace Kronos.Server
             {
                 while (!token.IsCancellationRequested)
                 {
-                    TcpClient client = null;
-                    try
-                    {
-                        client = await _tcpListener.AcceptTcpClientAsync();
-                        var stream = client.GetStream();
-                        _ = ProcessSocketConnection(stream);
-                    }
-                    catch (ObjectDisposedException)
-                    {
-                        _logger.LogError("TCP listener is disposed");
-                    }
-                    catch (Exception ex)
-                    {
-                        _logger.LogError("Exception during accepting new request {ex}", ex);
-                    }
-                    finally
-                    {
-                        client?.Dispose();
-                    }
+                    var client = await _tcpListener.AcceptTcpClientAsync();
+                    _ = Task.Run(() => ProcessConnection(client), token);
                 }
             }, token, TaskCreationOptions.LongRunning, TaskScheduler.Current);
         }
@@ -91,10 +73,13 @@ namespace Kronos.Server
             _logger.LogInformation("Server is down");
         }
 
-        private async Task ProcessSocketConnection(Stream stream)
+        private async Task ProcessConnection(TcpClient client)
         {
             try
             {
+                using var connection = client;
+                await using var stream = connection.GetStream();
+
                 Request request = _socketConnection.ReceiveRequest(stream);
 
                 _logger.LogDebug("Processing new request {requestType}", request.Type);
