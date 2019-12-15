@@ -23,7 +23,7 @@
   <ItemGroup>
     <PackageReference Include="Farmhash.Sharp" />
     <PackageReference Include="Google.Protobuf" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
   </ItemGroup>
 
 </Project>
