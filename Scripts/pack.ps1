@@ -10,9 +10,10 @@ write-host "Packeging finished"
 write-host "Preparing docker build"
 
 cd "Src\Kronos.Server"
-dotnet publish -o ./publish -c Release
+dotnet publish -c Release
 write-host "Project packaged"
 
+write-host "Building docker image..."
 docker build --no-cache -t lukaszpyrzyk/kronos .
 write-host "Docker image built"
 

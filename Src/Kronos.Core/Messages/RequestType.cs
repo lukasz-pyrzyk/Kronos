@@ -30,7 +30,7 @@ namespace Kronos.Core.Messages {
             "bm9zLkNvcmUuTWVzc2FnZXNiBnByb3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Kronos.Core.Messages.RequestType), }, null));
+          new pbr::GeneratedClrTypeInfo(new[] {typeof(global::Kronos.Core.Messages.RequestType), }, null, null));
     }
     #endregion
 

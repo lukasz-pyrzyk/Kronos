@@ -1,6 +1,6 @@
 syntax = "proto3";
-option csharp_namespace = "Kronos.Core.Messages";
 
+option csharp_namespace = "Kronos.Core.Messages";
 
 message Auth {
     string login = 1;

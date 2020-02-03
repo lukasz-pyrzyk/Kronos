@@ -5,7 +5,7 @@
     <Copyright>Lukasz Pyrzyk</Copyright>
     <VersionPrefix>4.0.0</VersionPrefix>
     <Authors>Lukasz Pyrzyk</Authors>
-    <TargetFramework>netstandard2.1</TargetFramework>
+    <TargetFramework>netcoreapp3.1</TargetFramework>
     <AssemblyName>Kronos.Core</AssemblyName>
     <PackageId>Kronos.Core</PackageId>
     <PackageTags>cache, distributed, redis, memcached</PackageTags>
@@ -23,7 +23,7 @@
   <ItemGroup>
     <PackageReference Include="Farmhash.Sharp" />
     <PackageReference Include="Google.Protobuf" />
-    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" Version="3.0.0" />
+    <PackageReference Include="Microsoft.Extensions.Logging.Abstractions" />
   </ItemGroup>
 
 </Project>

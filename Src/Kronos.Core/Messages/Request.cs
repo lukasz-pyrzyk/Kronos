@@ -38,8 +38,8 @@ namespace Kronos.Core.Messages {
             "b3RvMw=="));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { global::Kronos.Core.Messages.AuthReflection.Descriptor, global::Kronos.Core.Messages.RequestTypeReflection.Descriptor, global::Kronos.Core.Messages.InsertReflection.Descriptor, global::Kronos.Core.Messages.GetReflection.Descriptor, global::Kronos.Core.Messages.DeleteReflection.Descriptor, global::Kronos.Core.Messages.CountReflection.Descriptor, global::Kronos.Core.Messages.ContainsReflection.Descriptor, global::Kronos.Core.Messages.ClearReflection.Descriptor, global::Kronos.Core.Messages.StatsReflection.Descriptor, },
-          new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Kronos.Core.Messages.Request), global::Kronos.Core.Messages.Request.Parser, new[]{ "Auth", "Type", "InsertRequest", "GetRequest", "DeleteRequest", "ContainsRequest", "CountRequest", "ClearRequest", "StatsRequest" }, null, null, null)
+          new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
+            new pbr::GeneratedClrTypeInfo(typeof(global::Kronos.Core.Messages.Request), global::Kronos.Core.Messages.Request.Parser, new[]{ "Auth", "Type", "InsertRequest", "GetRequest", "DeleteRequest", "ContainsRequest", "CountRequest", "ClearRequest", "StatsRequest" }, null, null, null, null)
           }));
     }
     #endregion
@@ -101,7 +101,7 @@ namespace Kronos.Core.Messages {
 
     /// <summary>Field number for the "Type" field.</summary>
     public const int TypeFieldNumber = 2;
-    private global::Kronos.Core.Messages.RequestType type_ = 0;
+    private global::Kronos.Core.Messages.RequestType type_ = global::Kronos.Core.Messages.RequestType.Unknown;
     [global::System.Diagnostics.DebuggerNonUserCodeAttribute]
     public global::Kronos.Core.Messages.RequestType Type {
       get { return type_; }
@@ -216,7 +216,7 @@ namespace Kronos.Core.Messages {
     public override int GetHashCode() {
       int hash = 1;
       if (auth_ != null) hash ^= Auth.GetHashCode();
-      if (Type != 0) hash ^= Type.GetHashCode();
+      if (Type != global::Kronos.Core.Messages.RequestType.Unknown) hash ^= Type.GetHashCode();
       if (insertRequest_ != null) hash ^= InsertRequest.GetHashCode();
       if (getRequest_ != null) hash ^= GetRequest.GetHashCode();
       if (deleteRequest_ != null) hash ^= DeleteRequest.GetHashCode();
@@ -241,7 +241,7 @@ namespace Kronos.Core.Messages {
         output.WriteRawTag(10);
         output.WriteMessage(Auth);
       }
-      if (Type != 0) {
+      if (Type != global::Kronos.Core.Messages.RequestType.Unknown) {
         output.WriteRawTag(16);
         output.WriteEnum((int) Type);
       }
@@ -284,7 +284,7 @@ namespace Kronos.Core.Messages {
       if (auth_ != null) {
         size += 1 + pb::CodedOutputStream.ComputeMessageSize(Auth);
       }
-      if (Type != 0) {
+      if (Type != global::Kronos.Core.Messages.RequestType.Unknown) {
         size += 1 + pb::CodedOutputStream.ComputeEnumSize((int) Type);
       }
       if (insertRequest_ != null) {
@@ -321,52 +321,52 @@ namespace Kronos.Core.Messages {
       }
       if (other.auth_ != null) {
         if (auth_ == null) {
-          auth_ = new global::Kronos.Core.Messages.Auth();
+          Auth = new global::Kronos.Core.Messages.Auth();
         }
         Auth.MergeFrom(other.Auth);
       }
-      if (other.Type != 0) {
+      if (other.Type != global::Kronos.Core.Messages.RequestType.Unknown) {
         Type = other.Type;
       }
       if (other.insertRequest_ != null) {
         if (insertRequest_ == null) {
-          insertRequest_ = new global::Kronos.Core.Messages.InsertRequest();
+          InsertRequest = new global::Kronos.Core.Messages.InsertRequest();
         }
         InsertRequest.MergeFrom(other.InsertRequest);
       }
       if (other.getRequest_ != null) {
         if (getRequest_ == null) {
-          getRequest_ = new global::Kronos.Core.Messages.GetRequest();
+          GetRequest = new global::Kronos.Core.Messages.GetRequest();
         }
         GetRequest.MergeFrom(other.GetRequest);
       }
       if (other.deleteRequest_ != null) {
         if (deleteRequest_ == null) {
-          deleteRequest_ = new global::Kronos.Core.Messages.DeleteRequest();
+          DeleteRequest = new global::Kronos.Core.Messages.DeleteRequest();
         }
         DeleteRequest.MergeFrom(other.DeleteRequest);
       }
       if (other.containsRequest_ != null) {
         if (containsRequest_ == null) {
-          containsRequest_ = new global::Kronos.Core.Messages.ContainsRequest();
+          ContainsRequest = new global::Kronos.Core.Messages.ContainsRequest();
         }
         ContainsRequest.MergeFrom(other.ContainsRequest);
       }
       if (other.countRequest_ != null) {
         if (countRequest_ == null) {
-          countRequest_ = new global::Kronos.Core.Messages.CountRequest();
+          CountRequest = new global::Kronos.Core.Messages.CountRequest();
         }
         CountRequest.MergeFrom(other.CountRequest);
       }
       if (other.clearRequest_ != null) {
         if (clearRequest_ == null) {
-          clearRequest_ = new global::Kronos.Core.Messages.ClearRequest();
+          ClearRequest = new global::Kronos.Core.Messages.ClearRequest();
         }
         ClearRequest.MergeFrom(other.ClearRequest);
       }
       if (other.statsRequest_ != null) {
         if (statsRequest_ == null) {
-          statsRequest_ = new global::Kronos.Core.Messages.StatsRequest();
+          StatsRequest = new global::Kronos.Core.Messages.StatsRequest();
         }
         StatsRequest.MergeFrom(other.StatsRequest);
       }
@@ -383,62 +383,62 @@ namespace Kronos.Core.Messages {
             break;
           case 10: {
             if (auth_ == null) {
-              auth_ = new global::Kronos.Core.Messages.Auth();
+              Auth = new global::Kronos.Core.Messages.Auth();
             }
-            input.ReadMessage(auth_);
+            input.ReadMessage(Auth);
             break;
           }
           case 16: {
-            type_ = (global::Kronos.Core.Messages.RequestType) input.ReadEnum();
+            Type = (global::Kronos.Core.Messages.RequestType) input.ReadEnum();
             break;
           }
           case 26: {
             if (insertRequest_ == null) {
-              insertRequest_ = new global::Kronos.Core.Messages.InsertRequest();
+              InsertRequest = new global::Kronos.Core.Messages.InsertRequest();
             }
-            input.ReadMessage(insertRequest_);
+            input.ReadMessage(InsertRequest);
             break;
           }
           case 34: {
             if (getRequest_ == null) {
-              getRequest_ = new global::Kronos.Core.Messages.GetRequest();
+              GetRequest = new global::Kronos.Core.Messages.GetRequest();
             }
-            input.ReadMessage(getRequest_);
+            input.ReadMessage(GetRequest);
             break;
           }
           case 42: {
             if (deleteRequest_ == null) {
-              deleteRequest_ = new global::Kronos.Core.Messages.DeleteRequest();
+              DeleteRequest = new global::Kronos.Core.Messages.DeleteRequest();
             }
-            input.ReadMessage(deleteRequest_);
+            input.ReadMessage(DeleteRequest);
             break;
           }
           case 50: {
             if (containsRequest_ == null) {
-              containsRequest_ = new global::Kronos.Core.Messages.ContainsRequest();
+              ContainsRequest = new global::Kronos.Core.Messages.ContainsRequest();
             }
-            input.ReadMessage(containsRequest_);
+            input.ReadMessage(ContainsRequest);
             break;
           }
           case 58: {
             if (countRequest_ == null) {
-              countRequest_ = new global::Kronos.Core.Messages.CountRequest();
+              CountRequest = new global::Kronos.Core.Messages.CountRequest();
             }
-            input.ReadMessage(countRequest_);
+            input.ReadMessage(CountRequest);
             break;
           }
           case 66: {
             if (clearRequest_ == null) {
-              clearRequest_ = new global::Kronos.Core.Messages.ClearRequest();
+              ClearRequest = new global::Kronos.Core.Messages.ClearRequest();
             }
-            input.ReadMessage(clearRequest_);
+            input.ReadMessage(ClearRequest);
             break;
           }
           case 74: {
             if (statsRequest_ == null) {
-              statsRequest_ = new global::Kronos.Core.Messages.StatsRequest();
+              StatsRequest = new global::Kronos.Core.Messages.StatsRequest();
             }
-            input.ReadMessage(statsRequest_);
+            input.ReadMessage(StatsRequest);
             break;
           }
         }

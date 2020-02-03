@@ -29,9 +29,9 @@ namespace Kronos.Core.Messages {
             "cm9ub3MuQ29yZS5NZXNzYWdlc2IGcHJvdG8z"));
       descriptor = pbr::FileDescriptor.FromGeneratedCode(descriptorData,
           new pbr::FileDescriptor[] { },
-          new pbr::GeneratedClrTypeInfo(null, new pbr::GeneratedClrTypeInfo[] {
-            new pbr::GeneratedClrTypeInfo(typeof(global::Kronos.Core.Messages.StatsRequest), global::Kronos.Core.Messages.StatsRequest.Parser, null, null, null, null),
-            new pbr::GeneratedClrTypeInfo(typeof(global::Kronos.Core.Messages.StatsResponse), global::Kronos.Core.Messages.StatsResponse.Parser, new[]{ "Elements", "MemoryUsed" }, null, null, null)
+          new pbr::GeneratedClrTypeInfo(null, null, new pbr::GeneratedClrTypeInfo[] {
+            new pbr::GeneratedClrTypeInfo(typeof(global::Kronos.Core.Messages.StatsRequest), global::Kronos.Core.Messages.StatsRequest.Parser, null, null, null, null, null),
+            new pbr::GeneratedClrTypeInfo(typeof(global::Kronos.Core.Messages.StatsResponse), global::Kronos.Core.Messages.StatsResponse.Parser, new[]{ "Elements", "MemoryUsed" }, null, null, null, null)
           }));
     }
     #endregion
